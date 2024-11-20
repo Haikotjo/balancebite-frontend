@@ -8,7 +8,7 @@
 html, body {
     width: 100%;
     height: 100%;
-    font-family: Arial, sans-serif; /* Of een andere gewenste standaardlettertype */
+    font-family: 'Roboto', sans-serif;
     line-height: 1.5; /* Voorkomt inconsistente tussenruimte in tekst */
 }
 
