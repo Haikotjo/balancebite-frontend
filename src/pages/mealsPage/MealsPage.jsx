@@ -6,7 +6,7 @@ function MealsPage() {
         <div>
             <h1>This is the Meals page</h1>
             {/* Laad een enkele MealCard met id 1 */}
-            <MealCard mealId={1} />
+            <MealCard mealId={9} />
         </div>
     );
 }

@@ -1,6 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types"; // Import PropTypes
-import { Card, CardContent, Typography, CardMedia, CardActions, Collapse, IconButton } from "@mui/material";
+import {
+    Card,
+    CardContent,
+    Typography,
+    CardMedia,
+    CardActions,
+    Collapse,
+    IconButton,
+} from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
 import { styled } from "@mui/material/styles";
@@ -20,6 +28,7 @@ const ExpandMore = styled((props) => {
 function MealCard({ mealId }) {
     const { meal, loading, error } = useMeal(mealId); // Haal data uit de hook
     const [expanded, setExpanded] = React.useState(false);
+    const [showFullText, setShowFullText] = React.useState(false);
 
     if (loading) return <div>Loading meal...</div>;
     if (error) return <div>Error: {error}</div>;
@@ -38,6 +47,18 @@ function MealCard({ mealId }) {
         // Voeg hier de logica toe voor het toevoegen van de maaltijd
     };
 
+    const truncateTextAtComma = (text) => {
+        if (!text) return "Unknown"; // Controleer op null of undefined
+        const commaIndex = text.indexOf(",");
+        return commaIndex !== -1 ? text.slice(0, commaIndex) : text; // Tot eerste komma of volledige tekst
+    };
+
+
+    const handleShowFullText = () => {
+        setShowFullText(!showFullText);
+    };
+
+
     return (
         <Card sx={{ maxWidth: 345 }}>
             <CardMedia
@@ -52,13 +73,21 @@ function MealCard({ mealId }) {
                     Created By: {meal.createdBy?.userName}
                 </Typography>
                 <Typography variant="body1">Ingredients:</Typography>
-                <ul>
+                <ul onClick={handleShowFullText} style={{ cursor: "pointer" }}>
                     {meal.mealIngredients.map((ingredient) => (
                         <li key={ingredient.id}>
-                            {ingredient.foodItemName} - {ingredient.quantity} gram
+                            {showFullText
+                                ? ingredient.foodItemName
+                                : truncateTextAtComma(ingredient.foodItemName, 10)}{" "}
+                            - {ingredient.quantity} gram
                         </li>
                     ))}
                 </ul>
+                {!showFullText && (
+                    <Typography variant="body2" color="text.secondary">
+                        Click to view full ingredient names
+                    </Typography>
+                )}
             </CardContent>
             <CardActions disableSpacing>
                 <IconButton aria-label="add meal" onClick={handleAddMeal}>
@@ -76,7 +105,9 @@ function MealCard({ mealId }) {
             <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
                     <Typography paragraph>Description:</Typography>
-                    <Typography paragraph>{meal.mealDescription || "No description provided."}</Typography>
+                    <Typography paragraph>
+                        {meal.mealDescription || "No description provided."}
+                    </Typography>
                 </CardContent>
             </Collapse>
         </Card>
