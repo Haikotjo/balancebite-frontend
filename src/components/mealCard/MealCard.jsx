@@ -72,7 +72,7 @@ function MealCard({ mealId }) {
                 <Typography variant="body2" color="text.secondary">
                     Created By: {meal.createdBy?.userName}
                 </Typography>
-                <Typography variant="body1">Ingredients:</Typography>
+                <Typography variant="body2">Ingredients:</Typography>
                 <ul onClick={handleShowFullText} style={{ cursor: "pointer" }}>
                     {meal.mealIngredients.map((ingredient) => (
                         <li key={ingredient.id}>
