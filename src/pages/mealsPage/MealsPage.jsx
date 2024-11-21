@@ -14,8 +14,8 @@ function MealPage() {
                 padding: 2, // Optionele padding voor wat ruimte
             }}
         >
-            <Typography variant="h4" gutterBottom>
-                Meals
+            <Typography variant="h3" gutterBottom>
+                All Meals
             </Typography>
             <MealList />
         </Box>

@@ -68,8 +68,14 @@ function MealCard({ mealId }) {
                 alt={meal.name}
             />
             <CardContent>
-                <Typography variant="h5" color="text.primary">{meal.name}</Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="h6" color="text.primary">{meal.name}</Typography>
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ fontFamily: "'Quicksand', sans-serif",
+                        fontSize: "0.7rem",
+                    }}
+                >
                     Created By: {meal.createdBy?.userName}
                 </Typography>
                 <Typography variant="body2">Ingredients:</Typography>

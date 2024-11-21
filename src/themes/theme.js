@@ -2,39 +2,43 @@ import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
     typography: {
-        fontFamily: "'Quicksand', sans-serif",
+        fontFamily: "'Roboto', sans-serif", // Standaard voor gewone tekst
         h1: {
-            fontFamily: "'Roboto', sans-serif,",
-            fontWeight: 900, // Dikste variant
+            fontFamily: "'Nunito', sans-serif",
         },
         h2: {
-            fontFamily: "'Roboto', sans-serif",
-            fontWeight: 900,
+            fontFamily: "'Nunito', sans-serif",
         },
         h3: {
-            fontFamily: "'Roboto', sans-serif",
-            fontWeight: 900,
+            fontFamily: "'Nunito', sans-serif",
         },
         h4: {
-            fontFamily: "'Roboto', sans-serif",
-            fontWeight: 600,
+            fontFamily: "'Nunito', sans-serif",
         },
         h5: {
-            fontFamily: "'Roboto', sans-serif",
-            fontWeight: 500,
+            fontFamily: "'Nunito', sans-serif",
+        },
+        h6: {
+            fontFamily: "'Nunito', sans-serif",
         },
     },
     components: {
         MuiCssBaseline: {
             styleOverrides: {
                 body: {
-                    fontFamily: "'Quicksand', sans-serif",
+                    fontFamily: "'Roboto', sans-serif", // Standaard voor body
                 },
                 ul: {
                     fontFamily: "'Quicksand', sans-serif", // Voor ongeordende lijsten
+                    listStyle: "none", // Verwijdert de bolletjes
+                    padding: 0, // Optioneel: verwijdert standaard padding
+                    margin: 0, // Optioneel: verwijdert standaard marges
                 },
                 ol: {
                     fontFamily: "'Quicksand', sans-serif", // Voor geordende lijsten
+                    listStyle: "none", // Verwijdert standaard nummering
+                    padding: 0,
+                    margin: 0,
                 },
                 li: {
                     fontFamily: "'Quicksand', sans-serif", // Specifiek voor lijstitems
