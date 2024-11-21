@@ -1,5 +1,5 @@
-import React from "react";
-import PropTypes from "prop-types"; // Import PropTypes
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import {
     Card,
     CardContent,
@@ -12,7 +12,7 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
 import { styled } from "@mui/material/styles";
-import { useMeal } from "../../hooks/useMeals"; // Verwijst naar de hook
+import { useMeal } from "../../hooks/useMeals";
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -26,17 +26,39 @@ const ExpandMore = styled((props) => {
 }));
 
 function MealCard({ mealId }) {
-    const { meal, loading, error } = useMeal(mealId); // Haal data uit de hook
+    const { meal, loading, error } = useMeal(mealId);
     const [expanded, setExpanded] = React.useState(false);
-    const [showFullText, setShowFullText] = React.useState(false);
+    const [showIngredients, setShowIngredients] = React.useState(false);
+    const [nutrients, setNutrients] = useState([]);
+    const [loadingNutrients, setLoadingNutrients] = useState(true);
+    const [showMacronutrients, setShowMacronutrients] = React.useState(false);
+
+
+    useEffect(() => {
+        // Fetch macronutrients for the meal
+        fetch(`http://localhost:8080/meals/nutrients/${mealId}`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch nutrients");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                setNutrients(Object.values(data)); // Converteer naar een array
+                setLoadingNutrients(false);
+            })
+            .catch((err) => {
+                console.error(err.message);
+                setLoadingNutrients(false);
+            });
+    }, [mealId]);
 
     if (loading) return <div>Loading meal...</div>;
     if (error) return <div>Error: {error}</div>;
 
-    // Logica om de afbeelding te bepalen
     const imageSrc = meal.image
-        ? `data:image/jpeg;base64,${meal.image}` // Base64-afbeelding
-        : meal.imageUrl || "https://via.placeholder.com/150"; // Fallback URL
+        ? `data:image/jpeg;base64,${meal.image}`
+        : meal.imageUrl || "https://via.placeholder.com/150";
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -44,20 +66,17 @@ function MealCard({ mealId }) {
 
     const handleAddMeal = () => {
         console.log(`Meal ${meal.name} added to your list!`);
-        // Voeg hier de logica toe voor het toevoegen van de maaltijd
+    };
+
+    const handleToggleIngredients = () => {
+        setShowIngredients(!showIngredients);
     };
 
     const truncateTextAtComma = (text) => {
-        if (!text) return "Unknown"; // Controleer op null of undefined
+        if (!text) return "Unknown";
         const commaIndex = text.indexOf(",");
-        return commaIndex !== -1 ? text.slice(0, commaIndex) : text; // Tot eerste komma of volledige tekst
+        return commaIndex !== -1 ? text.slice(0, commaIndex) : text;
     };
-
-
-    const handleShowFullText = () => {
-        setShowFullText(!showFullText);
-    };
-
 
     return (
         <Card sx={{ maxWidth: 345 }}>
@@ -72,23 +91,102 @@ function MealCard({ mealId }) {
                 <Typography
                     variant="body2"
                     color="text.secondary"
-                    sx={{ fontFamily: "'Quicksand', sans-serif",
+                    sx={{
+                        fontFamily: "'Quicksand', sans-serif",
                         fontSize: "0.7rem",
                     }}
                 >
                     Created By: {meal.createdBy?.userName}
                 </Typography>
-                <Typography variant="body2">Ingredients:</Typography>
-                <ul onClick={handleShowFullText} style={{ cursor: "pointer" }}>
-                    {meal.mealIngredients.map((ingredient) => (
-                        <li key={ingredient.id}>
-                            {showFullText
-                                ? ingredient.foodItemName
-                                : truncateTextAtComma(ingredient.foodItemName, 10)}{" "}
-                            - {ingredient.quantity} gram
-                        </li>
-                    ))}
+
+                <Typography
+                    variant="body2"
+                    sx={{
+                        cursor: "pointer",
+                        textDecoration: "underline",
+                        fontFamily: "'Quicksand', sans-serif",
+                        fontSize: "0.8rem",
+                    }}
+                    onClick={handleToggleIngredients}
+                >
+                    Ingredients
+                </Typography>
+                {showIngredients && (
+                    <ul>
+                        {meal.mealIngredients.map((ingredient) => (
+                            <li key={ingredient.id}>
+                                {truncateTextAtComma(ingredient.foodItemName, 10)}{" "}
+                                - {ingredient.quantity} gram
+                            </li>
+                        ))}
+                    </ul>
+                )}
+
+                <Typography
+                    variant="body2"
+                    sx={{
+                        cursor: "pointer",
+                        textDecoration: "underline",
+                        fontFamily: "'Quicksand', sans-serif",
+                        fontSize: "0.8rem",
+                        marginBottom: "8px", // Optionele marges voor spacing
+                    }}
+                    onClick={() => setShowMacronutrients(!showMacronutrients)}
+                >
+                    Macronutrients
+                </Typography>
+                <ul style={{ listStyleType: "none", padding: 0 }}>
+                    {nutrients
+                        .filter(
+                            (nutrient) =>
+                                nutrient.nutrientName === "Energy kcal" ||
+                                nutrient.nutrientName === "Total lipid (fat) g" ||
+                                nutrient.nutrientName === "Carbohydrates g" ||
+                                nutrient.nutrientName === "Protein g"
+                        )
+                        .map((nutrient) => (
+                            <li
+                                key={nutrient.nutrientId}
+                                style={{
+                                    fontFamily: "'Quicksand', sans-serif",
+                                    fontSize: "0.8rem",
+                                }}
+                            >
+                                {nutrient.nutrientName}:{" "}
+                                {nutrient.value ? nutrient.value.toFixed(1) : "N/A"}{" "}
+                                {nutrient.unitName}
+                            </li>
+                        ))}
                 </ul>
+                {showMacronutrients && (
+                    <ul style={{ listStyleType: "none", padding: 0 }}>
+                        {nutrients.map((nutrient) => {
+                            if (
+                                nutrient.nutrientName !== "Energy kcal" &&
+                                nutrient.nutrientName !== "Total lipid (fat) g" &&
+                                nutrient.nutrientName !== "Carbohydrates g" &&
+                                nutrient.nutrientName !== "Protein g"
+                            ) {
+                                return (
+                                    <li
+                                        key={nutrient.nutrientId}
+                                        style={{
+                                            fontFamily: "'Quicksand', sans-serif",
+                                            fontSize: "0.8rem",
+                                        }}
+                                    >
+                                        {nutrient.nutrientName}:{" "}
+                                        {nutrient.value ? nutrient.value.toFixed(1) : "N/A"}{" "}
+                                        {nutrient.unitName}
+                                    </li>
+                                );
+                            }
+                            return null; // Verberg de al weergegeven nutriënten
+                        })}
+                    </ul>
+                )}
+
+
             </CardContent>
             <CardActions disableSpacing>
                 <IconButton aria-label="add meal" onClick={handleAddMeal}>
