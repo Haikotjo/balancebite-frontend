@@ -4,23 +4,23 @@ const theme = createTheme({
     typography: {
         fontFamily: "'Quicksand', sans-serif",
         h1: {
-            fontFamily: "'Roboto Slab', serif",
+            fontFamily: "'Roboto', sans-serif,",
             fontWeight: 900, // Dikste variant
         },
         h2: {
-            fontFamily: "'Roboto Slab', serif",
+            fontFamily: "'Roboto', sans-serif",
             fontWeight: 900,
         },
         h3: {
-            fontFamily: "'Roboto Slab', serif",
+            fontFamily: "'Roboto', sans-serif",
             fontWeight: 900,
         },
         h4: {
-            fontFamily: "'Roboto Slab', serif",
-            fontWeight: 900,
+            fontFamily: "'Roboto', sans-serif",
+            fontWeight: 600,
         },
         h5: {
-            fontFamily: "'Roboto Slab', serif",
+            fontFamily: "'Roboto', sans-serif",
             fontWeight: 500,
         },
     },
@@ -38,7 +38,7 @@ const theme = createTheme({
                 },
                 li: {
                     fontFamily: "'Quicksand', sans-serif", // Specifiek voor lijstitems
-                    fontSize: "0.9rem",
+                    fontSize: "0.8rem",
                 },
             },
         },

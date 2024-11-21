@@ -1,16 +1,25 @@
 import React from "react";
-import MealCard from "../../components/mealCard/MealCard"; // Zorg ervoor dat het pad naar de MealCard klopt
+import MealList from "../../components/mealList/MealList.jsx";
+import { Box, Typography } from "@mui/material";
 
-function MealsPage() {
+function MealPage() {
     return (
-        <div>
-            <h1>This is the Meals page</h1>
-            {/* Laad een enkele MealCard met id 1 */}
-            <MealCard mealId={6} />
-        </div>
+        <Box
+            sx={{
+                display: "flex",
+                flexDirection: "column", // Zorgt dat de items onder elkaar staan
+                justifyContent: "center", // Centreer verticaal
+                alignItems: "center", // Centreer horizontaal
+                minHeight: "100vh", // Volledige hoogte van de viewport
+                padding: 2, // Optionele padding voor wat ruimte
+            }}
+        >
+            <Typography variant="h4" gutterBottom>
+                Meals
+            </Typography>
+            <MealList />
+        </Box>
     );
 }
 
-export default MealsPage;
-
-
+export default MealPage;

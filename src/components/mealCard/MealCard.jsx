@@ -68,7 +68,7 @@ function MealCard({ mealId }) {
                 alt={meal.name}
             />
             <CardContent>
-                <Typography variant="h5">{meal.name}</Typography>
+                <Typography variant="h5" color="text.primary">{meal.name}</Typography>
                 <Typography variant="body2" color="text.secondary">
                     Created By: {meal.createdBy?.userName}
                 </Typography>
@@ -83,11 +83,6 @@ function MealCard({ mealId }) {
                         </li>
                     ))}
                 </ul>
-                {!showFullText && (
-                    <Typography variant="body2" color="text.secondary">
-                        Click to view full ingredient names
-                    </Typography>
-                )}
             </CardContent>
             <CardActions disableSpacing>
                 <IconButton aria-label="add meal" onClick={handleAddMeal}>
