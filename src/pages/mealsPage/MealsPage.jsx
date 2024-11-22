@@ -1,8 +1,12 @@
 import React from "react";
+import { useSearchParams } from "react-router-dom";
 import MealList from "../../components/mealList/MealList.jsx";
 import { Box, Typography } from "@mui/material";
 
 function MealPage() {
+    const [searchParams] = useSearchParams();
+    const createdBy = searchParams.get("createdBy");
+
     return (
         <Box
             sx={{
@@ -17,7 +21,7 @@ function MealPage() {
             <Typography variant="h3" gutterBottom>
                 All Meals
             </Typography>
-            <MealList />
+            <MealList createdBy={createdBy} />
         </Box>
     );
 }

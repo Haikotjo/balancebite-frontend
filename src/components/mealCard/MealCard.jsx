@@ -13,6 +13,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
 import { styled } from "@mui/material/styles";
 import { useMeal } from "../../hooks/useMeals";
+import {Link} from "react-router-dom";
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -85,8 +86,12 @@ function MealCard({ mealId }) {
                         fontSize: "0.7rem",
                     }}
                 >
-                    Created By: {meal.createdBy?.userName}
+                    Created By:{" "}
+                    <Link to={`/meals/${meal.createdBy?.id}`} style={{ textDecoration: "underline", color: "inherit" }}>
+                        {meal.createdBy?.userName}
+                    </Link>
                 </Typography>
+
                 <Typography
                     variant="body2"
                     sx={{

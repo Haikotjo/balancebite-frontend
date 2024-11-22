@@ -16,7 +16,7 @@ function AppRoutes() {
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/about" element={<AboutPage />} />
-                <Route path="/meals" element={<MealsPage />} />
+                <Route path="/meals/:userId?" element={<MealsPage />} />
             </Routes>
         </Router>
     );
