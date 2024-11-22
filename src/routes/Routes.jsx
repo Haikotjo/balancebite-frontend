@@ -6,7 +6,12 @@ import MealsPage from "../pages/mealsPage/MealsPage";
 
 function AppRoutes() {
     return (
-        <Router>
+        <Router
+            future={{
+                v7_startTransition: true,
+                v7_relativeSplatPath: true,
+            }}
+        >
             <Navigation />
             <Routes>
                 <Route path="/" element={<HomePage />} />

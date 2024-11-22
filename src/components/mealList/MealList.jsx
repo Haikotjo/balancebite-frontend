@@ -28,9 +28,16 @@ function MealList() {
     if (error) return <div>Error: {error}</div>;
 
     return (
-        <Grid2 container sx={{ padding: 2 }} spacing={2}>
+        <Grid2
+            container
+            sx={{
+                justifyContent: "center",
+                padding: 2,
+            }}
+            spacing={2}
+        >
             {meals.map((meal) => (
-                <Grid2 item xs={12} sm={6} md={4} lg={3} key={meal.id}>
+                <Grid2 xs={12} sm={6} md={4} lg={3} key={meal.id}>
                     <MealCard mealId={meal.id} />
                 </Grid2>
             ))}
