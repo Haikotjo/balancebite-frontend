@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import MealCard from "../mealCard/MealCard.jsx";
 import { Grid2 } from "@mui/material";
-import { useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 
-function MealList() {
+function MealList({ setCreatedByName }) {
     const [meals, setMeals] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -15,31 +15,29 @@ function MealList() {
             ? `http://localhost:8080/users/${userId}/created-meals`
             : "http://localhost:8080/meals";
 
-        console.log("Determined endpoint:", endpoint); // Log het gekozen endpoint
-
         fetch(endpoint)
             .then((response) => {
-                console.log("Response status:", response.status); // Log de status van de response
                 if (!response.ok) {
                     throw new Error(`Failed to fetch meals: ${response.statusText}`);
                 }
                 return response.json();
             })
             .then((data) => {
-                console.log("Fetched meals data:", data); // Log de opgehaalde data
                 setMeals(data);
                 setError(null);
+
+                // Als er meals zijn, haal de naam van de gebruiker op
+                if (data.length > 0 && setCreatedByName) {
+                    setCreatedByName(data[0].createdBy?.userName || "Unknown User");
+                }
             })
             .catch((err) => {
-                console.error("Fetch error:", err.message); // Log fouten bij het ophalen
                 setError(err.message);
             })
             .finally(() => {
-                console.log("Fetch completed"); // Log wanneer de fetch klaar is
                 setLoading(false);
             });
-    }, [userId]); // Voeg userId toe als dependency
-
+    }, [userId, setCreatedByName]); // Voeg userId en setCreatedByName toe als dependencies
 
     if (loading) return <div>Loading meals...</div>;
     if (error) return <div>Error: {error}</div>;
