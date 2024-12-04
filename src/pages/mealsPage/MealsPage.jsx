@@ -1,13 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import MealList from "../../components/mealList/MealList.jsx";
+import SubMenu from "../../components/subMenu/SubMenu.jsx";
+import { AuthContext } from "../../context/AuthContext"; // Import AuthContext
 import { Box, Typography, Link as MuiLink } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 function MealPage() {
     const { userId } = useParams();
-    const [userName, setUserName] = useState(null); // Voor de naam van de gebruiker
-    const navigate = useNavigate(); // Gebruik de navigate functie om terug te navigeren
+    const [userName, setUserName] = useState(null);
+    const navigate = useNavigate();
+    const { user } = useContext(AuthContext); // Check if a user is logged in
+
+    // Log the user to ensure the context works
+    console.log("Logged in user:", user);
+
+    // Submenu options for logged-in users
+    const submenuOptions = user ? ["All My Meals", "My Created Meals", "Suggested Meals"] : [];
 
     return (
         <Box
@@ -31,23 +40,25 @@ function MealPage() {
                     <MuiLink
                         component="button"
                         underline="hover"
-                        onClick={() => navigate("/meals")} // Navigeer naar de lijst met alle maaltijden
+                        onClick={() => navigate("/meals")}
                         sx={{
                             display: "flex",
                             alignItems: "center",
-                            fontSize: "0.9rem", // Kleinere tekst
+                            fontSize: "0.9rem",
                             color: "text.secondary",
                             cursor: "pointer",
                             "&:hover": {
-                                color: "text.primary", // Kleur veranderen bij hover
+                                color: "text.primary",
                             },
                         }}
                     >
-                        <ArrowBackIcon sx={{ fontSize: "1rem", marginRight: 0.5 }} /> {/* Klein pijltje */}
+                        <ArrowBackIcon sx={{ fontSize: "1rem", marginRight: 0.5 }} />
                         Back to All Meals
                     </MuiLink>
                 </>
             )}
+            {/* Display SubMenu only if there are submenu options */}
+            {submenuOptions.length > 0 && <SubMenu options={submenuOptions} />}
             <MealList setCreatedByName={setUserName} />
         </Box>
     );

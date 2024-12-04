@@ -11,9 +11,8 @@ function MealList({ setCreatedByName }) {
 
     useEffect(() => {
         // Kies de juiste endpoint op basis van userId
-        const endpoint = userId
-            ? `http://localhost:8080/users/${userId}/created-meals`
-            : "http://localhost:8080/meals";
+        const endpoint = "http://localhost:8080/meals";
+
 
         fetch(endpoint)
             .then((response) => {

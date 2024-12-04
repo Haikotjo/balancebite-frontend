@@ -87,9 +87,13 @@ function MealCard({ mealId }) {
                     }}
                 >
                     Created By:{" "}
-                    <Link to={`/meals/${meal.createdBy?.id}`} style={{ textDecoration: "underline", color: "inherit" }}>
+                    <Link
+                        to={`/users/created-meals/${meal.createdBy?.id}`}
+                        style={{ textDecoration: "underline", color: "inherit" }}
+                    >
                         {meal.createdBy?.userName}
                     </Link>
+
                 </Typography>
 
                 <Typography
