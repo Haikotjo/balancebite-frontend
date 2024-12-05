@@ -25,10 +25,13 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-function MealCard({ mealId, baseEndpoint, userMeals }) {
-    // Filter mealId to ensure it exists in userMeals before fetching
-    if (!userMeals.includes(mealId)) {
-        return null; // Skip rendering if mealId is not in the user's meals
+function MealCard({ mealId, baseEndpoint }) {
+    // ** Log om te zien of ongeldige mealIds worden gerenderd **
+    console.log(`Rendering MealCard for mealId: ${mealId}`);
+
+    if (!mealId) {
+        console.warn("MealCard attempted to render with invalid mealId:", mealId);
+        return null; // Render niets als mealId ongeldig is
     }
 
     const { meal, loading, error } = useMeal(baseEndpoint, mealId);
@@ -37,26 +40,33 @@ function MealCard({ mealId, baseEndpoint, userMeals }) {
     const [loadingNutrients, setLoadingNutrients] = useState(true);
 
     useEffect(() => {
-        const nutrientsEndpoint = `http://localhost:8080/meals/nutrients/${mealId}`;
-        fetch(nutrientsEndpoint)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Failed to fetch nutrients");
+        const fetchNutrients = async () => {
+            try {
+                if (!mealId) {
+                    console.warn(`Skipping fetch for invalid mealId: ${mealId}`);
+                    return;
                 }
-                return response.json();
-            })
-            .then((data) => {
+                const nutrientsEndpoint = `http://localhost:8080/meals/nutrients/${mealId}`;
+                console.log(`Fetching nutrients from: ${nutrientsEndpoint}`);
+                const response = await fetch(nutrientsEndpoint);
+                if (!response.ok) throw new Error("Failed to fetch nutrients");
+                const data = await response.json();
                 setNutrients(Object.values(data));
+            } catch (error) {
+                console.error(`Error fetching nutrients for mealId ${mealId}:`, error);
+            } finally {
                 setLoadingNutrients(false);
-            })
-            .catch((err) => {
-                console.error(err.message);
-                setLoadingNutrients(false);
-            });
+            }
+        };
+
+        fetchNutrients();
     }, [mealId]);
 
     if (loading) return <div>Loading meal...</div>;
-    if (error) return <div>Error: {error}</div>;
+    if (error) {
+        console.error(`Error fetching meal data for mealId ${mealId}:`, error);
+        return <div>Error: {error}</div>;
+    }
 
     const imageSrc = meal.image
         ? `data:image/jpeg;base64,${meal.image}`
@@ -74,23 +84,13 @@ function MealCard({ mealId, baseEndpoint, userMeals }) {
 
     return (
         <Card sx={{ maxWidth: 345 }}>
-            <CardMedia
-                component="img"
-                height="140"
-                image={imageSrc}
-                alt={meal.name}
-            />
+            <CardMedia component="img" height="140" image={imageSrc} alt={meal.name} />
             <CardContent>
-                <Typography variant="h6" color="text.primary">
-                    {meal.name}
-                </Typography>
+                <Typography variant="h6" color="text.primary">{meal.name}</Typography>
                 <Typography
                     variant="body2"
                     color="text.secondary"
-                    sx={{
-                        fontFamily: "'Quicksand', sans-serif",
-                        fontSize: "0.7rem",
-                    }}
+                    sx={{ fontFamily: "'Quicksand', sans-serif", fontSize: "0.7rem" }}
                 >
                     Created By:{" "}
                     <Link
@@ -100,7 +100,6 @@ function MealCard({ mealId, baseEndpoint, userMeals }) {
                         {meal.createdBy?.userName}
                     </Link>
                 </Typography>
-
                 <Typography
                     variant="body2"
                     sx={{
@@ -114,22 +113,17 @@ function MealCard({ mealId, baseEndpoint, userMeals }) {
                 </Typography>
                 <ul style={{ listStyleType: "none", padding: 0 }}>
                     {nutrients
-                        .filter(
-                            (nutrient) =>
-                                ["Energy kcal", "Total lipid (fat) g", "Carbohydrates g", "Protein g"].includes(
-                                    nutrient.nutrientName
-                                )
+                        .filter((nutrient) =>
+                            ["Energy kcal", "Total lipid (fat) g", "Carbohydrates g", "Protein g"].includes(
+                                nutrient.nutrientName
+                            )
                         )
                         .map((nutrient) => (
                             <li
                                 key={nutrient.nutrientId}
-                                style={{
-                                    fontFamily: "'Quicksand', sans-serif",
-                                    fontSize: "0.8rem",
-                                }}
+                                style={{ fontFamily: "'Quicksand', sans-serif", fontSize: "0.8rem" }}
                             >
-                                {nutrient.nutrientName}:{" "}
-                                {nutrient.value ? nutrient.value.toFixed(1) : "N/A"}{" "}
+                                {nutrient.nutrientName}: {nutrient.value ? nutrient.value.toFixed(1) : "N/A"}{" "}
                                 {nutrient.unitName}
                             </li>
                         ))}
@@ -143,9 +137,7 @@ function MealCard({ mealId, baseEndpoint, userMeals }) {
                         fontSize: "0.8rem",
                         cursor: "pointer",
                         textDecoration: "underline",
-                        "&:hover": {
-                            color: "primary.main",
-                        },
+                        "&:hover": { color: "primary.main" },
                     }}
                     onClick={handleExpandClick}
                     aria-expanded={expanded}
@@ -153,12 +145,7 @@ function MealCard({ mealId, baseEndpoint, userMeals }) {
                 >
                     Ingredients and Nutrients
                 </Typography>
-                <ExpandMore
-                    expand={expanded}
-                    onClick={handleExpandClick}
-                    aria-expanded={expanded}
-                    aria-label="show more"
-                >
+                <ExpandMore expand={expanded} onClick={handleExpandClick} aria-expanded={expanded} aria-label="show more">
                     <ExpandMoreIcon />
                 </ExpandMore>
             </CardActions>
@@ -183,8 +170,7 @@ function MealCard({ mealId, baseEndpoint, userMeals }) {
                                     fontSize: "0.8rem",
                                 }}
                             >
-                                {truncateTextAtComma(ingredient.foodItemName, 10)} -{" "}
-                                {ingredient.quantity} grams
+                                {truncateTextAtComma(ingredient.foodItemName, 10)} - {ingredient.quantity} grams
                             </li>
                         ))}
                     </ul>
@@ -200,11 +186,10 @@ function MealCard({ mealId, baseEndpoint, userMeals }) {
                     </Typography>
                     <ul style={{ listStyleType: "none", padding: 0 }}>
                         {nutrients
-                            .filter(
-                                (nutrient) =>
-                                    !["Energy kcal", "Total lipid (fat) g", "Carbohydrates g", "Protein g"].includes(
-                                        nutrient.nutrientName
-                                    )
+                            .filter((nutrient) =>
+                                !["Energy kcal", "Total lipid (fat) g", "Carbohydrates g", "Protein g"].includes(
+                                    nutrient.nutrientName
+                                )
                             )
                             .map((nutrient) => (
                                 <li
@@ -214,8 +199,7 @@ function MealCard({ mealId, baseEndpoint, userMeals }) {
                                         fontSize: "0.8rem",
                                     }}
                                 >
-                                    {nutrient.nutrientName}:{" "}
-                                    {nutrient.value ? nutrient.value.toFixed(1) : "N/A"}{" "}
+                                    {nutrient.nutrientName}: {nutrient.value ? nutrient.value.toFixed(1) : "N/A"}{" "}
                                     {nutrient.unitName}
                                 </li>
                             ))}
@@ -229,7 +213,6 @@ function MealCard({ mealId, baseEndpoint, userMeals }) {
 MealCard.propTypes = {
     mealId: PropTypes.number.isRequired,
     baseEndpoint: PropTypes.string,
-    userMeals: PropTypes.array.isRequired, // Required prop for filtering
 };
 
 export default MealCard;
