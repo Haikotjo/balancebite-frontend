@@ -1,55 +1,110 @@
 import { useState, useEffect } from "react";
 
-export function useMeal(mealId) {
-    const [meal, setMeal] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+/**
+ * Custom hook to fetch meal data dynamically based on a given endpoint and meal ID.
+ *
+ * @param {string} baseEndpoint - The base API endpoint to fetch the meal data from.
+ * @param {number} mealId - The ID of the meal to fetch.
+ * @returns {Object} - Contains meal data, loading state, and error state.
+ */
+export function useMeal(baseEndpoint = "http://localhost:8080/meals", mealId) {
+    const [meal, setMeal] = useState(null); // Stores the fetched meal data
+    const [loading, setLoading] = useState(true); // Indicates loading state
+    const [error, setError] = useState(null); // Stores error messages, if any
+    const [nutrients, setNutrients] = useState([]); // Stores fetched nutrients
+    const [loadingNutrients, setLoadingNutrients] = useState(true); // Indicates loading state for nutrients
+    const [nutrientError, setNutrientError] = useState(null); // Stores error for nutrients
 
     useEffect(() => {
-        const fetchMeal = async () => {
+        if (!mealId) {
+            console.warn("Meal ID is not provided. Skipping fetch."); // Log missing mealId
+            return;
+        }
+
+        const fetchMealData = async () => {
+            setLoading(true);
+            const endpoint = `${baseEndpoint}/${mealId}`; // Construct the dynamic endpoint
+            console.log("Fetching meal data from:", endpoint); // Log the endpoint
+
             try {
-                const response = await fetch(`http://localhost:8080/meals/${mealId}`);
-                if (!response.ok) {
-                    throw new Error("Failed to fetch meal");
+                // Retrieve the token from localStorage
+                const token = localStorage.getItem("accessToken");
+
+                // Setup headers
+                const headers = {
+                    "Content-Type": "application/json",
+                };
+                if (token) {
+                    headers["Authorization"] = `Bearer ${token}`;
+                } else {
+                    console.warn("No token found for authorization.");
                 }
+
+                const response = await fetch(endpoint, { headers }); // Add headers to fetch
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch meal with ID ${mealId}: ${response.statusText}`);
+                }
+
                 const data = await response.json();
                 setMeal(data);
+                setError(null); // Clear any previous error
+                console.log("Fetched meal data successfully:", data); // Log fetched meal data
             } catch (err) {
+                console.error("Error fetching meal data:", err.message); // Log the error
                 setError(err.message);
             } finally {
-                setLoading(false);
+                setLoading(false); // End loading state
             }
         };
 
-        fetchMeal();
-    }, [mealId]);
+        const fetchNutrients = async () => {
+            setLoadingNutrients(true);
+            const nutrientsEndpoint = `http://localhost:8080/meals/nutrients/${mealId}`; // Endpoint for nutrients
+            console.log("Fetching nutrients from:", nutrientsEndpoint); // Log the endpoint
 
-    return { meal, loading, error };
-}
-
-export function useMeals() {
-    const [meals, setMeals] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        const fetchMeals = async () => {
             try {
-                const response = await fetch("http://localhost:8080/meals");
-                if (!response.ok) {
-                    throw new Error("Failed to fetch meals");
+                // Retrieve the token from localStorage
+                const token = localStorage.getItem("accessToken");
+
+                // Setup headers
+                const headers = {
+                    "Content-Type": "application/json",
+                };
+                if (token) {
+                    headers["Authorization"] = `Bearer ${token}`;
+                } else {
+                    console.warn("No token found for authorization.");
                 }
+
+                const response = await fetch(nutrientsEndpoint, { headers }); // Add headers to fetch
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch nutrients for meal ID ${mealId}: ${response.statusText}`);
+                }
+
                 const data = await response.json();
-                setMeals(data);
+                setNutrients(data);
+                setNutrientError(null); // Clear any previous error
+                console.log("Fetched nutrients successfully:", data); // Log fetched nutrients
             } catch (err) {
-                setError(err.message);
+                console.error("Error fetching nutrients:", err.message); // Log the error
+                setNutrientError(err.message);
             } finally {
-                setLoading(false);
+                setLoadingNutrients(false); // End loading state for nutrients
             }
         };
 
-        fetchMeals();
-    }, []);
+        fetchMealData();
+        fetchNutrients();
+    }, [baseEndpoint, mealId]); // Re-run the effect if baseEndpoint or mealId changes
 
-    return { meals, loading, error };
+    return {
+        meal,
+        nutrients,
+        loading,
+        loadingNutrients,
+        error,
+        nutrientError,
+    }; // Return meal and nutrients data, loading states, and error states
 }

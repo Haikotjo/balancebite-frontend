@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Box, TextField, Button, Typography, Alert } from "@mui/material";
+import {useNavigate} from "react-router-dom";
 
 function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null); // For error messages
     const [success, setSuccess] = useState(null); // For success messages
+    const navigate = useNavigate()
 
     const handleLogin = async (event) => {
         event.preventDefault();
@@ -44,6 +46,7 @@ function LoginPage() {
             setError(err.message);
             setSuccess(null);
         }
+        navigate("/meals");
     };
 
     return (

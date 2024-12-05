@@ -13,7 +13,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
 import { styled } from "@mui/material/styles";
 import { useMeal } from "../../hooks/useMeals";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -26,15 +26,16 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-function MealCard({ mealId }) {
-    const { meal, loading, error } = useMeal(mealId);
-    const [expanded, setExpanded] = React.useState(false);
+function MealCard({ mealId, baseEndpoint }) {
+    const { meal, loading, error } = useMeal(baseEndpoint, mealId); // Gebruik baseEndpoint
+    const [expanded, setExpanded] = useState(false);
     const [nutrients, setNutrients] = useState([]);
     const [loadingNutrients, setLoadingNutrients] = useState(true);
 
     useEffect(() => {
         // Fetch macronutrients for the meal
-        fetch(`http://localhost:8080/meals/nutrients/${mealId}`)
+        const nutrientsEndpoint = `http://localhost:8080/meals/nutrients/${mealId}`; // Hardcoded endpoint
+        fetch(nutrientsEndpoint)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Failed to fetch nutrients");
@@ -49,7 +50,7 @@ function MealCard({ mealId }) {
                 console.error(err.message);
                 setLoadingNutrients(false);
             });
-    }, [mealId]);
+    }, [mealId]); // Alleen afhankelijk van mealId
 
     if (loading) return <div>Loading meal...</div>;
     if (error) return <div>Error: {error}</div>;
@@ -93,7 +94,6 @@ function MealCard({ mealId }) {
                     >
                         {meal.createdBy?.userName}
                     </Link>
-
                 </Typography>
 
                 <Typography
@@ -111,29 +111,22 @@ function MealCard({ mealId }) {
                     {nutrients
                         .filter(
                             (nutrient) =>
-                                nutrient.nutrientName === "Energy kcal" ||
-                                nutrient.nutrientName === "Total lipid (fat) g" ||
-                                nutrient.nutrientName === "Carbohydrates g" ||
-                                nutrient.nutrientName === "Protein g"
+                                ["Energy kcal", "Total lipid (fat) g", "Carbohydrates g", "Protein g"].includes(
+                                    nutrient.nutrientName
+                                )
                         )
-                        .map((nutrient) => {
-                            const formattedName = nutrient.nutrientName
-                                .replace(" g", "")
-                                .replace("Energy kcal", "Energy");
-                            const formattedUnit = nutrient.unitName === "g" ? "grams" : nutrient.unitName;
-
-                            return (
-                                <li
-                                    key={nutrient.nutrientId}
-                                    style={{
-                                        fontFamily: "'Quicksand', sans-serif",
-                                        fontSize: "0.8rem",
-                                    }}
-                                >
-                                    {formattedName}: {nutrient.value ? nutrient.value.toFixed(1) : "N/A"} {formattedUnit}
-                                </li>
-                            );
-                        })}
+                        .map((nutrient) => (
+                            <li
+                                key={nutrient.nutrientId}
+                                style={{
+                                    fontFamily: "'Quicksand', sans-serif",
+                                    fontSize: "0.8rem",
+                                }}
+                            >
+                                {nutrient.nutrientName}: {nutrient.value ? nutrient.value.toFixed(1) : "N/A"}{" "}
+                                {nutrient.unitName}
+                            </li>
+                        ))}
                 </ul>
             </CardContent>
             <CardActions disableSpacing>
@@ -200,30 +193,25 @@ function MealCard({ mealId }) {
                         Other Nutrients:
                     </Typography>
                     <ul style={{ listStyleType: "none", padding: 0 }}>
-                        {nutrients.map((nutrient) => {
-                            if (
-                                nutrient.nutrientName !== "Energy kcal" &&
-                                nutrient.nutrientName !== "Total lipid (fat) g" &&
-                                nutrient.nutrientName !== "Carbohydrates g" &&
-                                nutrient.nutrientName !== "Protein g"
-                            ) {
-                                const formattedName = nutrient.nutrientName.replace(" g", "");
-                                const formattedUnit = nutrient.unitName === "g" ? "grams" : nutrient.unitName;
-
-                                return (
-                                    <li
-                                        key={nutrient.nutrientId}
-                                        style={{
-                                            fontFamily: "'Quicksand', sans-serif",
-                                            fontSize: "0.8rem",
-                                        }}
-                                    >
-                                        {formattedName}: {nutrient.value ? nutrient.value.toFixed(1) : "N/A"} {formattedUnit}
-                                    </li>
-                                );
-                            }
-                            return null;
-                        })}
+                        {nutrients
+                            .filter(
+                                (nutrient) =>
+                                    !["Energy kcal", "Total lipid (fat) g", "Carbohydrates g", "Protein g"].includes(
+                                        nutrient.nutrientName
+                                    )
+                            )
+                            .map((nutrient) => (
+                                <li
+                                    key={nutrient.nutrientId}
+                                    style={{
+                                        fontFamily: "'Quicksand', sans-serif",
+                                        fontSize: "0.8rem",
+                                    }}
+                                >
+                                    {nutrient.nutrientName}: {nutrient.value ? nutrient.value.toFixed(1) : "N/A"}{" "}
+                                    {nutrient.unitName}
+                                </li>
+                            ))}
                     </ul>
                 </CardContent>
             </Collapse>
@@ -233,6 +221,7 @@ function MealCard({ mealId }) {
 
 MealCard.propTypes = {
     mealId: PropTypes.number.isRequired,
+    baseEndpoint: PropTypes.string, // Prop voor dynamisch base endpoint
 };
 
 export default MealCard;
