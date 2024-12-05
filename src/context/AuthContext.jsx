@@ -45,11 +45,36 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const logout = () => {
-        console.log("Logging out and clearing token."); // Log logout action
-        localStorage.removeItem("accessToken");
-        setUser(null);
-        setRole(null);
+    const logout = async () => {
+        console.log("Logging out and clearing token."); // Log the logout action
+        const token = localStorage.getItem("accessToken"); // Retrieve the token from localStorage
+
+        if (!token) {
+            console.error("No token found in localStorage. Logout cannot proceed.");
+            return;
+        }
+
+        try {
+            const response = await fetch("http://localhost:8080/auth/logout", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`, // Include the token in the Authorization header
+                },
+                credentials: "include", // Ensure cookies are included (if used)
+            });
+
+            if (response.ok) {
+                console.log("Successfully logged out on the server.");
+            } else {
+                console.error("Logout request failed:", response.statusText);
+            }
+        } catch (error) {
+            console.error("Error during logout request:", error.message);
+        }
+        localStorage.removeItem("accessToken"); // Remove the token from local storage
+        setUser(null); // Reset the user state to null
+        setRole(null); // Reset the role state to null
     };
 
     if (loading) {
