@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
     Card,
@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { styled } from "@mui/material/styles";
-import { useMeal } from "../../hooks/useMeals";
 import { Link } from "react-router-dom";
 
 const ExpandMore = styled((props) => {
@@ -25,16 +24,7 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-function MealCard({ mealId, baseEndpoint }) {
-    // ** Log om te zien of ongeldige mealIds worden gerenderd **
-    console.log(`Rendering MealCard for mealId: ${mealId}`);
-
-    if (!mealId) {
-        console.warn("MealCard attempted to render with invalid mealId:", mealId);
-        return null; // Render niets als mealId ongeldig is
-    }
-
-    const { meal, loading, error } = useMeal(baseEndpoint, mealId);
+function MealCard({ meal }) {
     const [expanded, setExpanded] = useState(false);
     const [nutrients, setNutrients] = useState([]);
     const [loadingNutrients, setLoadingNutrients] = useState(true);
@@ -42,31 +32,21 @@ function MealCard({ mealId, baseEndpoint }) {
     useEffect(() => {
         const fetchNutrients = async () => {
             try {
-                if (!mealId) {
-                    console.warn(`Skipping fetch for invalid mealId: ${mealId}`);
-                    return;
-                }
-                const nutrientsEndpoint = `http://localhost:8080/meals/nutrients/${mealId}`;
+                const nutrientsEndpoint = `http://localhost:8080/meals/nutrients/${meal.id}`;
                 console.log(`Fetching nutrients from: ${nutrientsEndpoint}`);
                 const response = await fetch(nutrientsEndpoint);
                 if (!response.ok) throw new Error("Failed to fetch nutrients");
                 const data = await response.json();
                 setNutrients(Object.values(data));
             } catch (error) {
-                console.error(`Error fetching nutrients for mealId ${mealId}:`, error);
+                console.error(`Error fetching nutrients for mealId ${meal.id}:`, error);
             } finally {
                 setLoadingNutrients(false);
             }
         };
 
         fetchNutrients();
-    }, [mealId]);
-
-    if (loading) return <div>Loading meal...</div>;
-    if (error) {
-        console.error(`Error fetching meal data for mealId ${mealId}:`, error);
-        return <div>Error: {error}</div>;
-    }
+    }, [meal.id]);
 
     const imageSrc = meal.image
         ? `data:image/jpeg;base64,${meal.image}`
@@ -121,7 +101,7 @@ function MealCard({ mealId, baseEndpoint }) {
                         .map((nutrient) => (
                             <li
                                 key={nutrient.nutrientId}
-                                style={{ fontFamily: "'Quicksand', sans-serif", fontSize: "0.8rem" }}
+                                style={{ fontFamily: "'Quicksand', sans-serif', fontSize: '0.8rem'" }}
                             >
                                 {nutrient.nutrientName}: {nutrient.value ? nutrient.value.toFixed(1) : "N/A"}{" "}
                                 {nutrient.unitName}
@@ -174,36 +154,6 @@ function MealCard({ mealId, baseEndpoint }) {
                             </li>
                         ))}
                     </ul>
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            fontFamily: "'Quicksand', sans-serif",
-                            fontSize: "0.8rem",
-                            marginTop: "8px",
-                        }}
-                    >
-                        Other Nutrients:
-                    </Typography>
-                    <ul style={{ listStyleType: "none", padding: 0 }}>
-                        {nutrients
-                            .filter((nutrient) =>
-                                !["Energy kcal", "Total lipid (fat) g", "Carbohydrates g", "Protein g"].includes(
-                                    nutrient.nutrientName
-                                )
-                            )
-                            .map((nutrient) => (
-                                <li
-                                    key={nutrient.nutrientId}
-                                    style={{
-                                        fontFamily: "'Quicksand', sans-serif",
-                                        fontSize: "0.8rem",
-                                    }}
-                                >
-                                    {nutrient.nutrientName}: {nutrient.value ? nutrient.value.toFixed(1) : "N/A"}{" "}
-                                    {nutrient.unitName}
-                                </li>
-                            ))}
-                    </ul>
                 </CardContent>
             </Collapse>
         </Card>
@@ -211,8 +161,7 @@ function MealCard({ mealId, baseEndpoint }) {
 }
 
 MealCard.propTypes = {
-    mealId: PropTypes.number.isRequired,
-    baseEndpoint: PropTypes.string,
+    meal: PropTypes.object.isRequired,
 };
 
 export default MealCard;

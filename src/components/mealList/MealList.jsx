@@ -6,17 +6,16 @@ import PropTypes from "prop-types";
 /**
  * MealList component to display a list of meals.
  * @param {String} endpoint - The API endpoint for fetching the list of meals.
- * @param {String} cardEndpoint - The API endpoint for fetching individual meal details.
  * @param {Function} setCreatedByName - Callback to set the creator's name (optional).
  */
-function MealList({ endpoint, cardEndpoint, setCreatedByName }) {
+function MealList({ endpoint, setCreatedByName }) {
     const [meals, setMeals] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchMeals = async () => {
-            console.log(`Fetching meals from ${endpoint}`); // Log het endpoint dat wordt gebruikt
+            console.log(`Fetching meals from ${endpoint}`);
             try {
                 setLoading(true);
                 const token = localStorage.getItem("accessToken");
@@ -25,16 +24,13 @@ function MealList({ endpoint, cardEndpoint, setCreatedByName }) {
                 const response = await fetch(endpoint, { headers });
                 if (!response.ok) throw new Error(`Failed to fetch meals: ${response.statusText}`);
                 const data = await response.json();
+
                 setMeals(data);
+                console.log(`Fetched ${data.length} meals:`, data.map((meal) => meal.id));
 
-                // Log het aantal opgehaalde maaltijden
-                console.log(`Number of meals retrieved from ${endpoint}: ${data.length}`);
-
-                // Log de IDs van de opgehaalde maaltijden
-                const ids = data.map((meal) => meal.id);
-                console.log(`Meal IDs retrieved from ${endpoint}: ${ids.join(", ")}`);
-
-                if (data.length > 0 && setCreatedByName) setCreatedByName(data[0].createdBy?.userName || "Unknown User");
+                if (data.length > 0 && setCreatedByName) {
+                    setCreatedByName(data[0].createdBy?.userName || "Unknown User");
+                }
                 setError(null);
             } catch (err) {
                 setError(err.message);
@@ -45,9 +41,6 @@ function MealList({ endpoint, cardEndpoint, setCreatedByName }) {
 
         fetchMeals();
     }, [endpoint, setCreatedByName]);
-
-    // Log vlak voordat de MealCard-componenten worden gerenderd
-    console.log("Current meals being rendered:", meals.map(meal => meal.id));
 
     if (loading) return <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh"><CircularProgress /></Box>;
     if (error) return <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh"><Typography color="error">Error: {error}</Typography></Box>;
@@ -61,7 +54,7 @@ function MealList({ endpoint, cardEndpoint, setCreatedByName }) {
             padding={2}
         >
             {meals.map((meal) => (
-                <MealCard key={meal.id} mealId={meal.id} baseEndpoint={cardEndpoint} />
+                <MealCard key={meal.id} meal={meal} />
             ))}
         </Box>
     );
@@ -69,7 +62,6 @@ function MealList({ endpoint, cardEndpoint, setCreatedByName }) {
 
 MealList.propTypes = {
     endpoint: PropTypes.string.isRequired,
-    cardEndpoint: PropTypes.string.isRequired,
     setCreatedByName: PropTypes.func,
 };
 
