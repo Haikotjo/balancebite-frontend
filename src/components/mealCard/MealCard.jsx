@@ -10,7 +10,6 @@ import {
     IconButton,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import AddIcon from "@mui/icons-material/Add";
 import { styled } from "@mui/material/styles";
 import { useMeal } from "../../hooks/useMeals";
 import { Link } from "react-router-dom";
@@ -26,15 +25,19 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-function MealCard({ mealId, baseEndpoint }) {
-    const { meal, loading, error } = useMeal(baseEndpoint, mealId); // Gebruik baseEndpoint
+function MealCard({ mealId, baseEndpoint, userMeals }) {
+    // Filter mealId to ensure it exists in userMeals before fetching
+    if (!userMeals.includes(mealId)) {
+        return null; // Skip rendering if mealId is not in the user's meals
+    }
+
+    const { meal, loading, error } = useMeal(baseEndpoint, mealId);
     const [expanded, setExpanded] = useState(false);
     const [nutrients, setNutrients] = useState([]);
     const [loadingNutrients, setLoadingNutrients] = useState(true);
 
     useEffect(() => {
-        // Fetch macronutrients for the meal
-        const nutrientsEndpoint = `http://localhost:8080/meals/nutrients/${mealId}`; // Hardcoded endpoint
+        const nutrientsEndpoint = `http://localhost:8080/meals/nutrients/${mealId}`;
         fetch(nutrientsEndpoint)
             .then((response) => {
                 if (!response.ok) {
@@ -43,14 +46,14 @@ function MealCard({ mealId, baseEndpoint }) {
                 return response.json();
             })
             .then((data) => {
-                setNutrients(Object.values(data)); // Converteer naar een array
+                setNutrients(Object.values(data));
                 setLoadingNutrients(false);
             })
             .catch((err) => {
                 console.error(err.message);
                 setLoadingNutrients(false);
             });
-    }, [mealId]); // Alleen afhankelijk van mealId
+    }, [mealId]);
 
     if (loading) return <div>Loading meal...</div>;
     if (error) return <div>Error: {error}</div>;
@@ -78,7 +81,9 @@ function MealCard({ mealId, baseEndpoint }) {
                 alt={meal.name}
             />
             <CardContent>
-                <Typography variant="h6" color="text.primary">{meal.name}</Typography>
+                <Typography variant="h6" color="text.primary">
+                    {meal.name}
+                </Typography>
                 <Typography
                     variant="body2"
                     color="text.secondary"
@@ -123,7 +128,8 @@ function MealCard({ mealId, baseEndpoint }) {
                                     fontSize: "0.8rem",
                                 }}
                             >
-                                {nutrient.nutrientName}: {nutrient.value ? nutrient.value.toFixed(1) : "N/A"}{" "}
+                                {nutrient.nutrientName}:{" "}
+                                {nutrient.value ? nutrient.value.toFixed(1) : "N/A"}{" "}
                                 {nutrient.unitName}
                             </li>
                         ))}
@@ -177,8 +183,8 @@ function MealCard({ mealId, baseEndpoint }) {
                                     fontSize: "0.8rem",
                                 }}
                             >
-                                {truncateTextAtComma(ingredient.foodItemName, 10)}{" "}
-                                - {ingredient.quantity} grams
+                                {truncateTextAtComma(ingredient.foodItemName, 10)} -{" "}
+                                {ingredient.quantity} grams
                             </li>
                         ))}
                     </ul>
@@ -208,7 +214,8 @@ function MealCard({ mealId, baseEndpoint }) {
                                         fontSize: "0.8rem",
                                     }}
                                 >
-                                    {nutrient.nutrientName}: {nutrient.value ? nutrient.value.toFixed(1) : "N/A"}{" "}
+                                    {nutrient.nutrientName}:{" "}
+                                    {nutrient.value ? nutrient.value.toFixed(1) : "N/A"}{" "}
                                     {nutrient.unitName}
                                 </li>
                             ))}
@@ -221,7 +228,8 @@ function MealCard({ mealId, baseEndpoint }) {
 
 MealCard.propTypes = {
     mealId: PropTypes.number.isRequired,
-    baseEndpoint: PropTypes.string, // Prop voor dynamisch base endpoint
+    baseEndpoint: PropTypes.string,
+    userMeals: PropTypes.array.isRequired, // Required prop for filtering
 };
 
 export default MealCard;
