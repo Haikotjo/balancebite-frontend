@@ -1,52 +1,42 @@
-import { createTheme } from "@mui/material/styles";
+import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 
-const theme = createTheme({
+let theme = createTheme({
     typography: {
-        fontFamily: "'Roboto', sans-serif", // Standaard voor gewone tekst
+        fontFamily: "'Roboto', sans-serif",
         h1: {
             fontFamily: "'Nunito', sans-serif",
         },
-        h2: {
-            fontFamily: "'Nunito', sans-serif",
-        },
-        h3: {
-            fontFamily: "'Nunito', sans-serif",
-        },
-        h4: {
-            fontFamily: "'Nunito', sans-serif",
-        },
-        h5: {
-            fontFamily: "'Nunito', sans-serif",
-        },
-        h6: {
-            fontFamily: "'Nunito', sans-serif",
+        body1: {
+            fontSize: "1rem", // Basis font-grootte
         },
     },
     components: {
         MuiCssBaseline: {
             styleOverrides: {
                 body: {
-                    fontFamily: "'Roboto', sans-serif", // Standaard voor body
+                    fontFamily: "'Roboto', sans-serif",
                 },
                 ul: {
-                    fontFamily: "'Quicksand', sans-serif", // Voor ongeordende lijsten
-                    listStyle: "none", // Verwijdert de bolletjes
-                    padding: 0, // Optioneel: verwijdert standaard padding
-                    margin: 0, // Optioneel: verwijdert standaard marges
+                    fontFamily: "'Quicksand', sans-serif",
+                    listStyle: "none",
+                    padding: 0,
+                    margin: 0,
                 },
                 ol: {
-                    fontFamily: "'Quicksand', sans-serif", // Voor geordende lijsten
-                    listStyle: "none", // Verwijdert standaard nummering
+                    fontFamily: "'Quicksand', sans-serif",
+                    listStyle: "none",
                     padding: 0,
                     margin: 0,
                 },
                 li: {
-                    fontFamily: "'Quicksand', sans-serif", // Specifiek voor lijstitems
-                    fontSize: "0.8rem",
+                    fontFamily: "'Quicksand', sans-serif",
                 },
             },
         },
     },
 });
+
+// Maak typografie automatisch responsief
+theme = responsiveFontSizes(theme);
 
 export default theme;

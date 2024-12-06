@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import MealList from "../../components/mealList/MealList.jsx";
 import SubMenu from "../../components/subMenu/SubMenu.jsx";
@@ -11,10 +11,18 @@ function MealPage() {
     const [userName, setUserName] = useState(null);
     const [currentListEndpoint, setCurrentListEndpoint] = useState("http://localhost:8080/meals");
     const [currentCardEndpoint, setCurrentCardEndpoint] = useState("http://localhost:8080/meals");
+    const [submenuOptions, setSubmenuOptions] = useState([]);
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);
 
-    const submenuOptions = user ? ["All My Meals", "My Created Meals", "Suggested Meals"] : [];
+    // Update submenu-opties wanneer de gebruiker verandert
+    useEffect(() => {
+        if (user) {
+            setSubmenuOptions(["All My Meals", "My Created Meals", "Suggested Meals"]);
+        } else {
+            setSubmenuOptions([]);
+        }
+    }, [user]);
 
     const handleSubMenuClick = (option) => {
         switch (option) {

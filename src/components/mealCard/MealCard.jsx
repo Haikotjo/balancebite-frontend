@@ -8,8 +8,10 @@ import {
     CardActions,
     Collapse,
     IconButton,
+    Box,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 
@@ -99,35 +101,46 @@ function MealCard({ meal }) {
                             )
                         )
                         .map((nutrient) => (
-                            <li
+                            <Box
                                 key={nutrient.nutrientId}
-                                style={{ fontFamily: "'Quicksand', sans-serif', fontSize: '0.8rem'" }}
+                                component="li"
+                                sx={{
+                                    fontSize: {
+                                        xs: "0.7rem", // Voor xs-schermen
+                                        sm: "0.8rem", // Voor sm-schermen en groter
+                                    },
+                                    fontFamily: "'Quicksand', sans-serif",
+                                }}
                             >
-                                {nutrient.nutrientName}: {nutrient.value ? nutrient.value.toFixed(1) : "N/A"}{" "}
-                                {nutrient.unitName}
-                            </li>
+                                {nutrient.nutrientName}: {nutrient.value ? nutrient.value.toFixed(1) : "N/A"} {nutrient.unitName}
+                            </Box>
                         ))}
                 </ul>
             </CardContent>
             <CardActions disableSpacing>
-                <Typography
-                    variant="body2"
-                    sx={{
-                        fontFamily: "'Quicksand', sans-serif",
-                        fontSize: "0.8rem",
-                        cursor: "pointer",
-                        textDecoration: "underline",
-                        "&:hover": { color: "primary.main" },
-                    }}
-                    onClick={handleExpandClick}
-                    aria-expanded={expanded}
-                    aria-label="show more"
-                >
-                    Ingredients and Nutrients
-                </Typography>
-                <ExpandMore expand={expanded} onClick={handleExpandClick} aria-expanded={expanded} aria-label="show more">
-                    <ExpandMoreIcon />
-                </ExpandMore>
+                <Box display="flex" alignItems="center" width="100%">
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            fontFamily: "'Quicksand', sans-serif",
+                            fontSize: "0.8rem",
+                            cursor: "pointer",
+                            textDecoration: "underline",
+                            "&:hover": { color: "primary.main" },
+                        }}
+                        onClick={handleExpandClick}
+                        aria-expanded={expanded}
+                        aria-label="show more"
+                    >
+                        Ingredients and Nutrients
+                    </Typography>
+                    <ExpandMore expand={expanded} onClick={handleExpandClick} aria-expanded={expanded} aria-label="show more">
+                        <ExpandMoreIcon />
+                    </ExpandMore>
+                    <IconButton sx={{ marginLeft: "auto" }}>
+                        <FavoriteBorderIcon color="primary" />
+                    </IconButton>
+                </Box>
             </CardActions>
             <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>

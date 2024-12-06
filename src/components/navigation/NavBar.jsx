@@ -1,60 +1,55 @@
-import React, { useContext } from "react";
-import { AppBar, Toolbar, Button, Typography, Box } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
+import React, { useContext, useState } from "react";
+import {
+    AppBar,
+    Toolbar,
+} from "@mui/material";
+import { useTheme, useMediaQuery } from "@mui/material";
+import LoginForm from "../loginForm/LoginForm";
+import HamburgerMenu from "../hamburgerMenu/HamburgerMenu";
+import DesktopMenu from "../desktopMenu/DesktopMenu";
+import NavLogo from "../navLogo/NavLogo";
+import ErrorAlert from "../errorAlert/ErrorAlert";
+import useLogout from "../../hooks/useLogout"; // Importeer de useLogout-hook
+import useLogin from "../../hooks/useLogin";
+import {AuthContext} from "../../context/AuthContext.jsx"; // Importeer de useLogin-hook
 
 const NavBar = () => {
-    const { user, logout } = useContext(AuthContext); // Haal user en logout uit context
-    const navigate = useNavigate();
-
-    const handleLogin = () => {
-        navigate("/login"); // Navigeer naar de loginpagina
-    };
-
-    const handleLogout = () => {
-        logout(); // Voer de logout uit
-        navigate("/"); // Navigeer terug naar de homepagina
-    };
-
-    const handleHomeClick = () => {
-        navigate("/"); // Navigeer naar de homepagina
-    };
+    const { user } = useContext(AuthContext); // Haal alleen `user` op
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const handleLogout = useLogout(); // Gebruik de useLogout-hook
+    const { handleLogin, errorMessage } = useLogin(); // Gebruik de useLogin-hook
+    const [showLoginForm, setShowLoginForm] = useState(false);
 
     return (
         <AppBar position="static" sx={{ mb: 2 }}>
             <Toolbar>
-                {/* Titel of logo, klikbaar maar stijl blijft behouden */}
-                <Typography
-                    variant="h6"
-                    sx={{ flexGrow: 1, cursor: "pointer" }}
-                    onClick={handleHomeClick}
-                >
-                    Balance Bite
-                </Typography>
+                <NavLogo title="Balance Bite" />
 
-                {/* Navigatielinks */}
-                <Box sx={{ display: "flex", gap: 2 }}>
-                    <Button color="inherit" component={Link} to="/">
-                        Home
-                    </Button>
-                    <Button color="inherit" component={Link} to="/about">
-                        About
-                    </Button>
-                    <Button color="inherit" component={Link} to="/meals">
-                        Meals
-                    </Button>
-                </Box>
-
-                {/* Login/Logout knop */}
-                {user ? (
-                    <Button color="inherit" onClick={handleLogout}>
-                        Logout
-                    </Button>
+                {/* Render alleen het juiste menu op basis van schermgrootte */}
+                {isMobile ? (
+                    <HamburgerMenu
+                        user={user}
+                        onLogout={handleLogout}
+                        onLoginClick={() => setShowLoginForm(true)}
+                    />
                 ) : (
-                    <Button color="inherit" onClick={handleLogin}>
-                        Login
-                    </Button>
+                    <DesktopMenu
+                        user={user}
+                        onLogout={handleLogout}
+                        onLoginClick={() => setShowLoginForm(true)}
+                    />
                 )}
+
+                {showLoginForm && (
+                    <LoginForm
+                        onSubmit={handleLogin}
+                        errorMessage={errorMessage}
+                        onClose={() => setShowLoginForm(false)}
+                    />
+                )}
+
+                <ErrorAlert message={errorMessage} />
             </Toolbar>
         </AppBar>
     );

@@ -1,53 +1,79 @@
 import React, { createContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { jwtDecode } from "jwt-decode"; // Correcte import
+import { Box, CircularProgress } from "@mui/material";
 
-// Create AuthContext
 export const AuthContext = createContext();
 
-// AuthProvider to provide context
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null); // Holds user information
-    const [role, setRole] = useState(null); // Holds the user's role
-    const [loading, setLoading] = useState(true); // Indicates if auth context is initializing
+    const [user, setUser] = useState(null);
+    const [role, setRole] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Simulate retrieving a token or verification
-        const token = localStorage.getItem("accessToken"); // Example: JWT token in localStorage
-        console.log("Retrieved token from localStorage:", token); // Log the token
+        const token = localStorage.getItem("accessToken");
+        console.log("Retrieved token from localStorage:", token);
 
         if (token) {
             try {
-                // Decode the token or fetch data from an API
-                const userData = JSON.parse(atob(token.split(".")[1])); // Decode JWT payload
-                console.log("Decoded user data from token:", userData); // Log decoded user data
-                setUser(userData.sub);
-                setRole(userData.role);
+                const userData = jwtDecode(token);
+                console.log("Decoded user data from token:", userData);
+                setUser({ id: userData.sub, roles: userData.roles, type: userData.type });
+                setRole(userData.roles);
             } catch (error) {
-                console.error("Error decoding token:", error.message); // Log decoding errors
-                logout(); // Clear the token if invalid
+                console.error("Error decoding token:", error.message);
+                logout();
             }
         } else {
-            console.log("No token found, user is not logged in."); // Log absence of token
+            console.log("No token found, user is not logged in.");
         }
-        setLoading(false); // Mark initialization as complete
+        setLoading(false);
     }, []);
 
-    const login = (token) => {
-        console.log("Storing token and logging in user."); // Log login attempt
-        localStorage.setItem("accessToken", token);
+
+    const login = async (email, password) => {
         try {
-            const userData = JSON.parse(atob(token.split(".")[1])); // Decode JWT payload
-            console.log("Decoded user data on login:", userData); // Log decoded user data
-            setUser(userData.sub);
-            setRole(userData.role);
-        } catch (error) {
-            console.error("Error decoding token during login:", error.message); // Log decoding errors
+            console.log("Attempting login with email:", email);
+
+            const response = await fetch("http://localhost:8080/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            console.log("Login response status:", response.status);
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Login error:", errorData.error || "Unknown error");
+                throw new Error(errorData.error || "Login failed");
+            }
+
+            const data = await response.json();
+            console.log("Login successful, received data:", data);
+
+            localStorage.setItem("accessToken", data.accessToken);
+            localStorage.setItem("refreshToken", data.refreshToken);
+
+            const userData = jwtDecode(data.accessToken);
+            console.log("Decoded user data on login:", userData);
+
+            // Pass object instead of string
+            setUser({ id: userData.sub, roles: userData.roles, type: userData.type });
+            setRole(userData.roles);
+        } catch (err) {
+            console.error("Login failed:", err.message);
+            throw err; // Zorgt ervoor dat de error verder kan worden afgehandeld
         }
     };
 
+
+
     const logout = async () => {
-        console.log("Logging out and clearing token."); // Log the logout action
-        const token = localStorage.getItem("accessToken"); // Retrieve the token from localStorage
+        console.log("Logging out and clearing token.");
+        const token = localStorage.getItem("accessToken");
 
         if (!token) {
             console.error("No token found in localStorage. Logout cannot proceed.");
@@ -59,9 +85,9 @@ export const AuthProvider = ({ children }) => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`, // Include the token in the Authorization header
+                    "Authorization": `Bearer ${token}`,
                 },
-                credentials: "include", // Ensure cookies are included (if used)
+                credentials: "include",
             });
 
             if (response.ok) {
@@ -72,13 +98,24 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             console.error("Error during logout request:", error.message);
         }
-        localStorage.removeItem("accessToken"); // Remove the token from local storage
-        setUser(null); // Reset the user state to null
-        setRole(null); // Reset the role state to null
+        localStorage.removeItem("accessToken");
+        setUser(null);
+        setRole(null);
     };
 
     if (loading) {
-        return <div>Loading authentication...</div>; // Show loading state while initializing
+        return (
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "100vh",
+                }}
+            >
+                <CircularProgress />
+            </Box>
+        );
     }
 
     return (
@@ -89,5 +126,7 @@ export const AuthProvider = ({ children }) => {
 };
 
 AuthProvider.propTypes = {
-    children: PropTypes.node.isRequired, // Validates that 'children' is a React node
+    children: PropTypes.node.isRequired,
 };
+
+export default AuthProvider;
