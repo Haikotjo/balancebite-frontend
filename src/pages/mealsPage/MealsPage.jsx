@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import MealList from "../../components/mealList/MealList.jsx";
 import SubMenu from "../../components/subMenu/SubMenu.jsx";

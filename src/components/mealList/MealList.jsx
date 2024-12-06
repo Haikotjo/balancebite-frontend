@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import MealCard from "../mealCard/MealCard.jsx";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import PropTypes from "prop-types";
