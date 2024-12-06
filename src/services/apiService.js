@@ -1,31 +1,32 @@
+import axios from "axios";
+
 export const addMealToFavoritesApi = async (mealId, token) => {
     const baseUrl = "http://localhost:8080";
     const endpoint = `${baseUrl}/users/add-meal/${mealId}`;
 
     try {
-        console.info(`Calling API to add meal with ID ${mealId}...`);
-        console.info("Endpoint:", endpoint);
-        console.info("Using token:", token);
-
-        const response = await fetch(endpoint, {
-            method: "PATCH",
+        const response = await axios.patch(endpoint, null, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             },
         });
 
-        if (!response.ok) {
-            const responseBody = await response.json();
-            console.error("API responded with error:", responseBody?.error || "Unknown error");
-            throw new Error(responseBody?.error || `Request failed with status ${response.status}`);
-        }
-
-        const responseBody = await response.json();
-        console.info("API response received successfully:", responseBody);
-        return responseBody; // Geef de succesvolle reactie terug
+        return response.data; // Retourneer de succesvolle response data
     } catch (error) {
-        console.error("API Error:", error.message, error);
-        throw error;
+        if (error.response) {
+            // Server responded with a status other than 2xx
+            const { status, data } = error.response;
+            if (status === 409) {
+                alert("This meal is already in your favorites!");
+            }
+            throw new Error(data?.error || `Request failed with status ${status}`);
+        } else if (error.request) {
+            // Request was made but no response received
+            throw new Error("No response received from server.");
+        } else {
+            // Something happened in setting up the request
+            throw new Error(`Error in request setup: ${error.message}`);
+        }
     }
 };

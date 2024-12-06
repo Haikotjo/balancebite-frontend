@@ -10,6 +10,7 @@ import PropTypes from "prop-types";
  */
 function MealList({ endpoint, setCreatedByName }) {
     const [meals, setMeals] = useState([]);
+    const [userMeals, setUserMeals] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -21,6 +22,7 @@ function MealList({ endpoint, setCreatedByName }) {
                 const token = localStorage.getItem("accessToken");
                 const headers = { "Content-Type": "application/json", ...(token && { Authorization: `Bearer ${token}` }) };
 
+                // Fetch meals from endpoint
                 const response = await fetch(endpoint, { headers });
                 if (!response.ok) throw new Error(`Failed to fetch meals: ${response.statusText}`);
                 const data = await response.json();
@@ -31,6 +33,14 @@ function MealList({ endpoint, setCreatedByName }) {
                 if (data.length > 0 && setCreatedByName) {
                     setCreatedByName(data[0].createdBy?.userName || "Unknown User");
                 }
+
+                // Fetch user meals for duplicate check
+                const userMealsResponse = await fetch("http://localhost:8080/users/meals", { headers });
+                if (!userMealsResponse.ok) throw new Error(`Failed to fetch user meals: ${userMealsResponse.statusText}`);
+                const userMealsData = await userMealsResponse.json();
+
+                setUserMeals(userMealsData);
+                console.log(`Fetched ${userMealsData.length} user meals:`, userMealsData.map((meal) => meal.id));
                 setError(null);
             } catch (err) {
                 setError(err.message);
@@ -42,9 +52,42 @@ function MealList({ endpoint, setCreatedByName }) {
         fetchMeals();
     }, [endpoint, setCreatedByName]);
 
-    if (loading) return <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh"><CircularProgress /></Box>;
-    if (error) return <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh"><Typography color="error">Error: {error}</Typography></Box>;
-    if (meals.length === 0) return <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh"><Typography>No meals found.</Typography></Box>;
+    if (loading)
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
+                <CircularProgress />
+            </Box>
+        );
+    if (error)
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
+                <Typography color="error">Error: {error}</Typography>
+            </Box>
+        );
+    if (meals.length === 0)
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
+                <Typography>No meals found.</Typography>
+            </Box>
+        );
+
+    // Mark duplicate meals
+    const isDuplicateMeal = (meal) => {
+        const mealIngredientIds = meal.mealIngredients.map((ingredient) => ingredient.foodItemId).sort();
+
+        const isDuplicate = userMeals.some((userMeal) => {
+            const userMealIngredientIds = userMeal.mealIngredients.map((ingredient) => ingredient.foodItemId).sort();
+
+            // Check if the sorted ingredient lists are identical
+            return (
+                mealIngredientIds.length === userMealIngredientIds.length &&
+                mealIngredientIds.every((id, index) => id === userMealIngredientIds[index])
+            );
+        });
+
+        console.log(`Meal ${meal.id} (${meal.name}) is duplicate:`, isDuplicate);
+        return isDuplicate;
+    };
 
     return (
         <Box
@@ -54,7 +97,7 @@ function MealList({ endpoint, setCreatedByName }) {
             padding={2}
         >
             {meals.map((meal) => (
-                <MealCard key={meal.id} meal={meal} />
+                <MealCard key={meal.id} meal={meal} isDuplicate={isDuplicateMeal(meal)} />
             ))}
         </Box>
     );

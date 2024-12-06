@@ -1,3 +1,4 @@
+import { useState } from "react";
 import PropTypes from "prop-types";
 import {
     Card,
@@ -11,6 +12,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Link } from "react-router-dom";
 import useNutrients from "../../hooks/useNutrients.js";
 import useExpand from "../../hooks/useExpand";
@@ -21,17 +23,31 @@ import { getImageSrc } from "../../utils/getImageSrc";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 import useFavorites from "../../hooks/useFavorites";
 
-function MealCard({ meal }) {
+function MealCard({ meal, isDuplicate: initialDuplicate }) {
     const { expanded, toggleExpand } = useExpand();
     const { nutrients } = useNutrients(meal.id);
-    const { isFavorite, addMealToFavorites } = useFavorites();
+    const { addMealToFavorites } = useFavorites();
     const imageSrc = getImageSrc(meal);
+
+    // Lokaal beheren van duplicaatstatus
+    const [isDuplicate, setIsDuplicate] = useState(initialDuplicate);
+
+    const handleAddToFavorites = async () => {
+        try {
+            await addMealToFavorites(meal.id);
+            setIsDuplicate(true); // Update lokale status
+        } catch (error) {
+            console.error("Failed to add meal to favorites:", error);
+        }
+    };
 
     return (
         <Card sx={{ maxWidth: 345 }}>
             <CardMedia component="img" height="140" image={imageSrc} alt={meal.name} />
             <CardContent>
-                <Typography variant="h6" color="text.primary">{meal.name}</Typography>
+                <Typography variant="h6" color="text.primary">
+                    {meal.name}
+                </Typography>
                 <Typography
                     variant="body2"
                     color="text.secondary"
@@ -83,8 +99,12 @@ function MealCard({ meal }) {
                     >
                         <ExpandMoreIcon />
                     </ExpandMoreIconButton>
-                    <IconButton onClick={() => addMealToFavorites(meal.id)} sx={{ marginLeft: "auto" }}>
-                        <FavoriteBorderIcon color={isFavorite ? "error" : "primary"} />
+                    <IconButton
+                        onClick={handleAddToFavorites}
+                        sx={{ marginLeft: "auto" }}
+                        disabled={isDuplicate}
+                    >
+                        {isDuplicate ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon color="primary" />}
                     </IconButton>
                 </Box>
             </CardActions>
@@ -111,6 +131,7 @@ function MealCard({ meal }) {
 
 MealCard.propTypes = {
     meal: PropTypes.object.isRequired,
+    isDuplicate: PropTypes.bool.isRequired,
 };
 
 export default MealCard;
