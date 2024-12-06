@@ -8,18 +8,20 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [role, setRole] = useState(null);
+    const [token, setToken] = useState(null); // Token state
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const token = localStorage.getItem("accessToken");
-        console.log("Retrieved token from localStorage:", token);
+        const storedToken = localStorage.getItem("accessToken");
+        console.log("Retrieved token from localStorage:", storedToken);
 
-        if (token) {
+        if (storedToken) {
             try {
-                const userData = jwtDecode(token);
+                const userData = jwtDecode(storedToken);
                 console.log("Decoded user data from token:", userData);
                 setUser({ id: userData.sub, roles: userData.roles, type: userData.type });
                 setRole(userData.roles);
+                setToken(storedToken); // Zet token in state
             } catch (error) {
                 console.error("Error decoding token:", error.message);
                 logout();
@@ -29,7 +31,6 @@ export const AuthProvider = ({ children }) => {
         }
         setLoading(false);
     }, []);
-
 
     const login = async (email, password) => {
         try {
@@ -60,22 +61,20 @@ export const AuthProvider = ({ children }) => {
             const userData = jwtDecode(data.accessToken);
             console.log("Decoded user data on login:", userData);
 
-            // Pass object instead of string
             setUser({ id: userData.sub, roles: userData.roles, type: userData.type });
             setRole(userData.roles);
+            setToken(data.accessToken); // Zet token in state
         } catch (err) {
             console.error("Login failed:", err.message);
             throw err; // Zorgt ervoor dat de error verder kan worden afgehandeld
         }
     };
 
-
-
     const logout = async () => {
         console.log("Logging out and clearing token.");
-        const token = localStorage.getItem("accessToken");
+        const currentToken = localStorage.getItem("accessToken");
 
-        if (!token) {
+        if (!currentToken) {
             console.error("No token found in localStorage. Logout cannot proceed.");
             return;
         }
@@ -85,7 +84,7 @@ export const AuthProvider = ({ children }) => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
+                    Authorization: `Bearer ${currentToken}`,
                 },
                 credentials: "include",
             });
@@ -98,9 +97,11 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             console.error("Error during logout request:", error.message);
         }
+
         localStorage.removeItem("accessToken");
         setUser(null);
         setRole(null);
+        setToken(null); // Verwijder token uit state
     };
 
     if (loading) {
@@ -119,7 +120,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ user, role, login, logout }}>
+        <AuthContext.Provider value={{ user, role, token, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
