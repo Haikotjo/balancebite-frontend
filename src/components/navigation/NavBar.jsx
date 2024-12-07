@@ -9,7 +9,7 @@ import HamburgerMenu from "../hamburgerMenu/HamburgerMenu";
 import DesktopMenu from "../desktopMenu/DesktopMenu";
 import NavLogo from "../navLogo/NavLogo";
 import ErrorAlert from "../errorAlert/ErrorAlert";
-import useLogout from "../../hooks/useLogout"; // Importeer de useLogout-hook
+import useLogout from "../../hooks/useLogout.js"; // Importeer de useLogout-hook
 import useLogin from "../../hooks/useLogin";
 import {AuthContext} from "../../context/AuthContext.jsx"; // Importeer de useLogin-hook
 

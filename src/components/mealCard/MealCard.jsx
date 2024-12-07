@@ -21,111 +21,112 @@ import IngredientList from "../ingredientList/IngredientList";
 import ExpandMoreIconButton from "../styledComponents/expandMoreIconButton/ExpandMoreIconButton.jsx";
 import { getImageSrc } from "../../utils/getImageSrc";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
-import useFavorites from "../../hooks/useFavorites";
+import useFavorites from "../../hooks/useFavorites.jsx";
 
 function MealCard({ meal, isDuplicate: initialDuplicate }) {
     const { expanded, toggleExpand } = useExpand();
     const { nutrients } = useNutrients(meal.id);
-    const { addMealToFavorites } = useFavorites();
+    const { addMealToFavorites, SnackbarComponent } = useFavorites(); // SnackbarComponent toevoegen
     const imageSrc = getImageSrc(meal);
 
     // Lokaal beheren van duplicaatstatus
     const [isDuplicate, setIsDuplicate] = useState(initialDuplicate);
 
     const handleAddToFavorites = async () => {
-        try {
-            await addMealToFavorites(meal.id);
-            setIsDuplicate(true); // Update lokale status
-        } catch (error) {
-            console.error("Failed to add meal to favorites:", error);
+        const success = await addMealToFavorites(meal.id);
+        if (success) {
+            setIsDuplicate(true); // Update lokale status alleen als het succesvol is
         }
     };
 
     return (
-        <Card sx={{ maxWidth: 345 }}>
-            <CardMedia component="img" height="140" image={imageSrc} alt={meal.name} />
-            <CardContent>
-                <Typography variant="h6" color="text.primary">
-                    {meal.name}
-                </Typography>
-                <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ fontFamily: "'Quicksand', sans-serif", fontSize: "0.7rem" }}
-                >
-                    Created By:{" "}
-                    <Link
-                        to={`/users/created-meals/${meal.createdBy?.id}`}
-                        style={{ textDecoration: "underline", color: "inherit" }}
-                    >
-                        {meal.createdBy?.userName}
-                    </Link>
-                </Typography>
-                <Typography
-                    variant="body2"
-                    sx={{
-                        fontFamily: "'Quicksand', sans-serif",
-                        fontSize: "0.8rem",
-                        marginTop: "8px",
-                        marginBottom: "16px",
-                    }}
-                >
-                    {meal.mealDescription || "No description provided."}
-                </Typography>
-                <NutrientList nutrients={nutrients} />
-            </CardContent>
-            <CardActions disableSpacing>
-                <Box display="flex" alignItems="center" width="100%">
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            fontFamily: "'Quicksand', sans-serif",
-                            fontSize: "0.8rem",
-                            cursor: "pointer",
-                            textDecoration: "underline",
-                            "&:hover": { color: "primary.main" },
-                        }}
-                        onClick={toggleExpand}
-                        aria-expanded={expanded}
-                        aria-label="show more"
-                    >
-                        Ingredients and Nutrients
-                    </Typography>
-                    <ExpandMoreIconButton
-                        expand={expanded}
-                        onClick={toggleExpand}
-                        aria-expanded={expanded}
-                        aria-label="show more"
-                    >
-                        <ExpandMoreIcon />
-                    </ExpandMoreIconButton>
-                    <IconButton
-                        onClick={handleAddToFavorites}
-                        sx={{ marginLeft: "auto" }}
-                        disabled={isDuplicate}
-                    >
-                        {isDuplicate ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon color="primary" />}
-                    </IconButton>
-                </Box>
-            </CardActions>
-            <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <>
+            <Card sx={{ maxWidth: 345 }}>
+                <CardMedia component="img" height="140" image={imageSrc} alt={meal.name} />
                 <CardContent>
+                    <Typography variant="h6" color="text.primary">
+                        {meal.name}
+                    </Typography>
+                    <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ fontFamily: "'Quicksand', sans-serif", fontSize: "0.7rem" }}
+                    >
+                        Created By:{" "}
+                        <Link
+                            to={`/users/created-meals/${meal.createdBy?.id}`}
+                            style={{ textDecoration: "underline", color: "inherit" }}
+                        >
+                            {meal.createdBy?.userName}
+                        </Link>
+                    </Typography>
                     <Typography
                         variant="body2"
                         sx={{
                             fontFamily: "'Quicksand', sans-serif",
                             fontSize: "0.8rem",
-                            marginBottom: "8px",
+                            marginTop: "8px",
+                            marginBottom: "16px",
                         }}
                     >
-                        Ingredients:
+                        {meal.mealDescription || "No description provided."}
                     </Typography>
-                    <ErrorBoundary>
-                        <IngredientList ingredients={meal.mealIngredients} />
-                    </ErrorBoundary>
+                    <NutrientList nutrients={nutrients} />
                 </CardContent>
-            </Collapse>
-        </Card>
+                <CardActions disableSpacing>
+                    <Box display="flex" alignItems="center" width="100%">
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                fontFamily: "'Quicksand', sans-serif",
+                                fontSize: "0.8rem",
+                                cursor: "pointer",
+                                textDecoration: "underline",
+                                "&:hover": { color: "primary.main" },
+                            }}
+                            onClick={toggleExpand}
+                            aria-expanded={expanded}
+                            aria-label="show more"
+                        >
+                            Ingredients and Nutrients
+                        </Typography>
+                        <ExpandMoreIconButton
+                            expand={expanded}
+                            onClick={toggleExpand}
+                            aria-expanded={expanded}
+                            aria-label="show more"
+                        >
+                            <ExpandMoreIcon />
+                        </ExpandMoreIconButton>
+                        <IconButton
+                            onClick={handleAddToFavorites}
+                            sx={{ marginLeft: "auto" }}
+                            disabled={isDuplicate}
+                        >
+                            {isDuplicate ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon color="primary" />}
+                        </IconButton>
+                    </Box>
+                </CardActions>
+                <Collapse in={expanded} timeout="auto" unmountOnExit>
+                    <CardContent>
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                fontFamily: "'Quicksand', sans-serif",
+                                fontSize: "0.8rem",
+                                marginBottom: "8px",
+                            }}
+                        >
+                            Ingredients:
+                        </Typography>
+                        <ErrorBoundary>
+                            <IngredientList ingredients={meal.mealIngredients} />
+                        </ErrorBoundary>
+                    </CardContent>
+                </Collapse>
+            </Card>
+            {SnackbarComponent}
+        </>
     );
 }
 

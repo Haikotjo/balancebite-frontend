@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 import MealCard from "../mealCard/MealCard.jsx";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import PropTypes from "prop-types";
@@ -20,29 +21,38 @@ function MealList({ endpoint, setCreatedByName }) {
             try {
                 setLoading(true);
                 const token = localStorage.getItem("accessToken");
-                const headers = { "Content-Type": "application/json", ...(token && { Authorization: `Bearer ${token}` }) };
 
-                // Fetch meals from endpoint
-                const response = await fetch(endpoint, { headers });
-                if (!response.ok) throw new Error(`Failed to fetch meals: ${response.statusText}`);
-                const data = await response.json();
+                // Fetch meals from the endpoint
+                const mealsResponse = await axios.get(endpoint, {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                setMeals(mealsResponse.data);
+                console.log(`Fetched ${mealsResponse.data.length} meals:`, mealsResponse.data.map((meal) => meal.id));
 
-                setMeals(data);
-                console.log(`Fetched ${data.length} meals:`, data.map((meal) => meal.id));
-
-                if (data.length > 0 && setCreatedByName) {
-                    setCreatedByName(data[0].createdBy?.userName || "Unknown User");
+                if (mealsResponse.data.length > 0 && setCreatedByName) {
+                    setCreatedByName(mealsResponse.data[0].createdBy?.userName || "Unknown User");
                 }
 
-                // Fetch user meals for duplicate check
-                const userMealsResponse = await fetch("http://localhost:8080/users/meals", { headers });
-                if (!userMealsResponse.ok) throw new Error(`Failed to fetch user meals: ${userMealsResponse.statusText}`);
-                const userMealsData = await userMealsResponse.json();
+                // Fetch user meals only if there is a valid token
+                if (token) {
+                    const userMealsResponse = await axios.get("http://localhost:8080/users/meals", {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    setUserMeals(userMealsResponse.data);
+                    console.log(`Fetched ${userMealsResponse.data.length} user meals:`, userMealsResponse.data.map((meal) => meal.id));
+                } else {
+                    console.log("No token found, skipping user meals fetch.");
+                    setUserMeals([]); // Reset userMeals if no token
+                }
 
-                setUserMeals(userMealsData);
-                console.log(`Fetched ${userMealsData.length} user meals:`, userMealsData.map((meal) => meal.id));
                 setError(null);
             } catch (err) {
+                console.error("Error fetching meals:", err.message);
                 setError(err.message);
             } finally {
                 setLoading(false);
@@ -71,8 +81,10 @@ function MealList({ endpoint, setCreatedByName }) {
             </Box>
         );
 
-    // Mark duplicate meals
+    // Mark duplicate meals (skip if userMeals is empty)
     const isDuplicateMeal = (meal) => {
+        if (userMeals.length === 0) return false;
+
         const mealIngredientIds = meal.mealIngredients.map((ingredient) => ingredient.foodItemId).sort();
 
         const isDuplicate = userMeals.some((userMeal) => {
