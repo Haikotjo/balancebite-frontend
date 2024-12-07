@@ -6,36 +6,37 @@ import PropTypes from "prop-types";
 
 /**
  * MealList component to display a list of meals.
- * @param {String} endpoint - The API endpoint for fetching the list of meals.
  * @param {Function} setCreatedByName - Callback to set the creator's name (optional).
  */
-function MealList({ endpoint, setCreatedByName }) {
-    const [meals, setMeals] = useState([]);
-    const [userMeals, setUserMeals] = useState([]);
+function MealList({ setCreatedByName }) {
+    const [meals, setMeals] = useState([]);  // All meals state
+    const [filteredMeals, setFilteredMeals] = useState([]);  // Filtered meals state
+    const [userMeals, setUserMeals] = useState([]);  // Meals by user state
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchMeals = async () => {
-            console.log(`Fetching meals from ${endpoint}`);
+            console.log("Fetching meals from the endpoint");
             try {
                 setLoading(true);
                 const token = localStorage.getItem("accessToken");
 
-                // Fetch meals from the endpoint
-                const mealsResponse = await axios.get(endpoint, {
+                // Fetch meals from the endpoint (use your existing endpoint here)
+                const mealsResponse = await axios.get("http://localhost:8080/meals", {
                     headers: {
                         "Content-Type": "application/json",
                     },
                 });
-                setMeals(mealsResponse.data);
-                console.log(`Fetched ${mealsResponse.data.length} meals:`, mealsResponse.data.map((meal) => meal.id));
+                setMeals(mealsResponse.data);  // Store all meals
+                setFilteredMeals(mealsResponse.data);  // Initially, display all meals
 
+                // If meals are fetched successfully, set the creator's name
                 if (mealsResponse.data.length > 0 && setCreatedByName) {
                     setCreatedByName(mealsResponse.data[0].createdBy?.userName || "Unknown User");
                 }
 
-                // Fetch user meals only if there is a valid token
+                // Fetch user-specific meals
                 if (token) {
                     const userMealsResponse = await axios.get("http://localhost:8080/users/meals", {
                         headers: {
@@ -44,18 +45,14 @@ function MealList({ endpoint, setCreatedByName }) {
                         },
                     });
 
-                    // Check if the response data is an array
                     const userMealsData = Array.isArray(userMealsResponse.data) ? userMealsResponse.data : [];
                     setUserMeals(userMealsData);
-                    console.log(`Fetched ${userMealsData.length} user meals:`, userMealsData.map((meal) => meal.id));
                 } else {
-                    console.log("No token found, skipping user meals fetch.");
-                    setUserMeals([]); // Reset userMeals if no token
+                    setUserMeals([]);
                 }
 
                 setError(null);
             } catch (err) {
-                console.error("Error fetching meals:", err.message);
                 setError(err.message);
             } finally {
                 setLoading(false);
@@ -63,7 +60,13 @@ function MealList({ endpoint, setCreatedByName }) {
         };
 
         fetchMeals();
-    }, [endpoint, setCreatedByName]);
+    }, [setCreatedByName]);
+
+    // Function to handle the click on the creator's name
+    const filterMealsByCreator = (creatorName) => {
+        const filtered = meals.filter((meal) => meal.createdBy?.userName === creatorName);
+        setFilteredMeals(filtered);  // Set filtered meals based on creator's name
+    };
 
     if (loading)
         return (
@@ -71,38 +74,20 @@ function MealList({ endpoint, setCreatedByName }) {
                 <CircularProgress />
             </Box>
         );
+
     if (error)
         return (
             <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
                 <Typography color="error">Error: {error}</Typography>
             </Box>
         );
-    if (meals.length === 0)
+
+    if (filteredMeals.length === 0)
         return (
             <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
                 <Typography>No meals found.</Typography>
             </Box>
         );
-
-    // Mark duplicate meals (skip if userMeals is empty)
-    const isDuplicateMeal = (meal) => {
-        if (userMeals.length === 0) return false;
-
-        const mealIngredientIds = meal.mealIngredients.map((ingredient) => ingredient.foodItemId).sort();
-
-        const isDuplicate = userMeals.some((userMeal) => {
-            const userMealIngredientIds = userMeal.mealIngredients.map((ingredient) => ingredient.foodItemId).sort();
-
-            // Check if the sorted ingredient lists are identical
-            return (
-                mealIngredientIds.length === userMealIngredientIds.length &&
-                mealIngredientIds.every((id, index) => id === userMealIngredientIds[index])
-            );
-        });
-
-        console.log(`Meal ${meal.id} (${meal.name}) is duplicate:`, isDuplicate);
-        return isDuplicate;
-    };
 
     return (
         <Box
@@ -111,16 +96,16 @@ function MealList({ endpoint, setCreatedByName }) {
             gap={2}
             padding={2}
         >
-            {meals.map((meal) => (
-                <MealCard key={meal.id} meal={meal} isDuplicate={isDuplicateMeal(meal)} />
+            {filteredMeals.map((meal) => (
+                <MealCard key={meal.id} meal={meal} isDuplicate={false} onCreatorClick={filterMealsByCreator} />
             ))}
         </Box>
     );
 }
 
 MealList.propTypes = {
-    endpoint: PropTypes.string.isRequired,
     setCreatedByName: PropTypes.func,
 };
 
 export default MealList;
+

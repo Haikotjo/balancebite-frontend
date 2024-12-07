@@ -10,7 +10,13 @@ import MealCardActions from "./MealCardActions";
 import IngredientsSection from "./IngredientsSection";
 import NutrientList from "./nutrientList/NutrientList";
 
-function MealCard({ meal, isDuplicate: initialDuplicate }) {
+/**
+ * MealCard component for displaying a single meal.
+ * @param {Object} meal - The meal data to display.
+ * @param {boolean} isDuplicate - Whether the meal is a duplicate or not.
+ * @param {Function} onCreatorClick - The callback to handle creator's name click.
+ */
+function MealCard({ meal, isDuplicate: initialDuplicate, onCreatorClick }) {
     const { expanded, toggleExpand } = useExpand();
     const { nutrients } = useNutrients(meal.id);
     const { addMealToFavorites, SnackbarComponent } = useFavorites();
@@ -29,7 +35,12 @@ function MealCard({ meal, isDuplicate: initialDuplicate }) {
         <>
             <Card sx={{ maxWidth: 345 }}>
                 <CardContent>
-                    <MealCardHeader meal={meal} imageSrc={imageSrc} />
+                    {/* Pass onCreatorClick to MealCardHeader */}
+                    <MealCardHeader
+                        meal={meal}
+                        imageSrc={imageSrc}
+                        onCreatorClick={onCreatorClick}  // Doorgeven van onCreatorClick
+                    />
                     <NutrientList nutrients={nutrients} />
                 </CardContent>
                 <CardActions disableSpacing>
@@ -54,6 +65,7 @@ function MealCard({ meal, isDuplicate: initialDuplicate }) {
 MealCard.propTypes = {
     meal: PropTypes.object.isRequired,
     isDuplicate: PropTypes.bool.isRequired,
+    onCreatorClick: PropTypes.func.isRequired,  // Zorg ervoor dat onCreatorClick vereist is
 };
 
 export default MealCard;

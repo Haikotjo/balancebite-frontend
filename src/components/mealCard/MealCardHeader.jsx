@@ -1,11 +1,15 @@
 import PropTypes from "prop-types";
 import { Typography, CardMedia } from "@mui/material";
-import { Link } from "react-router-dom";
 
-function MealCardHeader({ meal, imageSrc }) {
+function MealCardHeader({ meal, onCreatorClick }) {
     return (
         <>
-            <CardMedia component="img" height="140" image={imageSrc} alt={meal.name} />
+            <CardMedia
+                component="img"
+                height="140"
+                image={meal.imageUrl || "defaultImage.jpg"} // Gebruik een fallback voor imageSrc
+                alt={meal.name}
+            />
             <Typography variant="h6" color="text.primary">
                 {meal.name}
             </Typography>
@@ -15,12 +19,12 @@ function MealCardHeader({ meal, imageSrc }) {
                 sx={{ fontFamily: "'Quicksand', sans-serif", fontSize: "0.7rem" }}
             >
                 Created By:{" "}
-                <Link
-                    to={`/users/created-meals/${meal.createdBy?.id}`}
-                    style={{ textDecoration: "underline", color: "inherit" }}
+                <span
+                    onClick={() => onCreatorClick(meal.createdBy?.userName)}  // Function call on click
+                    style={{ textDecoration: "underline", color: "inherit", cursor: "pointer" }}
                 >
                     {meal.createdBy?.userName}
-                </Link>
+                </span>
             </Typography>
             <Typography
                 variant="body2"
@@ -39,7 +43,7 @@ function MealCardHeader({ meal, imageSrc }) {
 
 MealCardHeader.propTypes = {
     meal: PropTypes.object.isRequired,
-    imageSrc: PropTypes.string.isRequired,
+    onCreatorClick: PropTypes.func.isRequired,  // Make sure it's required
 };
 
 export default MealCardHeader;
