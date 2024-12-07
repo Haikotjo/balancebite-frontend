@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 const useNutrients = (mealId) => {
     const [nutrients, setNutrients] = useState([]);
@@ -8,13 +9,16 @@ const useNutrients = (mealId) => {
         const fetchNutrients = async () => {
             try {
                 const nutrientsEndpoint = `http://localhost:8080/meals/nutrients/${mealId}`;
-                const response = await fetch(nutrientsEndpoint);
-                if (!response.ok) throw new Error("Failed to fetch nutrients");
-                const data = await response.json();
+
+                // Axios GET request
+                const { data } = await axios.get(nutrientsEndpoint);
+
+                // Set nutrients data
                 setNutrients(Object.values(data));
+                setError(null); // Clear previous errors
             } catch (error) {
                 console.error(`Error fetching nutrients for mealId ${mealId}:`, error);
-                setError(error.message);
+                setError(error.response?.data?.message || error.message); // Use API error if available
             }
         };
 

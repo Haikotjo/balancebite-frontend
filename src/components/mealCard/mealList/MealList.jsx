@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import MealCard from "../mealCard/MealCard.jsx";
+import MealCard from "../MealCard.jsx";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 
@@ -43,8 +43,11 @@ function MealList({ endpoint, setCreatedByName }) {
                             Authorization: `Bearer ${token}`,
                         },
                     });
-                    setUserMeals(userMealsResponse.data);
-                    console.log(`Fetched ${userMealsResponse.data.length} user meals:`, userMealsResponse.data.map((meal) => meal.id));
+
+                    // Check if the response data is an array
+                    const userMealsData = Array.isArray(userMealsResponse.data) ? userMealsResponse.data : [];
+                    setUserMeals(userMealsData);
+                    console.log(`Fetched ${userMealsData.length} user meals:`, userMealsData.map((meal) => meal.id));
                 } else {
                     console.log("No token found, skipping user meals fetch.");
                     setUserMeals([]); // Reset userMeals if no token

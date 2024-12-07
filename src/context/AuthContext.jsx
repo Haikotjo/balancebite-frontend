@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { jwtDecode } from "jwt-decode"; // Correcte import behouden
-import axios from "axios"; // Axios importeren
+import { loginApi, logoutApi } from "../services/apiService"; // Importeer de API functies
 import { Box, CircularProgress } from "@mui/material";
 
 export const AuthContext = createContext();
@@ -37,11 +37,11 @@ export const AuthProvider = ({ children }) => {
         try {
             console.log("Attempting login with email:", email);
 
-            const response = await axios.post("http://localhost:8080/auth/login", { email, password });
+            const response = await loginApi(email, password); // Gebruik de loginApi uit apiService
 
-            console.log("Login successful, received data:", response.data);
+            console.log("Login successful, received data:", response);
 
-            const { accessToken, refreshToken } = response.data;
+            const { accessToken, refreshToken } = response;
 
             localStorage.setItem("accessToken", accessToken);
             localStorage.setItem("refreshToken", refreshToken);
@@ -68,18 +68,9 @@ export const AuthProvider = ({ children }) => {
         }
 
         try {
-            // Maak een logout-aanroep naar de backend
-            await axios.post(
-                "http://localhost:8080/auth/logout",
-                {}, // Geen body nodig
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${currentToken}`,
-                    },
-                    withCredentials: true, // Voor eventuele cookie-handling
-                }
-            );
+            // Gebruik de logoutApi uit apiService
+            await logoutApi(currentToken);
+
             console.log("Successfully logged out on the server.");
         } catch (error) {
             console.error("Error during logout request:", error.response?.data?.error || error.message);
@@ -87,14 +78,13 @@ export const AuthProvider = ({ children }) => {
 
         // Verwijder tokens uit localStorage en reset state
         localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken"); // Refresh token ook verwijderen
+        localStorage.removeItem("refreshToken");
         console.log("localStorage after logout:", localStorage); // Log de state van localStorage
 
         setUser(null);
         setRole(null);
         setToken(null); // Verwijder token uit state
     };
-
 
     if (loading) {
         return (

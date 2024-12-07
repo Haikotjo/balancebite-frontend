@@ -1,8 +1,8 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext.jsx";
-import { addMealToFavoritesApi } from "../services/apiService.js";
-import SnackbarComponent from "../components/snackbarComponent/SnackbarComponent.jsx"
+import { AuthContext } from "../../../context/AuthContext.jsx";
+import { addMealToFavoritesApi } from "../../../services/apiService.js";
+import SnackbarComponent from "../../snackbarComponent/SnackbarComponent.jsx"
 
 const useFavorites = () => {
     const { user, token } = useContext(AuthContext);

@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import MealList from "../../components/mealList/MealList.jsx";
+import MealList from "../../components/mealCard/mealList/MealList.jsx";
 import SubMenu from "../../components/subMenu/SubMenu.jsx";
 import { AuthContext } from "../../context/AuthContext";
 import { Box, Typography, Link as MuiLink } from "@mui/material";
