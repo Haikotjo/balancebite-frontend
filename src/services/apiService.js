@@ -25,40 +25,74 @@ const logError = (error) => {
 };
 
 // Voeg een Axios-interceptor toe voor automatische tokenvernieuwing
+let isRefreshing = false; // Zorgt ervoor dat de token slechts één keer wordt vernieuwd
+let subscribers = []; // Houdt bij welke verzoeken wachten op een nieuwe token
+
+// Voeg de request-interceptor toe
 apiClient.interceptors.request.use(
     async (config) => {
-        let token = localStorage.getItem("accessToken");
+        const token = localStorage.getItem("accessToken");
 
-        if (token) {
-            const decoded = jwtDecode(token);
-            const currentTime = Math.floor(Date.now() / 1000);
+        if (!token) {
+            console.warn("[API] Geen toegangstoken gevonden. Verzoek gaat door zonder autorisatie.");
+            return config;
+        }
 
-            // Controleer of token bijna verloopt (binnen 1 minuut)
-            if (decoded.exp - currentTime < 60) {
-                console.log("[API] Access token is about to expire. Attempting to refresh.");
+        const decoded = jwtDecode(token);
+        const currentTime = Math.floor(Date.now() / 1000);
+
+        if (decoded.exp - currentTime < 60) {
+            if (!isRefreshing) {
+                isRefreshing = true;
+
                 try {
+                    console.log("[API] Token bijna verlopen. Start verversing.");
                     const refreshToken = localStorage.getItem("refreshToken");
-                    const response = await refreshAccessTokenApi(refreshToken);
-                    token = response.accessToken;
 
-                    // Update token in localStorage
-                    localStorage.setItem("accessToken", token);
+                    if (!refreshToken) {
+                        throw new Error("Geen refresh-token beschikbaar.");
+                    }
+
+                    const response = await refreshAccessTokenApi(refreshToken);
+                    const newToken = response?.accessToken;
+
+                    if (!newToken) {
+                        throw new Error("Geen nieuw toegangstoken ontvangen.");
+                    }
+
+                    localStorage.setItem("accessToken", newToken);
+                    console.log("[API] Nieuw token opgeslagen:", newToken);
+
+                    subscribers.forEach((callback) => callback(newToken));
+                    subscribers = [];
                 } catch (error) {
-                    console.error("[API] Failed to refresh access token. Logging out...");
+                    console.error("[API] Tokenverversing mislukt:", error.message);
                     localStorage.removeItem("accessToken");
                     localStorage.removeItem("refreshToken");
                     throw error;
+                } finally {
+                    isRefreshing = false;
                 }
             }
 
-            // Voeg (vernieuwd) token toe aan headers
-            config.headers.Authorization = `Bearer ${token}`;
+            return new Promise((resolve) => {
+                subscribers.push((newToken) => {
+                    config.headers.Authorization = `Bearer ${newToken}`;
+                    console.log("Updated Authorization header:", config.headers.Authorization);
+                    resolve(config);
+                });
+            });
         }
 
+        config.headers.Authorization = `Bearer ${token}`;
+        console.log("Authorization header:", config.headers.Authorization);
         return config;
     },
     (error) => Promise.reject(error)
 );
+
+
+
 
 // API functies
 export const addMealToFavoritesApi = async (mealId, token) => {
