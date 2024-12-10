@@ -17,7 +17,6 @@ function MealList({ endpoint, setCreatedByName }) {
 
     useEffect(() => {
         const fetchMeals = async () => {
-            console.log(`Fetching meals from ${endpoint}`);
             try {
                 setLoading(true);
                 const token = localStorage.getItem("accessToken");
@@ -29,7 +28,6 @@ function MealList({ endpoint, setCreatedByName }) {
                     },
                 });
                 setMeals(mealsResponse.data);
-                console.log(`Fetched ${mealsResponse.data.length} meals:`, mealsResponse.data.map((meal) => meal.id));
 
                 if (mealsResponse.data.length > 0 && setCreatedByName) {
                     setCreatedByName(mealsResponse.data[0].createdBy?.userName || "Unknown User");
@@ -43,16 +41,19 @@ function MealList({ endpoint, setCreatedByName }) {
                             Authorization: `Bearer ${token}`,
                         },
                     });
-                    setUserMeals(userMealsResponse.data);
-                    console.log(`Fetched ${userMealsResponse.data.length} user meals:`, userMealsResponse.data.map((meal) => meal.id));
+
+                    // Controleer of userMealsResponse.data een array is voordat je map aanroept
+                    if (Array.isArray(userMealsResponse.data)) {
+                        setUserMeals(userMealsResponse.data);
+                    } else {
+                        setUserMeals([]); // Zet userMeals als lege array als data geen array is
+                    }
                 } else {
-                    console.log("No token found, skipping user meals fetch.");
-                    setUserMeals([]); // Reset userMeals if no token
+                    setUserMeals([]); // Reset userMeals als er geen token is
                 }
 
                 setError(null);
             } catch (err) {
-                console.error("Error fetching meals:", err.message);
                 setError(err.message);
             } finally {
                 setLoading(false);
@@ -97,7 +98,6 @@ function MealList({ endpoint, setCreatedByName }) {
             );
         });
 
-        console.log(`Meal ${meal.id} (${meal.name}) is duplicate:`, isDuplicate);
         return isDuplicate;
     };
 
