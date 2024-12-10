@@ -1,14 +1,9 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { fetchMeals, fetchUserMeals } from "../../services/apiService.js";
 import MealCard from "../mealCard/MealCard.jsx";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 
-/**
- * MealList component to display a list of meals.
- * @param {String} endpoint - The API endpoint for fetching the list of meals.
- * @param {Function} setCreatedByName - Callback to set the creator's name (optional).
- */
 function MealList({ endpoint, setCreatedByName }) {
     const [meals, setMeals] = useState([]);
     const [userMeals, setUserMeals] = useState([]);
@@ -16,40 +11,25 @@ function MealList({ endpoint, setCreatedByName }) {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchMeals = async () => {
+        const fetchData = async () => {
             try {
                 setLoading(true);
                 const token = localStorage.getItem("accessToken");
 
-                // Fetch meals from the endpoint
-                const mealsResponse = await axios.get(endpoint, {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                });
-                setMeals(mealsResponse.data);
+                // Haal de maaltijden op
+                const mealsData = await fetchMeals(endpoint);
+                setMeals(mealsData);
 
-                if (mealsResponse.data.length > 0 && setCreatedByName) {
-                    setCreatedByName(mealsResponse.data[0].createdBy?.userName || "Unknown User");
+                if (mealsData.length > 0 && setCreatedByName) {
+                    setCreatedByName(mealsData[0].createdBy?.userName || "Unknown User");
                 }
 
-                // Fetch user meals only if there is a valid token
+                // Haal de maaltijden van de gebruiker op (als er een token is)
                 if (token) {
-                    const userMealsResponse = await axios.get("http://localhost:8080/users/meals", {
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${token}`,
-                        },
-                    });
-
-                    // Controleer of userMealsResponse.data een array is voordat je map aanroept
-                    if (Array.isArray(userMealsResponse.data)) {
-                        setUserMeals(userMealsResponse.data);
-                    } else {
-                        setUserMeals([]); // Zet userMeals als lege array als data geen array is
-                    }
+                    const userMealsData = await fetchUserMeals(token);
+                    setUserMeals(Array.isArray(userMealsData) ? userMealsData : []);
                 } else {
-                    setUserMeals([]); // Reset userMeals als er geen token is
+                    setUserMeals([]);
                 }
 
                 setError(null);
@@ -60,7 +40,7 @@ function MealList({ endpoint, setCreatedByName }) {
             }
         };
 
-        fetchMeals();
+        fetchData();
     }, [endpoint, setCreatedByName]);
 
     if (loading)
@@ -82,23 +62,18 @@ function MealList({ endpoint, setCreatedByName }) {
             </Box>
         );
 
-    // Mark duplicate meals (skip if userMeals is empty)
     const isDuplicateMeal = (meal) => {
         if (userMeals.length === 0) return false;
 
         const mealIngredientIds = meal.mealIngredients.map((ingredient) => ingredient.foodItemId).sort();
 
-        const isDuplicate = userMeals.some((userMeal) => {
+        return userMeals.some((userMeal) => {
             const userMealIngredientIds = userMeal.mealIngredients.map((ingredient) => ingredient.foodItemId).sort();
-
-            // Check if the sorted ingredient lists are identical
             return (
                 mealIngredientIds.length === userMealIngredientIds.length &&
                 mealIngredientIds.every((id, index) => id === userMealIngredientIds[index])
             );
         });
-
-        return isDuplicate;
     };
 
     return (
