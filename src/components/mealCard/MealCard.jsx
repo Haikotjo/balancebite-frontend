@@ -5,7 +5,6 @@ import {
     Typography,
     CardMedia,
     Collapse,
-    Box,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import useNutrients from "../../hooks/useNutrients.js";
