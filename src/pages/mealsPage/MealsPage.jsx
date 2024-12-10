@@ -9,8 +9,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 function MealPage() {
     const { userId } = useParams();
     const [userName, setUserName] = useState(null);
-    const [currentListEndpoint, setCurrentListEndpoint] = useState("http://localhost:8080/meals");
-    const [currentCardEndpoint, setCurrentCardEndpoint] = useState("http://localhost:8080/meals");
+    const [currentListEndpoint, setCurrentListEndpoint] = useState(`${import.meta.env.VITE_BASE_URL}/meals`);
     const [submenuOptions, setSubmenuOptions] = useState([]);
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);
@@ -27,20 +26,16 @@ function MealPage() {
     const handleSubMenuClick = (option) => {
         switch (option) {
             case "All My Meals":
-                setCurrentListEndpoint("http://localhost:8080/users/meals");
-                setCurrentCardEndpoint("http://localhost:8080/users/meal");
+                setCurrentListEndpoint(`${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_USER_MEALS_ENDPOINT}`);
                 break;
             case "My Created Meals":
-                setCurrentListEndpoint("http://localhost:8080/users/created-meals");
-                setCurrentCardEndpoint("http://localhost:8080/users/meal");
+                setCurrentListEndpoint(`${import.meta.env.VITE_BASE_URL}/users/created-meals`);
                 break;
             case "Suggested Meals":
-                setCurrentListEndpoint("http://localhost:8080/meals/suggestions");
-                setCurrentCardEndpoint("http://localhost:8080/meals");
+                setCurrentListEndpoint(`${import.meta.env.VITE_BASE_URL}/meals/suggestions`);
                 break;
             default:
-                setCurrentListEndpoint("http://localhost:8080/meals");
-                setCurrentCardEndpoint("http://localhost:8080/meals");
+                setCurrentListEndpoint(`${import.meta.env.VITE_BASE_URL}/meals`);
                 break;
         }
     };
@@ -70,7 +65,7 @@ function MealPage() {
                 </>
             )}
             {submenuOptions.length > 0 && <SubMenu options={submenuOptions} onOptionClick={handleSubMenuClick} />}
-            <MealList endpoint={currentListEndpoint} cardEndpoint={currentCardEndpoint} setCreatedByName={setUserName} />
+            <MealList endpoint={currentListEndpoint} setCreatedByName={setUserName} />
         </Box>
     );
 }

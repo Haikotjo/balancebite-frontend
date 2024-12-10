@@ -35,7 +35,10 @@ export function useMeal(mealId) {
             }
         };
 
-        fetchMealData();
+        // Verwerk de Promise expliciet met .catch
+        fetchMealData().catch((err) => {
+            console.error("Unhandled error in fetchMealData:", err);
+        });
     }, [baseEndpoint, mealId]); // Re-run de effect als baseEndpoint of mealId verandert
 
     return { meal, loading, error }; // Return meal data, loading state, and error state

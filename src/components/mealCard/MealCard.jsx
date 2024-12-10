@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import PropTypes from "prop-types";
 import {
     Card,
@@ -22,20 +22,36 @@ import ExpandMoreIconButton from "../styledComponents/expandMoreIconButton/Expan
 import { getImageSrc } from "../../utils/getImageSrc";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 import useFavorites from "../../hooks/useFavorites.jsx";
+import { UserMealsContext } from "../../context/UserMealsContext";
 
-function MealCard({ meal, isDuplicate: initialDuplicate }) {
+function MealCard({ meal }) {
     const { expanded, toggleExpand } = useExpand();
     const { nutrients } = useNutrients(meal.id);
-    const { addMealToFavorites, SnackbarComponent } = useFavorites(); // SnackbarComponent toevoegen
+    const { addMealToFavorites, SnackbarComponent } = useFavorites();
+    const { userMeals, addMealToUserMeals } = useContext(UserMealsContext); // Haal userMeals en functie op
     const imageSrc = getImageSrc(meal);
 
-    // Lokaal beheren van duplicaatstatus
-    const [isDuplicate, setIsDuplicate] = useState(initialDuplicate);
+    const isDuplicate = userMeals.some((userMeal) => {
+        const mealIngredientIds = meal.mealIngredients
+            ?.map((ingredient) => ingredient?.foodItemId)
+            .filter(Boolean)
+            .sort();
+
+        const userMealIngredientIds = userMeal.mealIngredients
+            ?.map((ingredient) => ingredient?.foodItemId)
+            .filter(Boolean)
+            .sort();
+
+        return (
+            mealIngredientIds.length === userMealIngredientIds.length &&
+            mealIngredientIds.every((id, index) => id === userMealIngredientIds[index])
+        );
+    });
 
     const handleAddToFavorites = async () => {
         const success = await addMealToFavorites(meal.id);
         if (success) {
-            setIsDuplicate(true); // Update lokale status alleen als het succesvol is
+            addMealToUserMeals(meal); // Voeg toe aan context
         }
     };
 
@@ -132,7 +148,6 @@ function MealCard({ meal, isDuplicate: initialDuplicate }) {
 
 MealCard.propTypes = {
     meal: PropTypes.object.isRequired,
-    isDuplicate: PropTypes.bool.isRequired,
 };
 
 export default MealCard;

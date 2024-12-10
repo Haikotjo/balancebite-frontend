@@ -1,35 +1,26 @@
-import { useEffect, useState } from "react";
-import { fetchMeals, fetchUserMeals } from "../../services/apiService.js";
+import { useEffect, useState, useContext } from "react";
+import { fetchMeals } from "../../services/apiService.js";
 import MealCard from "../mealCard/MealCard.jsx";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import PropTypes from "prop-types";
+import { UserMealsContext } from "../../context/UserMealsContext";
 
 function MealList({ endpoint, setCreatedByName }) {
     const [meals, setMeals] = useState([]);
-    const [userMeals, setUserMeals] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { userMeals } = useContext(UserMealsContext); // Haal userMeals uit context
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const token = localStorage.getItem("accessToken");
-
-                // Haal de maaltijden op
                 const mealsData = await fetchMeals(endpoint);
                 setMeals(mealsData);
 
                 if (mealsData.length > 0 && setCreatedByName) {
-                    setCreatedByName(mealsData[0].createdBy?.userName || "Unknown User");
-                }
-
-                // Haal de maaltijden van de gebruiker op (als er een token is)
-                if (token) {
-                    const userMealsData = await fetchUserMeals(token);
-                    setUserMeals(Array.isArray(userMealsData) ? userMealsData : []);
-                } else {
-                    setUserMeals([]);
+                    const createdBy = mealsData[0]?.createdBy?.userName || "Unknown User";
+                    setCreatedByName(createdBy);
                 }
 
                 setError(null);
@@ -40,7 +31,7 @@ function MealList({ endpoint, setCreatedByName }) {
             }
         };
 
-        fetchData();
+        fetchData().catch((err) => console.error("Unhandled error in fetchData:", err));
     }, [endpoint, setCreatedByName]);
 
     if (loading)
@@ -62,20 +53,6 @@ function MealList({ endpoint, setCreatedByName }) {
             </Box>
         );
 
-    const isDuplicateMeal = (meal) => {
-        if (userMeals.length === 0) return false;
-
-        const mealIngredientIds = meal.mealIngredients.map((ingredient) => ingredient.foodItemId).sort();
-
-        return userMeals.some((userMeal) => {
-            const userMealIngredientIds = userMeal.mealIngredients.map((ingredient) => ingredient.foodItemId).sort();
-            return (
-                mealIngredientIds.length === userMealIngredientIds.length &&
-                mealIngredientIds.every((id, index) => id === userMealIngredientIds[index])
-            );
-        });
-    };
-
     return (
         <Box
             display="grid"
@@ -84,7 +61,7 @@ function MealList({ endpoint, setCreatedByName }) {
             padding={2}
         >
             {meals.map((meal) => (
-                <MealCard key={meal.id} meal={meal} isDuplicate={isDuplicateMeal(meal)} />
+                <MealCard key={meal.id} meal={meal} />
             ))}
         </Box>
     );

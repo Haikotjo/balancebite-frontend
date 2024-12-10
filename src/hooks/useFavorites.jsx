@@ -1,12 +1,10 @@
 import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { addMealToFavoritesApi } from "../services/apiService.js";
-import SnackbarComponent from "../components/snackbarComponent/SnackbarComponent.jsx"
+import SnackbarComponent from "../components/snackbarComponent/SnackbarComponent.jsx";
 
 const useFavorites = () => {
     const { user, token } = useContext(AuthContext);
-    const navigate = useNavigate();
     const [snackbarOpen, setSnackbarOpen] = useState(false);
 
     const addMealToFavorites = async (mealId) => {
@@ -43,7 +41,7 @@ const useFavorites = () => {
             <SnackbarComponent
                 open={snackbarOpen}
                 onClose={handleSnackbarClose}
-                message="Je moet ingelogd zijn om deze actie uit te voeren."
+                message="Register or login to use this function."
                 severity="warning"
             />
         ),
