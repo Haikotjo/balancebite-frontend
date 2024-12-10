@@ -1,103 +1,62 @@
 import { useState, useEffect } from "react";
+import { fetchMealById, fetchMealNutrientsById } from "../services/apiService.js";
 
 /**
- * Custom hook to fetch meal data dynamically based on a given endpoint and meal ID.
+ * Custom hook to fetch meal data and nutrients based on a given meal ID.
  *
- * @param {string} baseEndpoint - The base API endpoint to fetch the meal data from.
  * @param {number} mealId - The ID of the meal to fetch.
- * @returns {Object} - Contains meal data, loading state, and error state.
+ * @returns {Object} - Contains meal data, nutrients, loading states, and error states.
  */
-export function useMeal(baseEndpoint = "http://localhost:8080/meals", mealId) {
+export function useMeal(mealId) {
     const [meal, setMeal] = useState(null); // Stores the fetched meal data
-    const [loading, setLoading] = useState(true); // Indicates loading state
-    const [error, setError] = useState(null); // Stores error messages, if any
     const [nutrients, setNutrients] = useState([]); // Stores fetched nutrients
+    const [loading, setLoading] = useState(true); // Indicates loading state for meal
     const [loadingNutrients, setLoadingNutrients] = useState(true); // Indicates loading state for nutrients
-    const [nutrientError, setNutrientError] = useState(null); // Stores error for nutrients
+    const [error, setError] = useState(null); // Stores error messages for meal
+    const [nutrientError, setNutrientError] = useState(null); // Stores error messages for nutrients
 
     useEffect(() => {
         if (!mealId) {
             console.warn("Meal ID is not provided. Skipping fetch."); // Log missing mealId
+            setLoading(false);
+            setLoadingNutrients(false);
             return;
         }
 
+        // Fetch meal data
         const fetchMealData = async () => {
             setLoading(true);
-            const endpoint = `${baseEndpoint}/${mealId}`; // Construct the dynamic endpoint
-            console.log("Fetching meal data from:", endpoint); // Log the endpoint
-
             try {
-                // Retrieve the token from localStorage
-                const token = localStorage.getItem("accessToken");
-
-                // Setup headers
-                const headers = {
-                    "Content-Type": "application/json",
-                };
-                if (token) {
-                    headers["Authorization"] = `Bearer ${token}`;
-                } else {
-                    console.warn("No token found for authorization.");
-                }
-
-                const response = await fetch(endpoint, { headers }); // Add headers to fetch
-
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch meal with ID ${mealId}: ${response.statusText}`);
-                }
-
-                const data = await response.json();
-                setMeal(data);
-                setError(null); // Clear any previous error
-                console.log("Fetched meal data successfully:", data); // Log fetched meal data
+                const mealData = await fetchMealById(mealId);
+                setMeal(mealData);
+                setError(null);
             } catch (err) {
-                console.error("Error fetching meal data:", err.message); // Log the error
+                console.error("Error fetching meal data:", err.message);
                 setError(err.message);
             } finally {
-                setLoading(false); // End loading state
+                setLoading(false);
             }
         };
 
-        const fetchNutrients = async () => {
+        // Fetch nutrients data
+        const fetchNutrientsData = async () => {
             setLoadingNutrients(true);
-            const nutrientsEndpoint = `http://localhost:8080/meals/nutrients/${mealId}`; // Endpoint for nutrients
-            console.log("Fetching nutrients from:", nutrientsEndpoint); // Log the endpoint
-
             try {
-                // Retrieve the token from localStorage
-                const token = localStorage.getItem("accessToken");
-
-                // Setup headers
-                const headers = {
-                    "Content-Type": "application/json",
-                };
-                if (token) {
-                    headers["Authorization"] = `Bearer ${token}`;
-                } else {
-                    console.warn("No token found for authorization.");
-                }
-
-                const response = await fetch(nutrientsEndpoint, { headers }); // Add headers to fetch
-
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch nutrients for meal ID ${mealId}: ${response.statusText}`);
-                }
-
-                const data = await response.json();
-                setNutrients(data);
-                setNutrientError(null); // Clear any previous error
-                console.log("Fetched nutrients successfully:", data); // Log fetched nutrients
+                const nutrientsData = await fetchMealNutrientsById(mealId);
+                setNutrients(nutrientsData);
+                setNutrientError(null);
             } catch (err) {
-                console.error("Error fetching nutrients:", err.message); // Log the error
+                console.error("Error fetching nutrients:", err.message);
                 setNutrientError(err.message);
             } finally {
-                setLoadingNutrients(false); // End loading state for nutrients
+                setLoadingNutrients(false);
             }
         };
 
-        fetchMealData();
-        fetchNutrients();
-    }, [baseEndpoint, mealId]); // Re-run the effect if baseEndpoint or mealId changes
+        // Call the functions
+        void fetchMealData();
+        void fetchNutrientsData();
+    }, [mealId]); // Re-run the effect if mealId changes
 
     return {
         meal,
@@ -106,5 +65,5 @@ export function useMeal(baseEndpoint = "http://localhost:8080/meals", mealId) {
         loadingNutrients,
         error,
         nutrientError,
-    }; // Return meal and nutrients data, loading states, and error states
+    };
 }

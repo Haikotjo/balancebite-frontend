@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
+import { fetchMealNutrientsById } from "../services/apiService.js";
 
+/**
+ * Custom hook to fetch nutrients for a specific meal.
+ *
+ * @param {number} mealId - The ID of the meal to fetch nutrients for.
+ * @returns {Object} - Contains nutrients data and error state.
+ */
 const useNutrients = (mealId) => {
     const [nutrients, setNutrients] = useState([]);
     const [error, setError] = useState(null);
@@ -7,11 +14,9 @@ const useNutrients = (mealId) => {
     useEffect(() => {
         const fetchNutrients = async () => {
             try {
-                const nutrientsEndpoint = `http://localhost:8080/meals/nutrients/${mealId}`;
-                const response = await fetch(nutrientsEndpoint);
-                if (!response.ok) throw new Error("Failed to fetch nutrients");
-                const data = await response.json();
-                setNutrients(Object.values(data));
+                const data = await fetchMealNutrientsById(mealId);
+                setNutrients(Object.values(data)); // Convert object to array if needed
+                setError(null);
             } catch (error) {
                 console.error(`Error fetching nutrients for mealId ${mealId}:`, error);
                 setError(error.message);
@@ -19,7 +24,7 @@ const useNutrients = (mealId) => {
         };
 
         if (mealId) {
-            fetchNutrients();
+            void fetchNutrients();
         }
     }, [mealId]);
 

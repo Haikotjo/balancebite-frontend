@@ -24,101 +24,13 @@ const logError = (error) => {
     }
 };
 
-// Voeg een maaltijd toe aan favorieten
-export const addMealToFavoritesApi = async (mealId, token) => {
-    const endpoint = `${import.meta.env.VITE_ADD_MEAL_ENDPOINT}/${mealId}`;
-    try {
-        const response = await apiClient.patch(endpoint, null, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
-        logResponse(response);
-        return response.data;
-    } catch (error) {
-        logError(error);
-        throw error;
-    }
-};
-
-// Haal maaltijden op
-export const fetchMeals = async (endpoint) => {
-    try {
-        const response = await apiClient.get(endpoint);
-        logResponse(response);
-        return response.data;
-    } catch (error) {
-        logError(error);
-        throw error;
-    }
-};
-
-// Haal de maaltijden van een gebruiker op
-export const fetchUserMeals = async (token) => {
-    const endpoint = import.meta.env.VITE_USER_MEALS_ENDPOINT || "/users/meals";
-    try {
-        const response = await apiClient.get(endpoint, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
-        logResponse(response);
-        return response.data;
-    } catch (error) {
-        logError(error);
-        throw error;
-    }
-};
-
-// Login API
-export const loginApi = async (email, password) => {
-    const endpoint = import.meta.env.VITE_AUTH_LOGIN_ENDPOINT || "/auth/login";
-    try {
-        const response = await apiClient.post(endpoint, { email, password });
-        logResponse(response);
-        return response.data;
-    } catch (error) {
-        logError(error);
-        throw error;
-    }
-};
-
-// Logout API
-export const logoutApi = async (token) => {
-    const endpoint = import.meta.env.VITE_AUTH_LOGOUT_ENDPOINT || "/auth/logout";
-    try {
-        const response = await apiClient.post(
-            endpoint,
-            {},
-            {
-                headers: { Authorization: `Bearer ${token}` },
-                withCredentials: true,
-            }
-        );
-        logResponse(response);
-        return response.data;
-    } catch (error) {
-        logError(error);
-        throw error;
-    }
-};
-
-// Refresh Access Token API
-export const refreshAccessTokenApi = async (refreshToken) => {
-    const endpoint = import.meta.env.VITE_AUTH_REFRESH_ENDPOINT || "/auth/refresh";
-    try {
-        const response = await apiClient.post(endpoint, { refreshToken });
-        logResponse(response);
-        return response.data; // Verwacht: { accessToken: "new-token" }
-    } catch (error) {
-        logError(error);
-        throw error;
-    }
-};
-
 // Voeg een Axios-interceptor toe voor automatische tokenvernieuwing
 apiClient.interceptors.request.use(
     async (config) => {
         let token = localStorage.getItem("accessToken");
 
         if (token) {
-            const decoded = jwtDecode(token); // Correct gebruik van jwtDecode
+            const decoded = jwtDecode(token);
             const currentTime = Math.floor(Date.now() / 1000);
 
             // Controleer of token bijna verloopt (binnen 1 minuut)
@@ -147,5 +59,112 @@ apiClient.interceptors.request.use(
     },
     (error) => Promise.reject(error)
 );
+
+// API functies
+export const addMealToFavoritesApi = async (mealId, token) => {
+    const endpoint = `${import.meta.env.VITE_ADD_MEAL_ENDPOINT}/${mealId}`;
+    try {
+        const response = await apiClient.patch(endpoint, null, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        logResponse(response);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+export const fetchMeals = async (endpoint) => {
+    try {
+        const response = await apiClient.get(endpoint);
+        logResponse(response);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+export const fetchUserMeals = async (token) => {
+    const endpoint = import.meta.env.VITE_USER_MEALS_ENDPOINT || "/users/meals";
+    try {
+        const response = await apiClient.get(endpoint, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        logResponse(response);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+export const fetchMealById = async (mealId) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}/meals/${mealId}`;
+    try {
+        const response = await apiClient.get(endpoint);
+        logResponse(response);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+export const fetchMealNutrientsById = async (mealId) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}/meals/nutrients/${mealId}`;
+    try {
+        const response = await apiClient.get(endpoint);
+        logResponse(response);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+export const loginApi = async (email, password) => {
+    const endpoint = import.meta.env.VITE_AUTH_LOGIN_ENDPOINT || "/auth/login";
+    try {
+        const response = await apiClient.post(endpoint, { email, password });
+        logResponse(response);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+export const logoutApi = async (token) => {
+    const endpoint = import.meta.env.VITE_AUTH_LOGOUT_ENDPOINT || "/auth/logout";
+    try {
+        const response = await apiClient.post(
+            endpoint,
+            {},
+            {
+                headers: { Authorization: `Bearer ${token}` },
+                withCredentials: true,
+            }
+        );
+        logResponse(response);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+export const refreshAccessTokenApi = async (refreshToken) => {
+    const endpoint = import.meta.env.VITE_AUTH_REFRESH_ENDPOINT || "/auth/refresh";
+    try {
+        const response = await apiClient.post(endpoint, { refreshToken });
+        logResponse(response);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
 
 export default apiClient;
