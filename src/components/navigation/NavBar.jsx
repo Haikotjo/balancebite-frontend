@@ -7,7 +7,7 @@ import { useTheme, useMediaQuery } from "@mui/material";
 import LoginRegisterForm from "./loginRegisterForm/LoginRegisterForm"; // Vervang LoginForm door LoginRegisterForm
 import HamburgerMenu from "./hamburgerMenu/HamburgerMenu";
 import DesktopMenu from "./desktopMenu/DesktopMenu";
-import NavLogo from "../navLogo/NavLogo";
+import NavLogo from "./navLogo/NavLogo";
 import ErrorAlert from "../errorAlert/ErrorAlert";
 import useLogout from "../../hooks/useLogout.js"; // Importeer de useLogout-hook
 import useLogin from "../../hooks/useLogin";

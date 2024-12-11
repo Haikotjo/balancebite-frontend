@@ -1,8 +1,20 @@
 import PropTypes from "prop-types";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Menu, MenuItem } from "@mui/material";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
+    const [anchorEl, setAnchorEl] = useState(null);
+
+    const handleMealsMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMealsMenuClose = () => {
+        setAnchorEl(null);
+    };
+
     return (
         <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
             <Button color="inherit" component={Link} to="/">
@@ -11,9 +23,32 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
             <Button color="inherit" component={Link} to="/about">
                 About
             </Button>
-            <Button color="inherit" component={Link} to="/meals">
+
+            {/* Meals met submenu en een pijltje */}
+            <Button
+                color="inherit"
+                onClick={handleMealsMenuOpen}
+                endIcon={<KeyboardArrowDownIcon />} // Voeg een pijltje toe
+            >
                 Meals
             </Button>
+            <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMealsMenuClose}
+                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                transformOrigin={{ vertical: "top", horizontal: "left" }}
+            >
+                <MenuItem onClick={handleMealsMenuClose} component={Link} to="/meals">
+                    View Meals
+                </MenuItem>
+                {user && (
+                    <MenuItem onClick={handleMealsMenuClose} component={Link} to="/create-meal">
+                        Create Meal
+                    </MenuItem>
+                )}
+            </Menu>
+
             {user ? (
                 <Button color="inherit" onClick={onLogout}>
                     Logout

@@ -1,11 +1,13 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { Menu, MenuItem, IconButton } from "@mui/material";
+import { Menu, MenuItem, IconButton, ListItemText, ListItemIcon } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { useNavigate } from "react-router-dom";
 
 const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
     const [anchorEl, setAnchorEl] = useState(null);
+    const [mealsMenuAnchorEl, setMealsMenuAnchorEl] = useState(null);
     const navigate = useNavigate();
 
     const handleMenuOpen = (event) => {
@@ -14,6 +16,15 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
 
     const handleMenuClose = () => {
         setAnchorEl(null);
+        setMealsMenuAnchorEl(null); // Sluit het submenu
+    };
+
+    const handleMealsMenuOpen = (event) => {
+        setMealsMenuAnchorEl(event.currentTarget);
+    };
+
+    const handleMealsMenuClose = () => {
+        setMealsMenuAnchorEl(null);
     };
 
     return (
@@ -32,7 +43,35 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
             >
                 <MenuItem onClick={() => { navigate("/"); handleMenuClose(); }}>Home</MenuItem>
                 <MenuItem onClick={() => { navigate("/about"); handleMenuClose(); }}>About</MenuItem>
-                <MenuItem onClick={() => { navigate("/meals"); handleMenuClose(); }}>Meals</MenuItem>
+
+                {/* Meals submenu */}
+                <MenuItem
+                    onClick={handleMealsMenuOpen}
+                    disableRipple
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                    <ListItemText primary="Meals" />
+                    <ListItemIcon style={{ minWidth: "auto" }}>
+                        <ArrowRightIcon />
+                    </ListItemIcon>
+                </MenuItem>
+                <Menu
+                    anchorEl={mealsMenuAnchorEl}
+                    open={Boolean(mealsMenuAnchorEl)}
+                    onClose={handleMealsMenuClose}
+                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                    transformOrigin={{ vertical: "top", horizontal: "left" }}
+                >
+                    <MenuItem onClick={() => { navigate("/meals"); handleMenuClose(); }}>
+                        View Meals
+                    </MenuItem>
+                    {user && (
+                        <MenuItem onClick={() => { navigate("/create-meal"); handleMenuClose(); }}>
+                            Create Meal
+                        </MenuItem>
+                    )}
+                </Menu>
+
                 {user ? (
                     <MenuItem onClick={() => { onLogout(); handleMenuClose(); }}>Logout</MenuItem>
                 ) : (
@@ -49,9 +88,8 @@ HamburgerMenu.propTypes = {
         roles: PropTypes.arrayOf(PropTypes.string).isRequired,
         type: PropTypes.string.isRequired,
     }),
-    onLogout: PropTypes.func.isRequired, // Correcte naam
-    onLoginClick: PropTypes.func.isRequired, // Voeg deze ook toe voor consistentie
+    onLogout: PropTypes.func.isRequired,
+    onLoginClick: PropTypes.func.isRequired,
 };
-
 
 export default HamburgerMenu;
