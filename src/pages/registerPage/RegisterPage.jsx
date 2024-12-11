@@ -1,4 +1,4 @@
-import RegisterForm from "../../components/authentication/registerForm/RegisterForm.jsx";
+import RegisterForm from "../../components/navigation/loginRegisterForm/registerForm/RegisterForm.jsx";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUserApi } from "../../services/apiService";

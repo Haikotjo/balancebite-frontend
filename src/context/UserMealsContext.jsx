@@ -8,32 +8,36 @@ export const UserMealsProvider = ({ children }) => {
     const [userMeals, setUserMeals] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchUserMealsData = async () => {
-            try {
-                const token = localStorage.getItem("accessToken");
-                if (token) {
-                    const userMealsData = await fetchUserMeals(token);
-                    setUserMeals(Array.isArray(userMealsData) ? userMealsData : []);
-                }
-            } catch (error) {
-                console.error("Failed to fetch user meals:", error.message);
-                setUserMeals([]);
-            } finally {
-                setLoading(false);
+    const fetchUserMealsData = async () => {
+        try {
+            setLoading(true); // Zet de loading state aan
+            const token = localStorage.getItem("accessToken");
+            if (token) {
+                const userMealsData = await fetchUserMeals(token);
+                setUserMeals(Array.isArray(userMealsData) ? userMealsData : []);
             }
-        };
+        } catch (error) {
+            console.error("Failed to fetch user meals:", error.message);
+            setUserMeals([]);
+        } finally {
+            setLoading(false); // Zet de loading state uit
+        }
+    };
 
-        fetchUserMealsData();
+    useEffect(() => {
+        fetchUserMealsData(); // Haal meals op bij component mount
     }, []);
 
-    // Voeg een functie toe om een maaltijd te kunnen toevoegen
     const addMealToUserMeals = (meal) => {
         setUserMeals((prevMeals) => [...prevMeals, meal]);
     };
 
+    const resetUserMeals = () => {
+        setUserMeals([]);
+    };
+
     return (
-        <UserMealsContext.Provider value={{ userMeals, loading, addMealToUserMeals }}>
+        <UserMealsContext.Provider value={{ userMeals, loading, fetchUserMealsData, resetUserMeals, addMealToUserMeals }}>
             {children}
         </UserMealsContext.Provider>
     );

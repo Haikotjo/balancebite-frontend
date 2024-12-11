@@ -7,10 +7,12 @@ const useLogin = () => {
     const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState(null);
 
-    const handleLogin = async (email, password) => {
+    const handleLogin = async (email, password, onSuccess) => {
         try {
             await login(email, password);
             setErrorMessage(null); // Wis eerdere foutmeldingen
+
+            if (onSuccess) onSuccess(); // Roep callback aan bij succes
 
             if (window.location.pathname !== "/meals") {
                 navigate("/meals"); // Navigeer naar MealsPage als je er niet al bent

@@ -4,14 +4,14 @@ import {
     Toolbar,
 } from "@mui/material";
 import { useTheme, useMediaQuery } from "@mui/material";
-import LoginForm from "../authentication/loginForm/LoginForm";
-import HamburgerMenu from "../hamburgerMenu/HamburgerMenu";
-import DesktopMenu from "../desktopMenu/DesktopMenu";
+import LoginRegisterForm from "./loginRegisterForm/LoginRegisterForm"; // Vervang LoginForm door LoginRegisterForm
+import HamburgerMenu from "./hamburgerMenu/HamburgerMenu";
+import DesktopMenu from "./desktopMenu/DesktopMenu";
 import NavLogo from "../navLogo/NavLogo";
 import ErrorAlert from "../errorAlert/ErrorAlert";
 import useLogout from "../../hooks/useLogout.js"; // Importeer de useLogout-hook
 import useLogin from "../../hooks/useLogin";
-import {AuthContext} from "../../context/AuthContext.jsx"; // Importeer de useLogin-hook
+import { AuthContext } from "../../context/AuthContext.jsx"; // Importeer de useLogin-hook
 
 const NavBar = () => {
     const { user } = useContext(AuthContext); // Haal alleen `user` op
@@ -20,6 +20,11 @@ const NavBar = () => {
     const handleLogout = useLogout(); // Gebruik de useLogout-hook
     const { handleLogin, errorMessage } = useLogin(); // Gebruik de useLogin-hook
     const [showLoginForm, setShowLoginForm] = useState(false);
+
+    const handleRegister = (data) => {
+        // Voeg hier je registratie-logica toe, bijvoorbeeld een API-aanroep
+        console.log("Register data:", data);
+    };
 
     return (
         <AppBar position="static" sx={{ mb: 2 }}>
@@ -42,8 +47,9 @@ const NavBar = () => {
                 )}
 
                 {showLoginForm && (
-                    <LoginForm
-                        onSubmit={handleLogin}
+                    <LoginRegisterForm
+                        onLogin={handleLogin}
+                        onRegister={handleRegister}
                         errorMessage={errorMessage}
                         onClose={() => setShowLoginForm(false)}
                     />
