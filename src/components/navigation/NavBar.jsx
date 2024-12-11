@@ -4,7 +4,7 @@ import {
     Toolbar,
 } from "@mui/material";
 import { useTheme, useMediaQuery } from "@mui/material";
-import LoginForm from "../loginForm/LoginForm";
+import LoginForm from "../authentication/loginForm/LoginForm";
 import HamburgerMenu from "../hamburgerMenu/HamburgerMenu";
 import DesktopMenu from "../desktopMenu/DesktopMenu";
 import NavLogo from "../navLogo/NavLogo";

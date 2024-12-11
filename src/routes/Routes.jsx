@@ -4,6 +4,7 @@ import HomePage from "../pages/homePage/HomePage";
 import AboutPage from "../pages/aboutPage/AboutPage";
 import MealsPage from "../pages/mealsPage/MealsPage";
 import LoginPage from "../pages/loginPage/LoginPage";
+import RegisterPage from "../pages/registerPage/RegisterPage"; // Nieuwe RegisterPage toevoegen
 
 function AppRoutes() {
     return (
@@ -19,6 +20,7 @@ function AppRoutes() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} /> {/* Nieuwe Register Route */}
                 <Route path="/meals/:userId?" element={<MealsPage />} />
             </Routes>
         </Router>

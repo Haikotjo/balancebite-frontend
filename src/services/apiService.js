@@ -24,6 +24,18 @@ const logError = (error) => {
     }
 };
 
+export const registerUserApi = async (formData) => {
+    const endpoint = import.meta.env.VITE_AUTH_REGISTER_ENDPOINT || "/auth/register";
+    try {
+        const response = await apiClient.post(endpoint, formData);
+        console.log("[API] Registration successful:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("[API Error] Registration failed:", error.response?.data?.error || error.message);
+        throw error;
+    }
+};
+
 // Voeg een Axios-interceptor toe voor automatische tokenvernieuwing
 let isRefreshing = false; // Zorgt ervoor dat de token slechts één keer wordt vernieuwd
 let subscribers = []; // Houdt bij welke verzoeken wachten op een nieuwe token
