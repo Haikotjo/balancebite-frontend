@@ -1,17 +1,17 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
     Box,
     TextField,
     Button,
     Typography,
-    IconButton,
-    MenuItem,
     Alert,
 } from "@mui/material";
-import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 // Validation schema using Yup
 const schema = yup.object().shape({
@@ -61,6 +61,7 @@ const schema = yup.object().shape({
 const CreateMealForm = () => {
     const [useImageUpload, setUseImageUpload] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
+    const navigate = useNavigate();
     const {
         register,
         control,
@@ -70,9 +71,65 @@ const CreateMealForm = () => {
         resolver: yupResolver(schema),
     });
 
-    const onSubmit = (data) => {
-        console.log("Form Data:", data);
-        setSuccessMessage("Meal created successfully!");
+    const isTokenExpired = (token) => {
+        const decodedToken = jwtDecode(token);
+        return decodedToken.exp * 1000 < Date.now();
+    };
+
+    const createMeal = async (data, headers) => {
+        const url = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_CREATE_MEAL_ENDPOINT}`;
+        return axios.post(url, data, { headers });
+    };
+
+    const onSubmit = async (data) => {
+        try {
+            const token = localStorage.getItem("accessToken");
+
+            if (!token) {
+                throw new Error("No access token available.");
+            }
+
+            if (isTokenExpired(token)) {
+                throw new Error("Token has expired. Refreshing...");
+            }
+
+            const decodedToken = jwtDecode(token);
+            console.log("Decoded token:", decodedToken);
+
+            const formattedData = {
+                name: data.name,
+                mealDescription: data.mealDescription,
+                mealIngredients: data.mealIngredients.map((ingredient) => ({
+                    foodItemId: parseInt(ingredient.foodItemId, 10),
+                    quantity: parseFloat(ingredient.quantity),
+                })),
+                image: data.image || null,
+                imageUrl: data.imageUrl || null,
+            };
+
+            const headers = {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            };
+
+            const response = await createMeal(formattedData, headers);
+
+            setSuccessMessage("Meal created successfully!");
+            console.log("Created Meal:", response.data);
+
+            navigate(`/meals/${decodedToken.userId || null}`);
+        } catch (error) {
+            if (error.response) {
+                console.error("API Error:", error.response.data);
+                alert(`Error: ${error.response.data.error || "Something went wrong"}`);
+            } else if (error.request) {
+                console.error("Network Error:", error.request);
+                alert("Network error. Please try again later.");
+            } else {
+                console.error("Error:", error.message);
+                alert("An unexpected error occurred.");
+            }
+        }
     };
 
     return (
@@ -179,8 +236,6 @@ const CreateMealForm = () => {
                     </Box>
                 )}
             />
-
-
 
             <TextField
                 label="Meal Description"

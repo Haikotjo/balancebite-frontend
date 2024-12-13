@@ -1,5 +1,5 @@
 import axios from "axios";
-import { jwtDecode } from "jwt-decode"; // Correcte import
+import { setupAuthInterceptor } from "./authInterceptor"; // Importeer de interceptor
 
 // Maak een axios instance
 const apiClient = axios.create({
@@ -8,6 +8,9 @@ const apiClient = axios.create({
         "Content-Type": "application/json",
     },
 });
+
+// Koppel de interceptor
+setupAuthInterceptor(apiClient);
 
 // Logging helpers
 const logResponse = (response) => {
@@ -36,74 +39,35 @@ export const registerUserApi = async (formData) => {
     }
 };
 
-// Voeg een Axios-interceptor toe voor automatische tokenvernieuwing
-let isRefreshing = false; // Zorgt ervoor dat de token slechts één keer wordt vernieuwd
-let subscribers = []; // Houdt bij welke verzoeken wachten op een nieuwe token
 
-// Voeg de request-interceptor toe
-apiClient.interceptors.request.use(
-    async (config) => {
-        const token = localStorage.getItem("accessToken");
+export const refreshAccessTokenApi = async (refreshToken) => {
+    const endpoint = import.meta.env.VITE_AUTH_REFRESH_ENDPOINT || "/auth/refresh";
+    const fullEndpoint = `${import.meta.env.VITE_BASE_URL}${endpoint}`;
+    try {
+        console.log("[API] Verstuur refresh-token call naar endpoint:", fullEndpoint);
+        console.log("[API] Refresh token meegegeven:", refreshToken);
 
-        if (!token) {
-            console.warn("[API] Geen toegangstoken gevonden. Verzoek gaat door zonder autorisatie.");
-            return config;
+        // Gebruik fetch voor tokenverversing
+        const fetchResponse = await fetch(fullEndpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ refreshToken }),
+        });
+        console.log("[API] Fetch response status:", fetchResponse.status);
+
+        if (!fetchResponse.ok) {
+            throw new Error(`[API] Fetch-call naar ${fullEndpoint} mislukt met status: ${fetchResponse.status}`);
         }
 
-        const decoded = jwtDecode(token);
-        const currentTime = Math.floor(Date.now() / 1000);
+        const fetchData = await fetchResponse.json();
+        console.log("[API] Fetch response data:", fetchData);
 
-        if (decoded.exp - currentTime < 60) {
-            if (!isRefreshing) {
-                isRefreshing = true;
-
-                try {
-                    console.log("[API] Token bijna verlopen. Start verversing.");
-                    const refreshToken = localStorage.getItem("refreshToken");
-
-                    if (!refreshToken) {
-                        throw new Error("Geen refresh-token beschikbaar.");
-                    }
-
-                    const response = await refreshAccessTokenApi(refreshToken);
-                    const newToken = response?.accessToken;
-
-                    if (!newToken) {
-                        throw new Error("Geen nieuw toegangstoken ontvangen.");
-                    }
-
-                    localStorage.setItem("accessToken", newToken);
-                    console.log("[API] Nieuw token opgeslagen:", newToken);
-
-                    subscribers.forEach((callback) => callback(newToken));
-                    subscribers = [];
-                } catch (error) {
-                    console.error("[API] Tokenverversing mislukt:", error.message);
-                    localStorage.removeItem("accessToken");
-                    localStorage.removeItem("refreshToken");
-                    throw error;
-                } finally {
-                    isRefreshing = false;
-                }
-            }
-
-            return new Promise((resolve) => {
-                subscribers.push((newToken) => {
-                    config.headers.Authorization = `Bearer ${newToken}`;
-                    console.log("Updated Authorization header:", config.headers.Authorization);
-                    resolve(config);
-                });
-            });
-        }
-
-        config.headers.Authorization = `Bearer ${token}`;
-        console.log("Authorization header:", config.headers.Authorization);
-        return config;
-    },
-    (error) => Promise.reject(error)
-);
-
-
+        return fetchData; // Gebruik fetch-resultaat
+    } catch (fetchError) {
+        console.error("[API] Fetch-call mislukt:", fetchError.message);
+        throw fetchError; // Throw om consistent gedrag te behouden
+    }
+};
 
 
 // API functies
@@ -193,18 +157,6 @@ export const logoutApi = async (token) => {
                 withCredentials: true,
             }
         );
-        logResponse(response);
-        return response.data;
-    } catch (error) {
-        logError(error);
-        throw error;
-    }
-};
-
-export const refreshAccessTokenApi = async (refreshToken) => {
-    const endpoint = import.meta.env.VITE_AUTH_REFRESH_ENDPOINT || "/auth/refresh";
-    try {
-        const response = await apiClient.post(endpoint, { refreshToken });
         logResponse(response);
         return response.data;
     } catch (error) {
