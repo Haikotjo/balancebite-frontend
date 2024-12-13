@@ -1,7 +1,7 @@
 import RegisterForm from "../../components/navigation/loginRegisterForm/registerForm/RegisterForm.jsx";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { registerUserApi } from "../../services/apiService";
+import { registerUserApi } from "../../services/authService.js";
 
 const RegisterPage = () => {
     const [errorMessage, setErrorMessage] = useState(null);

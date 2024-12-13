@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { jwtDecode } from "jwt-decode"; // Correcte import behouden
-import { logoutApi, loginApi, refreshAccessTokenApi } from "../services/apiService.js";
+import { loginApi, logoutApi } from "../services/authService.js";
 import { Box, CircularProgress } from "@mui/material";
 
 export const AuthContext = createContext();
@@ -15,7 +15,6 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const initializeAuth = async () => {
             const storedToken = localStorage.getItem("accessToken");
-            const storedRefreshToken = localStorage.getItem("refreshToken");
 
             try {
                 if (storedToken) {
@@ -24,9 +23,8 @@ export const AuthProvider = ({ children }) => {
                     setUser({ id: userData.sub, roles: userData.roles, type: userData.type });
                     setRole(userData.roles);
                     setToken(storedToken);
-                } else if (storedRefreshToken) {
-                    // Probeer een nieuw access token te halen met refresh token
-                    await refreshTokenAndSetState(storedRefreshToken);
+                } else {
+                    console.warn("Geen access token gevonden. Gebruiker niet ingelogd.");
                 }
             } catch (error) {
                 console.error("Error during authentication initialization:", error.message);
@@ -38,23 +36,6 @@ export const AuthProvider = ({ children }) => {
 
         initializeAuth();
     }, []);
-
-    const refreshTokenAndSetState = async (refreshToken) => {
-        try {
-            const response = await refreshAccessTokenApi(refreshToken);
-            const { accessToken } = response;
-
-            localStorage.setItem("accessToken", accessToken);
-
-            const userData = jwtDecode(accessToken);
-            setUser({ id: userData.sub, roles: userData.roles, type: userData.type });
-            setRole(userData.roles);
-            setToken(accessToken);
-        } catch (error) {
-            console.error("Failed to refresh token:", error.message);
-            logout(); // Log de gebruiker uit als refresh token faalt
-        }
-    };
 
     const login = async (email, password) => {
         try {
