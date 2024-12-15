@@ -8,43 +8,12 @@ import {
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import Camera from "../camera/Camera.jsx";
+import {createMealSchema} from "../../utils/valadition/validationSchemas.js";
 
-// Validation schema using Yup
-const schema = yup.object().shape({
-    name: yup
-        .string()
-        .required("The name of the meal cannot be blank.")
-        .max(100, "The name of the meal must not exceed 100 characters."),
-    mealIngredients: yup
-        .array()
-        .of(
-            yup.object().shape({
-                foodItemId: yup
-                    .number()
-                    .required("Food Item ID is required.")
-                    .positive("Food Item ID must be greater than zero."),
-                quantity: yup
-                    .number()
-                    .nullable()
-                    .typeError("Quantity must be a number.")
-                    .min(0, "Quantity must be zero or greater."),
-            })
-        )
-        .min(1, "The meal must contain at least one ingredient."),
-    mealDescription: yup
-        .string()
-        .max(1000, "The meal description must not exceed 1000 characters."),
-    image: yup.mixed(),
-    imageUrl: yup
-        .string()
-        .url("Invalid URL format.")
-        .max(500, "The image URL must not exceed 500 characters."),
-});
 
 const CreateMealForm = () => {
     const [useImageUpload, setUseImageUpload] = useState(false);
@@ -58,8 +27,9 @@ const CreateMealForm = () => {
         handleSubmit,
         formState: { errors },
     } = useForm({
-        resolver: yupResolver(schema),
+        resolver: yupResolver(createMealSchema),
     });
+
 
     const createMeal = async (formData) => {
         const url = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_CREATE_MEAL_ENDPOINT}`;
