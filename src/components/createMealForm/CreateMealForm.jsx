@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import {
     Box,
     TextField,
@@ -11,9 +11,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import Camera from "../camera/Camera.jsx";
-import {createMealSchema} from "../../utils/valadition/validationSchemas.js";
-import {createMealApi} from "../../services/apiService.js";
-
+import { createMealSchema } from "../../utils/valadition/validationSchemas.js";
+import { createMealApi } from "../../services/apiService.js";
+import { getAccessToken } from "../../utils/helpers/getAccessToken.js";
+import { buildMealFormData } from "../../utils/helpers/buildMealFormData.js";
+import { handleApiError } from "../../utils/helpers/handleApiError.js";
+import { UserMealsContext } from "../../context/UserMealsContext"; // Import de UserMealsContext
 
 const CreateMealForm = () => {
     const [useImageUpload, setUseImageUpload] = useState(false);
@@ -21,6 +24,9 @@ const CreateMealForm = () => {
     const [successMessage, setSuccessMessage] = useState("");
     const [cameraError, setCameraError] = useState(null);
     const navigate = useNavigate();
+
+    const { fetchUserMealsData } = useContext(UserMealsContext); // Haal de functie op om de mealslist te verversen
+
     const {
         register,
         control,
@@ -30,54 +36,23 @@ const CreateMealForm = () => {
         resolver: yupResolver(createMealSchema),
     });
 
-
     const onSubmit = async (data) => {
         try {
-            const token = localStorage.getItem("accessToken");
+            const token = getAccessToken();
+            const formData = await buildMealFormData(data, capturedImage);
 
-            if (!token) {
-                throw new Error("No access token available.");
-            }
-
-            const formData = new FormData();
-
-            // Append mealInputDTO as a JSON string
-            const mealInputDTO = {
-                name: data.name,
-                mealDescription: data.mealDescription,
-                mealIngredients: data.mealIngredients.map((ingredient) => ({
-                    foodItemId: parseInt(ingredient.foodItemId, 10),
-                    quantity: parseFloat(ingredient.quantity),
-                })),
-                imageUrl: data.imageUrl || null,
-            };
-            formData.append("mealInputDTO", JSON.stringify(mealInputDTO));
-
-            // Append image file if available
-            if (capturedImage) {
-                const blob = await fetch(capturedImage).then((res) => res.blob());
-                formData.append("imageFile", blob, "captured-image.jpg");
-            } else if (data.image && data.image[0]) {
-                formData.append("imageFile", data.image[0]);
-            }
-
-            // Send the request
+            // Stuur de API-aanroep
             const response = await createMealApi(formData, token);
             setSuccessMessage("Meal created successfully!");
             console.log("Created Meal:", response);
 
+            // Ververs de meal-lijst
+            await fetchUserMealsData();
+
+            // Navigeer naar de meals pagina
             navigate(`/meals/${jwtDecode(token).userId || null}`);
         } catch (error) {
-            if (error.response) {
-                console.error("API Error:", error.response.data);
-                alert(`Error: ${error.response.data.error || "Something went wrong"}`);
-            } else if (error.request) {
-                console.error("Network Error:", error.request);
-                alert("Network error. Please try again later.");
-            } else {
-                console.error("Error:", error.message);
-                alert("An unexpected error occurred.");
-            }
+            handleApiError(error);
         }
     };
 
