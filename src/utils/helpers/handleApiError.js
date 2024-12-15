@@ -1,4 +1,4 @@
-export const handleApiError = (error) => {
+export const handleApiError = (error, customCallback = null) => {
     if (error.response) {
         console.error("API Error:", error.response.data);
         alert(`Error: ${error.response.data.error || "Something went wrong"}`);
@@ -8,5 +8,10 @@ export const handleApiError = (error) => {
     } else {
         console.error("Error:", error.message);
         alert("An unexpected error occurred.");
+    }
+
+    // Voer een custom callback uit als deze is meegegeven
+    if (typeof customCallback === "function") {
+        customCallback(error);
     }
 };
