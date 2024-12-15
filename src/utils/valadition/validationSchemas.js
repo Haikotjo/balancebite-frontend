@@ -21,7 +21,7 @@ export const createMealSchema = yup.object().shape({
                     .min(0, "Quantity must be zero or greater."),
             })
         )
-        .min(1, "The meal must contain at least one ingredient."),
+        .min(2, "The meal must contain at least two ingredients."),
     mealDescription: yup
         .string()
         .max(1000, "The meal description must not exceed 1000 characters."),
