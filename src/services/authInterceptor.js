@@ -93,6 +93,13 @@ Interceptor.interceptors.request.use(
             console.log("[DEBUG] Adding Authorization header with token:", token);
             config.headers["Authorization"] = `Bearer ${token}`;
         }
+
+        // Verwijder expliciete Content-Type header voor FormData
+        if (config.data instanceof FormData) {
+            delete config.headers["Content-Type"];
+            console.log("[DEBUG] FormData detected. Content-Type header removed.");
+        }
+
         return config;
     },
     (error) => {
@@ -100,5 +107,6 @@ Interceptor.interceptors.request.use(
         return Promise.reject(error);
     }
 );
+
 
 export default Interceptor;

@@ -15,43 +15,6 @@ const logError = (error) => {
     }
 };
 
-// export const refreshAccessTokenApi = async (refreshToken) => {
-//     const endpoint = import.meta.env.VITE_AUTH_REFRESH_ENDPOINT || "/auth/refresh";
-//     const fullEndpoint = `${import.meta.env.VITE_BASE_URL}${endpoint}`;
-//     try {
-//         console.log("[API] Verstuur refresh-token call naar endpoint:", fullEndpoint);
-//         console.log("[API] Refresh token meegegeven:", refreshToken);
-//
-//         const fetchResponse = await fetch(fullEndpoint, {
-//             method: "POST",
-//             headers: { "Content-Type": "application/json" },
-//             body: JSON.stringify({ refreshToken }),
-//         });
-//
-//         console.log("[API] Fetch response status:", fetchResponse.status);
-//
-//         if (!fetchResponse.ok) {
-//             throw new Error(`[API] Fetch-call naar ${fullEndpoint} mislukt met status: ${fetchResponse.status}`);
-//         }
-//
-//         const fetchData = await fetchResponse.json();
-//         console.log("[API] Fetch response data:", fetchData);
-//
-//         const newToken = fetchData?.accessToken;
-//         if (newToken) {
-//             localStorage.setItem("accessToken", newToken);
-//             console.log("[API] Nieuw access token opgeslagen in localStorage:", newToken);
-//         } else {
-//             console.error("[API] Geen nieuw access token ontvangen.");
-//         }
-//
-//         return newToken;
-//     } catch (fetchError) {
-//         console.error("[API] Fetch-call mislukt:", fetchError.message);
-//         throw fetchError;
-//     }
-// };
-
 // API functies
 export const addMealToFavoritesApi = async (mealId, token) => {
     const endpoint = `${import.meta.env.VITE_ADD_MEAL_ENDPOINT}/${mealId}`;
@@ -108,6 +71,29 @@ export const fetchMealNutrientsById = async (mealId) => {
     const endpoint = `${import.meta.env.VITE_BASE_URL}/meals/nutrients/${mealId}`;
     try {
         const response = await Interceptor.get(endpoint);
+        logResponse(response);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+export const createMealApi = async (formData) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_CREATE_MEAL_ENDPOINT}`;
+    const token = localStorage.getItem("accessToken"); // Haal het token uit localStorage
+
+    if (!token) {
+        throw new Error("No access token available.");
+    }
+
+    try {
+        const response = await Interceptor.post(endpoint, formData, {
+            headers: {
+                Authorization: `Bearer ${token}`, // Alleen de Authorization-header
+                // Geen expliciete Content-Type header toevoegen
+            },
+        });
         logResponse(response);
         return response.data;
     } catch (error) {

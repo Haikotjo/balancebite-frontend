@@ -8,11 +8,11 @@ import {
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import Camera from "../camera/Camera.jsx";
 import {createMealSchema} from "../../utils/valadition/validationSchemas.js";
+import {createMealApi} from "../../services/apiService.js";
 
 
 const CreateMealForm = () => {
@@ -30,15 +30,6 @@ const CreateMealForm = () => {
         resolver: yupResolver(createMealSchema),
     });
 
-
-    const createMeal = async (formData) => {
-        const url = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_CREATE_MEAL_ENDPOINT}`;
-        return axios.post(url, formData, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            },
-        });
-    };
 
     const onSubmit = async (data) => {
         try {
@@ -71,10 +62,9 @@ const CreateMealForm = () => {
             }
 
             // Send the request
-            const response = await createMeal(formData);
-
+            const response = await createMealApi(formData, token);
             setSuccessMessage("Meal created successfully!");
-            console.log("Created Meal:", response.data);
+            console.log("Created Meal:", response);
 
             navigate(`/meals/${jwtDecode(token).userId || null}`);
         } catch (error) {
