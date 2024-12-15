@@ -20,12 +20,19 @@ function MealCard({ meal }) {
     const { expanded, toggleExpand } = useExpand();
     const { nutrients } = useNutrients(meal.id);
     const { SnackbarComponent } = useFavorites();
+
+    // Use the utility function to dynamically generate the correct image source
     const imageSrc = getImageSrc(meal);
 
     return (
         <>
             <Card sx={{ maxWidth: 345 }}>
-                <CardMedia component="img" height="140" image={imageSrc} alt={meal.name} />
+                <CardMedia
+                    component="img"
+                    height="140"
+                    image={imageSrc}
+                    alt={meal.name}
+                />
                 <CardContent>
                     <Typography variant="h6" color="text.primary">
                         {meal.name}
@@ -35,7 +42,7 @@ function MealCard({ meal }) {
                         color="text.secondary"
                         sx={{ fontFamily: "'Quicksand', sans-serif", fontSize: "0.7rem" }}
                     >
-                        Created By:{" "}
+                        Created By: {" "}
                         <Link
                             to={`/users/created-meals/${meal.createdBy?.id}`}
                             style={{ textDecoration: "underline", color: "inherit" }}

@@ -12,6 +12,7 @@ import * as yup from "yup";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import Camera from "../camera/Camera.jsx";
 
 // Validation schema using Yup
 const schema = yup.object().shape({
@@ -38,20 +39,7 @@ const schema = yup.object().shape({
     mealDescription: yup
         .string()
         .max(1000, "The meal description must not exceed 1000 characters."),
-    image: yup
-        .mixed()
-        .test(
-            "fileSize",
-            "Image size must not exceed 500 KB.",
-            (value) => !value || value.size <= 500000
-        )
-        .test(
-            "fileType",
-            "Unsupported file format. Please upload a valid image.",
-            (value) =>
-                !value ||
-                ["image/jpeg", "image/png", "image/gif"].includes(value.type)
-        ),
+    image: yup.mixed(),
     imageUrl: yup
         .string()
         .url("Invalid URL format.")
@@ -60,7 +48,9 @@ const schema = yup.object().shape({
 
 const CreateMealForm = () => {
     const [useImageUpload, setUseImageUpload] = useState(false);
+    const [capturedImage, setCapturedImage] = useState(null);
     const [successMessage, setSuccessMessage] = useState("");
+    const [cameraError, setCameraError] = useState(null);
     const navigate = useNavigate();
     const {
         register,
@@ -71,14 +61,13 @@ const CreateMealForm = () => {
         resolver: yupResolver(schema),
     });
 
-    const isTokenExpired = (token) => {
-        const decodedToken = jwtDecode(token);
-        return decodedToken.exp * 1000 < Date.now();
-    };
-
-    const createMeal = async (data, headers) => {
+    const createMeal = async (formData) => {
         const url = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_CREATE_MEAL_ENDPOINT}`;
-        return axios.post(url, data, { headers });
+        return axios.post(url, formData, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+        });
     };
 
     const onSubmit = async (data) => {
@@ -89,35 +78,35 @@ const CreateMealForm = () => {
                 throw new Error("No access token available.");
             }
 
-            if (isTokenExpired(token)) {
-                throw new Error("Token has expired. Refreshing...");
-            }
+            const formData = new FormData();
 
-            const decodedToken = jwtDecode(token);
-            console.log("Decoded token:", decodedToken);
-
-            const formattedData = {
+            // Append mealInputDTO as a JSON string
+            const mealInputDTO = {
                 name: data.name,
                 mealDescription: data.mealDescription,
                 mealIngredients: data.mealIngredients.map((ingredient) => ({
                     foodItemId: parseInt(ingredient.foodItemId, 10),
                     quantity: parseFloat(ingredient.quantity),
                 })),
-                image: data.image || null,
                 imageUrl: data.imageUrl || null,
             };
+            formData.append("mealInputDTO", JSON.stringify(mealInputDTO));
 
-            const headers = {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            };
+            // Append image file if available
+            if (capturedImage) {
+                const blob = await fetch(capturedImage).then((res) => res.blob());
+                formData.append("imageFile", blob, "captured-image.jpg");
+            } else if (data.image && data.image[0]) {
+                formData.append("imageFile", data.image[0]);
+            }
 
-            const response = await createMeal(formattedData, headers);
+            // Send the request
+            const response = await createMeal(formData);
 
             setSuccessMessage("Meal created successfully!");
             console.log("Created Meal:", response.data);
 
-            navigate(`/meals/${decodedToken.userId || null}`);
+            navigate(`/meals/${jwtDecode(token).userId || null}`);
         } catch (error) {
             if (error.response) {
                 console.error("API Error:", error.response.data);
@@ -153,6 +142,7 @@ const CreateMealForm = () => {
             </Typography>
 
             {successMessage && <Alert severity="success">{successMessage}</Alert>}
+            {cameraError && <Alert severity="error">{cameraError}</Alert>}
 
             <TextField
                 label="Meal Name"
@@ -177,7 +167,7 @@ const CreateMealForm = () => {
                                 alignItems="center"
                                 sx={{
                                     flexWrap: "wrap",
-                                    mb: 1, // Add a small margin between ingredients
+                                    mb: 1,
                                     "@media (max-width:600px)": {
                                         flexDirection: "column",
                                     },
@@ -262,6 +252,12 @@ const CreateMealForm = () => {
                             type="file"
                             accept="image/*"
                             {...register("image")}
+                            onChange={(e) => {
+                                if (e.target.files.length > 0) {
+                                    const file = e.target.files[0];
+                                    console.log("Selected file:", file);
+                                }
+                            }}
                         />
                         {errors.image && (
                             <Typography color="error">
@@ -276,6 +272,17 @@ const CreateMealForm = () => {
                         error={!!errors.imageUrl}
                         helperText={errors.imageUrl?.message}
                         fullWidth
+                    />
+                )}
+
+                <Camera
+                    onCapture={(image) => setCapturedImage(image)}
+                />
+                {capturedImage && (
+                    <img
+                        src={capturedImage}
+                        alt="Captured"
+                        style={{ maxWidth: "100%", marginTop: "10px" }}
                     />
                 )}
             </Box>
