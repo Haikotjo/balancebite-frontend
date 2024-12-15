@@ -101,3 +101,14 @@ export const createMealApi = async (formData) => {
         throw error;
     }
 };
+
+export const getAllFoodItems = async () => {
+    const response = await Interceptor.get(`${import.meta.env.VITE_BASE_URL}/fooditems`);
+    return response.data;
+};
+
+export const searchFoodItemsByName = async (prefix) => {
+    const response = await Interceptor.get(`${import.meta.env.VITE_BASE_URL}/fooditems/search-by-name?prefix=${prefix}`);
+    return response.data;
+};
+
