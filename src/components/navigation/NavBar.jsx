@@ -22,7 +22,6 @@ const NavBar = () => {
     const [showLoginForm, setShowLoginForm] = useState(false);
 
     const handleRegister = (data) => {
-        // Voeg hier je registratie-logica toe, bijvoorbeeld een API-aanroep
         console.log("Register data:", data);
     };
 

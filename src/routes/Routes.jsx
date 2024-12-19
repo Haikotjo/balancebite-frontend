@@ -5,7 +5,8 @@ import AboutPage from "../pages/aboutPage/AboutPage";
 import MealsPage from "../pages/mealsPage/MealsPage";
 import LoginPage from "../pages/loginPage/LoginPage";
 import RegisterPage from "../pages/registerPage/RegisterPage"; // Nieuwe RegisterPage toevoegen
-import CreateMealPage from "../pages/createMealPage/CreateMealPage"; // Nieuwe CreateMealPage toevoegen
+import CreateMealPage from "../pages/createMealPage/CreateMealPage";
+import ProfilePage from "../pages/profilePage/ProfilePage.jsx"; // Nieuwe CreateMealPage toevoegen
 
 function AppRoutes() {
     return (
@@ -21,9 +22,10 @@ function AppRoutes() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} /> {/* Nieuwe Register Route */}
+                <Route path="/register" element={<RegisterPage />} />
                 <Route path="/meals/:userId?" element={<MealsPage />} />
-                <Route path="/create-meal" element={<CreateMealPage />} /> {/* Nieuwe Create Meal Route */}
+                <Route path="/create-meal" element={<CreateMealPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
             </Routes>
         </Router>
     );

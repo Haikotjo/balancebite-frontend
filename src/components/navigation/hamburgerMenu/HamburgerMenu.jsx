@@ -43,6 +43,7 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
             >
                 <MenuItem onClick={() => { navigate("/"); handleMenuClose(); }}>Home</MenuItem>
                 <MenuItem onClick={() => { navigate("/about"); handleMenuClose(); }}>About</MenuItem>
+                <MenuItem onClick={() => { navigate("/profile"); handleMenuClose(); }}>Profile</MenuItem>
 
                 {/* Meals submenu */}
                 <MenuItem

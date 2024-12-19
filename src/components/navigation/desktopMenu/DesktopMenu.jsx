@@ -23,12 +23,15 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
             <Button color="inherit" component={Link} to="/about">
                 About
             </Button>
+            <Button color="inherit" component={Link} to="/profile">
+                Profile
+            </Button>
 
-            {/* Meals met submenu en een pijltje */}
+                {/* Meals met submenu en een pijltje */}
             <Button
                 color="inherit"
                 onClick={handleMealsMenuOpen}
-                endIcon={<KeyboardArrowDownIcon />} // Voeg een pijltje toe
+                endIcon={<KeyboardArrowDownIcon />}
             >
                 Meals
             </Button>
