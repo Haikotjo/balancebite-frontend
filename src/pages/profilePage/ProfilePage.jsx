@@ -26,9 +26,6 @@ const ProfilePage = () => {
             <Box sx={{ flex: "1 1 45%" }}>
                 <Card>
                     <CardContent>
-                        <Typography variant="h6" gutterBottom>
-                            User Details
-                        </Typography>
                         <UserDetailsForm onSubmit={handleUserDetailsSubmit} />
                     </CardContent>
                 </Card>
@@ -38,9 +35,6 @@ const ProfilePage = () => {
             <Box sx={{ flex: "1 1 45%" }}>
                 <Card>
                     <CardContent>
-                        <Typography variant="h6" gutterBottom>
-                            Personal Info
-                        </Typography>
                         <PersonalInfoForm onSubmit={handlePersonalInfoSubmit} />
                     </CardContent>
                 </Card>

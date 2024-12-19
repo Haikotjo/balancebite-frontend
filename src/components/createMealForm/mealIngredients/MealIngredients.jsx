@@ -1,6 +1,5 @@
 import { Box, TextField, Typography, IconButton, Autocomplete } from "@mui/material";
 import PropTypes from "prop-types";
-import RemoveCircleOutlineRoundedIcon from "@mui/icons-material/RemoveCircleOutlineRounded";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
 import useFoodItems from "../../../hooks/useFoodItems.js";
 import RemoveFoodItemButton from "./removeFooditemButton/RemoveFoodItemButton.jsx";

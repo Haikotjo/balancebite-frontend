@@ -1,20 +1,37 @@
-import {
-    Box,
-    TextField,
-    Button,
-    Typography,
-} from "@mui/material";
+import React, { useContext } from "react";
+import { Box, TextField, Button, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { personalInfoSchema } from "../../../utils/valadition/personalInfoForm.js";
+import { personalInfoSchema } from "../../../utils/valadition/personalInfoSchema.js";
+import { jwtDecode } from "jwt-decode";
+import { AuthContext } from "../../../context/AuthContext"; // Importeer de context
 
 const PersonalInfoForm = ({ onSubmit }) => {
+    const { token } = useContext(AuthContext); // Haal token uit context
+    let decodedToken = {};
+
+    if (token) {
+        try {
+            decodedToken = jwtDecode(token);
+        } catch (error) {
+            console.error("Invalid token:", error.message);
+        }
+    } else {
+        console.warn("Token is missing. Default values will be used.");
+    }
+
+    const initialValues = {
+        username: decodedToken.username || "Default Username",
+        email: decodedToken.email || "default@example.com",
+    };
+
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm({
         resolver: yupResolver(personalInfoSchema),
+        defaultValues: initialValues,
     });
 
     return (
