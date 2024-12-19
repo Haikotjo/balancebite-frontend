@@ -6,7 +6,6 @@ import {
     Typography,
     Alert,
 } from "@mui/material";
-import * as Yup from "yup";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { jwtDecode } from "jwt-decode";
