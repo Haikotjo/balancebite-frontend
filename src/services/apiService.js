@@ -87,7 +87,6 @@ export const createMealApi = async (formData) => {
         throw new Error("No access token available.");
     }
 
-
     try {
         const response = await Interceptor.post(endpoint, formData, {
             headers: {
