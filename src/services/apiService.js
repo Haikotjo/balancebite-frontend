@@ -81,17 +81,17 @@ export const fetchMealNutrientsById = async (mealId) => {
 
 export const createMealApi = async (formData) => {
     const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_CREATE_MEAL_ENDPOINT}`;
-    const token = localStorage.getItem("accessToken"); // Haal het token uit localStorage
+    const token = localStorage.getItem("accessToken");
 
     if (!token) {
         throw new Error("No access token available.");
     }
 
+
     try {
         const response = await Interceptor.post(endpoint, formData, {
             headers: {
-                Authorization: `Bearer ${token}`, // Alleen de Authorization-header
-                // Geen expliciete Content-Type header toevoegen
+                Authorization: `Bearer ${token}`,
             },
         });
         logResponse(response);

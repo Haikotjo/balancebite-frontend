@@ -31,6 +31,9 @@ Interceptor.interceptors.response.use(
     (response) => response,
     async (error) => {
         console.log("[DEBUG] Response error detected:", error);
+        console.log("[DEBUG] Failed request URL:", error.config?.url);
+        console.log("[DEBUG] Error response data:", error.response?.data);
+
         const originalRequest = error.config;
 
         // Check als het een token-verlopen fout is
@@ -55,6 +58,7 @@ Interceptor.interceptors.response.use(
                 console.log("[DEBUG] Attempting to refresh token...");
                 const refreshToken = localStorage.getItem("refreshToken");
                 console.log("[DEBUG] Using refresh token:", refreshToken);
+
 
                 if (!refreshToken) {
                     console.error("[DEBUG] No refresh token found in localStorage.");
