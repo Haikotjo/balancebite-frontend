@@ -1,20 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Box, TextField, Typography, MenuItem } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { userDetailsSchema } from "../../../utils/valadition/userDetailsSchema.js";
-import UserButton from "../userButton/UserButton"; // Import the reusable UserButton component
+import UserButton from "../userButton/UserButton";
+import { AuthContext } from "../../../context/AuthContext";
+import { jwtDecode } from "jwt-decode";
 
 const UserDetailsForm = ({ onSubmit }) => {
+    const { token } = useContext(AuthContext);
     const [isEditable, setIsEditable] = useState(false);
-    const [initialValues, setInitialValues] = useState({
-        gender: "MALE",
-        activityLevel: "SEDENTARY",
-        goal: "MAINTENANCE",
-        height: 170,
-        weight: 70,
-        age: 30,
-    });
+    const [userProfile, setUserProfile] = useState(null);
 
     const {
         register,
@@ -23,30 +19,82 @@ const UserDetailsForm = ({ onSubmit }) => {
         formState: { errors },
     } = useForm({
         resolver: yupResolver(userDetailsSchema),
-        defaultValues: initialValues,
         mode: "onBlur",
     });
 
     useEffect(() => {
-        reset(initialValues);
-    }, [initialValues, reset]);
+        if (token) {
+            try {
+                console.log("Token gevonden:", token);
+                const decodedToken = jwtDecode(token);
+                console.log("Gedecodeerd token:", decodedToken);
+
+                const userId = decodedToken?.sub;
+                console.log("Opgehaalde user ID:", userId);
+
+                if (userId) {
+                    const fetchUserProfile = async () => {
+                        try {
+                            console.log("User ID geldig, starten met ophalen profiel...");
+                            const response = await fetch(`http://localhost:8080/users/profile`, {
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            });
+
+                            if (response.ok) {
+                                const data = await response.json();
+                                console.log("Fetched user profile:", data);
+
+                                setUserProfile({
+                                    gender: data.gender || "MALE",
+                                    activityLevel: data.activityLevel || "SEDENTARY",
+                                    goal: data.goal || "MAINTENANCE",
+                                    height: data.height || 170,
+                                    weight: data.weight || 70,
+                                    age: data.age || 30,
+                                });
+                                reset({
+                                    gender: data.gender || "MALE",
+                                    activityLevel: data.activityLevel || "SEDENTARY",
+                                    goal: data.goal || "MAINTENANCE",
+                                    height: data.height || 170,
+                                    weight: data.weight || 70,
+                                    age: data.age || 30,
+                                });
+                            } else {
+                                console.error("Failed to fetch user profile. Status:", response.status);
+                            }
+                        } catch (error) {
+                            console.error("Error fetching user profile:", error);
+                        }
+                    };
+
+                    fetchUserProfile();
+                } else {
+                    console.warn("User ID (sub) is missing from the token.");
+                }
+            } catch (error) {
+                console.error("Error decoding token:", error.message);
+            }
+        } else {
+            console.warn("Geen token gevonden.");
+        }
+    }, [token, reset]);
 
     const handleCancel = () => {
-        reset(initialValues);
-        setIsEditable(false);
+        if (userProfile) {
+            reset(userProfile); // Reset de velden naar de waarden die uit de API zijn geladen
+        }
+        setIsEditable(false); // Schakel de bewerkbare modus uit
     };
 
     const handleConfirm = async (data) => {
         try {
-            // Simuleer een backend call
             console.log("Sending data to backend:", data);
-
-            // Update initial values on success
-            setInitialValues(data);
-            reset(data);
-
-            // Exit editable mode
-            setIsEditable(false);
+            setUserProfile(data); // Update de lokale state
+            setIsEditable(false); // Schakel de bewerkbare modus uit
         } catch (error) {
             console.error("Error updating user details:", error);
         }
@@ -55,6 +103,10 @@ const UserDetailsForm = ({ onSubmit }) => {
     const handleEdit = () => {
         setIsEditable(true);
     };
+
+    if (!userProfile) {
+        return <Typography>Loading...</Typography>; // Toon een laadindicator als de API nog bezig is
+    }
 
     return (
         <Box
@@ -77,7 +129,7 @@ const UserDetailsForm = ({ onSubmit }) => {
             <TextField
                 select
                 label="Gender"
-                defaultValue="MALE"
+                defaultValue={userProfile.gender}
                 {...register("gender")}
                 error={!!errors.gender}
                 helperText={errors.gender?.message}
@@ -98,7 +150,7 @@ const UserDetailsForm = ({ onSubmit }) => {
             <TextField
                 select
                 label="Activity Level"
-                defaultValue="MODERATE"
+                defaultValue={userProfile.activityLevel}
                 {...register("activityLevel")}
                 error={!!errors.activityLevel}
                 helperText={errors.activityLevel?.message}
@@ -121,7 +173,7 @@ const UserDetailsForm = ({ onSubmit }) => {
             <TextField
                 select
                 label="Goal"
-                defaultValue="MAINTENANCE"
+                defaultValue={userProfile.goal}
                 {...register("goal")}
                 error={!!errors.goal}
                 helperText={errors.goal?.message}
