@@ -81,9 +81,6 @@ const PersonalInfoForm = ({ onSubmit }) => {
             component="form"
             onSubmit={handleSubmit(handleConfirm)}
         >
-            <Typography variant="h4" align="left">
-                Update Personal Info
-            </Typography>
 
             {/* Username */}
             <TextField

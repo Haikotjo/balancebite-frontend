@@ -93,12 +93,29 @@ const UserDetailsForm = ({ onSubmit }) => {
     const handleConfirm = async (data) => {
         try {
             console.log("Sending data to backend:", data);
-            setUserProfile(data); // Update de lokale state
-            setIsEditable(false); // Schakel de bewerkbare modus uit
+
+            const response = await fetch("http://localhost:8080/users/details", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`, // Gebruik de token uit de context
+                },
+                body: JSON.stringify(data), // Stuur het profielobject als JSON
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log("Profile updated successfully:", result);
+                setUserProfile(data); // Update de lokale state met de bevestigde gegevens
+                setIsEditable(false); // Schakel de bewerkbare modus uit
+            } else {
+                console.error("Failed to update profile. Status:", response.status);
+            }
         } catch (error) {
             console.error("Error updating user details:", error);
         }
     };
+
 
     const handleEdit = () => {
         setIsEditable(true);
