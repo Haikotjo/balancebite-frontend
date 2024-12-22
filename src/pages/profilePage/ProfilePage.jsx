@@ -1,6 +1,7 @@
-import { Box, Typography, Card, CardContent } from "@mui/material";
+import { Box, Card, CardContent } from "@mui/material";
 import UserDetailsForm from "../../components/userForm/userDetailsForm/UserDetailsForm.jsx";
 import PersonalInfoForm from "../../components/userForm/personalInfoSchema/PersonalInfoForm.jsx";
+import RecommendedNutritionDisplay from "../../components/recommendedNutritionDisplay/RecommendedNutritionDisplay.jsx";
 
 const ProfilePage = () => {
     // Placeholder submit handlers
@@ -17,13 +18,21 @@ const ProfilePage = () => {
             sx={{
                 padding: "20px",
                 display: "flex",
-                flexDirection: "row",
+                flexDirection: "column",
                 gap: "20px",
-                flexWrap: "wrap",
             }}
         >
+            {/* Personal Info Section */}
+            <Box sx={{ flex: "1 1 auto" }}>
+                <Card>
+                    <CardContent>
+                        <PersonalInfoForm onSubmit={handlePersonalInfoSubmit} />
+                    </CardContent>
+                </Card>
+            </Box>
+
             {/* User Details Section */}
-            <Box sx={{ flex: "1 1 45%" }}>
+            <Box sx={{ flex: "1 1 auto" }}>
                 <Card>
                     <CardContent>
                         <UserDetailsForm onSubmit={handleUserDetailsSubmit} />
@@ -31,11 +40,11 @@ const ProfilePage = () => {
                 </Card>
             </Box>
 
-            {/* Personal Info Section */}
-            <Box sx={{ flex: "1 1 45%" }}>
+            {/* Recommended Nutrition Section */}
+            <Box sx={{ flex: "1 1 auto" }}>
                 <Card>
                     <CardContent>
-                        <PersonalInfoForm onSubmit={handlePersonalInfoSubmit} />
+                        <RecommendedNutritionDisplay />
                     </CardContent>
                 </Card>
             </Box>

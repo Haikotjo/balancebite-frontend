@@ -1,16 +1,18 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Box, TextField, Typography, MenuItem } from "@mui/material";
+import {Box, TextField, Typography, MenuItem, CircularProgress} from "@mui/material";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { userDetailsSchema } from "../../../utils/valadition/userDetailsSchema.js";
 import UserButton from "../userButton/UserButton";
 import { AuthContext } from "../../../context/AuthContext";
 import { jwtDecode } from "jwt-decode";
+import {RecommendedNutritionContext} from "../../../context/RecommendedNutritionContext.jsx";
 
 const UserDetailsForm = ({ onSubmit }) => {
     const { token } = useContext(AuthContext);
     const [isEditable, setIsEditable] = useState(false);
     const [userProfile, setUserProfile] = useState(null);
+    const { fetchRecommendedNutrition } = useContext(RecommendedNutritionContext);
 
     const {
         register,
@@ -92,8 +94,6 @@ const UserDetailsForm = ({ onSubmit }) => {
 
     const handleConfirm = async (data) => {
         try {
-            console.log("Sending data to backend:", data);
-
             const response = await fetch("http://localhost:8080/users/details", {
                 method: "PUT",
                 headers: {
@@ -105,9 +105,14 @@ const UserDetailsForm = ({ onSubmit }) => {
 
             if (response.ok) {
                 const result = await response.json();
-                console.log("Profile updated successfully:", result);
+
                 setUserProfile(data); // Update de lokale state met de bevestigde gegevens
                 setIsEditable(false); // Schakel de bewerkbare modus uit
+
+                // Ververs de context
+                if (fetchRecommendedNutrition) {
+                    await fetchRecommendedNutrition();
+                }
             } else {
                 console.error("Failed to update profile. Status:", response.status);
             }
@@ -117,12 +122,14 @@ const UserDetailsForm = ({ onSubmit }) => {
     };
 
 
+
+
     const handleEdit = () => {
         setIsEditable(true);
     };
 
     if (!userProfile) {
-        return <Typography>Loading...</Typography>; // Toon een laadindicator als de API nog bezig is
+        return <CircularProgress />
     }
 
     return (

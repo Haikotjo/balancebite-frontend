@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Box, TextField, Typography } from "@mui/material";
+import {Box, CircularProgress, TextField, Typography} from "@mui/material";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { personalInfoSchema } from "../../../utils/valadition/personalInfoSchema.js";
@@ -10,7 +10,7 @@ import UserButton from "../userButton/UserButton.jsx"; // Import the reusable Us
 const PersonalInfoForm = ({ onSubmit }) => {
     const { token } = useContext(AuthContext);
     const [isEditable, setIsEditable] = useState(false);
-    const [initialValues, setInitialValues] = useState(null); // Start with null to indicate loading
+    const [initialValues, setInitialValues] = useState(null);
 
     useEffect(() => {
         if (token) {
@@ -28,7 +28,7 @@ const PersonalInfoForm = ({ onSubmit }) => {
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: yupResolver(personalInfoSchema),
-        defaultValues: initialValues || {}, // Use empty defaults until initialValues are set
+        defaultValues: initialValues || {},
         mode: "onBlur",
     });
 
@@ -44,28 +44,48 @@ const PersonalInfoForm = ({ onSubmit }) => {
     };
 
     const handleConfirm = async (data) => {
+        // Zorg dat de payload correct is opgebouwd en trim de e-mail
+        const payload = {
+            userName: data.username.trim(),
+            email: data.email.trim(), // Trim de e-mail
+        };
+
         try {
-            // Simulate a backend call
-            console.log("Sending data to backend:", data);
+            const response = await fetch("http://localhost:8080/users/basic-info", {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(payload),
+            });
 
-            // Update initial values on success
-            setInitialValues(data);
-            reset(data); // Reset the form with new values
-
-            // Exit editable mode
-            setIsEditable(false);
+            if (response.ok) {
+                const result = await response.json();
+                setInitialValues(result);
+                if (result.userName !== payload.userName) {
+                    console.warn(
+                        "Mismatch detected: userName in response does not match the sent payload."
+                    );
+                }
+            } else {
+                console.error(
+                    `Failed to update user information. Status: ${response.status}`
+                );
+            }
         } catch (error) {
             console.error("Error updating user information:", error);
         }
+        setIsEditable(false);
     };
+
 
     const handleEdit = () => {
         setIsEditable(true);
     };
 
     if (!initialValues) {
-        // Show a loading state if initialValues are not yet available
-        return <Typography>Loading...</Typography>;
+        return <CircularProgress />
     }
 
     return (
@@ -82,6 +102,10 @@ const PersonalInfoForm = ({ onSubmit }) => {
             onSubmit={handleSubmit(handleConfirm)}
         >
 
+            <Typography variant="h5" align="left">
+                Info for {initialValues?.username}
+            </Typography>
+
             {/* Username */}
             <TextField
                 label="Username"
@@ -91,6 +115,9 @@ const PersonalInfoForm = ({ onSubmit }) => {
                 fullWidth
                 InputProps={{
                     readOnly: !isEditable,
+                }}
+                InputLabelProps={{
+                    shrink: true, // Dwing het label om altijd geshrinkt te blijven
                 }}
                 sx={{
                     backgroundColor: !isEditable ? "#f5f5f5" : "white",
@@ -108,10 +135,14 @@ const PersonalInfoForm = ({ onSubmit }) => {
                 InputProps={{
                     readOnly: !isEditable,
                 }}
+                InputLabelProps={{
+                    shrink: true,
+                }}
                 sx={{
                     backgroundColor: !isEditable ? "#f5f5f5" : "white",
                 }}
             />
+
 
             <UserButton
                 isEditable={isEditable}
