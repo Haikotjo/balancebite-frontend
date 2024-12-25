@@ -18,16 +18,6 @@ const RecommendedNutritionDisplay = () => {
     const { recommendedNutrition, loading, setRecommendedNutrition } = useContext(RecommendedNutritionContext);
     const { token } = useContext(AuthContext);
 
-    // Helper-functie om een datum te formatteren
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-        });
-    };
-
     // Controleer of de context overeenkomt met de juiste gebruiker
     useEffect(() => {
         if (!token) {
@@ -130,11 +120,10 @@ const RecommendedNutritionDisplay = () => {
                                     CREATED AT
                                 </TableCell>
                                 <TableCell align="right">
-                                    {recommendedNutrition.createdAt
-                                        ? formatDate(recommendedNutrition.createdAt)
-                                        : "N/A"}
+                                    {recommendedNutrition.createdAtFormatted || "N/A"}
                                 </TableCell>
                             </TableRow>
+
                         </TableBody>
                     </Table>
                 </TableContainer>

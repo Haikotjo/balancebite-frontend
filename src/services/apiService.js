@@ -111,3 +111,42 @@ export const searchFoodItemsByName = async (prefix) => {
     return response.data;
 };
 
+
+//  FetchUserProfile API-functie
+export const fetchUserProfile = async (token) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}/users/profile`;
+
+    try {
+        const response = await Interceptor.get(endpoint, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        logResponse(response);
+
+        const data = response.data;
+
+        if (Object.keys(data).length === 0) {
+            console.warn("No user profile found.");
+            return null; // Geen profieldata aanwezig
+        }
+
+        return data; // Retourneer de profieldata
+    } catch (error) {
+        logError(error);
+        throw error; // Hergooi de fout om ermee om te gaan in de aanroepende code
+    }
+};
+
+export const updateUserDetails = async (data) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}/users/details`; // Controleer deze URL
+    try {
+        const response = await Interceptor.put(endpoint, data, {
+            headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+        });
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};

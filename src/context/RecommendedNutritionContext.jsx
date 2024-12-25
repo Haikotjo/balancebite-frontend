@@ -12,10 +12,20 @@ export const RecommendedNutritionProvider = ({ children }) => {
 
     const fetchRecommendedNutrition = async () => {
         try {
+            console.log("Fetching recommended nutrition...");
             const response = await Interceptor.get("/daily-intake/user");
-            setRecommendedNutrition(response.data);
+            if (response && response.data) {
+                console.log("Recommended nutrition fetched successfully:", response.data);
+                setRecommendedNutrition(response.data); // Hiermee wordt `createdAtFormatted` doorgegeven
+            } else {
+                console.warn("No data received for recommended nutrition.");
+            }
         } catch (error) {
             console.error("Error fetching recommended nutrition:", error);
+            if (error.response) {
+                console.error("Response status:", error.response.status);
+                console.error("Response data:", error.response.data);
+            }
         } finally {
             setLoading(false);
         }
