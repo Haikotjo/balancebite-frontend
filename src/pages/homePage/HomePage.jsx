@@ -141,7 +141,7 @@ function HomePage() {
                                 gutterBottom
                                 sx={{
                                     fontFamily: "'Pacifico', cursive", // Unieke, speelse stijl
-                                    color: '#e91e63',
+                                    color: '#46B1C9',
                                 }}
                             >
                                 Vitamins & Minerals Insights
