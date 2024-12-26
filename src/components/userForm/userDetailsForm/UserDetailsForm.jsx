@@ -31,6 +31,7 @@ const UserDetailsForm = () => {
     const userProfile = useFetchUserProfileData(token, decodeToken, fetchUserProfile, reset);
     const watchedFields = watch();
 
+
     if (userProfile === null) {
         return (
             <Typography variant="h6" align="center">

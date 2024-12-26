@@ -117,7 +117,7 @@ const PersonalInfoForm = ({ onSubmit }) => {
                     readOnly: !isEditable,
                 }}
                 InputLabelProps={{
-                    shrink: true, // Dwing het label om altijd geshrinkt te blijven
+                    shrink: true,
                 }}
                 sx={{
                     backgroundColor: !isEditable ? "#f5f5f5" : "white",

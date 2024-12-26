@@ -1,4 +1,5 @@
-import { Interceptor } from "./authInterceptor"; // Importeer de geconfigureerde Interceptor
+import { Interceptor } from "./authInterceptor";
+import { roundNutrientValues } from "../utils/helpers/roundNutrientValues";
 
 // Logging helpers
 const logResponse = (response) => {
@@ -150,3 +151,28 @@ export const updateUserDetails = async (data) => {
         throw error;
     }
 };
+
+export const fetchRecommendedNutritionApi = async (token) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}/daily-intake/user`;
+
+    try {
+        const response = await Interceptor.get(endpoint, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        logResponse(response);
+
+        if (response && response.data) {
+            return roundNutrientValues(response.data); // Rond nutrient-waarden af
+        } else {
+            console.warn("No data received for recommended nutrition.");
+            return null;
+        }
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+

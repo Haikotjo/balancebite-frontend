@@ -1,31 +1,25 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { AuthContext } from "./AuthContext";
-import Interceptor from "../services/authInterceptor.js";
+import {fetchRecommendedNutritionApi} from "../services/apiService.js";
 
 export const RecommendedNutritionContext = createContext();
 
 export const RecommendedNutritionProvider = ({ children }) => {
     const [recommendedNutrition, setRecommendedNutrition] = useState(null);
     const [loading, setLoading] = useState(true);
-    const { token } = useContext(AuthContext); // Haal de token uit de context
+    const { token } = useContext(AuthContext);
 
     const fetchRecommendedNutrition = async () => {
         try {
-            console.log("Fetching recommended nutrition...");
-            const response = await Interceptor.get("/daily-intake/user");
-            if (response && response.data) {
-                console.log("Recommended nutrition fetched successfully:", response.data);
-                setRecommendedNutrition(response.data); // Hiermee wordt `createdAtFormatted` doorgegeven
+            const data = await fetchRecommendedNutritionApi(token);
+            if (data) {
+                setRecommendedNutrition(data);
             } else {
-                console.warn("No data received for recommended nutrition.");
+                console.warn("No recommended nutrition data received.");
             }
         } catch (error) {
             console.error("Error fetching recommended nutrition:", error);
-            if (error.response) {
-                console.error("Response status:", error.response.status);
-                console.error("Response data:", error.response.data);
-            }
         } finally {
             setLoading(false);
         }
@@ -38,13 +32,13 @@ export const RecommendedNutritionProvider = ({ children }) => {
             console.warn("No token available. Skipping nutrition fetch.");
             setLoading(false);
         }
-    }, [token]); // Alleen fetchen als de token beschikbaar is
+    }, [token]);
 
     const value = {
         recommendedNutrition,
         setRecommendedNutrition,
         loading,
-        fetchRecommendedNutrition, // Hier toegevoegd
+        fetchRecommendedNutrition,
     };
 
     return (
