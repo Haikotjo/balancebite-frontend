@@ -1,6 +1,10 @@
-import { Box, Typography, Button, Link, Card, CardContent, Grid } from '@mui/material';
+import { Box, Typography, Button, Grid, Link } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import FeatureCard from '../../components/home/featureCard/FeatureCard.jsx';
 
 function HomePage() {
+    const theme = useTheme();
+
     return (
         <Box
             sx={{
@@ -21,6 +25,7 @@ function HomePage() {
                 sx={{
                     fontWeight: 'bold',
                     marginBottom: 3,
+                    color: theme.palette.primary.main,
                 }}
             >
                 Welcome to BalanceBite
@@ -31,133 +36,70 @@ function HomePage() {
                 sx={{
                     maxWidth: 600,
                     marginBottom: 3,
+                    color: theme.palette.text.primary,
                 }}
             >
                 Balance your nutrition and achieve your health goals with ease. Get personalized recommendations, track meals, and gain insights into your daily and weekly nutrition.
             </Typography>
 
-            {/* Call-to-Action */}
-            <Button
-                variant="contained"
-                size="large"
-                sx={{
-                    marginBottom: 4,
-                    paddingX: 4,
-                }}
-                href="/signup"
-            >
-                Start Now
-            </Button>
-
             {/* Features Section */}
-            <Typography
-                variant="h5"
-                component="h2"
-                gutterBottom
+            <Box
                 sx={{
-                    fontWeight: 'bold',
-                    marginBottom: 2,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                    paddingY: 4,
+                    width: '100%',
+                    maxWidth: 1200, // Limiteer de breedte
+                    color: theme.palette.primary.main,
                 }}
             >
-                Why Choose BalanceBite?
-            </Typography>
+                <Typography
+                    variant="h5"
+                    component="h2"
+                    gutterBottom
+                    sx={{
+                        fontFamily: "'Pacifico', cursive",
+                        marginBottom: 5,
+                    }}
+                >
+                    Why Choose BalanceBite?
+                </Typography>
 
-            <Grid container spacing={3} justifyContent="center">
-                {/* Feature Cards */}
-                <Grid item xs={12} sm={6} md={4}>
-                    <Card
-                        sx={{
-                            maxWidth: 300,
-                            borderRadius: 2,
-                            boxShadow: 3,
-                        }}
-                    >
-                        <CardContent>
-                            <Typography
-                                variant="h6"
-                                component="h3"
-                                gutterBottom
-                                sx={{
-                                    fontFamily: "'Lobster', cursive", // Levendige stijl voor de titel
-                                    color: '#4caf50',
-                                }}
-                            >
-                                Personalized Recommendations
-                            </Typography>
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    fontStyle: 'italic', // Schuine tekst
-                                }}
-                            >
-                                Get daily and weekly tailored suggestions based on your body type and health goals.
-                            </Typography>
-                        </CardContent>
-                    </Card>
+                <Grid
+                    container
+                    spacing={3}
+                    justifyContent="center"
+                    sx={{
+                        width: '100%',
+                        maxWidth: 1200, // Limiteer breedte voor consistentie
+                        paddingX: 2,
+                    }}
+                >
+                    <Grid item xs={12} sm={6} md={4} lg={4} xl={4}>
+                        <FeatureCard
+                            title="Personalized Recommendations"
+                            description="Get daily and weekly tailored suggestions based on your body type and health goals."
+                            colorKey="error"
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={4} xl={4}>
+                        <FeatureCard
+                            title="Meal Tracking Made Easy"
+                            description="Add, save, and track your meals. See how each meal impacts your daily nutrition goals."
+                            colorKey="primary"
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={4} xl={4}>
+                        <FeatureCard
+                            title="Vitamins & Minerals Insights"
+                            description="Track your intake of essential vitamins and minerals (coming soon!)."
+                            colorKey="success"
+                        />
+                    </Grid>
                 </Grid>
-                <Grid item xs={12} sm={6} md={4}>
-                    <Card
-                        sx={{
-                            maxWidth: 300,
-                            borderRadius: 2,
-                            boxShadow: 3,
-                        }}
-                    >
-                        <CardContent>
-                            <Typography
-                                variant="h6"
-                                component="h3"
-                                gutterBottom
-                                sx={{
-                                    fontFamily: "'Raleway', sans-serif", // Strak en modern lettertype
-                                    color: '#3f51b5',
-                                }}
-                            >
-                                Meal Tracking Made Easy
-                            </Typography>
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    fontStyle: 'italic', // Schuine tekst
-                                }}
-                            >
-                                Add, save, and track your meals. See how each meal impacts your daily nutrition goals.
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} sm={6} md={4}>
-                    <Card
-                        sx={{
-                            maxWidth: 300,
-                            borderRadius: 2,
-                            boxShadow: 3,
-                        }}
-                    >
-                        <CardContent>
-                            <Typography
-                                variant="h6"
-                                component="h3"
-                                gutterBottom
-                                sx={{
-                                    fontFamily: "'Pacifico', cursive", // Unieke, speelse stijl
-                                    color: '#46B1C9',
-                                }}
-                            >
-                                Vitamins & Minerals Insights
-                            </Typography>
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    fontStyle: 'italic', // Schuine tekst
-                                }}
-                            >
-                                Track your intake of essential vitamins and minerals (coming soon!).
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-            </Grid>
+            </Box>
 
             {/* Footer Links */}
             <Box sx={{ marginTop: 4 }}>

@@ -1,6 +1,24 @@
 import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 
 let theme = createTheme({
+    palette: {
+        primary: {
+            main: "#46B1C9", // Primaire kleur
+        },
+        secondary: {
+            main: "#EDB6A3", // Secundaire kleur
+        },
+        error: {
+            main: "#DD1155", // Error kleur
+        },
+        success: {
+            main: "#7EE081", // Succes kleur
+        },
+        text: {
+            primary: "#4D5061", // Tekstkleur
+        },
+        divider: "#4D5061", // Randkleur
+    },
     typography: {
         fontFamily: "'Roboto', sans-serif",
         h1: {
