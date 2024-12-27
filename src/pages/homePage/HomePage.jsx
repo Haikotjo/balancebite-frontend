@@ -1,10 +1,11 @@
 import { Link as RouterLink } from 'react-router-dom';
-import { Box, Typography, Button, Grid, Link, Tooltip  } from '@mui/material';
+import { Box, Typography, Grid, Link, Tooltip  } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import FeatureCard from '../../components/home/featureCard/FeatureCard.jsx';
-import FoodBankTwoToneIcon from '@mui/icons-material/FoodBankTwoTone';
-import MonitorHeartTwoToneIcon from '@mui/icons-material/MonitorHeartTwoTone';
-import BarChartTwoToneIcon from '@mui/icons-material/BarChartTwoTone';
+import FoodBankRoundedIcon from '@mui/icons-material/FoodBankRounded';
+import MonitorHeartRoundedIcon from '@mui/icons-material/MonitorHeartRounded';
+import BarChartRoundedIcon from '@mui/icons-material/BarChartRounded';
+
 
 function HomePage() {
     const theme = useTheme();
@@ -54,11 +55,11 @@ function HomePage() {
             >
                 {/* FoodBank Icon */}
                 <RouterLink to="/meals" style={{ textDecoration: 'none' }}>
-                    <FoodBankTwoToneIcon
+                    <FoodBankRoundedIcon
                         sx={{
                             fontSize: 48,
                             color: theme.palette.primary.main,
-                            transition: 'transform 0.3s ease, color 0.3s ease',
+                            transition: 'transform 0.3s ease, color 0.3s ease, box-shadow 0.3s ease',
                             '&:hover': {
                                 transform: 'scale(1.2)',
                                 color: theme.palette.primary.light,
@@ -71,11 +72,10 @@ function HomePage() {
 
                 {/* MonitorHeart Icon */}
                 <RouterLink to="/profile" style={{ textDecoration: 'none' }}>
-                    <MonitorHeartTwoToneIcon
+                    <MonitorHeartRoundedIcon
                         sx={{
                             fontSize: 48,
                             color: theme.palette.secondary.main,
-                            transition: 'transform 0.3s ease, color 0.3s ease',
                             '&:hover': {
                                 transform: 'scale(1.2)',
                                 color: theme.palette.secondary.light,
@@ -88,11 +88,11 @@ function HomePage() {
 
                 {/* BarChart Icon */}
                 <RouterLink to="/profile" style={{ textDecoration: 'none' }}>
-                    <BarChartTwoToneIcon
+                    <BarChartRoundedIcon
                         sx={{
                             fontSize: 48,
                             color: theme.palette.error.main,
-                            transition: 'transform 0.3s ease, color 0.3s ease',
+                            transition: 'transform 0.3s ease, color 0.3s ease, box-shadow 0.3s ease',
                             '&:hover': {
                                 transform: 'scale(1.2)',
                                 color: theme.palette.error.light,
@@ -103,6 +103,7 @@ function HomePage() {
                     />
                 </RouterLink>
             </Box>
+
 
             <Typography
                 variant="h6"
@@ -221,7 +222,7 @@ function HomePage() {
                         <FeatureCard
                             title="Vitamins & Minerals Insights"
                             description="Track your intake of essential vitamins and minerals (coming soon!)."
-                            colorKey="success"
+                            colorKey="secondary"
                         />
                         </RouterLink>
                         </Tooltip>

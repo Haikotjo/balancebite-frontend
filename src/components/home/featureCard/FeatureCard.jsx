@@ -12,10 +12,11 @@ function FeatureCard({ title, description, colorKey }) {
                 maxWidth: 300,
                 borderRadius: 2,
                 boxShadow: 3,
+                border: `2px solid ${theme.palette[colorKey]?.main || theme.palette.grey[200]}`,
+                backgroundColor: alpha(theme.palette[colorKey]?.main || theme.palette.grey[200], 0.15),
                 transition: 'transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease',
                 '&:hover': {
                     transform: 'scale(1.1)',
-                    backgroundColor: alpha(theme.palette[colorKey]?.main || theme.palette.grey[200], 0.25),
                     boxShadow: 6,
                 },
             }}
