@@ -26,7 +26,14 @@ const NavBar = () => {
     };
 
     return (
-        <AppBar position="static" sx={{ mb: 2 }}>
+        <AppBar
+            sx={{
+                mb: 2,
+                backgroundColor: 'text.primary',
+                position: 'sticky',
+            }}
+        >
+
             <Toolbar>
                 <NavLogo title="Balance Bite" />
 

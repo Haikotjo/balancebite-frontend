@@ -1,10 +1,11 @@
 import CreateMealForm from "../../components/createMealForm/CreateMealForm.jsx";
+import PageWrapper from "../../components/pageWrapper/PageWrapper.jsx";
 
 const CreateMealPage = () => {
     return (
-        <div>
+        <PageWrapper>
             <CreateMealForm />
-        </div>
+        </PageWrapper>
     );
 };
 

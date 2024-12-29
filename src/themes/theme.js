@@ -4,12 +4,15 @@ let theme = createTheme({
     palette: {
         primary: {
             main: "#46B1C9", // Primaire kleur
+            light: "#7ed7ec", // Primaire kleur light
         },
         secondary: {
             main: "#EDB6A3", // Secundaire kleur
+            light: "#f6cec0", // Secundaire kleur light
         },
         error: {
             main: "#DD1155", // Error kleur
+            light: "#fb75a3", // Error kleur light
         },
         success: {
             main: "#7EE081", // Succes kleur
