@@ -1,14 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Menu, MenuItem, IconButton, ListItemText, ListItemIcon } from "@mui/material";
+import { Menu, MenuItem, IconButton, ListItemText, ListItemIcon, Divider } from "@mui/material";
+import { useTheme } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import { useNavigate } from "react-router-dom";
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import AccountBoxRoundedIcon from "@mui/icons-material/AccountBoxRounded";
+import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
+import LoginIcon from "@mui/icons-material/Login";
+import LogoutIcon from "@mui/icons-material/Logout";
+import FoodBankRoundedIcon from "@mui/icons-material/FoodBankRounded"; // Import Meals icoon
+import { useNavigate, useLocation } from "react-router-dom";
 
 const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [mealsMenuAnchorEl, setMealsMenuAnchorEl] = useState(null);
+    const [isIconLoaded, setIsIconLoaded] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
+    const theme = useTheme();
+
+    const isMenuOpen = Boolean(anchorEl);
+    const isMealsMenuOpen = Boolean(mealsMenuAnchorEl);
 
     const handleMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -16,7 +29,7 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
 
     const handleMenuClose = () => {
         setAnchorEl(null);
-        setMealsMenuAnchorEl(null); // Sluit het submenu
+        setMealsMenuAnchorEl(null);
     };
 
     const handleMealsMenuOpen = (event) => {
@@ -27,56 +40,156 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
         setMealsMenuAnchorEl(null);
     };
 
+    useEffect(() => {
+        setTimeout(() => setIsIconLoaded(true), 100);
+    }, []);
+
+    const isActive = (path) => location.pathname === path;
+
+    const menuItemStyle = (path) => ({
+        backgroundColor: isActive(path) ? theme.palette.action.selected : "inherit",
+    });
+
     return (
         <>
             <IconButton
                 edge="end"
-                color="inherit"
                 onClick={handleMenuOpen}
+                sx={{
+                    color: theme.palette.background.default,
+                    transition: "transform 0.75s ease-in-out, opacity 0.5s",
+                    transform: `${isIconLoaded ? "rotate(360deg)" : "rotate(0deg)"} ${
+                        isMenuOpen ? "rotate(360deg)" : ""
+                    }`,
+                    opacity: isIconLoaded ? 1 : 0,
+                    transformOrigin: "center",
+                }}
             >
                 <MenuIcon />
             </IconButton>
-            <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
-            >
-                <MenuItem onClick={() => { navigate("/"); handleMenuClose(); }}>Home</MenuItem>
-                <MenuItem onClick={() => { navigate("/about"); handleMenuClose(); }}>About</MenuItem>
-                <MenuItem onClick={() => { navigate("/profile"); handleMenuClose(); }}>Profile</MenuItem>
 
-                {/* Meals submenu */}
+            <Menu anchorEl={anchorEl} open={isMenuOpen} onClose={handleMenuClose}>
+                <MenuItem
+                    onClick={() => {
+                        if (!isActive("/")) {
+                            navigate("/");
+                            handleMenuClose();
+                        }
+                    }}
+                    disabled={isActive("/")}
+                    sx={menuItemStyle("/")}
+                >
+                    <ListItemIcon>
+                        <HomeRoundedIcon sx={{ color: theme.palette.text.primary }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Home" />
+                </MenuItem>
+                <Divider sx={{ height: "1px", margin: 0 }} />
+                <MenuItem
+                    onClick={() => {
+                        if (!isActive("/about")) {
+                            navigate("/about");
+                            handleMenuClose();
+                        }
+                    }}
+                    disabled={isActive("/about")}
+                    sx={menuItemStyle("/about")}
+                >
+                    <ListItemIcon>
+                        <InfoRoundedIcon sx={{ color: theme.palette.text.primary }} />
+                    </ListItemIcon>
+                    <ListItemText primary="About" />
+                </MenuItem>
+                <Divider sx={{ height: "1px", margin: 0 }} />
+                <MenuItem
+                    onClick={() => {
+                        if (!isActive("/profile")) {
+                            navigate("/profile");
+                            handleMenuClose();
+                        }
+                    }}
+                    disabled={isActive("/profile")}
+                    sx={menuItemStyle("/profile")}
+                >
+                    <ListItemIcon>
+                        <AccountBoxRoundedIcon sx={{ color: theme.palette.text.primary }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Profile" />
+                </MenuItem>
+                <Divider sx={{ height: "1px", margin: 0 }} />
                 <MenuItem
                     onClick={handleMealsMenuOpen}
                     disableRipple
                     style={{ display: "flex", justifyContent: "space-between" }}
                 >
+                    <ListItemIcon>
+                        <FoodBankRoundedIcon sx={{ color: theme.palette.text.primary }} />
+                    </ListItemIcon>
                     <ListItemText primary="Meals" />
                     <ListItemIcon style={{ minWidth: "auto" }}>
                         <ArrowRightIcon />
                     </ListItemIcon>
                 </MenuItem>
+                <Divider sx={{ height: "1px", margin: 0 }} />
                 <Menu
                     anchorEl={mealsMenuAnchorEl}
-                    open={Boolean(mealsMenuAnchorEl)}
+                    open={isMealsMenuOpen}
                     onClose={handleMealsMenuClose}
                     anchorOrigin={{ vertical: "top", horizontal: "right" }}
                     transformOrigin={{ vertical: "top", horizontal: "left" }}
                 >
-                    <MenuItem onClick={() => { navigate("/meals"); handleMenuClose(); }}>
+                    <MenuItem
+                        onClick={() => {
+                            if (!isActive("/meals")) {
+                                navigate("/meals");
+                                handleMenuClose();
+                            }
+                        }}
+                        disabled={isActive("/meals")}
+                        sx={menuItemStyle("/meals")}
+                    >
                         View Meals
                     </MenuItem>
+                    <Divider sx={{ height: "1px", margin: 0 }} />
                     {user && (
-                        <MenuItem onClick={() => { navigate("/create-meal"); handleMenuClose(); }}>
+                        <MenuItem
+                            onClick={() => {
+                                if (!isActive("/create-meal")) {
+                                    navigate("/create-meal");
+                                    handleMenuClose();
+                                }
+                            }}
+                            disabled={isActive("/create-meal")}
+                            sx={menuItemStyle("/create-meal")}
+                        >
                             Create Meal
                         </MenuItem>
                     )}
                 </Menu>
-
                 {user ? (
-                    <MenuItem onClick={() => { onLogout(); handleMenuClose(); }}>Logout</MenuItem>
+                    <MenuItem
+                        onClick={() => {
+                            onLogout();
+                            handleMenuClose();
+                        }}
+                    >
+                        <ListItemIcon>
+                            <LogoutIcon sx={{ color: theme.palette.text.primary }} />
+                        </ListItemIcon>
+                        <ListItemText primary="Logout" />
+                    </MenuItem>
                 ) : (
-                    <MenuItem onClick={() => { onLoginClick(); handleMenuClose(); }}>Login</MenuItem>
+                    <MenuItem
+                        onClick={() => {
+                            onLoginClick();
+                            handleMenuClose();
+                        }}
+                    >
+                        <ListItemIcon>
+                            <LoginIcon sx={{ color: theme.palette.text.primary }} />
+                        </ListItemIcon>
+                        <ListItemText primary="Login" />
+                    </MenuItem>
                 )}
             </Menu>
         </>

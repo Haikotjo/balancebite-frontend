@@ -1,11 +1,14 @@
 import { Snackbar, Alert } from "@mui/material";
 import PropTypes from "prop-types";
+import { useTheme, useMediaQuery } from "@mui/material";
 
 const SnackbarComponent = ({ open, onClose, message, severity }) => {
+    const theme = useTheme();
+
     return (
         <Snackbar
             open={open}
-            autoHideDuration={4000}
+            autoHideDuration={2000}
             onClose={onClose}
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
@@ -13,7 +16,7 @@ const SnackbarComponent = ({ open, onClose, message, severity }) => {
                 onClose={onClose}
                 severity={severity}
                 sx={{
-                    backgroundColor: "#f57c00", // Donkerder oranje
+                    backgroundColor: theme.palette.error.main, // Donkerder oranje
                     color: "#fff", // Witte tekst
                     "& .MuiAlert-icon": { color: "#fff" }, // Witte kleur voor het gevarendriehoekje
                 }}

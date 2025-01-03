@@ -19,8 +19,16 @@ let theme = createTheme({
         },
         text: {
             primary: "#4D5061", // Tekstkleur
+            secondary: "#7a7c8b", // Secundaire tekstkleur
         },
         divider: "#4D5061", // Randkleur
+        background: {
+            default: "#FFFFFF", // Basisachtergrond voor light mode
+            paper: "#FAFAFA", // Voor componenten zoals kaarten
+        },
+        action: {
+            selected: "#46B1C9", // Voeg hier je eigen kleur toe
+        },
     },
     typography: {
         fontFamily: "'Roboto', sans-serif",
