@@ -1,18 +1,14 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { IconButton, Menu, MenuItem, ListItemText, ListItemIcon, Tooltip } from "@mui/material";
+import { Menu } from "@mui/material";
 import FoodBankRoundedIcon from "@mui/icons-material/FoodBankRounded";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
 import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import { useNavigate } from "react-router-dom";
-import SnackbarComponent from "../../snackbarComponent/SnackbarComponent.jsx"; // Zorg dat je SnackbarComponent importeert
+import MenuItemComponent from "./menuItemComponent/MenuItemComponent.jsx";
 
-const MealsMenu = ({ user, iconColor }) => {
+const MealsMenu = ({ user, iconColor, text }) => {
     const [anchorEl, setAnchorEl] = useState(null);
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState(""); // Voor dynamische berichten
-    const navigate = useNavigate();
 
     const handleMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -22,95 +18,51 @@ const MealsMenu = ({ user, iconColor }) => {
         setAnchorEl(null);
     };
 
-    const handleUnauthorizedAction = (message) => {
-        setAlertMessage(message);
-        setShowAlert(true);
-    };
-
-    const handleAlertClose = () => {
-        setShowAlert(false);
-    };
-
     return (
         <>
-            {/* Meals Icon */}
-            <IconButton
+            <div
                 onClick={handleMenuOpen}
-                sx={{ color: iconColor }}
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    cursor: "pointer",
+                    color: iconColor,
+                }}
             >
                 <FoodBankRoundedIcon />
-                <KeyboardArrowDownIcon sx={{ fontSize: "16px", ml: 0.05 }} />
-            </IconButton>
+                <KeyboardArrowDownIcon sx={{ fontSize: "16px", ml: 0.05, mr: 0.5 }} />
+                {text && <span style={{ marginLeft: "8px" }}>{text}</span>}
+            </div>
 
             <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
             >
-                {/* View All Meals */}
-                <MenuItem
-                    onClick={() => {
-                        navigate("/meals");
-                        handleMenuClose();
-                    }}
-                >
-                    <ListItemIcon>
-                        <MenuBookRoundedIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="All Meals" />
-                </MenuItem>
-
-                {/* My Meals (Requires Login) */}
-                <MenuItem
-                    onClick={() => {
-                        if (user) {
-                            navigate("/my-meals");
-                            handleMenuClose();
-                        } else {
-                            handleUnauthorizedAction("Please log in to access your meals.");
-                        }
-                    }}
-                    sx={{
-                        color: user ? "inherit" : "#D3D3D3",
-                        pointerEvents: user ? "auto" : "all",
-                    }}
-                >
-                    <ListItemIcon>
-                        <FoodBankRoundedIcon sx={{ color: user ? "inherit" : "#D3D3D3" }} />
-                    </ListItemIcon>
-                    <ListItemText primary="My Meals" />
-                </MenuItem>
-
-                {/* Create Meal (Requires Login) */}
-                <MenuItem
-                    onClick={() => {
-                        if (user) {
-                            navigate("/create-meal");
-                            handleMenuClose();
-                        } else {
-                            handleUnauthorizedAction("Please log in to create a meal.");
-                        }
-                    }}
-                    sx={{
-                        color: user ? "inherit" : "#D3D3D3",
-                        pointerEvents: user ? "auto" : "all",
-                    }}
-                >
-                    <ListItemIcon>
-                        <AddCircleOutlineRoundedIcon sx={{ color: user ? "inherit" : "#D3D3D3" }} />
-                    </ListItemIcon>
-                    <ListItemText primary="Create Meal" />
-                </MenuItem>
+                <MenuItemComponent
+                    icon={MenuBookRoundedIcon}
+                    label="All Meals"
+                    path="/meals"
+                    onClose={handleMenuClose}
+                    requiresAuth={false}
+                />
+                <MenuItemComponent
+                    icon={FoodBankRoundedIcon}
+                    label="My Meals"
+                    path="/my-meals"
+                    user={user}
+                    onClose={handleMenuClose}
+                    requiresAuth={true}
+                />
+                <MenuItemComponent
+                    icon={AddCircleOutlineRoundedIcon}
+                    label="Create Meal"
+                    path="/create-meal"
+                    user={user}
+                    onClose={handleMenuClose}
+                    requiresAuth={true}
+                />
             </Menu>
-
-            {/* Snackbar Alert */}
-            <SnackbarComponent
-                open={showAlert}
-                onClose={handleAlertClose}
-                message={alertMessage}
-                position="center"
-                severity="info"
-            />
         </>
     );
 };
@@ -118,6 +70,8 @@ const MealsMenu = ({ user, iconColor }) => {
 MealsMenu.propTypes = {
     user: PropTypes.object,
     iconColor: PropTypes.string,
+    text: PropTypes.string,
+    onClose: PropTypes.func,
 };
 
 export default MealsMenu;

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { IconButton, Menu, MenuItem } from "@mui/material";
+import { Menu } from "@mui/material";
 import AccountBoxRoundedIcon from "@mui/icons-material/AccountBoxRounded";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ProfileMenuItem from "../ProfileMenuItem/ProfileMenuItem.jsx";
@@ -50,7 +50,13 @@ const ProfileMenu = ({ user, onLogout, onLoginClick, iconColor, onClose, text })
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
             >
-                <ProfileMenuItem user={user} />
+                <ProfileMenuItem
+                    user={user}
+                    onClose={() => {
+                        handleMenuClose();
+                        onClose();
+                    }}
+                />
 
                 <LoginLogoutMenuItem
                     user={user}

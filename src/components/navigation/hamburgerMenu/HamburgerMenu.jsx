@@ -5,15 +5,12 @@ import { useTheme } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import AccountBoxRoundedIcon from "@mui/icons-material/AccountBoxRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
-import LoginIcon from "@mui/icons-material/Login";
-import LogoutIcon from "@mui/icons-material/Logout";
 import FoodBankRoundedIcon from "@mui/icons-material/FoodBankRounded"; // Import Meals icoon
 import { useNavigate, useLocation } from "react-router-dom";
-import ProfileMenuItem from "../ProfileMenuItem/ProfileMenuItem.jsx";
 import ProfileMenu from "../profileMenu/ProfileMenu.jsx";
 import LoginLogoutMenuItem from "../loginLogoutMenuItem/LoginLogoutMenuItem.jsx";
+import MealsMenu from "../mealsMenu/MealsMenu.jsx";
 
 const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
     const [anchorEl, setAnchorEl] = useState(null);
@@ -119,19 +116,15 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
 
                 <Divider sx={{ height: "1px", margin: 0 }} />
 
-                <MenuItem
-                    onClick={handleMealsMenuOpen}
-                    disableRipple
-                    style={{ display: "flex", justifyContent: "space-between" }}
-                >
-                    <ListItemIcon>
-                        <FoodBankRoundedIcon sx={{ color: theme.palette.text.primary }} />
-                    </ListItemIcon>
-                    <ListItemText primary="Meals" />
-                    <ListItemIcon style={{ minWidth: "auto" }}>
-                        <ArrowRightIcon />
-                    </ListItemIcon>
+                <MenuItem disableRipple style={{ display: "flex", justifyContent: "space-between" }}>
+                    <MealsMenu
+                        user={user}
+                        iconColor={theme.palette.text.primary}
+                        text="Meals"
+                        onClose={handleMenuClose}
+                    />
                 </MenuItem>
+
 
                 <Divider sx={{ height: "1px", margin: 0 }} />
 

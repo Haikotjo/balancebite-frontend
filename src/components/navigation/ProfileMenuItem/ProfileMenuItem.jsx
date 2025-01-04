@@ -1,11 +1,11 @@
 import PropTypes from "prop-types";
 import { MenuItem, ListItemIcon, ListItemText, useTheme } from "@mui/material";
 import AccountBoxRoundedIcon from "@mui/icons-material/AccountBoxRounded";
-import SnackbarComponent from "../../snackbarComponent/SnackbarComponent.jsx"; // Zorg dat je SnackbarComponent importeert
+import SnackbarComponent from "../../snackbarComponent/SnackbarComponent.jsx";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const ProfileMenuItem = ({ user }) => {
+const ProfileMenuItem = ({ user, onClose }) => {
     const [showAlert, setShowAlert] = useState(false);
     const navigate = useNavigate();
     const theme = useTheme();
@@ -13,6 +13,7 @@ const ProfileMenuItem = ({ user }) => {
     const handleProfileClick = () => {
         if (user) {
             navigate("/profile");
+            if (onClose) onClose(); // Sluit het bovenliggende menu
         } else {
             setShowAlert(true);
         }
@@ -55,6 +56,8 @@ const ProfileMenuItem = ({ user }) => {
 
 ProfileMenuItem.propTypes = {
     user: PropTypes.object,
+    onClose: PropTypes.func.isRequired, // Maak dit verplicht
 };
 
 export default ProfileMenuItem;
+
