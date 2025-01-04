@@ -13,6 +13,7 @@ import FoodBankRoundedIcon from "@mui/icons-material/FoodBankRounded";
 import { useNavigate } from "react-router-dom";
 import ProfileMenu from "./profileMenu/ProfileMenu.jsx";
 import MealsMenu from "./mealsMenu/MealsMenu.jsx";
+import PropTypes from "prop-types";
 
 const NavBar = () => {
     const { user } = useContext(AuthContext);
@@ -66,6 +67,7 @@ const NavBar = () => {
                         onLogout={handleLogout}
                         onLoginClick={() => setShowLoginForm(true)}
                         iconColor={theme.palette.background.default}
+                        onClose={() => {}}
                     />
 
                     {/* Hamburger Menu */}
@@ -97,6 +99,10 @@ const NavBar = () => {
             <ErrorAlert message={errorMessage} />
         </AppBar>
     );
+};
+
+ProfileMenu.propTypes = {
+    onClose: PropTypes.func,
 };
 
 export default NavBar;

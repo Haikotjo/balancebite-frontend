@@ -11,6 +11,9 @@ import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
 import FoodBankRoundedIcon from "@mui/icons-material/FoodBankRounded"; // Import Meals icoon
 import { useNavigate, useLocation } from "react-router-dom";
+import ProfileMenuItem from "../ProfileMenuItem/ProfileMenuItem.jsx";
+import ProfileMenu from "../profileMenu/ProfileMenu.jsx";
+import LoginLogoutMenuItem from "../loginLogoutMenuItem/LoginLogoutMenuItem.jsx";
 
 const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
     const [anchorEl, setAnchorEl] = useState(null);
@@ -101,22 +104,21 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
                     <ListItemText primary="About" />
                 </MenuItem>
                 <Divider sx={{ height: "1px", margin: 0 }} />
-                <MenuItem
-                    onClick={() => {
-                        if (!isActive("/profile")) {
-                            navigate("/profile");
-                            handleMenuClose();
-                        }
-                    }}
-                    disabled={isActive("/profile")}
-                    sx={menuItemStyle("/profile")}
-                >
-                    <ListItemIcon>
-                        <AccountBoxRoundedIcon sx={{ color: theme.palette.text.primary }} />
-                    </ListItemIcon>
-                    <ListItemText primary="Profile" />
+
+                <MenuItem disableRipple style={{ display: "flex", justifyContent: "space-between" }}>
+                    <ProfileMenu
+                        user={user}
+                        onLogout={onLogout}
+                        onLoginClick={onLoginClick}
+                        iconColor={theme.palette.text.primary}
+                        onClose={handleMenuClose}
+                        text="Profile"
+                    />
                 </MenuItem>
+
+
                 <Divider sx={{ height: "1px", margin: 0 }} />
+
                 <MenuItem
                     onClick={handleMealsMenuOpen}
                     disableRipple
@@ -130,7 +132,9 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
                         <ArrowRightIcon />
                     </ListItemIcon>
                 </MenuItem>
+
                 <Divider sx={{ height: "1px", margin: 0 }} />
+
                 <Menu
                     anchorEl={mealsMenuAnchorEl}
                     open={isMealsMenuOpen}
@@ -166,30 +170,21 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
                         </MenuItem>
                     )}
                 </Menu>
+
                 {user ? (
-                    <MenuItem
-                        onClick={() => {
-                            onLogout();
-                            handleMenuClose();
-                        }}
-                    >
-                        <ListItemIcon>
-                            <LogoutIcon sx={{ color: theme.palette.text.primary }} />
-                        </ListItemIcon>
-                        <ListItemText primary="Logout" />
-                    </MenuItem>
+                    <LoginLogoutMenuItem
+                        user={user}
+                        onLoginClick={onLoginClick}
+                        onLogout={onLogout}
+                        onClose={handleMenuClose}
+                    />
                 ) : (
-                    <MenuItem
-                        onClick={() => {
-                            onLoginClick();
-                            handleMenuClose();
-                        }}
-                    >
-                        <ListItemIcon>
-                            <LoginIcon sx={{ color: theme.palette.text.primary }} />
-                        </ListItemIcon>
-                        <ListItemText primary="Login" />
-                    </MenuItem>
+                    <LoginLogoutMenuItem
+                        user={user}
+                        onLoginClick={onLoginClick}
+                        onLogout={onLogout}
+                        onClose={handleMenuClose}
+                    />
                 )}
             </Menu>
         </>

@@ -4,11 +4,14 @@ import { IconButton, Menu, MenuItem, ListItemText, ListItemIcon, Tooltip } from 
 import FoodBankRoundedIcon from "@mui/icons-material/FoodBankRounded";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
 import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
-import { useNavigate } from "react-router-dom";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { useNavigate } from "react-router-dom";
+import SnackbarComponent from "../../snackbarComponent/SnackbarComponent.jsx"; // Zorg dat je SnackbarComponent importeert
 
 const MealsMenu = ({ user, iconColor }) => {
     const [anchorEl, setAnchorEl] = useState(null);
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState(""); // Voor dynamische berichten
     const navigate = useNavigate();
 
     const handleMenuOpen = (event) => {
@@ -17,6 +20,15 @@ const MealsMenu = ({ user, iconColor }) => {
 
     const handleMenuClose = () => {
         setAnchorEl(null);
+    };
+
+    const handleUnauthorizedAction = (message) => {
+        setAlertMessage(message);
+        setShowAlert(true);
+    };
+
+    const handleAlertClose = () => {
+        setShowAlert(false);
     };
 
     return (
@@ -29,6 +41,7 @@ const MealsMenu = ({ user, iconColor }) => {
                 <FoodBankRoundedIcon />
                 <KeyboardArrowDownIcon sx={{ fontSize: "16px", ml: 0.05 }} />
             </IconButton>
+
             <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
@@ -48,53 +61,56 @@ const MealsMenu = ({ user, iconColor }) => {
                 </MenuItem>
 
                 {/* My Meals (Requires Login) */}
-                <Tooltip
-                    title={user ? "" : "Please log in to access your meals"}
-                    placement="top"
-                    arrow
+                <MenuItem
+                    onClick={() => {
+                        if (user) {
+                            navigate("/my-meals");
+                            handleMenuClose();
+                        } else {
+                            handleUnauthorizedAction("Please log in to access your meals.");
+                        }
+                    }}
+                    sx={{
+                        color: user ? "inherit" : "#D3D3D3",
+                        pointerEvents: user ? "auto" : "all",
+                    }}
                 >
-                    <span>
-                        <MenuItem
-                            onClick={() => {
-                                if (user) {
-                                    navigate("/my-meals");
-                                    handleMenuClose();
-                                }
-                            }}
-                            disabled={!user}
-                        >
-                            <ListItemIcon>
-                                <FoodBankRoundedIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="My Meals" />
-                        </MenuItem>
-                    </span>
-                </Tooltip>
+                    <ListItemIcon>
+                        <FoodBankRoundedIcon sx={{ color: user ? "inherit" : "#D3D3D3" }} />
+                    </ListItemIcon>
+                    <ListItemText primary="My Meals" />
+                </MenuItem>
 
                 {/* Create Meal (Requires Login) */}
-                <Tooltip
-                    title={user ? "" : "Please log in to create a meal"}
-                    placement="top"
-                    arrow
+                <MenuItem
+                    onClick={() => {
+                        if (user) {
+                            navigate("/create-meal");
+                            handleMenuClose();
+                        } else {
+                            handleUnauthorizedAction("Please log in to create a meal.");
+                        }
+                    }}
+                    sx={{
+                        color: user ? "inherit" : "#D3D3D3",
+                        pointerEvents: user ? "auto" : "all",
+                    }}
                 >
-                    <span>
-                        <MenuItem
-                            onClick={() => {
-                                if (user) {
-                                    navigate("/create-meal");
-                                    handleMenuClose();
-                                }
-                            }}
-                            disabled={!user}
-                        >
-                            <ListItemIcon>
-                                <AddCircleOutlineRoundedIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Create Meal" />
-                        </MenuItem>
-                    </span>
-                </Tooltip>
+                    <ListItemIcon>
+                        <AddCircleOutlineRoundedIcon sx={{ color: user ? "inherit" : "#D3D3D3" }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Create Meal" />
+                </MenuItem>
             </Menu>
+
+            {/* Snackbar Alert */}
+            <SnackbarComponent
+                open={showAlert}
+                onClose={handleAlertClose}
+                message={alertMessage}
+                position="center"
+                severity="info"
+            />
         </>
     );
 };

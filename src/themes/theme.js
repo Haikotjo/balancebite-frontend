@@ -28,6 +28,7 @@ let theme = createTheme({
         },
         action: {
             selected: "#46B1C9", // Voeg hier je eigen kleur toe
+            disabled: "#E0E0E0"
         },
     },
     typography: {
