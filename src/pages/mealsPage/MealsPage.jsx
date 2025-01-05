@@ -1,20 +1,24 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import MealList from "../../components/mealList/MealList.jsx";
-import SubMenu from "../../components/subMenu/SubMenu.jsx";
+import SubMenu from "../../components/mealList/submenu/SubMenu.jsx";
 import { AuthContext } from "../../context/AuthContext";
 import { Box, Typography, Link as MuiLink } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
+import { useLocation } from "react-router-dom";
+
 function MealPage() {
     const { userId } = useParams();
+    const location = useLocation(); // Lees de state doorgegeven via navigate
     const [userName, setUserName] = useState(null);
-    const [currentListEndpoint, setCurrentListEndpoint] = useState(`${import.meta.env.VITE_BASE_URL}/meals`);
+    const [currentListEndpoint, setCurrentListEndpoint] = useState(
+        location.state?.endpoint || `${import.meta.env.VITE_BASE_URL}/meals` // Gebruik state of fallback naar default
+    );
     const [submenuOptions, setSubmenuOptions] = useState([]);
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);
 
-    // Update submenu-opties wanneer de gebruiker verandert
     useEffect(() => {
         if (user) {
             setSubmenuOptions(["All My Meals", "My Created Meals", "Suggested Meals"]);
@@ -69,5 +73,6 @@ function MealPage() {
         </Box>
     );
 }
+
 
 export default MealPage;

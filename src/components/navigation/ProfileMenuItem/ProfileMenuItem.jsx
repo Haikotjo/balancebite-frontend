@@ -56,7 +56,7 @@ const ProfileMenuItem = ({ user, onClose }) => {
 
 ProfileMenuItem.propTypes = {
     user: PropTypes.object,
-    onClose: PropTypes.func.isRequired, // Maak dit verplicht
+    onClose: PropTypes.func.isRequired,
 };
 
 export default ProfileMenuItem;

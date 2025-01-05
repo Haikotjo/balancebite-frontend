@@ -1,9 +1,11 @@
 import PropTypes from "prop-types";
-import { MenuItem, ListItemIcon, ListItemText } from "@mui/material";
+import { MenuItem, ListItemIcon, ListItemText, useTheme } from "@mui/material";
 import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
 
 const LoginLogoutMenuItem = ({ user, onLoginClick, onLogout, onClose }) => {
+    const theme = useTheme();
+
     return user ? (
         <MenuItem
             onClick={() => {
@@ -12,7 +14,8 @@ const LoginLogoutMenuItem = ({ user, onLoginClick, onLogout, onClose }) => {
             }}
         >
             <ListItemIcon>
-                <LogoutIcon />
+                <LogoutIcon
+                />
             </ListItemIcon>
             <ListItemText primary="Logout" />
         </MenuItem>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Menu } from "@mui/material";
 import FoodBankRoundedIcon from "@mui/icons-material/FoodBankRounded";
@@ -7,7 +8,7 @@ import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import MenuItemComponent from "./menuItemComponent/MenuItemComponent.jsx";
 
-const MealsMenu = ({ user, iconColor, text }) => {
+const MealsMenu = ({ user, iconColor, text, onClose }) => {
     const [anchorEl, setAnchorEl] = useState(null);
 
     const handleMenuOpen = (event) => {
@@ -17,6 +18,8 @@ const MealsMenu = ({ user, iconColor, text }) => {
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
+
+    const navigate = useNavigate();
 
     return (
         <>
@@ -43,15 +46,24 @@ const MealsMenu = ({ user, iconColor, text }) => {
                     icon={MenuBookRoundedIcon}
                     label="All Meals"
                     path="/meals"
-                    onClose={handleMenuClose}
+                    onClose={() => {
+                        handleMenuClose();
+                        onClose();
+                    }}
                     requiresAuth={false}
                 />
                 <MenuItemComponent
                     icon={FoodBankRoundedIcon}
                     label="My Meals"
-                    path="/my-meals"
+                    path="/meals"
                     user={user}
-                    onClose={handleMenuClose}
+                    onClose={() => {
+                        handleMenuClose();
+                        onClose();
+                        navigate("/meals", {
+                            state: { endpoint: `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_USER_MEALS_ENDPOINT}` },
+                        });
+                    }}
                     requiresAuth={true}
                 />
                 <MenuItemComponent
@@ -59,7 +71,10 @@ const MealsMenu = ({ user, iconColor, text }) => {
                     label="Create Meal"
                     path="/create-meal"
                     user={user}
-                    onClose={handleMenuClose}
+                    onClose={() => {
+                        handleMenuClose();
+                        onClose();
+                    }}
                     requiresAuth={true}
                 />
             </Menu>

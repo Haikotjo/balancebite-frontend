@@ -69,6 +69,31 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
             </IconButton>
 
             <Menu anchorEl={anchorEl} open={isMenuOpen} onClose={handleMenuClose}>
+                {/* MealsMenu */}
+                <MenuItem disableRipple style={{ display: "flex", justifyContent: "space-between" }}>
+                    <MealsMenu
+                        user={user}
+                        iconColor={theme.palette.text.primary}
+                        text="Meals"
+                        onClose={handleMenuClose}
+                    />
+                </MenuItem>
+                <Divider sx={{ height: "1px", margin: 0 }} />
+
+                {/* ProfileMenu */}
+                <MenuItem disableRipple style={{ display: "flex", justifyContent: "space-between" }}>
+                    <ProfileMenu
+                        user={user}
+                        onLogout={onLogout}
+                        onLoginClick={onLoginClick}
+                        iconColor={theme.palette.text.primary}
+                        onClose={handleMenuClose}
+                        text="Profile"
+                    />
+                </MenuItem>
+                <Divider sx={{ height: "1px", margin: 0 }} />
+
+                {/* Home */}
                 <MenuItem
                     onClick={() => {
                         if (!isActive("/")) {
@@ -85,6 +110,8 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
                     <ListItemText primary="Home" />
                 </MenuItem>
                 <Divider sx={{ height: "1px", margin: 0 }} />
+
+                {/* About */}
                 <MenuItem
                     onClick={() => {
                         if (!isActive("/about")) {
@@ -102,68 +129,7 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
                 </MenuItem>
                 <Divider sx={{ height: "1px", margin: 0 }} />
 
-                <MenuItem disableRipple style={{ display: "flex", justifyContent: "space-between" }}>
-                    <ProfileMenu
-                        user={user}
-                        onLogout={onLogout}
-                        onLoginClick={onLoginClick}
-                        iconColor={theme.palette.text.primary}
-                        onClose={handleMenuClose}
-                        text="Profile"
-                    />
-                </MenuItem>
-
-
-                <Divider sx={{ height: "1px", margin: 0 }} />
-
-                <MenuItem disableRipple style={{ display: "flex", justifyContent: "space-between" }}>
-                    <MealsMenu
-                        user={user}
-                        iconColor={theme.palette.text.primary}
-                        text="Meals"
-                        onClose={handleMenuClose}
-                    />
-                </MenuItem>
-
-
-                <Divider sx={{ height: "1px", margin: 0 }} />
-
-                <Menu
-                    anchorEl={mealsMenuAnchorEl}
-                    open={isMealsMenuOpen}
-                    onClose={handleMealsMenuClose}
-                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                    transformOrigin={{ vertical: "top", horizontal: "left" }}
-                >
-                    <MenuItem
-                        onClick={() => {
-                            if (!isActive("/meals")) {
-                                navigate("/meals");
-                                handleMenuClose();
-                            }
-                        }}
-                        disabled={isActive("/meals")}
-                        sx={menuItemStyle("/meals")}
-                    >
-                        View Meals
-                    </MenuItem>
-                    <Divider sx={{ height: "1px", margin: 0 }} />
-                    {user && (
-                        <MenuItem
-                            onClick={() => {
-                                if (!isActive("/create-meal")) {
-                                    navigate("/create-meal");
-                                    handleMenuClose();
-                                }
-                            }}
-                            disabled={isActive("/create-meal")}
-                            sx={menuItemStyle("/create-meal")}
-                        >
-                            Create Meal
-                        </MenuItem>
-                    )}
-                </Menu>
-
+                {/* LoginLogoutMenuItem */}
                 {user ? (
                     <LoginLogoutMenuItem
                         user={user}
@@ -180,6 +146,7 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
                     />
                 )}
             </Menu>
+
         </>
     );
 };
