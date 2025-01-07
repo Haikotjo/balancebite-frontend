@@ -174,5 +174,3 @@ export const fetchRecommendedNutritionApi = async (token) => {
         throw error;
     }
 };
-
-

@@ -1,6 +1,6 @@
 import { Snackbar, Alert } from "@mui/material";
 import PropTypes from "prop-types";
-import { useTheme, useMediaQuery } from "@mui/material";
+import { useTheme } from "@mui/material";
 
 const SnackbarComponent = ({ open, onClose, message, severity }) => {
     const theme = useTheme();
@@ -16,9 +16,9 @@ const SnackbarComponent = ({ open, onClose, message, severity }) => {
                 onClose={onClose}
                 severity={severity}
                 sx={{
-                    backgroundColor: theme.palette.error.main, // Donkerder oranje
-                    color: "#fff", // Witte tekst
-                    "& .MuiAlert-icon": { color: "#fff" }, // Witte kleur voor het gevarendriehoekje
+                    backgroundColor: theme.palette.error.main,
+                    color: "#fff",
+                    "& .MuiAlert-icon": { color: "#fff" },
                 }}
             >
                 {message}

@@ -1,40 +1,47 @@
 import PropTypes from "prop-types";
-import { Box, Button, Menu, MenuItem } from "@mui/material";
+import { Box, Button, Menu, MenuItem, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
+    const theme = useTheme(); // Toegang tot het huidige thema
     const [anchorEl, setAnchorEl] = useState(null);
-
-    const handleMealsMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
     const handleMealsMenuClose = () => {
         setAnchorEl(null);
     };
 
     return (
         <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-            <Button color="inherit" component={Link} to="/">
-                Home
-            </Button>
-            <Button color="inherit" component={Link} to="/about">
-                About
-            </Button>
-            <Button color="inherit" component={Link} to="/profile">
-                Profile
-            </Button>
-
-                {/* Meals met submenu en een pijltje */}
             <Button
                 color="inherit"
-                onClick={handleMealsMenuOpen}
-                endIcon={<KeyboardArrowDownIcon />}
+                component={Link}
+                to="/"
+                sx={{ color: theme.palette.text.light }}
             >
-                Meals
+                Home
             </Button>
+            <Box
+                sx={{
+                    height: "24px",
+                    width: "1px",
+                    backgroundColor: theme.palette.dividerLight,
+                }}
+            />
+            <Button
+                color="inherit"
+                component={Link}
+                to="/about"
+                sx={{ color: theme.palette.text.light }}
+            >
+                About
+            </Button>
+            <Box
+                sx={{
+
+                    width: "1px",
+                    backgroundColor: theme.palette.dividerLight,
+                }}
+            />
             <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
@@ -42,22 +49,41 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                 anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
                 transformOrigin={{ vertical: "top", horizontal: "left" }}
             >
-                <MenuItem onClick={handleMealsMenuClose} component={Link} to="/meals">
+
+                <MenuItem
+                    onClick={handleMealsMenuClose}
+                    component={Link}
+                    to="/meals"
+                    sx={{ color: theme.palette.text.primary }}
+                >
                     View Meals
                 </MenuItem>
                 {user && (
-                    <MenuItem onClick={handleMealsMenuClose} component={Link} to="/create-meal">
+                    <MenuItem
+                        onClick={handleMealsMenuClose}
+                        component={Link}
+                        to="/create-meal"
+                        sx={{ color: theme.palette.text.primary }}
+                    >
                         Create Meal
                     </MenuItem>
                 )}
             </Menu>
 
             {user ? (
-                <Button color="inherit" onClick={onLogout}>
+                <Button
+                    color="inherit"
+                    onClick={onLogout}
+                    sx={{ color: theme.palette.text.light }}
+                >
                     Logout
                 </Button>
             ) : (
-                <Button color="inherit" onClick={onLoginClick}>
+                <Button
+                    color="inherit"
+                    onClick={onLoginClick}
+                    sx={{ color: theme.palette.text.light }}
+                >
                     Login
                 </Button>
             )}

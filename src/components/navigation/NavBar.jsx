@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { AppBar, Toolbar, Box, IconButton, Menu, MenuItem, ListItemText, ListItemIcon } from "@mui/material";
+import { AppBar, Toolbar, Box, MenuItem } from "@mui/material";
 import { useTheme, useMediaQuery } from "@mui/material";
 import LoginRegisterForm from "./loginRegisterForm/LoginRegisterForm";
 import HamburgerMenu from "./hamburgerMenu/HamburgerMenu";
@@ -9,7 +9,6 @@ import useLogout from "../../hooks/useLogout.js";
 import useLogin from "../../hooks/useLogin";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import Logo from "../logo/Logo.jsx";
-import FoodBankRoundedIcon from "@mui/icons-material/FoodBankRounded";
 import { useNavigate } from "react-router-dom";
 import ProfileMenu from "./profileMenu/ProfileMenu.jsx";
 import MealsMenu from "./mealsMenu/MealsMenu.jsx";
@@ -22,8 +21,7 @@ const NavBar = () => {
     const handleLogout = useLogout();
     const { handleLogin, errorMessage } = useLogin();
     const [showLoginForm, setShowLoginForm] = useState(false);
-    const navigate = useNavigate();
-
+    useNavigate();
     const handleRegister = (data) => {
         console.log("Register data:", data);
     };
@@ -54,37 +52,85 @@ const NavBar = () => {
                 </Box>
 
                 <Box sx={{ display: "flex", alignItems: "center" }}>
-                    {/* Meals Icon */}
-                    <MealsMenu
-                        user={user}
-                        iconColor={theme.palette.background.default}
+                    {/* Meals Menu */}
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                        {!isMobile && (
+                            <MenuItem
+                                onClick={(e) => e.currentTarget.nextSibling.click()}
+                                sx={{
+                                    color: theme.palette.background.default,
+                                    cursor: "pointer",
+                                }}
+                            >
+                                Meals
+                            </MenuItem>
+                        )}
+                        <MealsMenu
+                            user={user}
+                            iconColor={theme.palette.background.default}
+                        />
+                    </Box>
+
+                    {/* Vertical Divider */}
+                    <Box
+                        sx={{
+                            height: "24px",
+                            width: "1px",
+                            backgroundColor: theme.palette.dividerLight,
+                            mx: 1,
+                        }}
                     />
 
-
-                    {/* ProfileMenu Component */}
-                    <ProfileMenu
-                        user={user}
-                        onLogout={handleLogout}
-                        onLoginClick={() => setShowLoginForm(true)}
-                        iconColor={theme.palette.background.default}
-                        onClose={() => {}}
-                    />
-
-                    {/* Hamburger Menu */}
-                    {isMobile ? (
-                        <HamburgerMenu
+                    {/* Profile Menu */}
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                        {!isMobile && (
+                            <MenuItem
+                                onClick={(e) => e.currentTarget.nextSibling.click()}
+                                sx={{
+                                    color: theme.palette.background.default,
+                                    cursor: "pointer",
+                                }}
+                            >
+                                Profile
+                            </MenuItem>
+                        )}
+                        <ProfileMenu
                             user={user}
                             onLogout={handleLogout}
                             onLoginClick={() => setShowLoginForm(true)}
+                            iconColor={theme.palette.background.default}
+                            onClose={() => {}}
                         />
-                    ) : (
-                        <DesktopMenu
-                            user={user}
-                            onLogout={handleLogout}
-                            onLoginClick={() => setShowLoginForm(true)}
-                        />
-                    )}
+                    </Box>
+
+                    {/* Vertical Divider */}
+                    <Box
+                        sx={{
+                            height: "24px",
+                            width: "1px",
+                            backgroundColor: theme.palette.dividerLight,
+                            mx: 1,
+                        }}
+                    />
+
+                    {/* Logout/Login or other menu items */}
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                        {isMobile ? (
+                            <HamburgerMenu
+                                user={user}
+                                onLogout={handleLogout}
+                                onLoginClick={() => setShowLoginForm(true)}
+                            />
+                        ) : (
+                            <DesktopMenu
+                                user={user}
+                                onLogout={handleLogout}
+                                onLoginClick={() => setShowLoginForm(true)}
+                            />
+                        )}
+                    </Box>
                 </Box>
+
             </Toolbar>
 
             {showLoginForm && (

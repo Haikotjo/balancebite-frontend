@@ -75,7 +75,7 @@ ProfileMenu.propTypes = {
     onLoginClick: PropTypes.func.isRequired,
     iconColor: PropTypes.string,
     onClose: PropTypes.func.isRequired,
-    text: PropTypes.string, // Optionele tekst naast de iconen
+    text: PropTypes.string,
 };
 
 export default ProfileMenu;

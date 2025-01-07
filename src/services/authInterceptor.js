@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const Interceptor = axios.create({
-    baseURL: import.meta.env.VITE_BASE_URL, // Zorg dat deze waarde juist is
+    baseURL: import.meta.env.VITE_BASE_URL,
     headers: {
         "Content-Type": "application/json",
     },

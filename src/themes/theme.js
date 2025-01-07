@@ -20,8 +20,10 @@ let theme = createTheme({
         text: {
             primary: "#4D5061", // Tekstkleur
             secondary: "#7a7c8b", // Secundaire tekstkleur
+            light: "#ffffff",
         },
         divider: "#4D5061", // Randkleur
+        dividerLight :"#FFFFFF",
         background: {
             default: "#FFFFFF", // Basisachtergrond voor light mode
             paper: "#FAFAFA", // Voor componenten zoals kaarten
