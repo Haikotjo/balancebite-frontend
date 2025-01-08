@@ -37,6 +37,13 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
             </Button>
             <Box
                 sx={{
+                    height: "24px",
+                    width: "1px",
+                    backgroundColor: theme.palette.dividerLight,
+                }}
+            />
+            <Box
+                sx={{
 
                     width: "1px",
                     backgroundColor: theme.palette.dividerLight,
