@@ -23,6 +23,8 @@ export const UserMealsProvider = ({ children }) => {
     const [currentListEndpoint, setCurrentListEndpoint] = useState(
         `${import.meta.env.VITE_BASE_URL}/meals` // Default endpoint for non-logged-in users
     );
+    const [activeOption, setActiveOption] = useState("All Meals"); // Default active option
+
 
     /**
      * Fetches meals data for the logged-in user from the API.
@@ -108,6 +110,8 @@ export const UserMealsProvider = ({ children }) => {
                 fetchUserMealsData,
                 resetUserMeals,
                 addMealToUserMeals,
+                activeOption,
+                setActiveOption,
             }}
         >
             {children}

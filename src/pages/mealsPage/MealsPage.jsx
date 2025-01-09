@@ -5,6 +5,10 @@ import SubMenu from "../../components/mealList/submenu/SubMenu.jsx";
 import { AuthContext } from "../../context/AuthContext";
 import { Box, Typography, Link as MuiLink } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { UserMealsContext } from "../../context/UserMealsContext.jsx";
+import AnimatedBox from "../../components/home/animatedBox/AnimatedBox.jsx";
+import './MealsPage.css';
+
 
 /**
  * The MealPage component displays a list of meals and a submenu for filtering options.
@@ -17,50 +21,46 @@ function MealPage() {
     const [userName, setUserName] = useState(null); // State for displaying creator's name
     const navigate = useNavigate(); // Hook for programmatic navigation
     const { user } = useContext(AuthContext); // Access authenticated user context
+    const { activeOption } = useContext(UserMealsContext);
 
     return (
         <Box
             sx={{
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "center",
                 alignItems: "center",
+                justifyContent: "flex-start",
                 minHeight: "100vh",
                 padding: 2,
             }}
         >
-            <Typography variant="h3" gutterBottom>
-                All Meals
-            </Typography>
-            {userId && userName && (
-                <>
-                    <Typography
-                        variant="body1"
-                        sx={{ fontStyle: "italic", marginBottom: 2 }}
-                    >
-                        {userName} created and added
-                    </Typography>
-                    <MuiLink
-                        component="button"
-                        underline="hover"
-                        onClick={() => navigate("/meals")}
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            fontSize: "0.9rem",
-                            color: "text.secondary",
-                            cursor: "pointer",
-                            "&:hover": { color: "text.primary" },
-                        }}
-                    >
-                        <ArrowBackIcon sx={{ fontSize: "1rem", marginRight: 0.5 }} />
-                        Back to All Meals
-                    </MuiLink>
-                </>
-            )}
-            {/* SubMenu now handles its own options */}
-            <SubMenu />
-            <MealList setCreatedByName={setUserName} />
+            {/* Animated Title */}
+            <AnimatedBox animation="slideIn" direction="down" marginBottom={0}>
+                <Typography
+                    variant="h3"
+                    sx={{
+                        fontFamily: "'Nunito', sans-serif",
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        margin: 0,
+                    }}
+                >
+                    {activeOption}
+                </Typography>
+            </AnimatedBox>
+
+            {/* Animated SubMenu */}
+            <AnimatedBox animation="slideIn" direction="left" marginBottom={0}>
+                <SubMenu />
+            </AnimatedBox>
+
+            {/* Meal List */}
+            <Box
+                key={activeOption}
+                className="animated-slide-in-up"
+            >
+                <MealList setCreatedByName={setUserName} />
+            </Box>
         </Box>
     );
 }

@@ -1,51 +1,49 @@
-import { Box, Button, ButtonGroup } from "@mui/material";
+import { Box, Button, ButtonGroup, useTheme, useMediaQuery } from "@mui/material";
 import PropTypes from "prop-types";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { UserMealsContext } from "../../../context/UserMealsContext.jsx"; // Import UserMealsContext
 import { AuthContext } from "../../../context/AuthContext.jsx"; // Import AuthContext
 import AccountBoxRoundedIcon from "@mui/icons-material/AccountBoxRounded";
-import FoodBankRoundedIcon from "@mui/icons-material/FoodBankRounded";
 import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
-import SuggestionIcon from "@mui/icons-material/EmojiObjectsRounded"; // Suggested meals icon
+import FoodBankRoundedIcon from "@mui/icons-material/FoodBankRounded";
 
 /**
  * SubMenu component renders a group of buttons with icons based on the user's context and actions.
- * Each button updates the current endpoint in the UserMealsContext and adjusts active buttons dynamically.
+ * Each button updates the current endpoint in the UserMealsContext and visually highlights the active button.
  *
  * @component
  */
 function SubMenu() {
     const { user } = useContext(AuthContext); // Access authenticated user context
-    const { updateEndpoint, availableEndpoints } = useContext(UserMealsContext); // Access UserMealsContext
-    const [activeOption, setActiveOption] = useState(null); // Track the currently active button
+    const { updateEndpoint, availableEndpoints, activeOption, setActiveOption } = useContext(UserMealsContext); // Use context for activeOption
+    const theme = useTheme(); // Access the Material-UI theme for consistent styling
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm")); // Check if screen size is small
 
     // Define options based on user's authentication status
     const options = user
         ? [
-            { label: "All My Meals", icon: MenuBookRoundedIcon },
-            { label: "My Created Meals", icon: AccountBoxRoundedIcon },
-            { label: "Suggested Meals", icon: SuggestionIcon },
+            { label: "All Meals", smallLabel: "Meals", icon: MenuBookRoundedIcon },
+            { label: "All My Meals", smallLabel: "My Meals", icon: FoodBankRoundedIcon },
+            { label: "My Created Meals", smallLabel: "Created", icon: AccountBoxRoundedIcon },
         ]
-        : [{ label: "All Meals", icon: MenuBookRoundedIcon }];
+        : [{ label: "All Meals", smallLabel: "Meals", icon: MenuBookRoundedIcon }];
 
     /**
      * Handle button click and update the endpoint in the context.
      * @param {string} option - The label of the clicked button.
      */
     const handleButtonClick = (option) => {
-        console.log("SubMenu button clicked:", option);
-
         let newEndpoint;
 
         switch (option) {
+            case "All Meals":
+                newEndpoint = `${import.meta.env.VITE_BASE_URL}/meals`;
+                break;
             case "All My Meals":
                 newEndpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_USER_MEALS_ENDPOINT}`;
                 break;
             case "My Created Meals":
                 newEndpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_CREATED_MEALS_ENDPOINT}`;
-                break;
-            case "Suggested Meals":
-                newEndpoint = `${import.meta.env.VITE_BASE_URL}/meals/suggestions`;
                 break;
             default:
                 newEndpoint = `${import.meta.env.VITE_BASE_URL}/meals`;
@@ -55,7 +53,7 @@ function SubMenu() {
         // Update the endpoint only if it is available
         if (availableEndpoints.includes(newEndpoint)) {
             updateEndpoint(newEndpoint);
-            setActiveOption(option); // Set the clicked button as active
+            setActiveOption(option); // Update the active option in the context
         } else {
             console.warn("Attempted to set an unavailable endpoint:", newEndpoint);
         }
@@ -63,30 +61,51 @@ function SubMenu() {
 
     return (
         <Box sx={{ marginBottom: 3, display: "flex", justifyContent: "center" }}>
-            <ButtonGroup variant="contained" color="primary" aria-label="submenu">
-                {options.map((option, index) => {
-                    // Hide the currently active button and replace it with "All Meals" if applicable
-                    if (option.label === activeOption) {
-                        return (
-                            <Button
-                                key={index}
-                                onClick={() => handleButtonClick("All Meals")}
-                                startIcon={<MenuBookRoundedIcon />}
-                            >
-                                All Meals
-                            </Button>
-                        );
-                    }
-                    return (
-                        <Button
-                            key={index}
-                            onClick={() => handleButtonClick(option.label)}
-                            startIcon={<option.icon />}
-                        >
-                            {option.label}
-                        </Button>
-                    );
-                })}
+            <ButtonGroup
+                variant="contained"
+                aria-label="submenu"
+                sx={{
+                    "& .MuiButton-root": {
+                        backgroundColor: theme.palette.primary.main,
+                        color: theme.palette.text.light,
+                        "&:hover": {
+                            backgroundColor: theme.palette.primary.light,
+                        },
+                        fontSize: "1rem", // Default font size
+                        padding: "8px 12px", // Default padding
+                        [theme.breakpoints.down("sm")]: {
+                            fontSize: "0.75rem", // Slightly larger font size for small screens
+                            padding: "10px 20px", // Larger padding for small screens
+                        },
+                    },
+                    "& .MuiButton-root.active": {
+                        backgroundColor: theme.palette.primary.dark,
+                        color: theme.palette.text.light,
+                    },
+                }}
+            >
+                {options.map((option, index) => (
+                    <Button
+                        key={index}
+                        onClick={() => handleButtonClick(option.label)}
+                        className={option.label === activeOption ? "active" : ""} // Highlight active button
+                        sx={{
+                            display: "flex",
+                            flexDirection: isSmallScreen ? "column" : "row", // Icon above text on small screens
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                    >
+                        <option.icon
+                            sx={{
+                                fontSize: isSmallScreen ? "2.5rem" : "1.5rem", // Larger icon size for small screens
+                                marginBottom: isSmallScreen ? "6px" : "0", // More space between icon and text on small screens
+                                marginRight: isSmallScreen ? "0" : "8px", // Space to the right of the icon on large screens
+                            }}
+                        />
+                        {isSmallScreen ? option.smallLabel : option.label}
+                    </Button>
+                ))}
             </ButtonGroup>
         </Box>
     );
