@@ -1,6 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { Menu } from "@mui/material";
+import { Menu, Divider } from "@mui/material";
 import AccountBoxRoundedIcon from "@mui/icons-material/AccountBoxRounded";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ProfileMenuItem from "../ProfileMenuItem/ProfileMenuItem.jsx";
@@ -57,6 +57,7 @@ const ProfileMenu = ({ user, onLogout, onLoginClick, iconColor, onClose, text })
                         onClose();
                     }}
                 />
+                <Divider sx={{ height: "1px", margin: 0 }} />
 
                 <LoginLogoutMenuItem
                     user={user}

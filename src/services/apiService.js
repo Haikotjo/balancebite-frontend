@@ -17,6 +17,26 @@ const logError = (error) => {
 };
 
 // API functies
+export const registerUserApi = async (data) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_AUTH_REGISTER_ENDPOINT}`;
+    try {
+        const response = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            throw new Error("Registration failed.");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("[API Error]:", error);
+        throw error;
+    }
+};
+
 export const addMealToFavoritesApi = async (mealId, token) => {
     const endpoint = `${import.meta.env.VITE_ADD_MEAL_ENDPOINT}/${mealId}`;
     try {

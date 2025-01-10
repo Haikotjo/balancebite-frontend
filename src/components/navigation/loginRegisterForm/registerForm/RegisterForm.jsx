@@ -6,7 +6,8 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import useLogin from "../../../../hooks/useLogin.js";
-import { UserMealsContext } from "../../../../context/UserMealsContext.jsx"; // Importeer de UserMealsContext
+import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
+import {registerUserApi} from "../../../../services/apiService.js"; // Importeer de UserMealsContext
 
 // Validation schema using yup
 const schema = yup.object().shape({
@@ -50,21 +51,11 @@ const RegisterForm = ({ onClose }) => {
 
     const handleRegistration = async (data) => {
         try {
-            localStorage.clear(); // Verwijder oude tokens
+            localStorage.clear();
             sessionStorage.clear();
-            resetUserMeals(); // Reset maaltijden van vorige gebruiker
+            resetUserMeals();
 
-            const response = await fetch("http://localhost:8080/auth/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-            });
-
-            if (!response.ok) {
-                throw new Error("Registration failed. Please try again.");
-            }
-
-            const responseData = await response.json();
+            const responseData = await registerUserApi(data);
             const { accessToken, refreshToken } = responseData;
 
             if (!accessToken || !refreshToken) {
@@ -75,9 +66,9 @@ const RegisterForm = ({ onClose }) => {
             localStorage.setItem("refreshToken", refreshToken);
 
             await handleLogin(data.email, data.password, async () => {
-                await fetchUserMealsData(); // Haal nieuwe maaltijden op na login
-                onClose(); // Sluit het registerformulier
-                navigate("/meals"); // Navigeer naar meals-pagina
+                await fetchUserMealsData();
+                onClose();
+                navigate("/meals");
             });
         } catch (error) {
             console.error("Registration failed:", error);

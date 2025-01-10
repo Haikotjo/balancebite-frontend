@@ -26,7 +26,7 @@ function MealCard({ meal }) {
 
     return (
         <>
-            <Card sx={{ maxWidth: 345 }}>
+            <Card sx={{ minWidth: 300, maxWidth: 345 }}>
                 <CardMedia
                     component="img"
                     height="140"
