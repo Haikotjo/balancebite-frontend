@@ -13,7 +13,7 @@ function MealList({ setCreatedByName }) {
     const [meals, setMeals] = useState([]); // State to store fetched meals
     const [loading, setLoading] = useState(true); // Loading state
     const [error, setError] = useState(null); // Error state
-    const { currentListEndpoint, updateEndpoint } = useContext(UserMealsContext); // Use updateEndpoint from context
+    const { currentListEndpoint, updateEndpoint, activeOption, setActiveOption } = useContext(UserMealsContext); // Use updateEndpoint and setActiveOption from context
     const navigate = useNavigate(); // For navigation
 
     /**
@@ -63,20 +63,10 @@ function MealList({ setCreatedByName }) {
         return (
             <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight="50vh">
                 <Typography variant="h6" gutterBottom>
-                    You have no meals yet!
+                    {activeOption === "All Meals" && "No meals available yet!"}
+                    {activeOption === "All My Meals" && "You haven't saved any meals yet!"}
+                    {activeOption === "My Created Meals" && "You haven't created any meals yet!"}
                 </Typography>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
-                        const newEndpoint = `${import.meta.env.VITE_BASE_URL}/meals`;
-                        updateEndpoint(newEndpoint); // Use updateEndpoint from context
-                    }}
-                    sx={{ mb: 2 }}
-                >
-                    Start Adding Meals
-                </Button>
-                <Typography sx={{ mb: 2 }}>or</Typography>
                 <Button
                     variant="outlined"
                     color="secondary"
@@ -84,6 +74,21 @@ function MealList({ setCreatedByName }) {
                 >
                     Create a Meal
                 </Button>
+                <Typography sx={{ mb: 2 }}>or</Typography>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                        const newEndpoint = `${import.meta.env.VITE_BASE_URL}/meals`;
+                        updateEndpoint(newEndpoint); // Use updateEndpoint from context
+                        setActiveOption("All Meals"); // Update the active option in the context
+                    }}
+                    sx={{ mb: 2 }}
+                >
+                    Add a Meal
+                </Button>
+
+
             </Box>
         );
 
