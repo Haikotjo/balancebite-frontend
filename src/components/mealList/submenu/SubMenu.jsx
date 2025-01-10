@@ -23,8 +23,8 @@ function SubMenu() {
     const options = user
         ? [
             { label: "All Meals", smallLabel: "Meals", icon: MenuBookRoundedIcon },
-            { label: "All My Meals", smallLabel: "My Meals", icon: FoodBankRoundedIcon },
-            { label: "My Created Meals", smallLabel: "Created", icon: AccountBoxRoundedIcon },
+            { label: "My Meals", smallLabel: "My Meals", icon: FoodBankRoundedIcon },
+            { label: "Created Meals", smallLabel: "Created", icon: AccountBoxRoundedIcon },
         ]
         : [{ label: "All Meals", smallLabel: "Meals", icon: MenuBookRoundedIcon }];
 
@@ -39,10 +39,10 @@ function SubMenu() {
             case "All Meals":
                 newEndpoint = `${import.meta.env.VITE_BASE_URL}/meals`;
                 break;
-            case "All My Meals":
+            case "My Meals":
                 newEndpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_USER_MEALS_ENDPOINT}`;
                 break;
-            case "My Created Meals":
+            case "Created Meals":
                 newEndpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_CREATED_MEALS_ENDPOINT}`;
                 break;
             default:

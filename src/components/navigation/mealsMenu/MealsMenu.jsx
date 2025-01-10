@@ -7,6 +7,7 @@ import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRou
 import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 import AccountBoxRoundedIcon from "@mui/icons-material/AccountBoxRounded";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import CreateRoundedIcon from '@mui/icons-material/CreateRounded';
 import MenuItemComponent from "./menuItemComponent/MenuItemComponent.jsx";
 import { AuthContext } from "../../../context/AuthContext.jsx";
 import { UserMealsContext } from "../../../context/UserMealsContext.jsx"; // Import UserMealsContext
@@ -100,7 +101,7 @@ const MealsMenu = ({ iconColor, text, onClose }) => {
                         const userMealsEndpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_USER_MEALS_ENDPOINT}`;
                         if (user && availableEndpoints.includes(userMealsEndpoint)) {
                             updateEndpoint(userMealsEndpoint);
-                            setActiveOption("All My Meals"); // Update the active option in the context
+                            setActiveOption("My Meals"); // Update the active option in the context
                             navigate("/meals");
                         }
                     }}
@@ -111,14 +112,14 @@ const MealsMenu = ({ iconColor, text, onClose }) => {
                 {/* Option: My Created Meals */}
                 <MenuItemComponent
                     icon={AccountBoxRoundedIcon}
-                    label="My Created Meals"
+                    label="Created Meals"
                     path="/meals"
                     onClose={() => {
                         handleMenuClose();
                         const createdMealsEndpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_CREATED_MEALS_ENDPOINT}`;
                         if (user && availableEndpoints.includes(createdMealsEndpoint)) {
                             updateEndpoint(createdMealsEndpoint);
-                            setActiveOption("My Created Meals"); // Update the active option in the context
+                            setActiveOption("Created Meals"); // Update the active option in the context
                             navigate("/meals");
                         }
                     }}
@@ -128,7 +129,7 @@ const MealsMenu = ({ iconColor, text, onClose }) => {
 
                 {/* Option: Create Meal */}
                 <MenuItemComponent
-                    icon={AddCircleOutlineRoundedIcon}
+                    icon={CreateRoundedIcon}
                     label="Create Meal"
                     path="/create-meal"
                     onClose={() => {
