@@ -28,10 +28,11 @@ const CustomButton = ({ onClick, icon, label, variant = "contained" }) => {
                 border: variant === "outlined" ? "1px solid" : "none",
                 borderColor: variant === "outlined" ? "primary.main" : "none",
                 borderRadius: "12px",
-                padding: "8px 16px",
+                padding: "8px 8px",
                 textTransform: "none",
                 fontSize: "1rem",
                 fontWeight: "bold",
+                width: "150px", // Fixed width
                 '&:hover': {
                     backgroundColor: variant === "contained" ? "primary.dark" : "primary.light",
                 },
