@@ -39,6 +39,7 @@ export const RecommendedNutritionProvider = ({ children }) => {
         setRecommendedNutrition,
         loading,
         fetchRecommendedNutrition,
+        refetchRecommendedNutrition: fetchRecommendedNutrition,
     };
 
     return (
