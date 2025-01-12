@@ -1,12 +1,13 @@
 import PropTypes from "prop-types";
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import ExpandMoreIconButton from "../../styledComponents/expandMoreIconButton/ExpandMoreIconButton.jsx";
+import ExpandMoreIconButton from "../expandMoreIconButton/ExpandMoreIconButton.jsx";
 import { useContext } from "react";
 import { UserMealsContext } from "../../../context/UserMealsContext";
 import useFavorites from "../../../hooks/useFavorites.jsx";
+import { consumeMealApi } from "../../../services/apiService.js";
 
 const MealCardActions = ({ meal, expanded, toggleExpand }) => {
     const { addMealToFavorites } = useFavorites();
@@ -36,6 +37,20 @@ const MealCardActions = ({ meal, expanded, toggleExpand }) => {
         }
     };
 
+    const handleConsumeMeal = async () => {
+        try {
+            const token = localStorage.getItem("accessToken"); // JWT-token ophalen
+            if (!token) {
+                throw new Error("User is not authenticated.");
+            }
+
+            const remainingIntakes = await consumeMealApi(meal.id, token); // API-call
+            console.log("Meal consumed successfully. Remaining intakes:", remainingIntakes);
+        } catch (error) {
+            console.error("Error consuming meal:", error);
+        }
+    };
+
     return (
         <Box display="flex" alignItems="center" width="100%">
             <Typography
@@ -61,6 +76,16 @@ const MealCardActions = ({ meal, expanded, toggleExpand }) => {
             >
                 <ExpandMoreIcon />
             </ExpandMoreIconButton>
+            {isDuplicate && (
+                <Button
+                    size="small"
+                    variant="outlined"
+                    sx={{ marginLeft: "8px", fontSize: "0.7rem" }}
+                    onClick={handleConsumeMeal} // Alleen actief als isDuplicate true is
+                >
+                    Eat
+                </Button>
+            )}
             <IconButton
                 onClick={handleAddToFavorites}
                 sx={{ marginLeft: "auto" }}

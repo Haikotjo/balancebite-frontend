@@ -20,8 +20,6 @@ function MealCard({ meal }) {
     const { expanded, toggleExpand } = useExpand();
     const { nutrients } = useNutrients(meal.id);
     const { SnackbarComponent } = useFavorites();
-
-    // Use the utility function to dynamically generate the correct image source
     const imageSrc = getImageSrc(meal);
 
     return (

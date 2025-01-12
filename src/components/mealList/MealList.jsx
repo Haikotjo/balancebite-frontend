@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { fetchMeals } from "../../services/apiService.js";
 import MealCard from "../mealCard/MealCard.jsx";
-import { Box, CircularProgress, Typography, Button } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { UserMealsContext } from "../../context/UserMealsContext"; // Import UserMealsContext
 import { useNavigate } from "react-router-dom"; // For navigation
 import PropTypes from "prop-types";

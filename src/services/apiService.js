@@ -194,3 +194,19 @@ export const fetchRecommendedNutritionApi = async (token) => {
         throw error;
     }
 };
+
+export const consumeMealApi = async (mealId, token) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_CONSUME_MEAL_ENDPOINT}/${mealId}`;
+    try {
+        const response = await Interceptor.post(endpoint, null, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        logResponse(response);
+        return response.data; // Retourneer de overgebleven dagelijkse intake
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
