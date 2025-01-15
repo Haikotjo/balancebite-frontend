@@ -16,7 +16,7 @@ import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 import MealCardActions from "./mealCardActions/MealCardActions.jsx";
 import useFavorites from "../../hooks/useFavorites.jsx";
 
-function MealCard({ meal }) {
+function MealCard({ meal, refreshList }) { // Voeg refreshList toe aan de props
     const { expanded, toggleExpand } = useExpand();
     const { nutrients } = useNutrients(meal.id);
     const { SnackbarComponent } = useFavorites();
@@ -61,7 +61,12 @@ function MealCard({ meal }) {
                     </Typography>
                     <NutrientList nutrients={nutrients} />
                 </CardContent>
-                <MealCardActions meal={meal} expanded={expanded} toggleExpand={toggleExpand} />
+                <MealCardActions
+                    meal={meal}
+                    expanded={expanded}
+                    toggleExpand={toggleExpand}
+                    refreshList={refreshList} // Geef refreshList door
+                />
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
                     <CardContent>
                         <Typography
@@ -87,6 +92,7 @@ function MealCard({ meal }) {
 
 MealCard.propTypes = {
     meal: PropTypes.object.isRequired,
+    refreshList: PropTypes.func.isRequired, // Voeg prop validatie toe
 };
 
 export default MealCard;

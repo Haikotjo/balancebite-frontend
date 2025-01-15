@@ -1,23 +1,21 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
-import { Box, Button, IconButton, Typography, Modal } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import ExpandMoreIconButton from "../expandMoreIconButton/ExpandMoreIconButton.jsx";
 import { UserMealsContext } from "../../../context/UserMealsContext";
 import { RecommendedNutritionContext } from "../../../context/RecommendedNutritionContext.jsx";
-import useFavorites from "../../../hooks/useFavorites.jsx";
-import { consumeMealApi } from "../../../services/apiService.js";
-import RecommendedNutritionDisplay from "../../recommendedNutritionDisplay/RecommendedNutritionDisplay.jsx";
+import EatButton from "../eatButton/EatButton";
+import FavoriteButton from "../favoriteButton/FavoriteButton.jsx";
+import { addMealToFavoritesApi, removeMealFromFavoritesApi } from "../../../services/apiService";
 
-const MealCardActions = ({ meal, expanded, toggleExpand }) => {
-    const { addMealToFavorites } = useFavorites();
-    const { userMeals, addMealToUserMeals } = useContext(UserMealsContext);
+const MealCardActions = ({ meal, expanded, toggleExpand, refreshList }) => { // refreshList toegevoegd
+    const { userMeals, addMealToUserMeals, removeMealFromUserMeals } = useContext(UserMealsContext);
     const { refetchRecommendedNutrition } = useContext(RecommendedNutritionContext);
 
-    const [isModalOpen, setModalOpen] = useState(false);
+    const token = localStorage.getItem("accessToken");
 
+    // Controleer of de maaltijd al in de lijst staat
     const isDuplicate = userMeals.some((userMeal) => {
         const mealIngredientIds = meal.mealIngredients
             ?.map((ingredient) => ingredient?.foodItemId)
@@ -35,35 +33,28 @@ const MealCardActions = ({ meal, expanded, toggleExpand }) => {
         );
     });
 
+    // Functie voor toevoegen aan favorieten
     const handleAddToFavorites = async () => {
-        const success = await addMealToFavorites(meal.id);
-        if (success) {
-            addMealToUserMeals(meal); // Voeg toe aan context
-        }
-    };
-
-    const handleConsumeMeal = async () => {
         try {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                console.error("No token found. User not authenticated.");
-                return;
-            }
-
-            console.log("Attempting to consume meal:", meal.id);
-
-            const remainingIntakes = await consumeMealApi(meal.id, token);
-            console.log("Meal consumed successfully. Remaining intake:", remainingIntakes);
-
-            await refetchRecommendedNutrition(); // Refresh de data in de context
-            setModalOpen(true); // Open de modal
+            await addMealToFavoritesApi(meal.id, token);
+            addMealToUserMeals(meal); // Voeg toe aan context
+            refreshList(); // Ververs de lijst
+            console.log(`${meal.name} added to favorites.`);
         } catch (error) {
-            console.error("Error consuming meal:", error);
+            console.error("Error adding to favorites:", error);
         }
     };
 
-    const handleCloseModal = () => {
-        setModalOpen(false);
+    // Functie voor verwijderen uit favorieten
+    const handleRemoveFromFavorites = async () => {
+        try {
+            await removeMealFromFavoritesApi(meal.id, token);
+            removeMealFromUserMeals(meal.id); // Verwijder maaltijd uit context
+            refreshList(); // Ververs de lijst
+            console.log(`${meal.name} removed from favorites.`);
+        } catch (error) {
+            console.error("Error removing from favorites:", error);
+        }
     };
 
     return (
@@ -92,46 +83,17 @@ const MealCardActions = ({ meal, expanded, toggleExpand }) => {
                 <ExpandMoreIcon />
             </ExpandMoreIconButton>
             {isDuplicate && (
-                <Button
-                    size="small"
-                    variant="outlined"
-                    sx={{ marginLeft: "8px", fontSize: "0.7rem" }}
-                    onClick={handleConsumeMeal} // Alleen actief als isDuplicate true is
-                >
-                    Eat
-                </Button>
+                <EatButton
+                    meal={meal}
+                    refetchRecommendedNutrition={refetchRecommendedNutrition}
+                />
             )}
-            <IconButton
-                onClick={handleAddToFavorites}
-                sx={{ marginLeft: "auto" }}
-                disabled={isDuplicate}
-            >
-                {isDuplicate ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon color="primary" />}
-            </IconButton>
-
-            {/* Modal Weergave */}
-            <Modal
-                open={isModalOpen}
-                onClose={handleCloseModal}
-                aria-labelledby="nutrition-modal-title"
-                aria-describedby="nutrition-modal-description"
-            >
-                <Box
-                    sx={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                        width: 600,
-                        bgcolor: "background.paper",
-                        border: "2px solid #000",
-                        boxShadow: 24,
-                        p: 4,
-                    }}
-                >
-                    <RecommendedNutritionDisplay />
-                </Box>
-            </Modal>
+            <FavoriteButton
+                isFavorite={isDuplicate}
+                onAdd={handleAddToFavorites} // Toevoegen
+                onRemove={handleRemoveFromFavorites} // Verwijderen
+                meal={meal}
+            />
         </Box>
     );
 };
@@ -140,6 +102,7 @@ MealCardActions.propTypes = {
     meal: PropTypes.object.isRequired,
     expanded: PropTypes.bool.isRequired,
     toggleExpand: PropTypes.func.isRequired,
+    refreshList: PropTypes.func.isRequired, // Prop validatie toegevoegd
 };
 
 export default MealCardActions;

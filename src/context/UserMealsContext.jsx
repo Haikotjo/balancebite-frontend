@@ -25,7 +25,6 @@ export const UserMealsProvider = ({ children }) => {
     );
     const [activeOption, setActiveOption] = useState("All Meals"); // Default active option
 
-
     /**
      * Fetches meals data for the logged-in user from the API.
      */
@@ -84,6 +83,14 @@ export const UserMealsProvider = ({ children }) => {
     };
 
     /**
+     * Removes a meal from the userMeals state.
+     * @param {number} mealId - The ID of the meal to remove.
+     */
+    const removeMealFromUserMeals = (mealId) => {
+        setUserMeals((prevMeals) => prevMeals.filter((meal) => meal.id !== mealId)); // Remove the meal with the given ID
+    };
+
+    /**
      * Resets the userMeals state to an empty array.
      */
     const resetUserMeals = () => {
@@ -110,6 +117,7 @@ export const UserMealsProvider = ({ children }) => {
                 fetchUserMealsData,
                 resetUserMeals,
                 addMealToUserMeals,
+                removeMealFromUserMeals, // Expose the removeMealFromUserMeals function
                 activeOption,
                 setActiveOption,
             }}

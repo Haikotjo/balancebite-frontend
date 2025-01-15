@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import ProfileMenu from "./profileMenu/ProfileMenu.jsx";
 import MealsMenu from "./mealsMenu/MealsMenu.jsx";
 import PropTypes from "prop-types";
+import RestaurantRoundedIcon from '@mui/icons-material/RestaurantRounded';
 
 const NavBar = () => {
     const { user } = useContext(AuthContext);

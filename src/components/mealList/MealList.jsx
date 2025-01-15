@@ -45,6 +45,21 @@ function MealList({ setCreatedByName }) {
         fetchData().catch((err) => console.error("Unhandled error in fetchData:", err));
     }, [currentListEndpoint, setCreatedByName]);
 
+    /**
+     * Function to refresh the current list.
+     */
+    const refreshList = async () => {
+        try {
+            setLoading(true);
+            const mealsData = await fetchMeals(currentListEndpoint);
+            setMeals(mealsData);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     // Show a loading indicator while data is being fetched
     if (loading)
         return (
@@ -64,7 +79,6 @@ function MealList({ setCreatedByName }) {
     // Show options to add or view meals if no meals are found
     if (meals.length === 0)
         return (
-
             <Box
                 marginTop={3}
                 display="flex"
@@ -98,7 +112,6 @@ function MealList({ setCreatedByName }) {
                     variant="contained"
                 />
             </Box>
-
         );
 
     // Render the list of meals
@@ -110,7 +123,7 @@ function MealList({ setCreatedByName }) {
             padding={2}
         >
             {meals.map((meal) => (
-                <MealCard key={meal.id} meal={meal} />
+                <MealCard key={meal.id} meal={meal} refreshList={refreshList} />
             ))}
         </Box>
     );

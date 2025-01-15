@@ -51,6 +51,21 @@ export const addMealToFavoritesApi = async (mealId, token) => {
     }
 };
 
+export const removeMealFromFavoritesApi = async (mealId, token) => {
+    const endpoint = `${import.meta.env.VITE_REMOVE_MEAL_ENDPOINT}/${mealId}`;
+    try {
+        const response = await Interceptor.delete(endpoint, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        logResponse(response);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+
 export const fetchMeals = async (endpoint) => {
     try {
         const response = await Interceptor.get(endpoint);
