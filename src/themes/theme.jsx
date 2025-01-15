@@ -25,8 +25,8 @@ const getDesignTokens = (mode) => ({
         },
         divider: mode === "light" ? "#4D5061" : "#303030", // Randkleur
         background: {
-            default: mode === "light" ? "#FFFFFF" : "#121212", // Achtergrond light/dark mode
-            paper: mode === "light" ? "#FAFAFA" : "#1E1E1E", // Voor componenten
+            default: mode === "light" ? "#4D5061" : "#E0E0E0", // Achtergrond verandert met tekstkleur
+            paper: mode === "light" ? "#4D5061" : "#E0E0E0", // Voor componenten verandert met tekstkleur
         },
         action: {
             selected: "#46B1C9",

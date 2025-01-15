@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import ProfileMenu from "./profileMenu/ProfileMenu.jsx";
 import MealsMenu from "./mealsMenu/MealsMenu.jsx";
 import PropTypes from "prop-types";
+import DarkModeSwitch from "./darkModeSwitch/DarkModeSwitch.jsx";
 
 const NavBar = () => {
     const { user } = useContext(AuthContext);
@@ -128,16 +129,7 @@ const NavBar = () => {
                     />
 
                     {/* Dark Mode Switch */}
-                    <Tooltip title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}>
-                        <IconButton
-                            onClick={toggleDarkMode}
-                            sx={{
-                                color: theme.palette.background.default,
-                            }}
-                        >
-                            {darkMode ? <Brightness7 /> : <Brightness4 />}
-                        </IconButton>
-                    </Tooltip>
+                    <DarkModeSwitch />
 
                     {/* Logout/Login or other menu items */}
                     <Box sx={{ display: "flex", alignItems: "center" }}>

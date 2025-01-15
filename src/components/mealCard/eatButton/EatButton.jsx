@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Modal, Box } from "@mui/material";
+import { Modal, Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, Link } from "@mui/material";
 import { motion } from "framer-motion";
 import RestaurantRoundedIcon from "@mui/icons-material/RestaurantRounded";
 import { consumeMealApi } from "../../../services/apiService";
 import RecommendedNutritionDisplay from "../../recommendedNutritionDisplay/RecommendedNutritionDisplay.jsx";
+import ErrorDialog from "../../ErrorDialog/ErrorDialog.jsx";
 
 const EatButton = ({ meal, refetchRecommendedNutrition }) => {
     const [isModalOpen, setModalOpen] = useState(false);
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const handleConsumeMeal = async () => {
         try {
@@ -26,11 +29,29 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
             setModalOpen(true); // Open de modal
         } catch (error) {
             console.error("Error consuming meal:", error);
+
+            // Specifieke foutmelding voor 404 met "Recommended daily intake not found"
+            if (
+                error.response?.status === 404 &&
+                error.response?.data?.error?.includes("Recommended daily intake not found")
+            ) {
+                setErrorMessage(
+                    "Please update your metrics in your profile to get a Recommended Daily Intake (RDI)."
+                );
+                setDialogOpen(true);
+            } else {
+                setErrorMessage("An unexpected error occurred. Please try again later.");
+                setDialogOpen(true);
+            }
         }
     };
 
     const handleCloseModal = () => {
         setModalOpen(false);
+    };
+
+    const handleCloseDialog = () => {
+        setDialogOpen(false);
     };
 
     return (
@@ -47,6 +68,15 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
             >
                 <RestaurantRoundedIcon sx={{ fontSize: 24, color: "primary.main" }} />
             </motion.div>
+
+            {/* Error Dialog */}
+            <ErrorDialog
+                open={dialogOpen}
+                onClose={handleCloseDialog}
+                message={errorMessage}
+                actionLink="/profile"
+                actionLabel="Go to Profile"
+            />
 
             {/* Modal Weergave */}
             <Modal
