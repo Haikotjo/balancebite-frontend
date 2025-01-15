@@ -1,6 +1,7 @@
-import { useContext, useState } from "react";
-import { AppBar, Toolbar, Box, MenuItem } from "@mui/material";
+import { useContext, useState, useEffect } from "react";
+import { AppBar, Toolbar, Box, MenuItem, IconButton, Tooltip } from "@mui/material";
 import { useTheme, useMediaQuery } from "@mui/material";
+import { Brightness4, Brightness7 } from "@mui/icons-material";
 import LoginRegisterForm from "./loginRegisterForm/LoginRegisterForm";
 import HamburgerMenu from "./hamburgerMenu/HamburgerMenu";
 import DesktopMenu from "./desktopMenu/DesktopMenu";
@@ -13,7 +14,6 @@ import { useNavigate } from "react-router-dom";
 import ProfileMenu from "./profileMenu/ProfileMenu.jsx";
 import MealsMenu from "./mealsMenu/MealsMenu.jsx";
 import PropTypes from "prop-types";
-import RestaurantRoundedIcon from '@mui/icons-material/RestaurantRounded';
 
 const NavBar = () => {
     const { user } = useContext(AuthContext);
@@ -22,11 +22,24 @@ const NavBar = () => {
     const handleLogout = useLogout();
     const { handleLogin, errorMessage } = useLogin();
     const [showLoginForm, setShowLoginForm] = useState(false);
+    const [darkMode, setDarkMode] = useState(false);
     useNavigate();
+
+    const toggleDarkMode = () => {
+        setDarkMode((prevMode) => !prevMode);
+    };
+
+    useEffect(() => {
+        if (darkMode) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+    }, [darkMode]);
+
     const handleRegister = (data) => {
         console.log("Register data:", data);
     };
-
 
     return (
         <AppBar
@@ -114,6 +127,18 @@ const NavBar = () => {
                         }}
                     />
 
+                    {/* Dark Mode Switch */}
+                    <Tooltip title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}>
+                        <IconButton
+                            onClick={toggleDarkMode}
+                            sx={{
+                                color: theme.palette.background.default,
+                            }}
+                        >
+                            {darkMode ? <Brightness7 /> : <Brightness4 />}
+                        </IconButton>
+                    </Tooltip>
+
                     {/* Logout/Login or other menu items */}
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                         {isMobile ? (
@@ -131,16 +156,41 @@ const NavBar = () => {
                         )}
                     </Box>
                 </Box>
-
             </Toolbar>
 
             {showLoginForm && (
-                <LoginRegisterForm
-                    onLogin={handleLogin}
-                    onRegister={handleRegister}
-                    errorMessage={errorMessage}
-                    onClose={() => setShowLoginForm(false)}
-                />
+                <Box
+                    sx={{
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        width: "100vw",
+                        height: "100vh",
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        zIndex: 1300,
+                    }}
+                >
+                    <Box
+                        sx={{
+                            backgroundColor: "white",
+                            padding: 3,
+                            borderRadius: 2,
+                            boxShadow: 3,
+                            width: "90%",
+                            maxWidth: 400,
+                        }}
+                    >
+                        <LoginRegisterForm
+                            onLogin={handleLogin}
+                            onRegister={handleRegister}
+                            errorMessage={errorMessage}
+                            onClose={() => setShowLoginForm(false)}
+                        />
+                    </Box>
+                </Box>
             )}
 
             <ErrorAlert message={errorMessage} />

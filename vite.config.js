@@ -3,8 +3,11 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [
-    react(), // Alleen de React plugin blijft
+    react(), // React plugin blijft
   ],
+  css: {
+    postcss: "./postcss.config.js", // Verbind PostCSS expliciet
+  },
   build: {
     sourcemap: false, // Disable source maps during the build
   },

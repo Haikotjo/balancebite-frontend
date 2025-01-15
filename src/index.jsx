@@ -1,8 +1,9 @@
 import React from "react";
+import "./index.css";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import theme from "./themes/theme";
-import "./index.css";
+
 import { ThemeProvider } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import { AuthProvider } from "./context/AuthContext";
@@ -23,7 +24,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                         {/* CssBaseline provides consistent styling, including normalization and default Material-UI styles */}
                         <CssBaseline />
                         {/* The main App component containing all routes and pages */}
-                        <App />
+                        <div className="min-h-screen bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText">
+                            <App />
+                        </div>
                     </ThemeProvider>
                 </RecommendedNutritionProvider>
             </UserMealsProvider>

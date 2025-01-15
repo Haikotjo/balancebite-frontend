@@ -1,6 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { Box, Button, Collapse } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import LoginForm from "./loginForm/LoginForm.jsx";
 import RegisterForm from "./registerForm/RegisterForm.jsx";
 
@@ -8,20 +8,35 @@ const LoginRegisterForm = ({ onLogin, onRegister, errorMessage, onClose }) => {
     const [isRegistering, setIsRegistering] = useState(false);
 
     return (
-        <Collapse in={true}>
+        <Box
+            sx={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100vw",
+                height: "100vh",
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 1400,
+            }}
+        >
             <Box
                 sx={{
-                    position: "relative",
-                    zIndex: 10,
-                    maxWidth: "400px",
-                    margin: "auto",
-                    marginTop: "20px",
+                    backgroundColor: "white",
+                    padding: 3,
+                    borderRadius: 2,
+                    boxShadow: 3,
+                    width: "90%",
+                    maxWidth: 400,
                 }}
             >
                 {isRegistering ? (
                     <RegisterForm
                         onClose={onClose}
                         onRegister={onRegister}
+                        onSwitchToLogin={() => setIsRegistering(false)} // Stel in om naar Login te schakelen
                     />
                 ) : (
                     <LoginForm
@@ -31,19 +46,8 @@ const LoginRegisterForm = ({ onLogin, onRegister, errorMessage, onClose }) => {
                         onSwitchToRegister={() => setIsRegistering(true)}
                     />
                 )}
-
-                {isRegistering && (
-                    <Button
-                        variant="text"
-                        size="small"
-                        onClick={() => setIsRegistering(false)}
-                        sx={{ display: "block", margin: "10px auto" }}
-                    >
-                        Already have an account? Login
-                    </Button>
-                )}
             </Box>
-        </Collapse>
+        </Box>
     );
 };
 

@@ -22,7 +22,20 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
     };
 
     return (
-        <Collapse in={true}>
+        <Box
+            sx={{
+                position: "fixed", // Zorg dat het los staat van de AppBar of andere ouders
+                top: 0,
+                left: 0,
+                width: "100vw", // Bedekt de hele breedte
+                height: "100vh", // Bedekt de hele hoogte
+                backgroundColor: "rgba(0, 0, 0, 0.5)", // Donkere overlay
+                display: "flex", // Flexbox om het formulier te centreren
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 1300, // Zorg dat het boven de rest ligt
+            }}
+        >
             <Box
                 component="form"
                 onSubmit={handleSubmit}
@@ -30,21 +43,12 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                     display: "flex",
                     flexDirection: "column",
                     gap: 1.5,
-                    backgroundColor: "white",
-                    padding: 2,
-                    borderRadius: 1,
+                    backgroundColor: "white", // Witte achtergrond voor het formulier
+                    padding: 3,
+                    borderRadius: 2,
                     boxShadow: 3,
-                    zIndex: 10,
-                    position: "absolute",
-                    top: "100%",
-                    right: 16,
-                    width: {
-                        xs: "90vw",
-                        sm: 300,
-                        md: 400,
-                    },
+                    width: "90%",
                     maxWidth: 400,
-                    transition: "all 0.3s ease-in-out",
                 }}
             >
                 {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
@@ -84,7 +88,7 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                     Close
                 </Button>
             </Box>
-        </Collapse>
+        </Box>
     );
 };
 

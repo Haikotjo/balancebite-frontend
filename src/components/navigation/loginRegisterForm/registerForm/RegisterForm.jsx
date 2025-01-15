@@ -34,18 +34,18 @@ const schema = yup.object().shape({
         .required("Please confirm your password."),
 });
 
-const RegisterForm = ({ onClose }) => {
+const RegisterForm = ({ onClose, onSwitchToLogin }) => {
     const [successMessage, setSuccessMessage] = useState("");
     const navigate = useNavigate();
     const { handleLogin } = useLogin();
-    const { resetUserMeals, fetchUserMealsData } = useContext(UserMealsContext); // Haal functies uit de context
+    const { resetUserMeals, fetchUserMealsData } = useContext(UserMealsContext);
 
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm({
-        resolver: yupResolver(schema), // Yup validation
+        resolver: yupResolver(schema),
         mode: "onBlur",
     });
 
@@ -77,7 +77,20 @@ const RegisterForm = ({ onClose }) => {
     };
 
     return (
-        <Collapse in={true}>
+        <Box
+            sx={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100vw",
+                height: "100vh",
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 1300,
+            }}
+        >
             <Box
                 component="form"
                 onSubmit={handleSubmit(handleRegistration)}
@@ -86,20 +99,11 @@ const RegisterForm = ({ onClose }) => {
                     flexDirection: "column",
                     gap: 1.5,
                     backgroundColor: "white",
-                    padding: 2,
-                    borderRadius: 1,
+                    padding: 3,
+                    borderRadius: 2,
                     boxShadow: 3,
-                    zIndex: 10,
-                    position: "absolute",
-                    top: "100%", // Direct onder de navbar
-                    right: 16,    // Aan de rechterkant uitgelijnd
-                    width: {
-                        xs: "90vw", // 90% van schermbreedte voor mobiel
-                        sm: 300,    // Standaardbreedte voor tablets en groter
-                        md: 400,    // Grotere breedte voor desktops
-                    },
-                    maxWidth: 400, // Maximale breedte beperken
-                    transition: "all 0.3s ease-in-out", // Zachte overgang bij grootte-aanpassingen
+                    width: "90%",
+                    maxWidth: 400,
                 }}
             >
                 <Typography variant="h5" component="h2" align="center">
@@ -150,6 +154,17 @@ const RegisterForm = ({ onClose }) => {
                     Register
                 </Button>
 
+                {/* Schakelknop om terug te gaan naar Login */}
+                <Button
+                    variant="text"
+                    size="small"
+                    onClick={onSwitchToLogin} // Roep de prop aan om naar Login te schakelen
+                    sx={{ display: "block", margin: "10px auto" }}
+                >
+                    Already have an account? Login
+                </Button>
+
+                {/* Sluitknop voor Register */}
                 <Button
                     variant="text"
                     size="small"
@@ -159,12 +174,13 @@ const RegisterForm = ({ onClose }) => {
                     Close
                 </Button>
             </Box>
-        </Collapse>
+        </Box>
     );
 };
 
 RegisterForm.propTypes = {
     onClose: PropTypes.func.isRequired,
+    onSwitchToLogin: PropTypes.func.isRequired, // Nieuwe prop
 };
 
 export default RegisterForm;

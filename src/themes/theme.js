@@ -1,7 +1,8 @@
 import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 
-let theme = createTheme({
+const getDesignTokens = (mode) => ({
     palette: {
+        mode,
         primary: {
             main: "#46B1C9", // Primaire kleur
             light: "#7ed7ec", // Primaire kleur light
@@ -18,19 +19,18 @@ let theme = createTheme({
             main: "#7EE081", // Succes kleur
         },
         text: {
-            primary: "#4D5061", // Tekstkleur
-            secondary: "#7a7c8b", // Secundaire tekstkleur
+            primary: mode === "light" ? "#4D5061" : "#E0E0E0", // Tekstkleur
+            secondary: mode === "light" ? "#7a7c8b" : "#B0B0B0", // Secundaire tekstkleur
             light: "#ffffff",
         },
-        divider: "#4D5061", // Randkleur
-        dividerLight :"#FFFFFF",
+        divider: mode === "light" ? "#4D5061" : "#303030", // Randkleur
         background: {
-            default: "#FFFFFF", // Basisachtergrond voor light mode
-            paper: "#FAFAFA", // Voor componenten zoals kaarten
+            default: mode === "light" ? "#FFFFFF" : "#121212", // Achtergrond light/dark mode
+            paper: mode === "light" ? "#FAFAFA" : "#1E1E1E", // Voor componenten
         },
         action: {
-            selected: "#46B1C9", // Voeg hier je eigen kleur toe
-            disabled: "#E0E0E0"
+            selected: "#46B1C9",
+            disabled: "#E0E0E0",
         },
     },
     typography: {
@@ -68,7 +68,7 @@ let theme = createTheme({
     },
 });
 
-// Maak typografie automatisch responsief
+let theme = createTheme(getDesignTokens("light")); // Standaard light mode
 theme = responsiveFontSizes(theme);
 
 export default theme;
