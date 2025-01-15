@@ -1,31 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { IconButton, Tooltip } from "@mui/material";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
+import { useThemeMode } from "../../../themes/ThemeProvider.jsx";
 
 const DarkModeSwitch = () => {
-    const [darkMode, setDarkMode] = useState(false);
+    const { mode, toggleTheme } = useThemeMode();
 
-    const toggleDarkMode = () => {
-        setDarkMode((prevMode) => !prevMode);
-    };
-
+    // Laad de modus bij het laden van de component
     useEffect(() => {
-        if (darkMode) {
-            document.documentElement.classList.add("dark");
-        } else {
-            document.documentElement.classList.remove("dark");
+        const savedMode = localStorage.getItem("theme-mode");
+        if (savedMode && savedMode !== mode) {
+            toggleTheme(); // Zorg ervoor dat de modus overeenkomt met de opgeslagen waarde
         }
-    }, [darkMode]);
+    }, []); // Alleen uitvoeren bij het laden van de component
+
+    // Sla de modus op in localStorage wanneer deze verandert
+    useEffect(() => {
+        localStorage.setItem("theme-mode", mode);
+    }, [mode]);
 
     return (
-        <Tooltip title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}>
+        <Tooltip title={mode === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}>
             <IconButton
-                onClick={toggleDarkMode}
+                onClick={toggleTheme}
                 sx={{
-                    color: darkMode ? "#FFD700" : "#1E90FF", // Goud in dark mode, blauw in light mode
+                    color: mode === "dark" ? "text.primary" : "text.light",
                 }}
             >
-                {darkMode ? <Brightness7 /> : <Brightness4 />}
+                {mode === "dark" ? <Brightness7 /> : <Brightness4 />}
             </IconButton>
         </Tooltip>
     );

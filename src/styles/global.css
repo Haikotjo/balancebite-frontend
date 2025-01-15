@@ -1,0 +1,35 @@
+/* Tailwind Base Utilities */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Globale custom properties */
+:root {
+    --bg-light: #ffffff;
+    --bg-dark: #121212;
+    --text-light: #4D5061;
+    --text-dark: #ffffff;
+}
+
+/* Tailwind gebaseerde utility-klassen */
+.bg-lightBackground {
+    @apply bg-[var(--bg-light)];
+}
+
+.dark .bg-darkBackground {
+    @apply bg-[var(--bg-dark)];
+}
+
+.text-lightText {
+    @apply text-[var(--text-light)];
+}
+
+.dark .text-darkText {
+    @apply text-[var(--text-dark)];
+}
+
+/* Extra globale stijlen */
+body {
+    margin: 0;
+    font-family: 'Nunito', sans-serif; /* Standaardlettertype gewijzigd */
+}

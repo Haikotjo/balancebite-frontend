@@ -1,23 +1,34 @@
+import typography from "@tailwindcss/typography";
+import forms from "@tailwindcss/forms";
+
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: "class", // Activeer dark mode via een class op <html>
+  darkMode: "class",
   content: [
-    "./src/**/*.{js,jsx,ts,tsx}", // Scan alle React-bestanden
-    "./public/index.html",        // Scan je public/index.html
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "./public/index.html",
   ],
   theme: {
     extend: {
       colors: {
-        primary: "#46B1C9",        // Primaire kleur
-        secondary: "#EDB6A3",      // Secundaire kleur
-        error: "#DD1155",          // Error kleur
-        success: "#7EE081",        // Succes kleur
-        lightText: "#4D5061",      // Tekstkleur voor light mode
-        darkText: "#ffffff",       // Tekstkleur voor dark mode
-        lightBackground: "#FFFFFF", // Achtergrondkleur light mode
-        darkBackground: "#4D5061", // Achtergrondkleur dark mode
+        primary: "#1687c5",
+        secondary: "#EDB6A3",
+        error: "#DD1155",
+        success: "#7EE081",
+        lightText: "#4D5061",
+        darkText: "#ffffff",
+        lightBackground: "#FFFFFF",
+        darkBackground: "#4D5061",
+      },
+      fontFamily: {
+        sans: ["Nunito", "sans-serif"],
+        display: ["Roboto", "sans-serif"],
+        body: ["Quicksand", "sans-serif"],
+      },
+      spacing: {
+        18: "4.5rem",
       },
     },
   },
-  plugins: [], // Geen plugins nodig op dit moment
+  plugins: [typography, forms], // Plugins als ES modules
 };

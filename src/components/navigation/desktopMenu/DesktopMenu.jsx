@@ -24,7 +24,8 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                 sx={{
                     height: "24px",
                     width: "1px",
-                    backgroundColor: theme.palette.dividerLight,
+                    backgroundColor: theme.palette.text.light,
+                    mx: 1,
                 }}
             />
             <Button
@@ -39,7 +40,8 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                 sx={{
                     height: "24px",
                     width: "1px",
-                    backgroundColor: theme.palette.dividerLight,
+                    backgroundColor: theme.palette.text.light,
+                    mx: 1,
                 }}
             />
             <Box

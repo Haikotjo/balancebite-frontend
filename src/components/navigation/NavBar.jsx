@@ -1,7 +1,6 @@
-import { useContext, useState, useEffect } from "react";
-import { AppBar, Toolbar, Box, MenuItem, IconButton, Tooltip } from "@mui/material";
+import {useContext, useState} from "react";
+import { AppBar, Toolbar, Box, MenuItem } from "@mui/material";
 import { useTheme, useMediaQuery } from "@mui/material";
-import { Brightness4, Brightness7 } from "@mui/icons-material";
 import LoginRegisterForm from "./loginRegisterForm/LoginRegisterForm";
 import HamburgerMenu from "./hamburgerMenu/HamburgerMenu";
 import DesktopMenu from "./desktopMenu/DesktopMenu";
@@ -15,28 +14,17 @@ import ProfileMenu from "./profileMenu/ProfileMenu.jsx";
 import MealsMenu from "./mealsMenu/MealsMenu.jsx";
 import PropTypes from "prop-types";
 import DarkModeSwitch from "./darkModeSwitch/DarkModeSwitch.jsx";
+import { useThemeMode } from "../../themes/ThemeProvider.jsx"; // Gebruik globale context
 
 const NavBar = () => {
     const { user } = useContext(AuthContext);
     const theme = useTheme();
+    const { mode } = useThemeMode(); // Verkrijg de juiste mode
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const handleLogout = useLogout();
     const { handleLogin, errorMessage } = useLogin();
     const [showLoginForm, setShowLoginForm] = useState(false);
-    const [darkMode, setDarkMode] = useState(false);
     useNavigate();
-
-    const toggleDarkMode = () => {
-        setDarkMode((prevMode) => !prevMode);
-    };
-
-    useEffect(() => {
-        if (darkMode) {
-            document.documentElement.classList.add("dark");
-        } else {
-            document.documentElement.classList.remove("dark");
-        }
-    }, [darkMode]);
 
     const handleRegister = (data) => {
         console.log("Register data:", data);
@@ -46,7 +34,7 @@ const NavBar = () => {
         <AppBar
             sx={{
                 mb: 2,
-                backgroundColor: "text.primary",
+                backgroundColor: mode === "dark" ? theme.palette.primary.main : theme.palette.text.primary, // Verander kleur op basis van mode
                 position: "sticky",
             }}
         >
@@ -63,17 +51,16 @@ const NavBar = () => {
                         padding: 1,
                     }}
                 >
-                    <Logo size={40} color={theme.palette.background.default} to="/" />
+                    <Logo size={40} color={theme.palette.text.light} to="/" />
                 </Box>
 
                 <Box sx={{ display: "flex", alignItems: "center" }}>
-                    {/* Meals Menu */}
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                         {!isMobile && (
                             <MenuItem
                                 onClick={(e) => e.currentTarget.nextSibling.click()}
                                 sx={{
-                                    color: theme.palette.background.default,
+                                    color: theme.palette.text.light,
                                     cursor: "pointer",
                                 }}
                             >
@@ -82,27 +69,25 @@ const NavBar = () => {
                         )}
                         <MealsMenu
                             user={user}
-                            iconColor={theme.palette.background.default}
+                            iconColor={theme.palette.text.light}
                         />
                     </Box>
 
-                    {/* Vertical Divider */}
                     <Box
                         sx={{
                             height: "24px",
                             width: "1px",
-                            backgroundColor: theme.palette.dividerLight,
+                            backgroundColor: theme.palette.text.light,
                             mx: 1,
                         }}
                     />
 
-                    {/* Profile Menu */}
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                         {!isMobile && (
                             <MenuItem
                                 onClick={(e) => e.currentTarget.nextSibling.click()}
                                 sx={{
-                                    color: theme.palette.background.default,
+                                    color: theme.palette.text.light,
                                     cursor: "pointer",
                                 }}
                             >
@@ -113,25 +98,31 @@ const NavBar = () => {
                             user={user}
                             onLogout={handleLogout}
                             onLoginClick={() => setShowLoginForm(true)}
-                            iconColor={theme.palette.background.default}
+                            iconColor={theme.palette.text.light}
                             onClose={() => {}}
                         />
                     </Box>
 
-                    {/* Vertical Divider */}
                     <Box
                         sx={{
                             height: "24px",
                             width: "1px",
-                            backgroundColor: theme.palette.dividerLight,
+                            backgroundColor: theme.palette.text.light,
                             mx: 1,
                         }}
                     />
 
-                    {/* Dark Mode Switch */}
                     <DarkModeSwitch />
 
-                    {/* Logout/Login or other menu items */}
+                    <Box
+                        sx={{
+                            height: "24px",
+                            width: "1px",
+                            backgroundColor: theme.palette.text.light,
+                            mx: 1,
+                        }}
+                    />
+
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                         {isMobile ? (
                             <HamburgerMenu
