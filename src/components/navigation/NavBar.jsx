@@ -14,7 +14,8 @@ import ProfileMenu from "./profileMenu/ProfileMenu.jsx";
 import MealsMenu from "./mealsMenu/MealsMenu.jsx";
 import PropTypes from "prop-types";
 import DarkModeSwitch from "./darkModeSwitch/DarkModeSwitch.jsx";
-import { useThemeMode } from "../../themes/ThemeProvider.jsx"; // Gebruik globale context
+import { useThemeMode } from "../../themes/ThemeProvider.jsx";
+import VerticalDivider from "../verticalDivider/VerticalDivider.jsx"; // Gebruik globale context
 
 const NavBar = () => {
     const { user } = useContext(AuthContext);
@@ -73,14 +74,7 @@ const NavBar = () => {
                         />
                     </Box>
 
-                    <Box
-                        sx={{
-                            height: "24px",
-                            width: "1px",
-                            backgroundColor: theme.palette.text.light,
-                            mx: 1,
-                        }}
-                    />
+                    <VerticalDivider marginLeft={1} marginRight={0} hiddenOnMobile />
 
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                         {!isMobile && (
@@ -102,26 +96,7 @@ const NavBar = () => {
                             onClose={() => {}}
                         />
                     </Box>
-
-                    <Box
-                        sx={{
-                            height: "24px",
-                            width: "1px",
-                            backgroundColor: theme.palette.text.light,
-                            mx: 1,
-                        }}
-                    />
-
-                    <DarkModeSwitch />
-
-                    <Box
-                        sx={{
-                            height: "24px",
-                            width: "1px",
-                            backgroundColor: theme.palette.text.light,
-                            mx: 1,
-                        }}
-                    />
+                    <VerticalDivider marginLeft={1} marginRight={0} hiddenOnMobile />
 
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                         {isMobile ? (
@@ -129,6 +104,7 @@ const NavBar = () => {
                                 user={user}
                                 onLogout={handleLogout}
                                 onLoginClick={() => setShowLoginForm(true)}
+                                iconColor="text.light"
                             />
                         ) : (
                             <DesktopMenu
@@ -139,6 +115,8 @@ const NavBar = () => {
                         )}
                     </Box>
                 </Box>
+
+                <DarkModeSwitch />
             </Toolbar>
 
             {showLoginForm && (

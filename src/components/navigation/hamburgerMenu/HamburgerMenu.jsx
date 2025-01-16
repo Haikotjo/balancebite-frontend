@@ -10,7 +10,7 @@ import ProfileMenu from "../profileMenu/ProfileMenu.jsx";
 import LoginLogoutMenuItem from "../loginLogoutMenuItem/LoginLogoutMenuItem.jsx";
 import MealsMenu from "../mealsMenu/MealsMenu.jsx";
 
-const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
+const HamburgerMenu = ({ user, onLogout, onLoginClick, iconColor = "text.primary" }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [mealsMenuAnchorEl, setMealsMenuAnchorEl] = useState(null);
     const [isIconLoaded, setIsIconLoaded] = useState(false);
@@ -35,8 +35,13 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
     const isActive = (path) => location.pathname === path;
 
     const menuItemStyle = (path) => ({
-        backgroundColor: isActive(path) ? theme.palette.action.selected : "inherit",
+        backgroundColor: isActive(path)
+            ? theme.palette.mode === "dark"
+                ? "rgba(255, 255, 255, 0.2)" // Lichte modus: semi-transparant wit
+                : theme.palette.primary.main // Donkere modus: primary.main
+            : "inherit",
     });
+
 
     return (
         <>
@@ -44,7 +49,7 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
                 edge="end"
                 onClick={handleMenuOpen}
                 sx={{
-                    color: theme.palette.background.default,
+                    color: theme.palette[iconColor] || iconColor,
                     transition: "transform 0.75s ease-in-out, opacity 0.5s",
                     transform: `${isIconLoaded ? "rotate(360deg)" : "rotate(0deg)"} ${
                         isMenuOpen ? "rotate(360deg)" : ""
@@ -61,7 +66,7 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
                 <MenuItem disableRipple style={{ display: "flex", justifyContent: "space-between" }}>
                     <MealsMenu
                         user={user}
-                        iconColor={theme.palette.text.primary}
+                        iconColor={null}
                         text="Meals"
                         onClose={handleMenuClose}
                     />
@@ -74,7 +79,7 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
                         user={user}
                         onLogout={onLogout}
                         onLoginClick={onLoginClick}
-                        iconColor={theme.palette.text.primary}
+                        iconColor={null}
                         onClose={handleMenuClose}
                         text="Profile"
                     />
@@ -93,7 +98,7 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
                     sx={menuItemStyle("/")}
                 >
                     <ListItemIcon>
-                        <HomeRoundedIcon sx={{ color: theme.palette.text.primary }} />
+                        <HomeRoundedIcon />
                     </ListItemIcon>
                     <ListItemText primary="Home" />
                 </MenuItem>
@@ -111,7 +116,7 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick }) => {
                     sx={menuItemStyle("/about")}
                 >
                     <ListItemIcon>
-                        <InfoRoundedIcon sx={{ color: theme.palette.text.primary }} />
+                        <InfoRoundedIcon sx={null} />
                     </ListItemIcon>
                     <ListItemText primary="About" />
                 </MenuItem>
@@ -147,6 +152,7 @@ HamburgerMenu.propTypes = {
     }),
     onLogout: PropTypes.func.isRequired,
     onLoginClick: PropTypes.func.isRequired,
+    iconColor: PropTypes.string,
 };
 
 export default HamburgerMenu;

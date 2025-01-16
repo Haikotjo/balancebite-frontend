@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import { Box, Button, Menu, MenuItem, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import VerticalDivider from "../../verticalDivider/VerticalDivider.jsx";
 
 const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
     const theme = useTheme(); // Toegang tot het huidige thema
@@ -20,14 +21,8 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
             >
                 Home
             </Button>
-            <Box
-                sx={{
-                    height: "24px",
-                    width: "1px",
-                    backgroundColor: theme.palette.text.light,
-                    mx: 1,
-                }}
-            />
+            <VerticalDivider marginLeft={0} marginRight={0} />
+
             <Button
                 color="inherit"
                 component={Link}
@@ -36,14 +31,8 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
             >
                 About
             </Button>
-            <Box
-                sx={{
-                    height: "24px",
-                    width: "1px",
-                    backgroundColor: theme.palette.text.light,
-                    mx: 1,
-                }}
-            />
+            <VerticalDivider marginLeft={0} marginRight={0} />
+
             <Box
                 sx={{
 
