@@ -1,4 +1,4 @@
-import { Box, TextField, Button, Alert, Collapse, Typography } from "@mui/material";
+import { Box, TextField, Button, Alert, Typography, useTheme } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import PropTypes from "prop-types";
@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import useLogin from "../../../../hooks/useLogin.js";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
-import {registerUserApi} from "../../../../services/apiService.js"; // Importeer de UserMealsContext
+import { registerUserApi } from "../../../../services/apiService.js";
 
 // Validation schema using yup
 const schema = yup.object().shape({
@@ -35,6 +35,7 @@ const schema = yup.object().shape({
 });
 
 const RegisterForm = ({ onClose, onSwitchToLogin }) => {
+    const theme = useTheme(); // Toegang tot het MUI-thema
     const [successMessage, setSuccessMessage] = useState("");
     const navigate = useNavigate();
     const { handleLogin } = useLogin();
@@ -84,7 +85,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
                 left: 0,
                 width: "100vw",
                 height: "100vh",
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                backgroundColor: theme.palette.action.disabledBackground, // Dynamisch uit thema
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -98,7 +99,8 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
                     display: "flex",
                     flexDirection: "column",
                     gap: 1.5,
-                    backgroundColor: "white",
+                    backgroundColor: theme.palette.background.paper, // Dynamisch uit thema
+                    color: theme.palette.text.primary, // Dynamisch uit thema
                     padding: 3,
                     borderRadius: 2,
                     boxShadow: 3,
@@ -154,17 +156,15 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
                     Register
                 </Button>
 
-                {/* Schakelknop om terug te gaan naar Login */}
                 <Button
                     variant="text"
                     size="small"
-                    onClick={onSwitchToLogin} // Roep de prop aan om naar Login te schakelen
+                    onClick={onSwitchToLogin}
                     sx={{ display: "block", margin: "10px auto" }}
                 >
                     Already have an account? Login
                 </Button>
 
-                {/* Sluitknop voor Register */}
                 <Button
                     variant="text"
                     size="small"
@@ -180,7 +180,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
 
 RegisterForm.propTypes = {
     onClose: PropTypes.func.isRequired,
-    onSwitchToLogin: PropTypes.func.isRequired, // Nieuwe prop
+    onSwitchToLogin: PropTypes.func.isRequired,
 };
 
 export default RegisterForm;

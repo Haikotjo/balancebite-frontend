@@ -1,10 +1,11 @@
 import { useState, useContext } from "react";
 import PropTypes from "prop-types";
-import { Box, TextField, Button, Alert, Collapse } from "@mui/material";
+import { Box, TextField, Button, Alert, useTheme } from "@mui/material";
 import useLogin from "../../../../hooks/useLogin.js";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx"; // Import de UserMealsContext
 
 const LoginForm = ({ onClose, onSwitchToRegister }) => {
+    const theme = useTheme(); // Toegang tot het MUI-thema
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const { handleLogin, errorMessage } = useLogin();
@@ -24,16 +25,16 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
     return (
         <Box
             sx={{
-                position: "fixed", // Zorg dat het los staat van de AppBar of andere ouders
+                position: "fixed",
                 top: 0,
                 left: 0,
-                width: "100vw", // Bedekt de hele breedte
-                height: "100vh", // Bedekt de hele hoogte
-                backgroundColor: "rgba(0, 0, 0, 0.5)", // Donkere overlay
-                display: "flex", // Flexbox om het formulier te centreren
+                width: "100vw",
+                height: "100vh",
+                backgroundColor: theme.palette.action.disabledBackground,
+                display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                zIndex: 1300, // Zorg dat het boven de rest ligt
+                zIndex: 1300,
             }}
         >
             <Box
@@ -43,7 +44,8 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                     display: "flex",
                     flexDirection: "column",
                     gap: 1.5,
-                    backgroundColor: "white", // Witte achtergrond voor het formulier
+                    backgroundColor: theme.palette.background.paper,
+                    color: theme.palette.text.primary,
                     padding: 3,
                     borderRadius: 2,
                     boxShadow: 3,
