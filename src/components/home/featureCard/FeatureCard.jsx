@@ -28,7 +28,7 @@ function FeatureCard({ title, description, colorKey, to }) {
                     borderRadius: 8, // Rounded corners
                     boxShadow: 3, // Initial shadow effect
                     border: `3px solid ${theme.palette[colorKey]?.main || theme.palette.grey[200]}`, // Themed border color
-                    backgroundColor: 'white', // Background color
+                    backgroundColor: theme.palette.background.paper, // Background color
                     transition: 'transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease', // Smooth hover transition
                     '&:hover': {
                         transform: 'scale(1.1)', // Slight enlargement on hover

@@ -18,7 +18,7 @@ export default {
         lightText: "#4D5061",
         darkText: "#ffffff",
         lightBackground: "#FFFFFF",
-        darkBackground: "#4D5061",
+        darkBackground: "#2d2f39",
       },
       fontFamily: {
         sans: ["Nunito", "sans-serif"],
