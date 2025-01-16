@@ -79,7 +79,7 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                     onClick={onSwitchToRegister}
                     sx={{ alignSelf: "flex-start" }}
                 >
-                    Don't have an account? Register
+                    Don&#39;t have an account? Register
                 </Button>
                 <Button
                     variant="text"

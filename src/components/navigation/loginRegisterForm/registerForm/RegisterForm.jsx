@@ -120,6 +120,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
 
                 <TextField
                     label="Username"
+                    type="text"
                     {...register("userName")}
                     error={!!errors.userName}
                     helperText={errors.userName?.message}
@@ -128,6 +129,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
 
                 <TextField
                     label="Email"
+                    type="email"
                     {...register("email")}
                     error={!!errors.email}
                     helperText={errors.email?.message}

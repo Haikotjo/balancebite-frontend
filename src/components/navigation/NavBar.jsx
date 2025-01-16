@@ -35,7 +35,7 @@ const NavBar = () => {
         <AppBar
             sx={{
                 mb: 2,
-                backgroundColor: mode === "dark" ? theme.palette.primary.main : theme.palette.text.primary, // Verander kleur op basis van mode
+                backgroundColor: mode === "dark" ? "#2E7A97" : theme.palette.text.primary,
                 position: "sticky",
             }}
         >

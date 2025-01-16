@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo, useState, useEffect } from "react";
+import { createContext, useContext, useMemo, useState, useEffect } from "react";
 import PropTypes from "prop-types"; // Voeg PropTypes toe
 import { ThemeProvider, createTheme, responsiveFontSizes } from "@mui/material/styles";
 
@@ -7,7 +7,7 @@ const getDesignTokens = (mode) => ({
     palette: {
         mode,
         primary: {
-            main: "#1687c5",
+            main: "#46B1C9",
             light: "#7ed7ec",
         },
         secondary: {
@@ -33,7 +33,7 @@ const getDesignTokens = (mode) => ({
         },
         action: {
             selected: "#46B1C9",
-            disabled: "#ffffff",
+            disabled: mode === "light" ? "#B0B0B0" : "#5A5A5A",
         },
     },
     typography: {
