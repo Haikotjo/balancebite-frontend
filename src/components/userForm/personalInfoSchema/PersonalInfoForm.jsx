@@ -9,8 +9,8 @@ import useUpdateUserInfo from "../../../hooks/useUpdateUserInfo.js";
 import useUserInitialValues from "../../../hooks/useUserInitialValues.js";
 import SnackbarComponent from "../../snackbarComponent/SnackbarComponent.jsx";
 import UserInputField from "./userInputField/UserInputField.jsx";
-import PersonalInfoBox from "./personalInfoBox/PersonalInfoBox.jsx";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
+import PersonalInfoBox from "./userInputField/personalInfoBox/PersonalInfoBox.jsx";
 
 
 const PersonalInfoForm = () => {

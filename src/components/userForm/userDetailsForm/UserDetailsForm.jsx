@@ -11,11 +11,13 @@ import { useFetchUserProfileData } from "../../../hooks/useFetchUserProfileData.
 import { renderTextField } from "./renderTextField.jsx";
 import { genderOptions, activityLevelOptions, goalOptions } from "./dropdownOptions.js";
 import { decodeToken, handleCancel, handleConfirm, handleEdit } from "./userDetailsHelpers.js";
+import {useTheme} from "@mui/material/styles";
 
 const UserDetailsForm = () => {
     const { token } = useContext(AuthContext);
     const [isEditable, setIsEditable] = useState(false);
     const { fetchRecommendedNutrition } = useContext(RecommendedNutritionContext);
+    const theme = useTheme();
 
     const {
         register,
@@ -63,7 +65,7 @@ const UserDetailsForm = () => {
                 Body Metrics
             </Typography>
 
-            {renderTextField("Gender", "gender", watchedFields, register, errors, isEditable, "text", true, genderOptions)}
+            {renderTextField("Gender", "gender", watchedFields, register, errors, isEditable, theme, "text", true, genderOptions)}
 
             {renderTextField(
                 "Activity Level",
@@ -72,18 +74,19 @@ const UserDetailsForm = () => {
                 register,
                 errors,
                 isEditable,
+                theme,
                 "text",
                 true,
                 activityLevelOptions
             )}
 
-            {renderTextField("Goal", "goal", watchedFields, register, errors, isEditable, "text", true, goalOptions)}
+            {renderTextField("Goal", "goal", watchedFields, register, errors, isEditable, theme, "text", true, goalOptions)}
 
-            {renderTextField("Height (cm)", "height", watchedFields, register, errors, isEditable, "number")}
+            {renderTextField("Height (cm)", "height", watchedFields, register, errors, isEditable, theme, "number")}
 
-            {renderTextField("Weight (kg)", "weight", watchedFields, register, errors, isEditable, "number")}
+            {renderTextField("Weight (kg)", "weight", watchedFields, register, errors, isEditable, theme, "number")}
 
-            {renderTextField("Age", "age", watchedFields, register, errors, isEditable, "number")}
+            {renderTextField("Age", "age", watchedFields, register, errors, isEditable, theme, "number")}
 
             <UserButton
                 isEditable={isEditable}
