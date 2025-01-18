@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Box, Typography, CircularProgress } from "@mui/material";
+import {Typography, CircularProgress, Box} from "@mui/material";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { userDetailsSchema } from "../../../utils/valadition/userDetailsSchema.js";
@@ -8,16 +8,21 @@ import { AuthContext } from "../../../context/AuthContext";
 import { RecommendedNutritionContext } from "../../../context/RecommendedNutritionContext.jsx";
 import { fetchUserProfile, updateUserDetails } from "../../../services/apiService.js";
 import { useFetchUserProfileData } from "../../../hooks/useFetchUserProfileData.js";
-import { renderTextField } from "./renderTextField.jsx";
-import { genderOptions, activityLevelOptions, goalOptions } from "./dropdownOptions.js";
 import { decodeToken, handleCancel, handleConfirm, handleEdit } from "./userDetailsHelpers.js";
-import {useTheme} from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
+import PersonalInfoBox from "../personalInfoSchema/userInputField/personalInfoBox/PersonalInfoBox.jsx";
+import UserDetailsFields from "./userDetailsFields/UserDetailsFields.jsx";
+import SnackbarComponent from "../../snackbarComponent/SnackbarComponent.jsx";
+import BarChartRoundedIcon from "@mui/icons-material/BarChartRounded";
+import SectionHeader from "./sectionHeader/SectionHeader.jsx";
 
 const UserDetailsForm = () => {
     const { token } = useContext(AuthContext);
     const [isEditable, setIsEditable] = useState(false);
     const { fetchRecommendedNutrition } = useContext(RecommendedNutritionContext);
     const theme = useTheme();
+
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
 
     const {
         register,
@@ -33,7 +38,6 @@ const UserDetailsForm = () => {
     const userProfile = useFetchUserProfileData(token, decodeToken, fetchUserProfile, reset);
     const watchedFields = watch();
 
-
     if (userProfile === null) {
         return (
             <Typography variant="h6" align="center">
@@ -47,56 +51,34 @@ const UserDetailsForm = () => {
     }
 
     return (
-        <Box
-            sx={{
-                maxWidth: 600,
-                margin: "auto",
-                padding: 2,
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-            }}
-            component="form"
-            onSubmit={handleSubmit((data) =>
-                handleConfirm(data, updateUserDetails, fetchRecommendedNutrition, setIsEditable)
-            )}
-        >
-            <Typography variant="h4" align="left">
-                Body Metrics
-            </Typography>
+        <PersonalInfoBox onSubmit={handleSubmit((data) =>
+            handleConfirm(data, updateUserDetails, fetchRecommendedNutrition, setIsEditable)
+        )}>
+            <SectionHeader icon={BarChartRoundedIcon} title="Body Metrics" theme={theme} />
 
-            {renderTextField("Gender", "gender", watchedFields, register, errors, isEditable, theme, "text", true, genderOptions)}
-
-            {renderTextField(
-                "Activity Level",
-                "activityLevel",
-                watchedFields,
-                register,
-                errors,
-                isEditable,
-                theme,
-                "text",
-                true,
-                activityLevelOptions
-            )}
-
-            {renderTextField("Goal", "goal", watchedFields, register, errors, isEditable, theme, "text", true, goalOptions)}
-
-            {renderTextField("Height (cm)", "height", watchedFields, register, errors, isEditable, theme, "number")}
-
-            {renderTextField("Weight (kg)", "weight", watchedFields, register, errors, isEditable, theme, "number")}
-
-            {renderTextField("Age", "age", watchedFields, register, errors, isEditable, theme, "number")}
-
+            <UserDetailsFields
+                watchedFields={watchedFields}
+                register={register}
+                errors={errors}
+                isEditable={isEditable}
+                theme={theme}
+            />
             <UserButton
                 isEditable={isEditable}
                 onEdit={() => handleEdit(setIsEditable)}
                 onCancel={() => handleCancel(userProfile, reset, setIsEditable)}
                 onConfirm={handleSubmit((data) =>
-                    handleConfirm(data, updateUserDetails, fetchRecommendedNutrition, setIsEditable)
+                    handleConfirm(data, updateUserDetails, fetchRecommendedNutrition, setIsEditable, setSnackbarOpen)
                 )}
             />
-        </Box>
+
+            <SnackbarComponent
+                open={snackbarOpen}
+                onClose={() => setSnackbarOpen(false)}
+                message="Profile successfully updated!"
+                severity="success"
+            />
+        </PersonalInfoBox>
     );
 };
 

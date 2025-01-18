@@ -36,6 +36,8 @@ export const renderTextField = (
             }}
             sx={{
                 "& .MuiOutlinedInput-root": {
+                    backgroundColor: theme.palette.background.default,
+
                     "& fieldset": {
                         borderColor: theme.palette.primary.main,
                     },

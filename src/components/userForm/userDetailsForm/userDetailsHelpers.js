@@ -24,7 +24,7 @@ export const handleCancel = (userProfile, reset, setIsEditable) => {
     setIsEditable(false);
 };
 
-export const handleConfirm = async (data, updateUserDetails, fetchRecommendedNutrition, setIsEditable) => {
+export const handleConfirm = async (data, updateUserDetails, fetchRecommendedNutrition, setIsEditable, setSnackbarOpen) => {
     try {
         await updateUserDetails(data);
         setIsEditable(false);
@@ -32,10 +32,13 @@ export const handleConfirm = async (data, updateUserDetails, fetchRecommendedNut
         if (fetchRecommendedNutrition) {
             await fetchRecommendedNutrition();
         }
+
+        setSnackbarOpen(true); // ✅ Snackbar openen na succesvolle update
     } catch (error) {
         console.error("Error updating user details:", error);
     }
 };
+
 
 export const handleEdit = (setIsEditable) => {
     setIsEditable(true);

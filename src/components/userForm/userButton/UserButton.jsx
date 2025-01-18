@@ -8,7 +8,7 @@ const UserButton = ({
                         onConfirm,
                         confirmDisabled = false,
                     }) => {
-    const theme = useTheme(); // ✅ Haal het huidige thema op
+    const theme = useTheme();
 
     return isEditable ? (
         <Box sx={{ display: "flex", gap: 2 }}>
@@ -17,7 +17,9 @@ const UserButton = ({
                 variant="outlined"
                 color="error"
                 onClick={onCancel}
-                sx={{ color: theme.palette.text.light }} //
+                sx={{
+                    color: theme.palette.mode === "light" ? theme.palette.error.main : theme.palette.text.light, // ✅ Light mode -> error color, Dark mode -> text.light
+                }}
             >
                 Cancel
             </Button>

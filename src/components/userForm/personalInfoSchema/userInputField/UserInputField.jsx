@@ -17,6 +17,7 @@ const UserInputField = ({ label, type = "text", register, error, helperText, isE
                 sx: {
                     pointerEvents: isEditable ? "auto" : "none",
                     cursor: isEditable ? "text" : "default",
+                    backgroundColor: isEditable ? theme.palette.background.paper : theme.palette.action.disabledBackground, // ✅ Achtergrondkleur afhankelijk van bewerkbaarheid
                 },
             }}
             InputLabelProps={{
@@ -27,15 +28,20 @@ const UserInputField = ({ label, type = "text", register, error, helperText, isE
             }}
             sx={{
                 "& .MuiOutlinedInput-root": {
+                    backgroundColor: theme.palette.background.default,
+
                     "& fieldset": {
                         borderColor: theme.palette.primary.main,
+                        transition: "border-color 0.3s ease, border-width 0.2s ease, background-color 0.3s ease",
                     },
                     "&:hover fieldset": {
                         borderColor: theme.palette.primary.dark,
                     },
+                    "&.Mui-focused": {
+                        backgroundColor: theme.palette.action.hover,
+                    },
                     "&.Mui-focused fieldset": {
                         borderColor: theme.palette.primary.main,
-                        borderWidth: "2px",
                     },
                     "&.Mui-disabled fieldset": {
                         borderColor: theme.palette.action.disabled,
