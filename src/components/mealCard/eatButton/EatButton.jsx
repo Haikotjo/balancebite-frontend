@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import RestaurantRoundedIcon from "@mui/icons-material/RestaurantRounded";
 import { consumeMealApi } from "../../../services/apiService";
 import RecommendedNutritionDisplay from "../../recommendedNutritionDisplay/RecommendedNutritionDisplay.jsx";
-import ErrorDialog from "../../ErrorDialog/ErrorDialog.jsx";
+import ErrorDialog from "../../errorDialog/ErrorDialog.jsx";
 
 const EatButton = ({ meal, refetchRecommendedNutrition }) => {
     const [isModalOpen, setModalOpen] = useState(false);

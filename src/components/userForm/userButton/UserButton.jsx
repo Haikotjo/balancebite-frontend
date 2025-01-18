@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, useTheme } from "@mui/material";
 import PropTypes from "prop-types";
 
 const UserButton = ({
@@ -8,13 +8,16 @@ const UserButton = ({
                         onConfirm,
                         confirmDisabled = false,
                     }) => {
+    const theme = useTheme(); // ✅ Haal het huidige thema op
+
     return isEditable ? (
         <Box sx={{ display: "flex", gap: 2 }}>
             <Button
                 type="button"
                 variant="outlined"
-                color="secondary"
+                color="error"
                 onClick={onCancel}
+                sx={{ color: theme.palette.text.light }} //
             >
                 Cancel
             </Button>
@@ -24,6 +27,7 @@ const UserButton = ({
                 color="primary"
                 onClick={onConfirm}
                 disabled={confirmDisabled}
+                sx={{ color: theme.palette.text.light }}
             >
                 Confirm
             </Button>
@@ -34,8 +38,9 @@ const UserButton = ({
             variant="contained"
             color="primary"
             onClick={onEdit}
+            sx={{ color: theme.palette.text.light }}
         >
-            Change Info
+            Update Info
         </Button>
     );
 };

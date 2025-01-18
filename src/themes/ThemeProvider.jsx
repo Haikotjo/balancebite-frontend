@@ -33,7 +33,7 @@ const getDesignTokens = (mode) => ({
         },
         action: {
             selected: "#46B1C9",
-            disabled: mode === "light" ? "#B0B0B0" : "#5A5A5A",
+            disabled: mode === "light" ? "#dfdfdf" : "#5A5A5A",
         },
     },
     typography: {

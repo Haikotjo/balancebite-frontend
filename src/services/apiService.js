@@ -1,5 +1,6 @@
 import { Interceptor } from "./authInterceptor";
 import { roundNutrientValues } from "../utils/helpers/roundNutrientValues";
+import axios from "axios";
 
 // Logging helpers
 const logResponse = (response) => {
@@ -225,3 +226,39 @@ export const consumeMealApi = async (mealId, token) => {
         throw error;
     }
 };
+
+export const updateUserInfoApi = async (data) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_UPDATE_USER_INFO_ENDPOINT}`;
+
+    try {
+        const response = await Interceptor.patch(endpoint, data);
+
+        // ✅ Forceer een nieuw access token met de refresh token
+        await refreshAccessToken();
+
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+// ✅ Nieuwe functie om de refresh token flow te starten
+const refreshAccessToken = async () => {
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (!refreshToken) {
+        console.error("[DEBUG] No refresh token found.");
+        return;
+    }
+
+    try {
+        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/auth/refresh`, { refreshToken });
+        console.log("[DEBUG] New access token received:", response.data.accessToken);
+
+        localStorage.setItem("accessToken", response.data.accessToken);
+    } catch (error) {
+        console.error("[DEBUG] Failed to refresh access token:", error);
+    }
+};
+
+

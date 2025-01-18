@@ -1,30 +1,25 @@
-import React, { useContext, useState, useEffect } from "react";
-import {Box, CircularProgress, TextField, Typography} from "@mui/material";
+import { useContext, useState, useEffect } from "react";
+import { CircularProgress,useTheme } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { personalInfoSchema } from "../../../utils/valadition/personalInfoSchema.js";
-import { jwtDecode } from "jwt-decode";
 import { AuthContext } from "../../../context/AuthContext";
-import UserButton from "../userButton/UserButton.jsx"; // Import the reusable UserButton component
+import UserButton from "../userButton/UserButton.jsx";
+import useUpdateUserInfo from "../../../hooks/useUpdateUserInfo.js";
+import useUserInitialValues from "../../../hooks/useUserInitialValues.js";
+import SnackbarComponent from "../../snackbarComponent/SnackbarComponent.jsx";
+import UserInputField from "./userInputField/UserInputField.jsx";
+import PersonalInfoBox from "./personalInfoBox/PersonalInfoBox.jsx";
+import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 
-const PersonalInfoForm = ({ onSubmit }) => {
+
+const PersonalInfoForm = () => {
+    const theme = useTheme();
     const { token } = useContext(AuthContext);
     const [isEditable, setIsEditable] = useState(false);
-    const [initialValues, setInitialValues] = useState(null);
+    const [initialValues, setInitialValues] = useUserInitialValues(token);
 
-    useEffect(() => {
-        if (token) {
-            try {
-                const decodedToken = jwtDecode(token);
-                setInitialValues({
-                    username: decodedToken.username || "Default Username",
-                    email: decodedToken.email || "default@example.com",
-                });
-            } catch (error) {
-                console.error("Invalid token:", error.message);
-            }
-        }
-    }, [token]);
+    const { updateUserInfo, updateError, updateSuccess, setUpdateError, setUpdateSuccess } = useUpdateUserInfo();
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: yupResolver(personalInfoSchema),
@@ -39,110 +34,47 @@ const PersonalInfoForm = ({ onSubmit }) => {
     }, [initialValues, reset]);
 
     const handleCancel = () => {
-        reset(initialValues); // Reset fields to original values
-        setIsEditable(false); // Disable editing
-    };
-
-    const handleConfirm = async (data) => {
-        // Zorg dat de payload correct is opgebouwd en trim de e-mail
-        const payload = {
-            userName: data.username.trim(),
-            email: data.email.trim(), // Trim de e-mail
-        };
-
-        try {
-            const response = await fetch("http://localhost:8080/users/basic-info", {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(payload),
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                setInitialValues(result);
-                if (result.userName !== payload.userName) {
-                    console.warn(
-                        "Mismatch detected: userName in response does not match the sent payload."
-                    );
-                }
-            } else {
-                console.error(
-                    `Failed to update user information. Status: ${response.status}`
-                );
-            }
-        } catch (error) {
-            console.error("Error updating user information:", error);
-        }
+        reset(initialValues);
         setIsEditable(false);
     };
 
+    const handleConfirm = async (data) => {
+        await updateUserInfo(data, initialValues, setInitialValues, reset, setIsEditable);
+    };
 
     const handleEdit = () => {
         setIsEditable(true);
     };
 
     if (!initialValues) {
-        return <CircularProgress />
+        return <CircularProgress />;
     }
 
     return (
-        <Box
-            sx={{
-                maxWidth: 600,
-                margin: "auto",
-                padding: 2,
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-            }}
-            component="form"
-            onSubmit={handleSubmit(handleConfirm)}
-        >
+        <PersonalInfoBox onSubmit={handleSubmit(handleConfirm)}>
+            <InfoRoundedIcon
+                sx={{
+                    color: theme.palette.mode === "dark" ? theme.palette.text.primary : theme.palette.primary.main,
+                    fontSize: 32,
+                }}
+            />
 
-            <Typography variant="h5" align="left">
-                Info for {initialValues?.username}
-            </Typography>
-
-            {/* Username */}
-            <TextField
+            <UserInputField
                 label="Username"
-                {...register("username")}
+                register={register("username")}
                 error={!!errors.username}
                 helperText={errors.username?.message}
-                fullWidth
-                InputProps={{
-                    readOnly: !isEditable,
-                }}
-                InputLabelProps={{
-                    shrink: true,
-                }}
-                sx={{
-                    backgroundColor: !isEditable ? "#f5f5f5" : "white",
-                }}
+                isEditable={isEditable}
             />
 
-            {/* Email */}
-            <TextField
+            <UserInputField
                 label="Email"
                 type="email"
-                {...register("email")}
+                register={register("email")}
                 error={!!errors.email}
                 helperText={errors.email?.message}
-                fullWidth
-                InputProps={{
-                    readOnly: !isEditable,
-                }}
-                InputLabelProps={{
-                    shrink: true,
-                }}
-                sx={{
-                    backgroundColor: !isEditable ? "#f5f5f5" : "white",
-                }}
+                isEditable={isEditable}
             />
-
 
             <UserButton
                 isEditable={isEditable}
@@ -150,7 +82,18 @@ const PersonalInfoForm = ({ onSubmit }) => {
                 onCancel={handleCancel}
                 onConfirm={handleSubmit(handleConfirm)}
             />
-        </Box>
+
+            <SnackbarComponent
+                open={Boolean(updateError) || Boolean(updateSuccess)}
+                onClose={() => {
+                    setUpdateError("");
+                    setUpdateSuccess("");
+                }}
+                message={updateError || updateSuccess}
+                severity={updateError ? "error" : "success"}
+            />
+
+        </PersonalInfoBox>
     );
 };
 
