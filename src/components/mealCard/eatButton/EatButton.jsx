@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Modal, Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, Link } from "@mui/material";
+import { Modal, Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, Link, useTheme } from "@mui/material";
 import { motion } from "framer-motion";
 import RestaurantRoundedIcon from "@mui/icons-material/RestaurantRounded";
 import { consumeMealApi } from "../../../services/apiService";
@@ -8,6 +8,7 @@ import RecommendedNutritionDisplay from "../../recommendedNutritionDisplay/Recom
 import ErrorDialog from "../../errorDialog/ErrorDialog.jsx";
 
 const EatButton = ({ meal, refetchRecommendedNutrition }) => {
+    const theme = useTheme();
     const [isModalOpen, setModalOpen] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -91,14 +92,15 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
                         top: "50%",
                         left: "50%",
                         transform: "translate(-50%, -50%)",
-                        width: 600,
+                        width: { xs: "90%", sm: "80%", md: "600px" }, // Dynamische breedte
+                        maxWidth: "600px", // Maximale breedte op grotere schermen
                         bgcolor: "background.paper",
-                        border: "2px solid #000",
+                        border: `2px solid ${theme.palette.primary.main}`,
                         boxShadow: 24,
-                        p: 4,
+                        p: 1,
                     }}
                 >
-                    <RecommendedNutritionDisplay />
+                <RecommendedNutritionDisplay />
                 </Box>
             </Modal>
         </>

@@ -5,7 +5,7 @@ import useLogin from "../../../../hooks/useLogin.js";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx"; // Import de UserMealsContext
 
 const LoginForm = ({ onClose, onSwitchToRegister }) => {
-    const theme = useTheme(); // Toegang tot het MUI-thema
+    const theme = useTheme();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const { handleLogin, errorMessage } = useLogin();

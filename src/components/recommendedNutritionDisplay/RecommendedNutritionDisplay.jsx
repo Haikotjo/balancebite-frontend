@@ -13,9 +13,11 @@ import {
     TableRow,
     Paper,
     CircularProgress,
+    useTheme,
 } from "@mui/material";
 
 const RecommendedNutritionDisplay = ({ useBaseRDI = false }) => {
+    const theme = useTheme(); // ✅ Gebruik het thema voor dynamische kleuren
     const { recommendedNutrition, baseNutrition, loading, setRecommendedNutrition } = useContext(RecommendedNutritionContext);
     const { token } = useContext(AuthContext);
 
@@ -55,7 +57,7 @@ const RecommendedNutritionDisplay = ({ useBaseRDI = false }) => {
         <Card sx={{ maxWidth: 600, margin: "20px auto" }}>
             <CardContent>
                 <Typography variant="h5" align="center" gutterBottom>
-                    {useBaseRDI ? "Base Nutrition (Reference)" : "Recommended Nutrition"}
+                    {useBaseRDI ? "Standard" : "Today"}
                 </Typography>
                 <TableContainer component={Paper}>
                     <Table>
@@ -66,17 +68,27 @@ const RecommendedNutritionDisplay = ({ useBaseRDI = false }) => {
                                     "Mono- and Polyunsaturated fats",
                                 ].includes(nutrient.name);
 
+                                // ✅ Alleen kleuren als het om "Today" gaat
+                                const textColor =
+                                    !useBaseRDI && nutrient.value < 0 ? theme.palette.error.main
+                                        : !useBaseRDI ? theme.palette.success.main
+                                            : "inherit"; // Standaardkleur als het BaseRDI is
+
                                 return (
                                     <TableRow key={nutrient.id}>
+                                        {/* ✅ Tekst + cijfer krijgen kleur alleen als het Today is */}
                                         <TableCell
                                             sx={{
                                                 paddingLeft: isSubNutrient ? "20px" : "0",
                                                 fontStyle: isSubNutrient ? "italic" : "normal",
+                                                color: textColor, // ✅ Alleen kleuren als het Today is
                                             }}
                                         >
                                             {nutrient.name}
                                         </TableCell>
-                                        <TableCell align="right">{nutrient.value || "N/A"}</TableCell>
+                                        <TableCell align="right" sx={{ color: textColor }}>
+                                            {nutrient.value || "N/A"}
+                                        </TableCell>
                                     </TableRow>
                                 );
                             })}
