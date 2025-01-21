@@ -1,10 +1,9 @@
-import { Box, Card, CardContent } from "@mui/material";
+import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
 import UserDetailsForm from "../../components/userForm/userDetailsForm/UserDetailsForm.jsx";
 import PersonalInfoForm from "../../components/userForm/personalInfoSchema/PersonalInfoForm.jsx";
 import RecommendedNutritionDisplay from "../../components/recommendedNutritionDisplay/RecommendedNutritionDisplay.jsx";
 
 const ProfilePage = () => {
-    // Placeholder submit handlers
     const handleUserDetailsSubmit = (data) => {
         console.log("User Details Submitted:", data);
     };
@@ -22,31 +21,40 @@ const ProfilePage = () => {
                 gap: "20px",
             }}
         >
-            {/* Personal Info Section */}
-            <Box sx={{ flex: "1 1 auto" }}>
-                <Card>
-                    <CardContent>
-                        <PersonalInfoForm onSubmit={handlePersonalInfoSubmit} />
-                    </CardContent>
-                </Card>
-            </Box>
+            {/* Personal Info & User Details Section */}
+            <Grid container spacing={2} sx={{ width: "100%" }}>
+                <Grid item xs={12} md={6}>
+                    <Card>
+                        <CardContent>
+                            <PersonalInfoForm onSubmit={handlePersonalInfoSubmit} />
+                        </CardContent>
+                    </Card>
+                </Grid>
 
-            {/* User Details Section */}
-            <Box sx={{ flex: "1 1 auto" }}>
-                <Card>
-                    <CardContent>
-                        <UserDetailsForm onSubmit={handleUserDetailsSubmit} />
-                    </CardContent>
-                </Card>
-            </Box>
+                <Grid item xs={12} md={6}>
+                    <Card>
+                        <CardContent>
+                            <UserDetailsForm onSubmit={handleUserDetailsSubmit} />
+                        </CardContent>
+                    </Card>
+                </Grid>
+            </Grid>
 
             {/* Recommended Nutrition Section */}
-            <Box sx={{ flex: "1 1 auto" }}>
-                <Card>
-                    <CardContent>
+            <Box sx={{ flex: "1 1 auto", marginTop: 2 }}>
+                <Typography variant="h6" align="center" gutterBottom>
+                    Daily Nutrition Overview
+                </Typography>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} md={6}>
+                        {/* 📌 Normale RDI (wat nog gegeten mag worden) */}
                         <RecommendedNutritionDisplay />
-                    </CardContent>
-                </Card>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        {/* 📌 Base RDI (oorspronkelijke voedingsrichtlijn) */}
+                        <RecommendedNutritionDisplay useBaseRDI={true} />
+                    </Grid>
+                </Grid>
             </Box>
         </Box>
     );

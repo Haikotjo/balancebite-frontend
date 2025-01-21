@@ -189,7 +189,7 @@ export const updateUserDetails = async (data) => {
 };
 
 export const fetchRecommendedNutritionApi = async (token) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}/daily-intake/user`;
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_DAILY_RDI_ENDPOINT}`;
 
     try {
         const response = await Interceptor.get(endpoint, {
@@ -210,6 +210,30 @@ export const fetchRecommendedNutritionApi = async (token) => {
         throw error;
     }
 };
+
+export const fetchBaseNutritionApi = async (token) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_BASE_RDI_ENDPOINT}`;
+
+    try {
+        const response = await Interceptor.get(endpoint, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        logResponse(response);
+
+        if (response && response.data) {
+            return roundNutrientValues(response.data); // Rond nutrient-waarden af
+        } else {
+            console.warn("No data received for BaseRDI.");
+            return null;
+        }
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
 
 export const consumeMealApi = async (mealId, token) => {
     const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_CONSUME_MEAL_ENDPOINT}/${mealId}`;

@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { useContext, useEffect } from "react";
 import { RecommendedNutritionContext } from "../../context/RecommendedNutritionContext.jsx";
 import { AuthContext } from "../../context/AuthContext.jsx";
@@ -14,22 +15,27 @@ import {
     CircularProgress,
 } from "@mui/material";
 
-const RecommendedNutritionDisplay = () => {
-    const { recommendedNutrition, loading, setRecommendedNutrition } = useContext(RecommendedNutritionContext);
+const RecommendedNutritionDisplay = ({ useBaseRDI = false }) => {
+    const { recommendedNutrition, baseNutrition, loading, setRecommendedNutrition } = useContext(RecommendedNutritionContext);
     const { token } = useContext(AuthContext);
 
     useEffect(() => {
         if (!token) {
             setRecommendedNutrition(null);
         }
-    }, [token, setRecommendedNutrition]);
+    }, [token]);
 
     if (loading) {
         return <CircularProgress />;
     }
 
-    if (!recommendedNutrition) {
-        return <Typography variant="h6" align="center">Update Body Metrics to get your recommended nutrition</Typography>;
+    // ✅ Bepaal of we de dagelijkse RDI of BaseRDI tonen
+    const nutritionData = useBaseRDI ? baseNutrition : recommendedNutrition;
+
+    if (!nutritionData) {
+        return <Typography variant="h6" align="center">
+            {useBaseRDI ? "No Base RDI available" : "Update Body Metrics to get your recommended nutrition"}
+        </Typography>;
     }
 
     const nutrientOrder = [
@@ -41,7 +47,7 @@ const RecommendedNutritionDisplay = () => {
         "Mono- and Polyunsaturated fats",
     ];
 
-    const sortedNutrients = recommendedNutrition.nutrients?.sort((a, b) => {
+    const sortedNutrients = nutritionData.nutrients?.sort((a, b) => {
         return nutrientOrder.indexOf(a.name) - nutrientOrder.indexOf(b.name);
     });
 
@@ -49,7 +55,7 @@ const RecommendedNutritionDisplay = () => {
         <Card sx={{ maxWidth: 600, margin: "20px auto" }}>
             <CardContent>
                 <Typography variant="h5" align="center" gutterBottom>
-                    Recommended Nutrition
+                    {useBaseRDI ? "Base Nutrition (Reference)" : "Recommended Nutrition"}
                 </Typography>
                 <TableContainer component={Paper}>
                     <Table>
@@ -76,9 +82,8 @@ const RecommendedNutritionDisplay = () => {
                             })}
                         </TableBody>
                     </Table>
-                </TableContainer> {/* Correct gesloten tag voor TableContainer */}
+                </TableContainer>
 
-                {/* Datum als subtiele tekst onder de tabel */}
                 <Typography
                     variant="caption"
                     align="right"
@@ -89,12 +94,16 @@ const RecommendedNutritionDisplay = () => {
                         fontStyle: "italic",
                     }}
                 >
-                    {recommendedNutrition.createdAtFormatted || "N/A"}
+                    {nutritionData.createdAtFormatted || "N/A"}
                 </Typography>
 
             </CardContent>
         </Card>
     );
+};
+
+RecommendedNutritionDisplay.propTypes = {
+    useBaseRDI: PropTypes.bool,
 };
 
 export default RecommendedNutritionDisplay;
