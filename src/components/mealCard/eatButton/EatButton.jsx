@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Modal, Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, Link, useTheme } from "@mui/material";
+import { Modal, Box, Button, useTheme } from "@mui/material";
 import { motion } from "framer-motion";
 import RestaurantRoundedIcon from "@mui/icons-material/RestaurantRounded";
 import { consumeMealApi } from "../../../services/apiService";
@@ -27,11 +27,10 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
             console.log("Meal consumed successfully. Remaining intake:", remainingIntakes);
 
             await refetchRecommendedNutrition();
-            setModalOpen(true); // Open de modal
+            setModalOpen(true);
         } catch (error) {
             console.error("Error consuming meal:", error);
 
-            // Specifieke foutmelding voor 404 met "Recommended daily intake not found"
             if (
                 error.response?.status === 404 &&
                 error.response?.data?.error?.includes("Recommended daily intake not found")
@@ -57,10 +56,9 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
 
     return (
         <>
-            {/* Icoon met Framer Motion effecten */}
             <motion.div
-                whileTap={{ scale: 1.2 }} // Vergroot tijdelijk bij klikken
-                whileHover={{ scale: 1.1 }} // Iets groter bij hover
+                whileTap={{ scale: 1.2 }}
+                whileHover={{ scale: 1.1 }}
                 onClick={handleConsumeMeal}
                 style={{
                     cursor: "pointer",
@@ -70,7 +68,6 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
                 <RestaurantRoundedIcon sx={{ fontSize: 24, color: "primary.main" }} />
             </motion.div>
 
-            {/* Error Dialog */}
             <ErrorDialog
                 open={dialogOpen}
                 onClose={handleCloseDialog}
@@ -79,7 +76,6 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
                 actionLabel="Go to Profile"
             />
 
-            {/* Modal Weergave */}
             <Modal
                 open={isModalOpen}
                 onClose={handleCloseModal}
@@ -92,15 +88,28 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
                         top: "50%",
                         left: "50%",
                         transform: "translate(-50%, -50%)",
-                        width: { xs: "90%", sm: "80%", md: "600px" }, // Dynamische breedte
-                        maxWidth: "600px", // Maximale breedte op grotere schermen
+                        width: { xs: "90%", sm: "80%", md: "600px" },
+                        maxWidth: "600px",
                         bgcolor: "background.paper",
-                        border: `2px solid ${theme.palette.primary.main}`,
-                        boxShadow: 24,
-                        p: 1,
+                        borderRadius: "16px",
+                        boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
+                        border: "none",
+                        padding: 3,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
                     }}
                 >
-                <RecommendedNutritionDisplay />
+                    <RecommendedNutritionDisplay />
+
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleCloseModal}
+                        sx={{ color: "white" }}
+                    >
+                        Close
+                    </Button>
                 </Box>
             </Modal>
         </>
@@ -108,8 +117,8 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
 };
 
 EatButton.propTypes = {
-    meal: PropTypes.object.isRequired, // De maaltijdinformatie
-    refetchRecommendedNutrition: PropTypes.func.isRequired, // Functie om aanbevolen voeding te vernieuwen
+    meal: PropTypes.object.isRequired,
+    refetchRecommendedNutrition: PropTypes.func.isRequired,
 };
 
 export default EatButton;

@@ -40,7 +40,6 @@ const ProfilePage = () => {
                 </Grid>
             </Grid>
 
-            {/* Recommended Nutrition Section */}
             <Box sx={{ flex: "1 1 auto", marginTop: 2 }}>
                 <Typography variant="h6" align="center" gutterBottom>
                     Daily Nutrition Overview

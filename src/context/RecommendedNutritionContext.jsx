@@ -6,12 +6,11 @@ import { fetchRecommendedNutritionApi, fetchBaseNutritionApi } from "../services
 export const RecommendedNutritionContext = createContext();
 
 export const RecommendedNutritionProvider = ({ children }) => {
-    const [recommendedNutrition, setRecommendedNutrition] = useState(null); // Wat nog gegeten mag worden
-    const [baseNutrition, setBaseNutrition] = useState(null); // Oorspronkelijke RDI (BaseRDI)
+    const [recommendedNutrition, setRecommendedNutrition] = useState(null);
+    const [baseNutrition, setBaseNutrition] = useState(null);
     const [loading, setLoading] = useState(true);
     const { token } = useContext(AuthContext);
 
-    // ✅ Haal dagelijkse RDI op
     const fetchRecommendedNutrition = async () => {
         try {
             const data = await fetchRecommendedNutritionApi(token);
@@ -27,7 +26,6 @@ export const RecommendedNutritionProvider = ({ children }) => {
         }
     };
 
-    // ✅ Haal BaseRDI op (oorspronkelijke RDI)
     const fetchBaseNutrition = async () => {
         try {
             const data = await fetchBaseNutritionApi(token);
@@ -51,7 +49,6 @@ export const RecommendedNutritionProvider = ({ children }) => {
         }
     }, [token]);
 
-    // ✅ Bereken wat al gegeten is (BaseRDI - RDI)
     const calculateConsumedNutrition = () => {
         if (!baseNutrition || !recommendedNutrition) return null;
 
@@ -65,10 +62,10 @@ export const RecommendedNutritionProvider = ({ children }) => {
     };
 
     const value = {
-        recommendedNutrition, // Wat nog gegeten mag worden
-        setRecommendedNutrition, // ✅ Nu beschikbaar voor andere componenten!
-        baseNutrition, // Oorspronkelijke RDI
-        consumedNutrition: calculateConsumedNutrition(), // Wat al is gegeten
+        recommendedNutrition,
+        setRecommendedNutrition,
+        baseNutrition,
+        consumedNutrition: calculateConsumedNutrition(),
         loading,
         fetchRecommendedNutrition,
         refetchRecommendedNutrition: fetchRecommendedNutrition,
