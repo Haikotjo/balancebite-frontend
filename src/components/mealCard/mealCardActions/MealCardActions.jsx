@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import PropTypes from "prop-types";
 import { Box, Typography } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -9,13 +9,12 @@ import EatButton from "../eatButton/EatButton";
 import FavoriteButton from "../favoriteButton/FavoriteButton.jsx";
 import { addMealToFavoritesApi, removeMealFromFavoritesApi } from "../../../services/apiService";
 
-const MealCardActions = ({ meal, expanded, toggleExpand, refreshList }) => { // refreshList toegevoegd
+const MealCardActions = ({ meal, expanded, toggleExpand }) => {
     const { userMeals, addMealToUserMeals, removeMealFromUserMeals } = useContext(UserMealsContext);
     const { refetchRecommendedNutrition } = useContext(RecommendedNutritionContext);
 
     const token = localStorage.getItem("accessToken");
 
-    // Controleer of de maaltijd al in de lijst staat
     const isDuplicate = userMeals.some((userMeal) => {
         const mealIngredientIds = meal.mealIngredients
             ?.map((ingredient) => ingredient?.foodItemId)
@@ -33,24 +32,20 @@ const MealCardActions = ({ meal, expanded, toggleExpand, refreshList }) => { // 
         );
     });
 
-    // Functie voor toevoegen aan favorieten
     const handleAddToFavorites = async () => {
         try {
             await addMealToFavoritesApi(meal.id, token);
-            addMealToUserMeals(meal); // Voeg toe aan context
-            refreshList(); // Ververs de lijst
+            addMealToUserMeals(meal);
             console.log(`${meal.name} added to favorites.`);
         } catch (error) {
             console.error("Error adding to favorites:", error);
         }
     };
 
-    // Functie voor verwijderen uit favorieten
     const handleRemoveFromFavorites = async () => {
         try {
             await removeMealFromFavoritesApi(meal.id, token);
-            removeMealFromUserMeals(meal.id); // Verwijder maaltijd uit context
-            refreshList(); // Ververs de lijst
+            removeMealFromUserMeals(meal.id);
             console.log(`${meal.name} removed from favorites.`);
         } catch (error) {
             console.error("Error removing from favorites:", error);
@@ -90,8 +85,8 @@ const MealCardActions = ({ meal, expanded, toggleExpand, refreshList }) => { // 
             )}
             <FavoriteButton
                 isFavorite={isDuplicate}
-                onAdd={handleAddToFavorites} // Toevoegen
-                onRemove={handleRemoveFromFavorites} // Verwijderen
+                onAdd={handleAddToFavorites}
+                onRemove={handleRemoveFromFavorites}
                 meal={meal}
             />
         </Box>
@@ -102,7 +97,7 @@ MealCardActions.propTypes = {
     meal: PropTypes.object.isRequired,
     expanded: PropTypes.bool.isRequired,
     toggleExpand: PropTypes.func.isRequired,
-    refreshList: PropTypes.func.isRequired, // Prop validatie toegevoegd
+    refreshList: PropTypes.func.isRequired,
 };
 
 export default MealCardActions;
