@@ -1,66 +1,52 @@
-import React, { useContext, useState } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import { IconButton } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { UserMealsContext } from "../../../context/UserMealsContext";
-import { AuthContext } from "../../../context/AuthContext";
-import SnackbarComponent from "../../snackbarComponent/SnackbarComponent.jsx"; // ✅ Jouw SnackbarComponent
+import { motion } from "framer-motion";
+import useFavorites from "../../../hooks/useFavorites"; // Nieuwe hook gebruiken
 
-const FavoriteButton = ({ isFavorite: initialFavorite, onAdd, onRemove, meal }) => {
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState("");
-    const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-
-    const { removeMealFromUserMeals, addMealToUserMeals } = useContext(UserMealsContext);
-    const { user } = useContext(AuthContext);
+const FavoriteButton = ({ isFavorite: initialFavorite, meal }) => {
+    const { addMealToFavorites, removeMealFromFavorites, SnackbarComponent } = useFavorites();
     const [isFavorite, setIsFavorite] = useState(initialFavorite);
+    const [animationKey, setAnimationKey] = useState(0);
+    const [size, setSize] = useState(1);
 
     const handleToggleFavorite = async () => {
-        if (!user) {
-            setSnackbarMessage("You need to login or register to add a meal.");
-            setSnackbarSeverity("warning");
-            setSnackbarOpen(true);
-            return;
-        }
+        const success = isFavorite
+            ? await removeMealFromFavorites(meal)
+            : await addMealToFavorites(meal);
 
-        if (isFavorite) {
-            await onRemove();
-            removeMealFromUserMeals(meal.id);
-            setSnackbarMessage(`${meal.name} removed from your meals!`);
-            setSnackbarSeverity("error");
-        } else {
-            await onAdd();
-            addMealToUserMeals(meal);
-            setSnackbarMessage(`${meal.name} added to your meals!`);
-            setSnackbarSeverity("success");
+        if (success) {
+            setIsFavorite(!isFavorite);
+            triggerAnimation(isFavorite ? 0.9 : 1.2);
         }
+    };
 
-        setIsFavorite(!isFavorite);
-        setSnackbarOpen(true);
+    const triggerAnimation = (newSize) => {
+        setSize(newSize);
+        setAnimationKey((prevKey) => prevKey + 1);
     };
 
     return (
         <>
-            <IconButton onClick={handleToggleFavorite}>
-                {isFavorite ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon color="error" />}
-            </IconButton>
+            <motion.div
+                key={animationKey}
+                animate={{ scale: [1, size, 1] }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+            >
+                <IconButton onClick={handleToggleFavorite}>
+                    {isFavorite ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon color="error" />}
+                </IconButton>
+            </motion.div>
 
-            {/* ✅ Gebruik hier jouw eigen SnackbarComponent */}
-            <SnackbarComponent
-                open={snackbarOpen}
-                onClose={() => setSnackbarOpen(false)}
-                message={snackbarMessage}
-                severity={snackbarSeverity}
-            />
+            {SnackbarComponent}
         </>
     );
 };
 
 FavoriteButton.propTypes = {
     isFavorite: PropTypes.bool.isRequired,
-    onAdd: PropTypes.func.isRequired,
-    onRemove: PropTypes.func.isRequired,
     meal: PropTypes.object.isRequired,
 };
 

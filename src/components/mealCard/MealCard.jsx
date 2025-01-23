@@ -14,12 +14,10 @@ import IngredientList from "./ingredientList/IngredientList";
 import { getImageSrc } from "../../utils/getImageSrc";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 import MealCardActions from "./mealCardActions/MealCardActions.jsx";
-import useFavorites from "../../hooks/useFavorites.jsx";
 
-function MealCard({ meal, refreshList }) { // Voeg refreshList toe aan de props
+function MealCard({ meal, refreshList }) {
     const { expanded, toggleExpand } = useExpand();
     const { nutrients } = useNutrients(meal.id);
-    const { SnackbarComponent } = useFavorites();
     const imageSrc = getImageSrc(meal);
 
     return (
@@ -65,7 +63,7 @@ function MealCard({ meal, refreshList }) { // Voeg refreshList toe aan de props
                     meal={meal}
                     expanded={expanded}
                     toggleExpand={toggleExpand}
-                    refreshList={refreshList} // Geef refreshList door
+                    refreshList={refreshList}
                 />
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
                     <CardContent>
@@ -85,7 +83,6 @@ function MealCard({ meal, refreshList }) { // Voeg refreshList toe aan de props
                     </CardContent>
                 </Collapse>
             </Card>
-            {SnackbarComponent}
         </>
     );
 }

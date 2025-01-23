@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { jwtDecode } from "jwt-decode"; // Correcte import behouden
+import { jwtDecode } from "jwt-decode";
 import { loginApi, logoutApi } from "../services/authService.js";
 import { Box, CircularProgress } from "@mui/material";
 
@@ -9,7 +9,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [role, setRole] = useState(null);
-    const [token, setToken] = useState(null); // Token state
+    const [token, setToken] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -18,19 +18,19 @@ export const AuthProvider = ({ children }) => {
 
             try {
                 if (storedToken) {
-                    // Probeer access token te decoderen
+
                     const userData = jwtDecode(storedToken);
                     setUser({ id: userData.sub, roles: userData.roles, type: userData.type });
                     setRole(userData.roles);
                     setToken(storedToken);
                 } else {
-                    console.warn("Geen access token gevonden. Gebruiker niet ingelogd.");
+                    console.warn("No access token found. User not logged in.");
                 }
             } catch (error) {
                 console.error("Error during authentication initialization:", error.message);
                 logout();
             } finally {
-                setLoading(false); // Zorg ervoor dat loading altijd stopt
+                setLoading(false);
             }
         };
 
@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }) => {
             const userData = jwtDecode(accessToken);
             setUser({ id: userData.sub, roles: userData.roles, type: userData.type });
             setRole(userData.roles);
-            setToken(accessToken); // Zet token in state
+            setToken(accessToken);
         } catch (err) {
             console.error("Login failed:", err.response?.data?.error || err.message);
             throw new Error(err.response?.data?.error || "Login failed");
@@ -66,13 +66,12 @@ export const AuthProvider = ({ children }) => {
             }
         }
 
-        // Verwijder tokens en reset state
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         setUser(null);
         setRole(null);
         setToken(null);
-        setLoading(false); // Zorg dat de applicatie niet blijft hangen in een loading state
+        setLoading(false);
     };
 
     if (loading) {
