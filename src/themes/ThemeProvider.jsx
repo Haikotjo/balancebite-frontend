@@ -69,6 +69,22 @@ const getDesignTokens = (mode) => ({
             },
         },
     },
+    MuiAutocomplete: {
+        styleOverrides: {
+            popper: {
+                backgroundColor: mode === "light" ? "#e3f2fd" : "#2c2c2c", // ✅ Dynamische achtergrondkleur
+                borderRadius: "5px",
+                fontFamily: "Arial, sans-serif",
+                fontSize: "0.9rem",
+            },
+            option: {
+                "&:hover": {
+                    backgroundColor: mode === "light" ? "#ffffff" : "#444444", // ✅ Hover-kleur per thema
+                    color: mode === "light" ? "#000000" : "#ffffff",
+                },
+            },
+        },
+    },
 });
 
 // Context maken

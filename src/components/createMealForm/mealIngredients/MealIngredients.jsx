@@ -3,9 +3,12 @@ import PropTypes from "prop-types";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
 import useFoodItems from "../../../hooks/useFoodItems.js";
 import RemoveFoodItemButton from "./removeFooditemButton/RemoveFoodItemButton.jsx";
+import { useTheme } from "@mui/material/styles";
+import TextFieldCreateMeal from "./textFieldCreateMeal/TextFieldCreateMeal.jsx";
 
 const MealIngredients = ({ value, onChange, errors }) => {
     const { options, noResults, handleSearch } = useFoodItems();
+    const isAddDisabled = value.filter(item => item.foodItemId !== "").length < 2;
 
     return (
         <Box>
@@ -15,12 +18,12 @@ const MealIngredients = ({ value, onChange, errors }) => {
                 <Box
                     key={index}
                     display="flex"
-                    gap={1} // 📌 Minder ruimte tussen velden
+                    gap={1}
                     alignItems="center"
                     sx={{
                         flexWrap: "nowrap",
                         mb: 1,
-                        "@media (max-width:600px)": { flexWrap: "wrap" }, // 📌 Op mobiel wrap als het echt niet past
+                        "@media (max-width:600px)": { flexWrap: "wrap" },
                     }}
                 >
                     {/* Autocomplete for searching food items by name */}
@@ -35,50 +38,51 @@ const MealIngredients = ({ value, onChange, errors }) => {
                             onChange(newIngredients);
                         }}
                         renderInput={(params) => (
-                            <TextField
+                            <TextFieldCreateMeal
                                 {...params}
                                 label="Food Item"
+                                InputLabelProps={{ shrink: true }}
                                 sx={{
-                                    "& .MuiInputBase-input": { fontSize: { xs: "0.8rem", sm: "1rem" } }, // 📌 Kleinere tekst
-                                    "& .MuiInputLabel-root": { fontSize: { xs: "0.8rem", sm: "1rem" } }, // 📌 Kleinere labels
+                                    "& .MuiInputBase-input": { fontSize: { xs: "0.8rem", sm: "1rem" } },
+                                    "& .MuiInputLabel-root": { fontSize: { xs: "0.8rem", sm: "1rem" } },
                                 }}
                             />
+
                         )}
                         slotProps={{
-                            listbox: {
-                                sx: {
-                                    backgroundColor: "#e3f2fd",
-                                    borderRadius: "5px",
-                                    fontFamily: "Arial, sans-serif",
-                                    fontSize: "0.9rem",
-                                    '& .MuiAutocomplete-option:hover': {
-                                        backgroundColor: "#ffffff",
-                                        color: "primary",
-                                    },
-                                },
-                            },
+                            listbox: {}
                         }}
-                        sx={{ flex: 2, minWidth: { xs: "45%", sm: "60%" }, marginTop: 1 }} // 📌 Op mobiel kleinere minWidth
+                        sx={{ flex: 2, minWidth: { xs: "45%", sm: "60%" }, marginTop: 1 }}
                     />
 
-                    <TextField
+
+                    <TextFieldCreateMeal
                         label="Quantity (g)"
-                        value={ingredient.quantity}
+                        value={ingredient.quantity === 0 ? "" : ingredient.quantity.toString()}
                         onChange={(e) => {
+                            const inputValue = e.target.value;
+
+                            const newValue = inputValue === "" ? "" : Math.max(0, Number(inputValue));
+
                             const newIngredients = [...value];
-                            newIngredients[index].quantity = Math.max(0, e.target.value);
+                            newIngredients[index].quantity = newValue;
                             onChange(newIngredients);
                         }}
-                        error={!!errors?.[index]?.quantity}
+                        onBlur={() => {
+                            if (ingredient.quantity === "" || ingredient.quantity === null) {
+                                const newIngredients = [...value];
+                                newIngredients[index].quantity = 0;
+                                onChange(newIngredients);
+                            }
+                        }}
+                        error={errors?.[index]?.quantity}
                         helperText={errors?.[index]?.quantity?.message || ""}
                         type="number"
                         slotProps={{ input: { min: 0 } }}
-                        sx={{
-                            flex: 1,
-                            minWidth: { xs: "35%", sm: "20%" },
-                            "& .MuiInputBase-input": { fontSize: { xs: "0.8rem", sm: "1rem" } },
-                        }}
+                        sx={{ flex: 1, minWidth: { xs: "35%", sm: "20%" },     "& .MuiInputBase-input": { fontSize: { xs: "0.8rem", sm: "1rem" } },
+                            "& .MuiInputLabel-root": { fontSize: { xs: "0.8rem", sm: "1rem" } }, }}
                     />
+
 
                     <RemoveFoodItemButton
                         value={value}
@@ -91,14 +95,34 @@ const MealIngredients = ({ value, onChange, errors }) => {
                 </Box>
             ))}
 
-            <IconButton
-                onClick={() => onChange([...value, { foodItemId: "", quantity: 0 }])}
-                aria-label="add ingredient"
-                color="primary"
+            <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                gap={0.1}
                 sx={{ marginTop: 1 }}
+                onClick={() => {
+                    if (!isAddDisabled) {
+                        onChange([...value, { foodItemId: "", quantity: 0 }]);
+                    }
+                }}
             >
-                <AddCircleOutlineRoundedIcon />
-            </IconButton>
+                <Typography
+                    sx={{ fontSize: "0.8rem", color: "text.secondary", cursor: "pointer" }}
+                >
+                    {isAddDisabled ? "Choose ingredients" : "Click to add more ingredients"}
+                </Typography>
+
+                <IconButton
+                    aria-label="add ingredient"
+                    color="primary"
+                    disabled={isAddDisabled}
+                >
+                    <AddCircleOutlineRoundedIcon />
+                </IconButton>
+            </Box>
+
         </Box>
     );
 };

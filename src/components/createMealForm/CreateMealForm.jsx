@@ -20,9 +20,10 @@ import { refreshMealsList } from "../../utils/helpers/refreshMealsList.js";
 import MealImageUploader from "./mealImageUploader/MealImageUploader.jsx";
 import MealIngredients from "./mealIngredients/MealIngredients.jsx";
 import { useTheme } from "@mui/material/styles";
+import TextFieldCreateMeal from "./mealIngredients/textFieldCreateMeal/TextFieldCreateMeal.jsx";
 
 const CreateMealForm = () => {
-    const theme = useTheme(); // Gebruik het thema voor de primaire kleur
+    const theme = useTheme();
     const [capturedImage, setCapturedImage] = useState(null);
     const [uploadedImage, setUploadedImage] = useState(null);
     const [imageUrl, setImageUrl] = useState("");
@@ -80,19 +81,12 @@ const CreateMealForm = () => {
             {successMessage && <Alert severity="success">{successMessage}</Alert>}
             {cameraError && <Alert severity="error">{cameraError}</Alert>}
 
-            <TextField
+            <TextFieldCreateMeal
                 label="Meal Name"
-                {...register("name")}
-                error={!!errors.name}
+                register={register}
+                name="name"
+                error={errors.name}
                 helperText={errors.name?.message}
-                fullWidth
-                sx={{
-                    "& .MuiOutlinedInput-root": {
-                        "& fieldset": { borderColor: theme.palette.primary.main }, // Standaard randkleur
-                        "&:hover fieldset": { borderColor: theme.palette.primary.dark }, // Hover effect
-                        "&.Mui-focused fieldset": { borderColor: theme.palette.primary.main }, // Geactiveerd veld
-                    },
-                }}
             />
 
             <Controller
@@ -108,22 +102,16 @@ const CreateMealForm = () => {
                 )}
             />
 
-            <TextField
+            <TextFieldCreateMeal
                 label="Meal Description"
+                register={register}
+                name="mealDescription"
+                error={errors.mealDescription}
+                helperText={errors.mealDescription?.message}
                 multiline
                 rows={4}
-                {...register("mealDescription")}
-                error={!!errors.mealDescription}
-                helperText={errors.mealDescription?.message}
-                fullWidth
-                sx={{
-                    "& .MuiOutlinedInput-root": {
-                        "& fieldset": { borderColor: theme.palette.primary.main },
-                        "&:hover fieldset": { borderColor: theme.palette.primary.dark },
-                        "&.Mui-focused fieldset": { borderColor: theme.palette.primary.main },
-                    },
-                }}
             />
+
 
             <MealImageUploader
                 onImageChange={(image, type) => {
