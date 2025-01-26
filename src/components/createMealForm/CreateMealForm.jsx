@@ -16,11 +16,13 @@ import { getAccessToken } from "../../utils/helpers/getAccessToken.js";
 import { buildMealFormData } from "../../utils/helpers/buildMealFormData.js";
 import { handleApiError } from "../../utils/helpers/handleApiError.js";
 import { UserMealsContext } from "../../context/UserMealsContext";
-import {refreshMealsList} from "../../utils/helpers/refreshMealsList.js";
-import MealImageUploader from "./mealImageUploader/MealImageUploader.jsx"; // Import de UserMealsContext
+import { refreshMealsList } from "../../utils/helpers/refreshMealsList.js";
+import MealImageUploader from "./mealImageUploader/MealImageUploader.jsx";
 import MealIngredients from "./mealIngredients/MealIngredients.jsx";
+import { useTheme } from "@mui/material/styles";
 
 const CreateMealForm = () => {
+    const theme = useTheme(); // Gebruik het thema voor de primaire kleur
     const [capturedImage, setCapturedImage] = useState(null);
     const [uploadedImage, setUploadedImage] = useState(null);
     const [imageUrl, setImageUrl] = useState("");
@@ -84,6 +86,13 @@ const CreateMealForm = () => {
                 error={!!errors.name}
                 helperText={errors.name?.message}
                 fullWidth
+                sx={{
+                    "& .MuiOutlinedInput-root": {
+                        "& fieldset": { borderColor: theme.palette.primary.main }, // Standaard randkleur
+                        "&:hover fieldset": { borderColor: theme.palette.primary.dark }, // Hover effect
+                        "&.Mui-focused fieldset": { borderColor: theme.palette.primary.main }, // Geactiveerd veld
+                    },
+                }}
             />
 
             <Controller
@@ -107,6 +116,13 @@ const CreateMealForm = () => {
                 error={!!errors.mealDescription}
                 helperText={errors.mealDescription?.message}
                 fullWidth
+                sx={{
+                    "& .MuiOutlinedInput-root": {
+                        "& fieldset": { borderColor: theme.palette.primary.main },
+                        "&:hover fieldset": { borderColor: theme.palette.primary.dark },
+                        "&.Mui-focused fieldset": { borderColor: theme.palette.primary.main },
+                    },
+                }}
             />
 
             <MealImageUploader
@@ -119,7 +135,12 @@ const CreateMealForm = () => {
                 register={register}
             />
 
-            <Button type="submit" variant="contained" color="primary">
+            <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                sx={{ fontSize: "0.9rem", padding: "10px 16px" }}
+            >
                 Create Meal
             </Button>
         </Box>

@@ -9,18 +9,18 @@ const MealIngredients = ({ value, onChange, errors }) => {
 
     return (
         <Box>
-            <Typography sx={{ fontWeight: "bold" }}>Ingredients</Typography>
+            <Typography sx={{ fontWeight: "bold", fontSize: { xs: "1rem", sm: "1.2rem" } }}>Ingredients</Typography>
 
             {value.map((ingredient, index) => (
                 <Box
                     key={index}
                     display="flex"
-                    gap={2}
+                    gap={1} // 📌 Minder ruimte tussen velden
                     alignItems="center"
                     sx={{
-                        flexWrap: "wrap",
+                        flexWrap: "nowrap",
                         mb: 1,
-                        "@media (max-width:600px)": { flexDirection: "column" },
+                        "@media (max-width:600px)": { flexWrap: "wrap" }, // 📌 Op mobiel wrap als het echt niet past
                     }}
                 >
                     {/* Autocomplete for searching food items by name */}
@@ -37,7 +37,11 @@ const MealIngredients = ({ value, onChange, errors }) => {
                         renderInput={(params) => (
                             <TextField
                                 {...params}
-                                label="Search Food Item by Name"
+                                label="Food Item"
+                                sx={{
+                                    "& .MuiInputBase-input": { fontSize: { xs: "0.8rem", sm: "1rem" } }, // 📌 Kleinere tekst
+                                    "& .MuiInputLabel-root": { fontSize: { xs: "0.8rem", sm: "1rem" } }, // 📌 Kleinere labels
+                                }}
                             />
                         )}
                         slotProps={{
@@ -49,16 +53,16 @@ const MealIngredients = ({ value, onChange, errors }) => {
                                     fontSize: "0.9rem",
                                     '& .MuiAutocomplete-option:hover': {
                                         backgroundColor: "#ffffff",
-                                        color: "#04aa9c",
+                                        color: "primary",
                                     },
                                 },
                             },
-                    }}
-                        sx={{ flex: 2, minWidth: "60%", marginTop: 1 }}
+                        }}
+                        sx={{ flex: 2, minWidth: { xs: "45%", sm: "60%" }, marginTop: 1 }} // 📌 Op mobiel kleinere minWidth
                     />
 
                     <TextField
-                        label="Quantity (grams) (Search Field)"
+                        label="Quantity (g)"
                         value={ingredient.quantity}
                         onChange={(e) => {
                             const newIngredients = [...value];
@@ -69,7 +73,11 @@ const MealIngredients = ({ value, onChange, errors }) => {
                         helperText={errors?.[index]?.quantity?.message || ""}
                         type="number"
                         slotProps={{ input: { min: 0 } }}
-                        sx={{ flex: 1, minWidth: "20%" }}
+                        sx={{
+                            flex: 1,
+                            minWidth: { xs: "35%", sm: "20%" },
+                            "& .MuiInputBase-input": { fontSize: { xs: "0.8rem", sm: "1rem" } },
+                        }}
                     />
 
                     <RemoveFoodItemButton
