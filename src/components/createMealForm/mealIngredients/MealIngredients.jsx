@@ -1,13 +1,13 @@
-import { Box, TextField, Typography, IconButton, Autocomplete } from "@mui/material";
+import { Box, Typography, IconButton, Autocomplete, Select, MenuItem, useMediaQuery } from "@mui/material";
 import PropTypes from "prop-types";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
 import useFoodItems from "../../../hooks/useFoodItems.js";
 import RemoveFoodItemButton from "./removeFooditemButton/RemoveFoodItemButton.jsx";
-import { useTheme } from "@mui/material/styles";
 import TextFieldCreateMeal from "./textFieldCreateMeal/TextFieldCreateMeal.jsx";
 
 const MealIngredients = ({ value, onChange, errors }) => {
-    const { options, noResults, handleSearch } = useFoodItems();
+    const { options, handleSearch } = useFoodItems();
+    const isMobile = useMediaQuery("(max-width:768px)"); // ✅ Detecteer mobiel
     const isAddDisabled = value.filter(item => item.foodItemId !== "").length < 2;
 
     return (
@@ -47,41 +47,82 @@ const MealIngredients = ({ value, onChange, errors }) => {
                                     "& .MuiInputLabel-root": { fontSize: { xs: "0.8rem", sm: "1rem" } },
                                 }}
                             />
-
                         )}
-                        slotProps={{
-                            listbox: {}
-                        }}
+                        slotProps={{ listbox: {} }}
                         sx={{ flex: 2, minWidth: { xs: "45%", sm: "60%" }, marginTop: 1 }}
                     />
 
-
-                    <TextFieldCreateMeal
-                        label="Quantity (g)"
-                        value={ingredient.quantity === 0 ? "" : ingredient.quantity.toString()}
-                        onChange={(e) => {
-                            const inputValue = e.target.value;
-
-                            const newValue = inputValue === "" ? "" : Math.max(0, Number(inputValue));
-
-                            const newIngredients = [...value];
-                            newIngredients[index].quantity = newValue;
-                            onChange(newIngredients);
-                        }}
-                        onBlur={() => {
-                            if (ingredient.quantity === "" || ingredient.quantity === null) {
+                    {isMobile ? (
+                        <Select
+                            value={ingredient.quantity}
+                            onChange={(e) => {
                                 const newIngredients = [...value];
-                                newIngredients[index].quantity = 0;
+                                newIngredients[index].quantity = Number(e.target.value);
                                 onChange(newIngredients);
-                            }
-                        }}
-                        error={errors?.[index]?.quantity}
-                        helperText={errors?.[index]?.quantity?.message || ""}
-                        type="number"
-                        slotProps={{ input: { min: 0 } }}
-                        sx={{ flex: 1, minWidth: { xs: "35%", sm: "20%" },     "& .MuiInputBase-input": { fontSize: { xs: "0.8rem", sm: "1rem" } },
-                            "& .MuiInputLabel-root": { fontSize: { xs: "0.8rem", sm: "1rem" } }, }}
-                    />
+                            }}
+                            displayEmpty
+                            sx={{
+                                flex: 1,
+                                minWidth: { xs: "35%", sm: "20%" },
+                                fontSize: "1rem",
+                                "& .MuiSelect-select": { padding: "8px" },
+                            }}
+                        >
+                            {/* ✅ Kleine stappen (1g) voor 1-100g */}
+                            {[...Array(100).keys()].map(num => (
+                                <MenuItem key={num + 1} value={num + 1}>
+                                    {num + 1} g
+                                </MenuItem>
+                            ))}
+
+                            {/* ✅ Grotere stappen (10g) voor 110-1000g */}
+                            {[...Array(91).keys()].map(num => (
+                                <MenuItem key={num * 10 + 110} value={num * 10 + 110}>
+                                    {num * 10 + 110} g
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    ) : (
+                        <TextFieldCreateMeal
+                            label="Quantity (g)"
+                            value={ingredient.quantity === 0 ? "" : ingredient.quantity.toString()}
+                            onChange={(e) => {
+                                const inputValue = e.target.value;
+                                const newValue = inputValue === "" ? "" : Math.max(0, Number(inputValue));
+                                const newIngredients = [...value];
+                                newIngredients[index].quantity = newValue;
+                                onChange(newIngredients);
+                            }}
+                            onBlur={() => {
+                                if (ingredient.quantity === "" || ingredient.quantity === null) {
+                                    const newIngredients = [...value];
+                                    newIngredients[index].quantity = 0;
+                                    onChange(newIngredients);
+                                }
+                            }}
+                            error={errors?.[index]?.quantity}
+                            helperText={errors?.[index]?.quantity?.message || ""}
+                            type="number"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            slotProps={{ input: { min: 0 } }}
+                            sx={{
+                                flex: 1,
+                                minWidth: { xs: "35%", sm: "20%" },
+                                "& .MuiInputBase-input": { fontSize: { xs: "0.8rem", sm: "1rem" } },
+                                "& .MuiInputLabel-root": { fontSize: { xs: "0.8rem", sm: "1rem" } },
+                                "@media (min-width: 768px)": {
+                                    "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
+                                        "-webkit-appearance": "none",
+                                        margin: 0
+                                    },
+                                    "& input[type=number]": {
+                                        "-moz-appearance": "textfield"
+                                    }
+                                }
+                            }}
+                        />
+                    )}
 
 
                     <RemoveFoodItemButton
@@ -95,6 +136,7 @@ const MealIngredients = ({ value, onChange, errors }) => {
                 </Box>
             ))}
 
+            {/* Knop + dynamische tekst */}
             <Box
                 display="flex"
                 flexDirection="column"
@@ -108,9 +150,7 @@ const MealIngredients = ({ value, onChange, errors }) => {
                     }
                 }}
             >
-                <Typography
-                    sx={{ fontSize: "0.8rem", color: "text.secondary", cursor: "pointer" }}
-                >
+                <Typography sx={{ fontSize: "0.8rem", color: "text.secondary", cursor: "pointer" }}>
                     {isAddDisabled ? "Choose ingredients" : "Click to add more ingredients"}
                 </Typography>
 
@@ -122,7 +162,6 @@ const MealIngredients = ({ value, onChange, errors }) => {
                     <AddCircleOutlineRoundedIcon />
                 </IconButton>
             </Box>
-
         </Box>
     );
 };
