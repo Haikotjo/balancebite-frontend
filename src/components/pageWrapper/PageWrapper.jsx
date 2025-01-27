@@ -11,16 +11,15 @@ import { Box } from '@mui/material';
  * - `padding`: Padding applied to the wrapper. Accepts a number or a string.
  * - `textAlign`: Alignment of text content. Default is 'center'.
  */
-const PageWrapper = ({ children, padding = 2, textAlign = 'center' }) => {
+const PageWrapper = ({ children, sx = {} }) => {
     return (
         <Box
             sx={{
-                display: 'flex', // Enables flexbox for centering
-                flexDirection: 'column', // Arranges children in a column layout
-                alignItems: 'center', // Horizontally centers children
-                justifyContent: 'center', // Vertically centers children
-                padding, // Customizable padding
-                textAlign, // Customizable text alignment
+                maxWidth: sx.maxWidth || "100%",
+                width: "100%",
+                margin: sx.margin || "auto",
+                paddingX: sx.paddingX || 2,
+                ...sx,
             }}
         >
             {children}

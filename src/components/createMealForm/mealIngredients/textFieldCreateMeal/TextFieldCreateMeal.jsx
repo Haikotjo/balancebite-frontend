@@ -23,6 +23,7 @@ const TextFieldCreateMeal = ({
     return (
         <TextField
             label={label}
+            variant="outlined"
             {...(register ? register(name) : {})}
             error={!!error}
             helperText={helperText}
@@ -33,20 +34,26 @@ const TextFieldCreateMeal = ({
             onChange={onChange}
             fullWidth={fullWidth}
             slotProps={slotProps}
-            InputLabelProps={{ shrink: true }} // ✅ Label blijft altijd in de rand
+            InputLabelProps={{ shrink: true }}
             sx={{
                 "& .MuiOutlinedInput-root": {
                     "& fieldset": { borderColor: theme.palette.primary.main },
                     "&:hover fieldset": { borderColor: theme.palette.primary.dark },
-                    "&.Mui-focused fieldset": { borderColor: theme.palette.primary.main },
+                    "&.Mui-focused fieldset": { borderColor: theme.palette.primary.main, borderWidth: 2 },
                 },
-                "& .MuiInputBase-input": { fontSize: { xs: "0.8rem", sm: "1rem" } },
-                ...sx, // Laat extra sx-styling toe zonder de standaard styling te overschrijven
+                "& .MuiInputBase-input": { fontSize: { xs: "0.8rem", sm: "1rem" }, padding: "10px 14px" },
+                "& .MuiInputLabel-root": {
+                    fontSize: { xs: "0.8rem", sm: "1rem" },
+                    color: "text.primary",
+                },
+                "& .MuiInputLabel-root.Mui-focused": { color: theme.palette.primary.main },
+                ...sx,
             }}
             {...rest}
         />
     );
 };
+
 
 TextFieldCreateMeal.propTypes = {
     label: PropTypes.string.isRequired,

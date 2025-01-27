@@ -127,9 +127,9 @@ const CreateMealForm = () => {
                 type="submit"
                 variant="contained"
                 color="primary"
-                sx={{ fontSize: "0.9rem", padding: "10px 16px" }}
+                sx={{ fontSize: "0.9rem", padding: "10px 16px", color: "text.light", fontWeight: "bold" }}
             >
-                Create Meal
+                Upload Meal
             </Button>
         </Box>
     );

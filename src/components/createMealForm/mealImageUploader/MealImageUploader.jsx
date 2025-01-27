@@ -1,64 +1,91 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, IconButton } from "@mui/material";
 import Camera from "../../camera/Camera.jsx";
 import AddImageUrlComponent from "./addImageUrlComponent/AddImageUrlComponent.jsx";
 import UploadImageComponent from "./uploadImageComponent/UploadImageComponent.jsx";
+import DeleteForeverRoundedIcon from "@mui/icons-material/DeleteForeverRounded";
 
 const MealImageUploader = ({ register, errors, onImageChange }) => {
-
     const [capturedImage, setCapturedImage] = useState(null);
     const [uploadedImage, setUploadedImage] = useState(null);
     const [imageUrl, setImageUrl] = useState("");
 
+    const handleReset = () => {
+        setCapturedImage(null);
+        setUploadedImage(null);
+        setImageUrl("");
+        onImageChange("", "");
+    };
+
     return (
-        <Box display="flex" flexDirection="column" alignItems="left" gap={2}>
-            {/* Camera Functionaliteit */}
-            <Camera
-                disabled={!!capturedImage || !!uploadedImage || !!imageUrl}
-                onCapture={(image) => {
-                    console.log("Captured Image in MealImageUploader (Base64):", image);
-                    setCapturedImage(image);
-                    setUploadedImage(null);
-                    setImageUrl("");
-                    onImageChange(image, "captured");
-                    onImageChange("", "");
-                }}
-            />
+        <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
 
-            <UploadImageComponent
-                disabled={!!capturedImage || !!uploadedImage || !!imageUrl}
-                onUpload={(file) => {
-                    setUploadedImage(file);
-                    setCapturedImage(null);
-                    setImageUrl("");
-                    onImageChange(file, "uploaded");
-                }}
-                register={register}
-                errors={errors}
-            />
+            <Typography sx={{ fontSize: "0.8rem", color: "text.secondary", fontWeight: "normal" }}>
+                Upload Image
+            </Typography>
 
-            <AddImageUrlComponent
-                disabled={!!capturedImage || !!uploadedImage || !!imageUrl}
-                onUrlChange={(newUrl) => {
-                    setImageUrl(newUrl);
-                    setCapturedImage(null);
-                    setUploadedImage(null);
-                    onImageChange(newUrl, "url");
-                }}
-                register={register}
-                errors={errors}
-            />
+            {/* Icons horizontaal naast elkaar */}
+            <Box display="flex" justifyContent="center" alignItems="center" gap={2}>
+                <Camera
+                    disabled={!!capturedImage || !!uploadedImage || !!imageUrl}
+                    onCapture={(image) => {
+                        setCapturedImage(image);
+                        setUploadedImage(null);
+                        setImageUrl("");
+                        onImageChange(image, "captured");
+                    }}
+                />
 
-            {/* Preview en Verwijderknop */}
+                <UploadImageComponent
+                    disabled={!!capturedImage || !!uploadedImage || !!imageUrl}
+                    onUpload={(file) => {
+                        setUploadedImage(file);
+                        setCapturedImage(null);
+                        setImageUrl("");
+                        onImageChange(file, "uploaded");
+                    }}
+                    register={register}
+                    errors={errors}
+                />
+
+                <AddImageUrlComponent
+                    disabled={!!capturedImage || !!uploadedImage || !!imageUrl}
+                    onUrlChange={(newUrl) => {
+                        setImageUrl(newUrl);
+                        setCapturedImage(null);
+                        setUploadedImage(null);
+                        onImageChange(newUrl, "url");
+                    }}
+                    register={register}
+                    errors={errors}
+                />
+            </Box>
+
+            {/* Prullenbak icoon onder de icons */}
+            {(capturedImage || uploadedImage || imageUrl) && (
+                <IconButton
+                    color="error"
+                    onClick={handleReset}
+                    sx={{ marginTop: 1 }}
+                >
+                    <DeleteForeverRoundedIcon fontSize="large" />
+                </IconButton>
+            )}
+
+            {/* Preview afbeelding */}
             {(capturedImage || uploadedImage || imageUrl) && (
                 <Box sx={{ marginTop: 2, textAlign: "center" }}>
                     <img
                         src={capturedImage || uploadedImage || imageUrl}
                         alt="Preview"
-                        style={{ maxWidth: "100%", marginBottom: "10px" }}
+                        style={{
+                            maxWidth: "100%",
+                            maxHeight: "200px",
+                            borderRadius: "8px",
+                            objectFit: "cover",
+                        }}
                     />
-
                 </Box>
             )}
 
@@ -77,6 +104,5 @@ MealImageUploader.propTypes = {
     errors: PropTypes.object.isRequired,
     onImageChange: PropTypes.func.isRequired,
 };
-
 
 export default MealImageUploader;

@@ -5,9 +5,9 @@ const CreateMealPage = () => {
     return (
         <PageWrapper
             sx={{
-                padding: { xs: 1, sm: 2 },
-                alignItems: "flex-start",
-                width: "100%",
+                maxWidth: "600px", // 🔹 Beperkt breedte specifiek voor deze pagina
+                margin: "auto", // 🔹 Zorgt dat het gecentreerd blijft
+                paddingX: 2, // 🔹 Houdt een beetje padding
             }}
         >
             <CreateMealForm />

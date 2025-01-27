@@ -72,14 +72,14 @@ const getDesignTokens = (mode) => ({
     MuiAutocomplete: {
         styleOverrides: {
             popper: {
-                backgroundColor: mode === "light" ? "#e3f2fd" : "#2c2c2c", // ✅ Dynamische achtergrondkleur
+                backgroundColor: mode === "light" ? "#e3f2fd" : "#2c2c2c",
                 borderRadius: "5px",
                 fontFamily: "Arial, sans-serif",
                 fontSize: "0.9rem",
             },
             option: {
                 "&:hover": {
-                    backgroundColor: mode === "light" ? "#ffffff" : "#444444", // ✅ Hover-kleur per thema
+                    backgroundColor: mode === "light" ? "#ffffff" : "#444444",
                     color: mode === "light" ? "#000000" : "#ffffff",
                 },
             },
