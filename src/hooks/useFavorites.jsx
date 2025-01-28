@@ -1,10 +1,12 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
+import { UserMealsContext } from "../context/UserMealsContext.jsx";
 import { addMealToFavoritesApi, removeMealFromFavoritesApi } from "../services/apiService.js";
 import SnackbarComponent from "../components/snackbarComponent/SnackbarComponent.jsx";
 
 const useFavorites = () => {
     const { user, token } = useContext(AuthContext);
+    const { addMealToUserMeals, removeMealFromUserMeals } = useContext(UserMealsContext);
     const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
     const showSnackbar = (message, severity) => {
@@ -19,6 +21,7 @@ const useFavorites = () => {
 
         try {
             await addMealToFavoritesApi(meal.id, token);
+            addMealToUserMeals(meal);
             showSnackbar(`${meal.name} added to favorites!`, "success");
             return true;
         } catch (error) {
@@ -36,6 +39,7 @@ const useFavorites = () => {
 
         try {
             await removeMealFromFavoritesApi(meal.id, token);
+            removeMealFromUserMeals(meal.id); // Update context
             showSnackbar(`${meal.name} removed from favorites!`, "error");
             return true;
         } catch (error) {
