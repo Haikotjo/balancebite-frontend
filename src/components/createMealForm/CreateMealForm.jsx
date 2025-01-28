@@ -1,7 +1,6 @@
 import { useState, useContext } from "react";
 import {
     Box,
-    TextField,
     Button,
     Typography,
     Alert,
@@ -19,11 +18,10 @@ import { UserMealsContext } from "../../context/UserMealsContext";
 import { refreshMealsList } from "../../utils/helpers/refreshMealsList.js";
 import MealImageUploader from "./mealImageUploader/MealImageUploader.jsx";
 import MealIngredients from "./mealIngredients/MealIngredients.jsx";
-import { useTheme } from "@mui/material/styles";
 import TextFieldCreateMeal from "./mealIngredients/textFieldCreateMeal/TextFieldCreateMeal.jsx";
+import MealDropdowns from "./MealDropdowns.jsx";
 
 const CreateMealForm = () => {
-    const theme = useTheme();
     const [capturedImage, setCapturedImage] = useState(null);
     const [uploadedImage, setUploadedImage] = useState(null);
     const [imageUrl, setImageUrl] = useState("");
@@ -46,7 +44,13 @@ const CreateMealForm = () => {
         try {
             const token = getAccessToken();
             const userId = jwtDecode(token).sub || null;
-            const formData = await buildMealFormData(data, capturedImage, uploadedImage, imageUrl);
+            const mealData = {
+                ...data,
+                mealType: data.mealType || "",
+                cuisine: data.cuisine || "",
+                diet: data.diet || "",
+            };
+            const formData = await buildMealFormData(mealData, capturedImage, uploadedImage, imageUrl);
             const response = await createMealApi(formData, token);
             setSuccessMessage(`Meal created: ${response.name || "Unknown meal"}`);
 
@@ -111,6 +115,8 @@ const CreateMealForm = () => {
                 multiline
                 rows={4}
             />
+
+            <MealDropdowns control={control} errors={errors} />
 
 
             <MealImageUploader

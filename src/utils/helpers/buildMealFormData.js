@@ -10,6 +10,9 @@ export const buildMealFormData = async (data, capturedImage, uploadedImage, imag
             quantity: parseFloat(ingredient.quantity),
         })),
         imageUrl: imageUrl || null,
+        mealType: data.mealType || null,
+        cuisine: data.cuisine || null,
+        diet: data.diet || null,
     };
 
     console.log("MealInputDTO before adding files:", mealInputDTO);
