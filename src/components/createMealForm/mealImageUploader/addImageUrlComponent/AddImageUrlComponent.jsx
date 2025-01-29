@@ -1,18 +1,12 @@
 import PropTypes from "prop-types";
-import { Tooltip, IconButton, TextField, Box } from "@mui/material";
+import { Tooltip, IconButton, Box } from "@mui/material";
 import LinkRoundedIcon from "@mui/icons-material/LinkRounded";
-import ResetButton from "../resetButton/ResetButton.jsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import TextFieldCreateMeal from "../../textFieldCreateMeal/TextFieldCreateMeal.jsx";
 
-const AddImageUrlComponent = ({ disabled, onUrlChange, register, errors }) => {
+const AddImageUrlComponent = ({ disabled, onUrlChange, register, errors, onReset }) => {
     const [showInput, setShowInput] = useState(false);
-    const [urlValue, setUrlValue] = useState(""); // Lokale state
-
-    const handleReset = () => {
-        setUrlValue("");
-        onUrlChange("");
-        register("imageUrl").onChange({ target: { value: "" } });
-    };
+    const [urlValue, setUrlValue] = useState("");
 
     const handleChange = (e) => {
         const value = e.target.value;
@@ -21,8 +15,19 @@ const AddImageUrlComponent = ({ disabled, onUrlChange, register, errors }) => {
         register("imageUrl").onChange(e);
     };
 
+    const handleReset = () => {
+        setUrlValue("");
+        setShowInput(false);
+    };
+
+    useEffect(() => {
+        if (onReset) {
+            handleReset();
+        }
+    }, [onReset]);
+
     return (
-        <Box>
+        <Box display="flex" flexDirection="column" alignItems="center">
             <Tooltip title="Add Image URL" arrow>
                 <span>
                     <IconButton
@@ -37,19 +42,15 @@ const AddImageUrlComponent = ({ disabled, onUrlChange, register, errors }) => {
             </Tooltip>
 
             {showInput && (
-                <Box display="flex" gap={1} alignItems="center">
-                    <TextField
-                        label="Image URL"
-                        value={urlValue}
-                        error={!!errors.imageUrl}
-                        helperText={errors.imageUrl?.message}
-                        fullWidth
-                        onChange={handleChange}
-                        sx={{ marginTop: 2 }}
-                    />
-                    {/* Reset Button */}
-                    <ResetButton onReset={handleReset} />
-                </Box>
+                <TextFieldCreateMeal
+                    label="Image URL"
+                    value={urlValue}
+                    onChange={handleChange}
+                    error={errors.imageUrl}
+                    helperText={errors.imageUrl?.message}
+                    fullWidth
+                    sx={{ marginTop: 2 }}
+                />
             )}
         </Box>
     );
@@ -60,6 +61,7 @@ AddImageUrlComponent.propTypes = {
     onUrlChange: PropTypes.func.isRequired,
     register: PropTypes.func.isRequired,
     errors: PropTypes.object.isRequired,
+    onReset: PropTypes.any,
 };
 
 export default AddImageUrlComponent;

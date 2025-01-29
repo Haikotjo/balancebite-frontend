@@ -10,11 +10,13 @@ const MealImageUploader = ({ register, errors, onImageChange }) => {
     const [capturedImage, setCapturedImage] = useState(null);
     const [uploadedImage, setUploadedImage] = useState(null);
     const [imageUrl, setImageUrl] = useState("");
+    const [resetTrigger, setResetTrigger] = useState(false);
 
     const handleReset = () => {
         setCapturedImage(null);
         setUploadedImage(null);
         setImageUrl("");
+        setResetTrigger(prev => !prev);
         onImageChange("", "");
     };
 
@@ -25,7 +27,6 @@ const MealImageUploader = ({ register, errors, onImageChange }) => {
                 Upload Image
             </Typography>
 
-            {/* Icons horizontaal naast elkaar */}
             <Box display="flex" justifyContent="center" alignItems="center" gap={2}>
                 <Camera
                     disabled={!!capturedImage || !!uploadedImage || !!imageUrl}
@@ -59,19 +60,9 @@ const MealImageUploader = ({ register, errors, onImageChange }) => {
                     }}
                     register={register}
                     errors={errors}
+                    onReset={resetTrigger}
                 />
             </Box>
-
-            {/* Prullenbak icoon onder de icons */}
-            {(capturedImage || uploadedImage || imageUrl) && (
-                <IconButton
-                    color="error"
-                    onClick={handleReset}
-                    sx={{ marginTop: 1 }}
-                >
-                    <DeleteForeverRoundedIcon fontSize="large" />
-                </IconButton>
-            )}
 
             {/* Preview afbeelding */}
             {(capturedImage || uploadedImage || imageUrl) && (
@@ -86,6 +77,9 @@ const MealImageUploader = ({ register, errors, onImageChange }) => {
                             objectFit: "cover",
                         }}
                     />
+                    <IconButton color="error" onClick={handleReset}>
+                        <DeleteForeverRoundedIcon fontSize="large" />
+                    </IconButton>
                 </Box>
             )}
 

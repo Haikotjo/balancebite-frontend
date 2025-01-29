@@ -18,7 +18,7 @@ import { UserMealsContext } from "../../context/UserMealsContext";
 import { refreshMealsList } from "../../utils/helpers/refreshMealsList.js";
 import MealImageUploader from "./mealImageUploader/MealImageUploader.jsx";
 import MealIngredients from "./mealIngredients/MealIngredients.jsx";
-import TextFieldCreateMeal from "./mealIngredients/textFieldCreateMeal/TextFieldCreateMeal.jsx";
+import TextFieldCreateMeal from "./textFieldCreateMeal/TextFieldCreateMeal.jsx";
 import MealDropdowns from "./MealDropdowns.jsx";
 
 const CreateMealForm = () => {

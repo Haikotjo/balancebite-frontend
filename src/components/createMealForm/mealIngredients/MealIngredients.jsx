@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
 import useFoodItems from "../../../hooks/useFoodItems.js";
 import RemoveFoodItemButton from "./removeFooditemButton/RemoveFoodItemButton.jsx";
-import TextFieldCreateMeal from "./textFieldCreateMeal/TextFieldCreateMeal.jsx";
+import TextFieldCreateMeal from "../textFieldCreateMeal/TextFieldCreateMeal.jsx";
 
 const MealIngredients = ({ value, onChange, errors }) => {
     const { options, handleSearch } = useFoodItems();

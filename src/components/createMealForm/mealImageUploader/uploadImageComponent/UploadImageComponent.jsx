@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
 import { Tooltip, IconButton, Box } from "@mui/material";
 import DriveFolderUploadRoundedIcon from "@mui/icons-material/DriveFolderUploadRounded";
-import ResetButton from "../resetButton/ResetButton.jsx";
 import { useState } from "react";
 
 const UploadImageComponent = ({ disabled, onUpload, errors }) => {
@@ -21,12 +20,6 @@ const UploadImageComponent = ({ disabled, onUpload, errors }) => {
 
             reader.readAsDataURL(file);
         }
-    };
-
-    const handleReset = () => {
-        onUpload("");
-        setFileName("");
-        document.getElementById("file-upload").value = "";
     };
 
     return (
@@ -53,12 +46,6 @@ const UploadImageComponent = ({ disabled, onUpload, errors }) => {
                 disabled={disabled}
                 onChange={handleFileChange}
             />
-
-            {/* Bestandsnaam weergeven */}
-            {fileName && <span>{fileName}</span>}
-
-            {/* Reset Button */}
-            {fileName && <ResetButton onReset={handleReset} />}
 
             {/* Errors weergeven */}
             {errors.imageFile && (

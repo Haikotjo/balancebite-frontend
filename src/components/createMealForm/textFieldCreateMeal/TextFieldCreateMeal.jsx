@@ -1,29 +1,31 @@
 import TextField from "@mui/material/TextField";
 import { useTheme } from "@mui/material/styles";
 import PropTypes from "prop-types";
+import React from "react";
 
-const TextFieldCreateMeal = ({
-                                 label,
-                                 register,
-                                 name,
-                                 error,
-                                 helperText,
-                                 multiline = false,
-                                 rows,
-                                 type,
-                                 value,
-                                 onChange,
-                                 slotProps,
-                                 sx,
-                                 fullWidth = true,
-                                 ...rest
-                             }) => {
+const TextFieldCreateMeal = React.forwardRef(({
+                                                  label,
+                                                  register,
+                                                  name,
+                                                  error,
+                                                  helperText,
+                                                  multiline = false,
+                                                  rows,
+                                                  type,
+                                                  value,
+                                                  onChange,
+                                                  slotProps,
+                                                  sx,
+                                                  fullWidth = true,
+                                                  ...rest
+                                              }, ref) => {
     const theme = useTheme();
 
     return (
         <TextField
             label={label}
             variant="outlined"
+            inputRef={ref} // ✅ Fix: ref correct doorgeven
             {...(register ? register(name) : {})}
             error={!!error}
             helperText={helperText}
@@ -52,8 +54,9 @@ const TextFieldCreateMeal = ({
             {...rest}
         />
     );
-};
+});
 
+TextFieldCreateMeal.displayName = "TextFieldCreateMeal"; // ✅ Fix: display name toevoegen
 
 TextFieldCreateMeal.propTypes = {
     label: PropTypes.string.isRequired,
