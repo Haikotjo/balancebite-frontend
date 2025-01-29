@@ -14,6 +14,7 @@ import IngredientList from "./ingredientList/IngredientList";
 import { getImageSrc } from "../../utils/getImageSrc";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 import MealCardActions from "./mealCardActions/MealCardActions.jsx";
+import MealDetails from "./mealDetails/MealDetails.jsx";
 
 function MealCard({ meal, refreshList }) {
     const { expanded, toggleExpand } = useExpand();
@@ -25,9 +26,20 @@ function MealCard({ meal, refreshList }) {
             <Card sx={{ minWidth: 300, maxWidth: 345 }}>
                 <CardMedia
                     component="img"
-                    height="140"
                     image={imageSrc}
                     alt={meal.name}
+                    sx={{
+                        width: "100%",
+                        aspectRatio: "16/9",
+                        // objectFit: "contain",
+                    }}
+                />
+
+                <MealDetails
+                    diet={meal.diet}
+                    mealType={meal.mealType}
+                    cuisine={meal.cuisine}
+                    nutrients={nutrients}
                 />
                 <CardContent>
                     <Typography variant="h6" color="text.primary">
