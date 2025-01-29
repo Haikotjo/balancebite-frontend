@@ -16,92 +16,91 @@ import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 import MealCardActions from "./mealCardActions/MealCardActions.jsx";
 import MealDetails from "./mealDetails/MealDetails.jsx";
 
-function MealCard({ meal, refreshList }) {
+function MealCard({ meal, refreshList, onFilter }) { // ✅ onFilter toegevoegd
     const { expanded, toggleExpand } = useExpand();
     const { nutrients } = useNutrients(meal.id);
     const imageSrc = getImageSrc(meal);
 
     return (
-        <>
-            <Card sx={{ minWidth: 300, maxWidth: 345 }}>
-                <CardMedia
-                    component="img"
-                    image={imageSrc}
-                    alt={meal.name}
-                    sx={{
-                        width: "100%",
-                        aspectRatio: "16/9",
-                        // objectFit: "contain",
-                    }}
-                />
+        <Card sx={{ minWidth: 300, maxWidth: 345 }}>
+            <CardMedia
+                component="img"
+                image={imageSrc}
+                alt={meal.name}
+                sx={{
+                    width: "100%",
+                    aspectRatio: "16/9",
+                }}
+            />
 
-                <MealDetails
-                    diet={meal.diet}
-                    mealType={meal.mealType}
-                    cuisine={meal.cuisine}
-                    nutrients={nutrients}
-                />
-                <CardContent>
-                    <Typography variant="h6" color="text.primary">
-                        {meal.name}
-                    </Typography>
-                    <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ fontFamily: "'Quicksand', sans-serif", fontSize: "0.7rem" }}
+            <MealDetails
+                diet={meal.diet}
+                mealType={meal.mealType}
+                cuisine={meal.cuisine}
+                nutrients={nutrients}
+                onFilter={onFilter} // ✅ Doorsturen naar MealDetails
+            />
+            <CardContent>
+                <Typography variant="h6" color="text.primary">
+                    {meal.name}
+                </Typography>
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ fontFamily: "'Quicksand', sans-serif", fontSize: "0.7rem" }}
+                >
+                    Created By: {" "}
+                    <Link
+                        to={`/users/created-meals/${meal.createdBy?.id}`}
+                        style={{ textDecoration: "underline", color: "inherit" }}
                     >
-                        Created By: {" "}
-                        <Link
-                            to={`/users/created-meals/${meal.createdBy?.id}`}
-                            style={{ textDecoration: "underline", color: "inherit" }}
-                        >
-                            {meal.createdBy?.userName}
-                        </Link>
-                    </Typography>
+                        {meal.createdBy?.userName}
+                    </Link>
+                </Typography>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        fontFamily: "'Quicksand', sans-serif",
+                        fontSize: "0.8rem",
+                        marginTop: "8px",
+                        marginBottom: "16px",
+                    }}
+                >
+                    {meal.mealDescription || "No description provided."}
+                </Typography>
+                <NutrientList nutrients={nutrients} />
+            </CardContent>
+            <MealCardActions
+                meal={meal}
+                expanded={expanded}
+                toggleExpand={toggleExpand}
+                refreshList={refreshList}
+            />
+            <Collapse in={expanded} timeout="auto" unmountOnExit>
+                <CardContent>
                     <Typography
                         variant="body2"
                         sx={{
                             fontFamily: "'Quicksand', sans-serif",
                             fontSize: "0.8rem",
-                            marginTop: "8px",
-                            marginBottom: "16px",
+                            marginBottom: "8px",
                         }}
                     >
-                        {meal.mealDescription || "No description provided."}
+                        Ingredients:
                     </Typography>
-                    <NutrientList nutrients={nutrients} />
+                    <ErrorBoundary>
+                        <IngredientList ingredients={meal.mealIngredients} />
+                    </ErrorBoundary>
                 </CardContent>
-                <MealCardActions
-                    meal={meal}
-                    expanded={expanded}
-                    toggleExpand={toggleExpand}
-                    refreshList={refreshList}
-                />
-                <Collapse in={expanded} timeout="auto" unmountOnExit>
-                    <CardContent>
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                fontFamily: "'Quicksand', sans-serif",
-                                fontSize: "0.8rem",
-                                marginBottom: "8px",
-                            }}
-                        >
-                            Ingredients:
-                        </Typography>
-                        <ErrorBoundary>
-                            <IngredientList ingredients={meal.mealIngredients} />
-                        </ErrorBoundary>
-                    </CardContent>
-                </Collapse>
-            </Card>
-        </>
+            </Collapse>
+        </Card>
     );
 }
 
 MealCard.propTypes = {
     meal: PropTypes.object.isRequired,
-    refreshList: PropTypes.func.isRequired, // Voeg prop validatie toe
+    refreshList: PropTypes.func.isRequired,
+    onFilter: PropTypes.func.isRequired,
 };
 
 export default MealCard;

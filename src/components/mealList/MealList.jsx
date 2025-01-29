@@ -13,11 +13,15 @@ import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRou
  * A component that fetches and displays a list of meals based on the current endpoint provided by the UserMealsContext.
  */
 function MealList({ setCreatedByName }) {
-    const [meals, setMeals] = useState([]); // State to store fetched meals
-    const [loading, setLoading] = useState(true); // Loading state
-    const [error, setError] = useState(null); // Error state
-    const { currentListEndpoint, updateEndpoint, activeOption, setActiveOption } = useContext(UserMealsContext); // Use updateEndpoint and setActiveOption from context
-    const navigate = useNavigate(); // For navigation
+    const [meals, setMeals] = useState([]); // All meals
+    const [filteredMeals, setFilteredMeals] = useState([]); // Filtered meals
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const { currentListEndpoint, updateEndpoint, activeOption, setActiveOption } = useContext(UserMealsContext);
+    const navigate = useNavigate();
+
+    // State for filters
+    const [filter, setFilter] = useState(null);
 
     /**
      * Fetch meals from the current endpoint whenever it changes.
@@ -28,6 +32,7 @@ function MealList({ setCreatedByName }) {
                 setLoading(true);
                 const mealsData = await fetchMeals(currentListEndpoint);
                 setMeals(mealsData);
+                setFilteredMeals(mealsData); // Initial display is all meals
 
                 if (mealsData.length > 0 && setCreatedByName) {
                     const createdBy = mealsData[0]?.createdBy?.userName || "Unknown User";
@@ -46,6 +51,21 @@ function MealList({ setCreatedByName }) {
     }, [currentListEndpoint, setCreatedByName]);
 
     /**
+     * Apply filter when filter state changes
+     */
+    useEffect(() => {
+        if (!filter) {
+            setFilteredMeals(meals);
+        } else {
+            setFilteredMeals(
+                meals.filter((meal) =>
+                    meal[filter.category]?.toLowerCase() === filter.value.toLowerCase()
+                )
+            );
+        }
+    }, [filter, meals]);
+
+    /**
      * Function to refresh the current list.
      */
     const refreshList = async () => {
@@ -53,11 +73,19 @@ function MealList({ setCreatedByName }) {
             setLoading(true);
             const mealsData = await fetchMeals(currentListEndpoint);
             setMeals(mealsData);
+            setFilteredMeals(mealsData);
         } catch (err) {
             setError(err.message);
         } finally {
             setLoading(false);
         }
+    };
+
+    /**
+     * Handle filtering meals
+     */
+    const handleFilter = (category, value) => {
+        setFilter({ category, value });
     };
 
     // Show a loading indicator while data is being fetched
@@ -77,7 +105,7 @@ function MealList({ setCreatedByName }) {
         );
 
     // Show options to add or view meals if no meals are found
-    if (meals.length === 0)
+    if (filteredMeals.length === 0)
         return (
             <Box
                 marginTop={3}
@@ -85,31 +113,15 @@ function MealList({ setCreatedByName }) {
                 flexDirection="column"
                 alignItems="center"
                 minHeight="50vh"
-                gap={1} // Consistente ruimte tussen alle elementen
+                gap={1}
             >
                 <Typography variant="h6" gutterBottom>
-                    {activeOption === "All Meals" && "No meals available yet!"}
-                    {activeOption === "My Meals" && "You haven't saved any meals yet!"}
-                    {activeOption === "Created Meals" && "You haven't created any meals yet!"}
+                    No meals found for selected filter.
                 </Typography>
                 <CustomButton
-                    onClick={() => navigate("/create-meal")}
-                    icon={<AddCircleOutlineRoundedIcon />}
-                    label="Create a Meal"
+                    onClick={() => setFilter(null)}
+                    label="Reset Filter"
                     variant="outlined"
-                />
-
-                <Typography sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>or</Typography>
-
-                <CustomButton
-                    onClick={() => {
-                        const newEndpoint = `${import.meta.env.VITE_BASE_URL}/meals`;
-                        updateEndpoint(newEndpoint); // Use updateEndpoint from context
-                        setActiveOption("All Meals"); // Update the active option in the context
-                    }}
-                    icon={<MenuBookRoundedIcon />}
-                    label="Add a Meal"
-                    variant="contained"
                 />
             </Box>
         );
@@ -122,8 +134,8 @@ function MealList({ setCreatedByName }) {
             gap={2}
             padding={2}
         >
-            {meals.map((meal) => (
-                <MealCard key={meal.id} meal={meal} refreshList={refreshList} />
+            {filteredMeals.map((meal) => (
+                <MealCard key={meal.id} meal={meal} refreshList={refreshList} onFilter={handleFilter} />
             ))}
         </Box>
     );

@@ -2,11 +2,17 @@ import PropTypes from "prop-types";
 import { Typography, Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
-const MealDetails = ({ diet, mealType, cuisine, nutrients }) => {
+const MealDetails = ({ diet, mealType, cuisine, nutrients, onFilter }) => {
     const theme = useTheme();
     const isDarkMode = theme.palette.mode === "dark";
 
     const kcal = nutrients?.find(nutrient => nutrient.nutrientName === "Energy kcal")?.value || "N/A";
+
+    const handleClick = (category, value) => {
+        if (value && value !== "No Diet" && value !== "No Type" && value !== "No Cuisine") {
+            onFilter(category, value);
+        }
+    };
 
     return (
         <Box
@@ -21,9 +27,9 @@ const MealDetails = ({ diet, mealType, cuisine, nutrients }) => {
             }}
         >
             {[
-                { label: diet || "No Diet" },
-                { label: mealType || "No Type" },
-                { label: cuisine || "No Cuisine" },
+                { label: diet || "No Diet", category: "diet" },
+                { label: mealType || "No Type", category: "mealType" },
+                { label: cuisine || "No Cuisine", category: "cuisine" },
                 { label: kcal !== "N/A" ? `${kcal.toFixed(1)} kcal` : "N/A", bold: true },
             ].map((item, index) => (
                 <Box
@@ -35,14 +41,14 @@ const MealDetails = ({ diet, mealType, cuisine, nutrients }) => {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        paddingY: "10px", // ✅ Padding per item
+                        paddingY: "10px",
                         paddingX: "2px",
                         transition: "background-color 0.2s ease-in-out",
-                        "&:hover": {
-                            backgroundColor: theme.palette.primary.light, // ✅ Background verandert over het volledige item
-                        },
+                        cursor: item.category ? "pointer" : "default", // ✅ Alleen klikbare items krijgen pointer
+                        "&:hover": item.category ? { backgroundColor: theme.palette.primary.light } : {},
                         borderRight: index !== 3 ? `1px solid rgba(255, 255, 255, 0.3)` : "none",
                     }}
+                    onClick={() => item.category && handleClick(item.category, item.label)}
                 >
                     <Typography
                         variant="body2"
@@ -72,6 +78,7 @@ MealDetails.propTypes = {
             value: PropTypes.number,
         })
     ),
+    onFilter: PropTypes.func.isRequired,
 };
 
 export default MealDetails;
