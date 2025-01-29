@@ -36,8 +36,31 @@ const FavoriteButton = ({ isFavorite: initialFavorite, meal }) => {
                 transition={{ duration: 0.3, ease: "easeOut" }}
             >
                 <IconButton onClick={handleToggleFavorite}>
-                    {isFavorite ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon color="error" />}
+                    {isFavorite ? (
+                        <FavoriteIcon
+                            sx={{
+                                fontSize: 25,
+                                color: "error.main",
+                                transition: "color 0.2s ease-in-out",
+                                "&:hover": {
+                                    color: "error.light",
+                                },
+                            }}
+                        />
+                    ) : (
+                        <FavoriteBorderIcon
+                            sx={{
+                                fontSize: 25,
+                                color: "error.main",
+                                transition: "color 0.2s ease-in-out",
+                                "&:hover": {
+                                    color: "error.light",
+                                },
+                            }}
+                        />
+                    )}
                 </IconButton>
+
             </motion.div>
 
             {SnackbarComponent}

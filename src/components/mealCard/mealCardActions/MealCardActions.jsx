@@ -13,44 +13,44 @@ const MealCardActions = ({ meal, expanded, toggleExpand }) => {
     const { userMeals, addMealToUserMeals, removeMealFromUserMeals } = useContext(UserMealsContext);
     const { refetchRecommendedNutrition } = useContext(RecommendedNutritionContext);
 
-    const token = localStorage.getItem("accessToken");
+    // const token = localStorage.getItem("accessToken");
+    //
+    // const isDuplicate = userMeals.some((userMeal) => {
+    //     const mealIngredientIds = meal.mealIngredients
+    //         ?.map((ingredient) => ingredient?.foodItemId)
+    //         .filter(Boolean)
+    //         .sort();
+    //
+    //     const userMealIngredientIds = userMeal.mealIngredients
+    //         ?.map((ingredient) => ingredient?.foodItemId)
+    //         .filter(Boolean)
+    //         .sort();
+    //
+    //     return (
+    //         mealIngredientIds.length === userMealIngredientIds.length &&
+    //         mealIngredientIds.every((id, index) => id === userMealIngredientIds[index])
+    //     );
+    // });
 
-    const isDuplicate = userMeals.some((userMeal) => {
-        const mealIngredientIds = meal.mealIngredients
-            ?.map((ingredient) => ingredient?.foodItemId)
-            .filter(Boolean)
-            .sort();
-
-        const userMealIngredientIds = userMeal.mealIngredients
-            ?.map((ingredient) => ingredient?.foodItemId)
-            .filter(Boolean)
-            .sort();
-
-        return (
-            mealIngredientIds.length === userMealIngredientIds.length &&
-            mealIngredientIds.every((id, index) => id === userMealIngredientIds[index])
-        );
-    });
-
-    const handleAddToFavorites = async () => {
-        try {
-            await addMealToFavoritesApi(meal.id, token);
-            addMealToUserMeals(meal);
-            console.log(`${meal.name} added to favorites.`);
-        } catch (error) {
-            console.error("Error adding to favorites:", error);
-        }
-    };
-
-    const handleRemoveFromFavorites = async () => {
-        try {
-            await removeMealFromFavoritesApi(meal.id, token);
-            removeMealFromUserMeals(meal.id);
-            console.log(`${meal.name} removed from favorites.`);
-        } catch (error) {
-            console.error("Error removing from favorites:", error);
-        }
-    };
+    // const handleAddToFavorites = async () => {
+    //     try {
+    //         await addMealToFavoritesApi(meal.id, token);
+    //         addMealToUserMeals(meal);
+    //         console.log(`${meal.name} added to favorites.`);
+    //     } catch (error) {
+    //         console.error("Error adding to favorites:", error);
+    //     }
+    // };
+    //
+    // const handleRemoveFromFavorites = async () => {
+    //     try {
+    //         await removeMealFromFavoritesApi(meal.id, token);
+    //         removeMealFromUserMeals(meal.id);
+    //         console.log(`${meal.name} removed from favorites.`);
+    //     } catch (error) {
+    //         console.error("Error removing from favorites:", error);
+    //     }
+    // };
 
     return (
         <Box display="flex" alignItems="center" width="100%">
@@ -77,18 +77,18 @@ const MealCardActions = ({ meal, expanded, toggleExpand }) => {
             >
                 <ExpandMoreIcon />
             </ExpandMoreIconButton>
-            {isDuplicate && (
-                <EatButton
-                    meal={meal}
-                    refetchRecommendedNutrition={refetchRecommendedNutrition}
-                />
-            )}
-            <FavoriteButton
-                isFavorite={isDuplicate}
-                onAdd={handleAddToFavorites}
-                onRemove={handleRemoveFromFavorites}
-                meal={meal}
-            />
+            {/*{isDuplicate && (*/}
+            {/*    <EatButton*/}
+            {/*        meal={meal}*/}
+            {/*        refetchRecommendedNutrition={refetchRecommendedNutrition}*/}
+            {/*    />*/}
+            {/*)}*/}
+            {/*<FavoriteButton*/}
+            {/*    isFavorite={isDuplicate}*/}
+            {/*    onAdd={handleAddToFavorites}*/}
+            {/*    onRemove={handleRemoveFromFavorites}*/}
+            {/*    meal={meal}*/}
+            {/*/>*/}
         </Box>
     );
 };

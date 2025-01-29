@@ -4,7 +4,7 @@ import {
     CardContent,
     Typography,
     CardMedia,
-    Collapse,
+    Collapse, Box,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import useNutrients from "../../hooks/useNutrients.js";
@@ -15,6 +15,7 @@ import { getImageSrc } from "../../utils/getImageSrc";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 import MealCardActions from "./mealCardActions/MealCardActions.jsx";
 import MealDetails from "./mealDetails/MealDetails.jsx";
+import MealCardActionButtons from "./mealCardActionButtons/MealCardActionButtons.jsx";
 
 function MealCard({ meal, refreshList, onFilter }) { // ✅ onFilter toegevoegd
     const { expanded, toggleExpand } = useExpand();
@@ -22,17 +23,21 @@ function MealCard({ meal, refreshList, onFilter }) { // ✅ onFilter toegevoegd
     const imageSrc = getImageSrc(meal);
 
     return (
-        <Card sx={{ minWidth: 300, maxWidth: 345 }}>
-            <CardMedia
-                component="img"
-                image={imageSrc}
-                alt={meal.name}
-                sx={{
-                    width: "100%",
-                    aspectRatio: "16/9",
-                }}
-            />
+        <Card sx={{ minWidth: 300, maxWidth: 345, position: "relative" }}> {/* ✅ Zorgt ervoor dat de knoppen bovenop komen */}
+            <Box sx={{ position: "relative" }}> {/* ✅ Container voor afbeelding en knoppen */}
+                <CardMedia
+                    component="img"
+                    image={imageSrc}
+                    alt={meal.name}
+                    sx={{
+                        width: "100%",
+                        aspectRatio: "16/9",
+                    }}
+                />
 
+                {/* ✅ Nieuwe component met knoppen in rechterbovenhoek */}
+                <MealCardActionButtons meal={meal} />
+            </Box>
             <MealDetails
                 diet={meal.diet}
                 mealType={meal.mealType}

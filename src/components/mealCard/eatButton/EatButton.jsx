@@ -65,7 +65,16 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
                     display: "inline-block",
                 }}
             >
-                <RestaurantRoundedIcon sx={{ fontSize: 24, color: "primary.main" }} />
+                <RestaurantRoundedIcon
+                    sx={{
+                        fontSize: 25,
+                        color: theme.palette.primary.dark,
+                        transition: "color 0.2s ease-in-out",
+                        "&:hover": {
+                            color: theme.palette.primary.light,
+                        },
+                    }}
+                />
             </motion.div>
 
             <ErrorDialog
@@ -82,24 +91,7 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
                 aria-labelledby="nutrition-modal-title"
                 aria-describedby="nutrition-modal-description"
             >
-                <Box
-                    sx={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                        width: { xs: "90%", sm: "80%", md: "600px" },
-                        maxWidth: "600px",
-                        bgcolor: "background.paper",
-                        borderRadius: "16px",
-                        boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
-                        border: "none",
-                        padding: 3,
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                    }}
-                >
+                <Box>
                     <RecommendedNutritionDisplay />
 
                     <Button
