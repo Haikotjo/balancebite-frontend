@@ -22,7 +22,8 @@ const MealDetails = ({ diet, mealType, cuisine, nutrients, onFilter }) => {
             sx={{
                 backgroundColor: theme.palette.primary.main,
                 color: isDarkMode ? theme.palette.text.primary : theme.palette.text.light,
-                borderRadius: "8px",
+                borderBottomLeftRadius: "20px",
+                borderBottomRightRadius: "20px",
                 overflow: "hidden",
             }}
         >
@@ -44,7 +45,7 @@ const MealDetails = ({ diet, mealType, cuisine, nutrients, onFilter }) => {
                         paddingY: "10px",
                         paddingX: "2px",
                         transition: "background-color 0.2s ease-in-out",
-                        cursor: item.category ? "pointer" : "default", // ✅ Alleen klikbare items krijgen pointer
+                        cursor: item.category ? "pointer" : "default",
                         "&:hover": item.category ? { backgroundColor: theme.palette.primary.light } : {},
                         borderRight: index !== 3 ? `1px solid rgba(255, 255, 255, 0.3)` : "none",
                     }}
