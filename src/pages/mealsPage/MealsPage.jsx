@@ -8,6 +8,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { UserMealsContext } from "../../context/UserMealsContext.jsx";
 import AnimatedBox from "../../components/home/animatedBox/AnimatedBox.jsx";
 import './MealsPage.css';
+import SearchBar from "../../components/searchBar/SearchBar.jsx";
 
 
 /**
@@ -22,6 +23,7 @@ function MealPage() {
     const navigate = useNavigate(); // Hook for programmatic navigation
     const { user } = useContext(AuthContext); // Access authenticated user context
     const { activeOption } = useContext(UserMealsContext);
+    const [searchQuery, setSearchQuery] = useState("");
 
     return (
         <Box
@@ -35,7 +37,7 @@ function MealPage() {
             }}
         >
             {/* Animated Title */}
-            <AnimatedBox animation="slideIn" direction="down" marginBottom={0}>
+            <AnimatedBox animation="slideIn" direction="down" marginBottom={1}>
                 <Typography
                     variant="h3"
                     sx={{
@@ -50,7 +52,12 @@ function MealPage() {
             </AnimatedBox>
 
             {/* Animated SubMenu */}
-            <AnimatedBox animation="slideIn" direction="left" marginBottom={0}>
+            <AnimatedBox animation="slideIn" direction="right" marginBottom={1} padding={0}>
+                <SearchBar onSearch={setSearchQuery} />
+            </AnimatedBox>
+
+            {/* Animated SubMenu */}
+            <AnimatedBox animation="slideIn" direction="left" marginBottom={0} padding={0}>
                 <SubMenu />
             </AnimatedBox>
 
