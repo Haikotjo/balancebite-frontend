@@ -1,17 +1,13 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { UserMealsContext } from "../context/UserMealsContext.jsx";
+import { SnackbarContext } from "../context/SnackbarContext.jsx"; // ✅ Import de snackbar context
 import { addMealToFavoritesApi, removeMealFromFavoritesApi } from "../services/apiService.js";
-import SnackbarComponent from "../components/snackbarComponent/SnackbarComponent.jsx";
 
 const useFavorites = () => {
     const { user, token } = useContext(AuthContext);
     const { addMealToUserMeals, removeMealFromUserMeals } = useContext(UserMealsContext);
-    const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
-
-    const showSnackbar = (message, severity) => {
-        setSnackbar({ open: true, message, severity });
-    };
+    const { showSnackbar } = useContext(SnackbarContext); // ✅ Gebruik de globale snackbar
 
     const addMealToFavorites = async (meal) => {
         if (!user) {
@@ -49,18 +45,7 @@ const useFavorites = () => {
         }
     };
 
-    return {
-        addMealToFavorites,
-        removeMealFromFavorites,
-        SnackbarComponent: (
-            <SnackbarComponent
-                open={snackbar.open}
-                onClose={() => setSnackbar({ ...snackbar, open: false })}
-                message={snackbar.message}
-                severity={snackbar.severity}
-            />
-        ),
-    };
+    return { addMealToFavorites, removeMealFromFavorites };
 };
 
 export default useFavorites;

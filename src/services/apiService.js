@@ -267,6 +267,7 @@ export const updateUserInfoApi = async (data) => {
     }
 };
 
+
 // ✅ Nieuwe functie om de refresh token flow te starten
 const refreshAccessToken = async () => {
     const refreshToken = localStorage.getItem("refreshToken");
@@ -286,3 +287,15 @@ const refreshAccessToken = async () => {
 };
 
 
+export const fetchSortedMeals = async (sortField, sortOrder = "desc") => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_SORT_MEALS_ENDPOINT}?sortField=${sortField}&sortOrder=${sortOrder}`;
+
+    try {
+        const response = await Interceptor.get(endpoint);
+        logResponse(response);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};

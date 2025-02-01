@@ -9,20 +9,23 @@ import { AuthProvider } from "./context/AuthContext";
 import { UserMealsProvider } from "./context/UserMealsContext";
 import { RecommendedNutritionProvider } from "./context/RecommendedNutritionContext";
 import "@fontsource/roboto";
+import {SnackbarProvider} from "./context/SnackbarContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
-        <AuthProvider>
-            <UserMealsProvider>
-                <RecommendedNutritionProvider>
-                    <ThemeModeProvider>
-                        <CssBaseline />
-                        <div className="min-h-screen bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText">
-                            <App />
-                        </div>
-                    </ThemeModeProvider>
-                </RecommendedNutritionProvider>
-            </UserMealsProvider>
-        </AuthProvider>
+        <SnackbarProvider>
+            <AuthProvider>
+                <UserMealsProvider>
+                    <RecommendedNutritionProvider>
+                        <ThemeModeProvider>
+                            <CssBaseline />
+                            <div className="min-h-screen bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText">
+                                <App />
+                            </div>
+                        </ThemeModeProvider>
+                    </RecommendedNutritionProvider>
+                </UserMealsProvider>
+            </AuthProvider>
+        </SnackbarProvider>
     </React.StrictMode>
 );
