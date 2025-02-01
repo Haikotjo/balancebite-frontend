@@ -1,5 +1,4 @@
 import { Box, Button, ButtonGroup, useTheme, useMediaQuery } from "@mui/material";
-import PropTypes from "prop-types";
 import { useContext } from "react";
 import { UserMealsContext } from "../../../context/UserMealsContext.jsx"; // Import UserMealsContext
 import { AuthContext } from "../../../context/AuthContext.jsx"; // Import AuthContext
@@ -74,8 +73,8 @@ function SubMenu() {
                         fontSize: "1rem", // Default font size
                         padding: "8px 12px", // Default padding
                         [theme.breakpoints.down("sm")]: {
-                            fontSize: "0.75rem", // Slightly larger font size for small screens
-                            padding: "10px 20px", // Larger padding for small screens
+                            fontSize: "0.6rem", // Slightly larger font size for small screens
+                            padding: "6px 15px", // Larger padding for small screens
                         },
                     },
                     "& .MuiButton-root.active": {
@@ -98,7 +97,7 @@ function SubMenu() {
                     >
                         <option.icon
                             sx={{
-                                fontSize: isSmallScreen ? "2.5rem" : "1.5rem", // Larger icon size for small screens
+                                fontSize: isSmallScreen ? "2rem" : "1.5rem", // Larger icon size for small screens
                                 marginBottom: isSmallScreen ? "6px" : "0", // More space between icon and text on small screens
                                 marginRight: isSmallScreen ? "0" : "8px", // Space to the right of the icon on large screens
                             }}

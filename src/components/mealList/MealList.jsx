@@ -1,54 +1,18 @@
-import { useEffect, useState, useContext } from "react";
-import { fetchMeals } from "../../services/apiService.js";
+import {useContext, useEffect, useState} from "react";
 import MealCard from "../mealCard/MealCard.jsx";
 import { Box, CircularProgress, Typography } from "@mui/material";
-import { UserMealsContext } from "../../context/UserMealsContext"; // Import UserMealsContext
-import { useNavigate } from "react-router-dom"; // For navigation
 import PropTypes from "prop-types";
 import CustomButton from "./CreateMealButton/CustomButton.jsx";
-import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
-import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
+import useMeals from "./hooks/useMeals.js";
+import {UserMealsContext} from "../../context/UserMealsContext.jsx";
 
 /**
- * A component that fetches and displays a list of meals based on the current endpoint provided by the UserMealsContext.
+ * A component that fetches and displays a list of meals based on the current endpoint.
  */
 function MealList({ setCreatedByName }) {
-    const [meals, setMeals] = useState([]); // All meals
-    const [filteredMeals, setFilteredMeals] = useState([]); // Filtered meals
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const { currentListEndpoint, updateEndpoint, activeOption, setActiveOption } = useContext(UserMealsContext);
-    const navigate = useNavigate();
-
-    // State for filters
+    const { meals, filteredMeals, setFilteredMeals, loading, error, refreshList } = useMeals(setCreatedByName);
     const [filter, setFilter] = useState(null);
-
-    /**
-     * Fetch meals from the current endpoint whenever it changes.
-     */
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-                const mealsData = await fetchMeals(currentListEndpoint);
-                setMeals(mealsData);
-                setFilteredMeals(mealsData); // Initial display is all meals
-
-                if (mealsData.length > 0 && setCreatedByName) {
-                    const createdBy = mealsData[0]?.createdBy?.userName || "Unknown User";
-                    setCreatedByName(createdBy);
-                }
-
-                setError(null);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData().catch((err) => console.error("Unhandled error in fetchData:", err));
-    }, [currentListEndpoint, setCreatedByName]);
+    const { updateEndpoint } = useContext(UserMealsContext);
 
     /**
      * Apply filter when filter state changes
@@ -64,22 +28,6 @@ function MealList({ setCreatedByName }) {
             );
         }
     }, [filter, meals]);
-
-    /**
-     * Function to refresh the current list.
-     */
-    const refreshList = async () => {
-        try {
-            setLoading(true);
-            const mealsData = await fetchMeals(currentListEndpoint);
-            setMeals(mealsData);
-            setFilteredMeals(mealsData);
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     /**
      * Handle filtering meals
@@ -119,7 +67,11 @@ function MealList({ setCreatedByName }) {
                     No meals found for selected filter.
                 </Typography>
                 <CustomButton
-                    onClick={() => setFilter(null)}
+                    onClick={() => {
+                        setFilter(null);
+                        updateEndpoint(`${import.meta.env.VITE_BASE_URL}/meals`);
+                        refreshList();  // Meals opnieuw ophalen
+                    }}
                     label="Reset Filter"
                     variant="outlined"
                 />

@@ -1,10 +1,7 @@
 import { useState, useContext } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import MealList from "../../components/mealList/MealList.jsx";
 import SubMenu from "../../components/mealList/submenu/SubMenu.jsx";
-import { AuthContext } from "../../context/AuthContext";
-import { Box, Typography, Link as MuiLink } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Box, Typography } from "@mui/material";
 import { UserMealsContext } from "../../context/UserMealsContext.jsx";
 import AnimatedBox from "../../components/home/animatedBox/AnimatedBox.jsx";
 import './MealsPage.css';
@@ -18,12 +15,9 @@ import SearchBar from "../../components/searchBar/SearchBar.jsx";
  * @component
  */
 function MealPage() {
-    const { userId } = useParams(); // Get user ID from route params
-    const [userName, setUserName] = useState(null); // State for displaying creator's name
-    const navigate = useNavigate(); // Hook for programmatic navigation
-    const { user } = useContext(AuthContext); // Access authenticated user context
+    const [ setUserName] = useState(null); // State for displaying creator's name
     const { activeOption } = useContext(UserMealsContext);
-    const [searchQuery, setSearchQuery] = useState("");
+    const [ setSearchQuery] = useState("");
 
     return (
         <Box
