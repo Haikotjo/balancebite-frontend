@@ -14,6 +14,11 @@ const MealDetails = ({ diet, mealType, cuisine, nutrients, onFilter }) => {
         }
     };
 
+    const formatText = (text) => {
+        return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+    };
+
+
     return (
         <Box
             display="flex"
@@ -22,15 +27,14 @@ const MealDetails = ({ diet, mealType, cuisine, nutrients, onFilter }) => {
             sx={{
                 backgroundColor: theme.palette.primary.main,
                 color: isDarkMode ? theme.palette.text.primary : theme.palette.text.light,
-                borderBottomLeftRadius: "20px",
-                borderBottomRightRadius: "20px",
+
                 overflow: "hidden",
             }}
         >
             {[
-                { label: diet || "No Diet", category: "diet" },
-                { label: mealType || "No Type", category: "mealType" },
-                { label: cuisine || "No Cuisine", category: "cuisine" },
+                { label: formatText(diet || "No Diet"), category: "diet" },
+                { label: formatText(mealType || "No Type"), category: "mealType" },
+                { label: formatText(cuisine || "No Cuisine"), category: "cuisine" },
                 { label: kcal !== "N/A" ? `${kcal.toFixed(1)} kcal` : "N/A", bold: true },
             ].map((item, index) => (
                 <Box
@@ -54,11 +58,12 @@ const MealDetails = ({ diet, mealType, cuisine, nutrients, onFilter }) => {
                     <Typography
                         variant="body2"
                         sx={{
+                            fontFamily: "'Quicksand', sans-serif",
                             overflow: "hidden",
                             whiteSpace: "nowrap",
                             textOverflow: "ellipsis",
                             fontSize: "0.65rem",
-                            fontWeight: item.bold ? "bold" : "normal",
+                            fontWeight: "normal",
                         }}
                     >
                         {item.label}

@@ -11,11 +11,13 @@ import useNutrients from "../../hooks/useNutrients.js";
 import useExpand from "../../hooks/useExpand";
 import NutrientList from "./nutrientList/NutrientList";
 import IngredientList from "./ingredientList/IngredientList";
-import { getImageSrc } from "../../utils/getImageSrc";
+import { getImageSrc } from "../../utils/helpers/getImageSrc.js";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 import MealCardActions from "./mealCardActions/MealCardActions.jsx";
 import MealDetails from "./mealDetails/MealDetails.jsx";
 import MealCardActionButtons from "./mealCardActionButtons/MealCardActionButtons.jsx";
+import MealDetailsWithIcons from "./mealDetailsWithIcons/MealDetailsWithIcons.jsx";
+import SectionTitle from "./sectionTitle/SectionTitle.jsx";
 
 function MealCard({ meal, refreshList, onFilter }) { // ✅ onFilter toegevoegd
     const { expanded, toggleExpand } = useExpand();
@@ -23,8 +25,24 @@ function MealCard({ meal, refreshList, onFilter }) { // ✅ onFilter toegevoegd
     const imageSrc = getImageSrc(meal);
 
     return (
-        <Card sx={{ minWidth: 300, maxWidth: 345, position: "relative" }}> {/* ✅ Zorgt ervoor dat de knoppen bovenop komen */}
-            <Box sx={{ position: "relative" }}> {/* ✅ Container voor afbeelding en knoppen */}
+        <Card sx={{
+            minWidth: 300,
+            maxWidth: 345,
+            position: "relative",
+            display: "flex",
+            flexDirection: "column",
+            height: "100%"
+        }}>
+
+            <MealDetails
+                diet={meal.diet}
+                mealType={meal.mealType}
+                cuisine={meal.cuisine}
+                nutrients={nutrients}
+                onFilter={onFilter}
+            />
+
+            <Box sx={{ position: "relative" }}>
                 <CardMedia
                     component="img"
                     image={imageSrc}
@@ -35,20 +53,24 @@ function MealCard({ meal, refreshList, onFilter }) { // ✅ onFilter toegevoegd
                     }}
                 />
 
-                {/* ✅ Nieuwe component met knoppen in rechterbovenhoek */}
                 <MealCardActionButtons meal={meal} />
+
             </Box>
-            <MealDetails
+
+            <MealDetailsWithIcons
                 diet={meal.diet}
                 mealType={meal.mealType}
                 cuisine={meal.cuisine}
                 nutrients={nutrients}
-                onFilter={onFilter} // ✅ Doorsturen naar MealDetails
+                onFilter={onFilter}
             />
-            <CardContent>
-                <Typography variant="h6" color="text.primary">
+
+            <CardContent sx={{ flexGrow: 1, paddingBottom: "10px !important" }}>
+
+            <Typography variant="h6" color="text.primary">
                     {meal.name}
                 </Typography>
+
                 <Typography
                     variant="body2"
                     color="text.secondary"
@@ -62,42 +84,43 @@ function MealCard({ meal, refreshList, onFilter }) { // ✅ onFilter toegevoegd
                         {meal.createdBy?.userName}
                     </Link>
                 </Typography>
+
                 <Typography
                     variant="body2"
                     sx={{
                         fontFamily: "'Quicksand', sans-serif",
                         fontSize: "0.8rem",
                         marginTop: "8px",
-                        marginBottom: "16px",
+                        marginBottom: "8px",
                     }}
                 >
                     {meal.mealDescription || "No description provided."}
                 </Typography>
-                <NutrientList nutrients={nutrients} />
+
             </CardContent>
+
             <MealCardActions
                 meal={meal}
                 expanded={expanded}
                 toggleExpand={toggleExpand}
                 refreshList={refreshList}
             />
+
             <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            fontFamily: "'Quicksand', sans-serif",
-                            fontSize: "0.8rem",
-                            marginBottom: "8px",
-                        }}
-                    >
-                        Ingredients:
-                    </Typography>
+                    <SectionTitle text="Ingredients:" />
                     <ErrorBoundary>
                         <IngredientList ingredients={meal.mealIngredients} />
                     </ErrorBoundary>
+
+                    <SectionTitle text="Nutrients:" sx={{ marginTop: "16px" }} />
+                    <ErrorBoundary>
+                        <NutrientList nutrients={nutrients} />
+                    </ErrorBoundary>
                 </CardContent>
             </Collapse>
+
+
         </Card>
     );
 }

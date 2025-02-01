@@ -1,3 +1,8 @@
+
+const placeholderImages = import.meta.glob("../../assets/images/placeholder/*.webp", { eager: true });
+
+const placeholders = Object.values(placeholderImages).map((img) => img.default);
+
 export const getImageSrc = (meal) => {
     if (meal.image) {
         // Base64-encoded image
@@ -11,6 +16,7 @@ export const getImageSrc = (meal) => {
         // Uploaded image from the backend
         return `${import.meta.env.VITE_BASE_URL}/uploads/${meal.imageUrl.replace('uploads/', '')}`;
     }
-    // Fallback placeholder
-    return "https://via.placeholder.com/150";
+
+    const randomIndex = Math.floor(Math.random() * placeholders.length);
+    return placeholders[randomIndex];
 };
