@@ -3,7 +3,7 @@ import {fetchMeals} from "../../../services/apiService.js";
 import {UserMealsContext} from "../../../context/UserMealsContext.jsx";
 
 
-const useMeals = (setCreatedByName) => {
+const useMeals = (setCreatedByName, sortBy) => {
     const [meals, setMeals] = useState([]);
     const [filteredMeals, setFilteredMeals] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -14,7 +14,15 @@ const useMeals = (setCreatedByName) => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const mealsData = await fetchMeals(currentListEndpoint);
+
+                let endpoint = currentListEndpoint;
+
+                if (sortBy) {
+                    endpoint = `${import.meta.env.VITE_BASE_URL}/meals/sorted?sortField=${encodeURIComponent(sortBy)}&sortOrder=desc`;
+                }
+
+
+                const mealsData = await fetchMeals(endpoint);
                 setMeals(mealsData);
                 setFilteredMeals(mealsData);
 
@@ -31,12 +39,19 @@ const useMeals = (setCreatedByName) => {
         };
 
         fetchData().catch(console.error);
-    }, [currentListEndpoint, setCreatedByName]);
+    }, [currentListEndpoint, setCreatedByName, sortBy]);
 
     const refreshList = async () => {
         try {
             setLoading(true);
-            const mealsData = await fetchMeals(currentListEndpoint);
+
+            let endpoint = currentListEndpoint;
+
+            if (sortBy) {
+                endpoint = `${import.meta.env.VITE_BASE_URL}/meals/sorted?sortField=${encodeURIComponent(sortBy)}&sortOrder=desc`;
+            }
+
+            const mealsData = await fetchMeals(endpoint);
             setMeals(mealsData);
             setFilteredMeals(mealsData);
         } catch (err) {

@@ -3,10 +3,10 @@ import MealList from "../../components/mealList/MealList.jsx";
 import SubMenu from "../../components/mealList/submenu/SubMenu.jsx";
 import { Box, Typography } from "@mui/material";
 import { UserMealsContext } from "../../context/UserMealsContext.jsx";
-import AnimatedBox from "../../components/home/animatedBox/AnimatedBox.jsx";
-import './MealsPage.css';
+import "./MealsPage.css";
 import SearchBar from "../../components/searchBar/SearchBar.jsx";
-
+import NutrientSortOptions from "../../components/mealList/nutrientSortOptions/NutrientSortOptions.jsx";
+import {useTheme} from "@mui/material/styles";
 
 /**
  * The MealPage component displays a list of meals and a submenu for filtering options.
@@ -15,9 +15,17 @@ import SearchBar from "../../components/searchBar/SearchBar.jsx";
  * @component
  */
 function MealPage() {
-    const [ setUserName] = useState(null); // State for displaying creator's name
+    const [setUserName] = useState(null); // State for displaying creator's name
     const { activeOption } = useContext(UserMealsContext);
-    const [ setSearchQuery] = useState("");
+    const [setSearchQuery] = useState("");
+    const theme = useTheme();
+
+    const [sortBy, setSortBy] = useState(null);
+
+    const handleSort = (nutrient) => {
+        setSortBy(nutrient);
+        console.log(`Sorting by: ${nutrient}`); // Debugging log
+    };
 
     return (
         <Box
@@ -30,37 +38,58 @@ function MealPage() {
                 padding: 2,
             }}
         >
-            {/* Animated Title */}
-            <AnimatedBox animation="slideIn" direction="down" marginBottom={1}>
+            {/* 🔥 Nutrient Sort Options - Altijd rechtsboven in beeld */}
+            <Box
+                sx={{
+                    position: "fixed",
+                    top: 100,
+                    right: 20,
+                    padding: 0,
+                    borderRadius: "8px",
+                    boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
+                    zIndex: 1000,
+                    backgroundColor: theme.palette.primary.dark,
+                }}
+            >
                 <Typography
-                    variant="h3"
+                    variant="h6"
                     sx={{
                         fontFamily: "'Nunito', sans-serif",
                         fontWeight: "bold",
                         textAlign: "center",
-                        margin: 0,
+                        marginBottom: 1,
+                        borderBottom: `1px solid rgba(255, 255, 255, 0.3)`,
+                        color: theme.palette.text.light,
                     }}
                 >
-                    {activeOption}
+                    Sort
                 </Typography>
-            </AnimatedBox>
 
-            {/* Animated SubMenu */}
-            <AnimatedBox animation="slideIn" direction="right" marginBottom={1} padding={0}>
-                <SearchBar onSearch={setSearchQuery} />
-            </AnimatedBox>
+                <NutrientSortOptions onSort={handleSort} />
+            </Box>
 
-            {/* Animated SubMenu */}
-            <AnimatedBox animation="slideIn" direction="left" marginBottom={0} padding={0}>
-                <SubMenu />
-            </AnimatedBox>
+            {/* Page Title */}
+            <Typography
+                variant="h3"
+                sx={{
+                    fontFamily: "'Nunito', sans-serif",
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    margin: 0,
+                }}
+            >
+                {activeOption}
+            </Typography>
+
+            {/* Search Bar */}
+            <SearchBar onSearch={setSearchQuery} />
+
+            {/* SubMenu */}
+            <SubMenu />
 
             {/* Meal List */}
-            <Box
-                key={activeOption}
-                className="animated-slide-in-up"
-            >
-                <MealList setCreatedByName={setUserName} />
+            <Box key={activeOption} className="animated-slide-in-up">
+                <MealList setCreatedByName={setUserName} sortBy={sortBy} />
             </Box>
         </Box>
     );
