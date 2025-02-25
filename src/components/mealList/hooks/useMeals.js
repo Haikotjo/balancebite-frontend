@@ -1,11 +1,9 @@
 import { useEffect, useState, useContext } from "react";
-import {fetchMeals} from "../../../services/apiService.js";
-import {UserMealsContext} from "../../../context/UserMealsContext.jsx";
+import { fetchMeals } from "../../../services/apiService.js";
+import { UserMealsContext } from "../../../context/UserMealsContext.jsx";
 
-
-const useMeals = (setCreatedByName, sortBy) => {
+const useMeals = (setCreatedByName) => {
     const [meals, setMeals] = useState([]);
-    const [filteredMeals, setFilteredMeals] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { currentListEndpoint } = useContext(UserMealsContext);
@@ -15,16 +13,10 @@ const useMeals = (setCreatedByName, sortBy) => {
             try {
                 setLoading(true);
 
-                let endpoint = currentListEndpoint;
+                console.log("Fetching from endpoint:", currentListEndpoint);
 
-                if (sortBy) {
-                    endpoint = `${import.meta.env.VITE_BASE_URL}/meals/sorted?sortField=${encodeURIComponent(sortBy)}&sortOrder=desc`;
-                }
-
-
-                const mealsData = await fetchMeals(endpoint);
+                const mealsData = await fetchMeals(currentListEndpoint);
                 setMeals(mealsData);
-                setFilteredMeals(mealsData);
 
                 if (mealsData.length > 0 && setCreatedByName) {
                     setCreatedByName(mealsData[0]?.createdBy?.userName || "Unknown User");
@@ -39,21 +31,13 @@ const useMeals = (setCreatedByName, sortBy) => {
         };
 
         fetchData().catch(console.error);
-    }, [currentListEndpoint, setCreatedByName, sortBy]);
+    }, [currentListEndpoint, setCreatedByName]);
 
     const refreshList = async () => {
         try {
             setLoading(true);
-
-            let endpoint = currentListEndpoint;
-
-            if (sortBy) {
-                endpoint = `${import.meta.env.VITE_BASE_URL}/meals/sorted?sortField=${encodeURIComponent(sortBy)}&sortOrder=desc`;
-            }
-
-            const mealsData = await fetchMeals(endpoint);
+            const mealsData = await fetchMeals(currentListEndpoint);
             setMeals(mealsData);
-            setFilteredMeals(mealsData);
         } catch (err) {
             setError(err.message);
         } finally {
@@ -61,7 +45,7 @@ const useMeals = (setCreatedByName, sortBy) => {
         }
     };
 
-    return { meals, filteredMeals, setFilteredMeals, loading, error, refreshList };
+    return { meals, loading, error, refreshList };
 };
 
 export default useMeals;

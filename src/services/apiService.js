@@ -66,15 +66,16 @@ export const removeMealFromFavoritesApi = async (mealId, token) => {
     }
 };
 
-
 export const fetchMeals = async (endpoint) => {
     try {
         const response = await Interceptor.get(endpoint);
         logResponse(response);
-        return response.data;
+
+        // Zorg dat we de juiste data uit de paginering halen
+        return response.data?.content ?? []; // Pak de meals uit content, of een lege array
     } catch (error) {
         logError(error);
-        throw error;
+        return []; // Fallback naar lege array om crashes te voorkomen
     }
 };
 

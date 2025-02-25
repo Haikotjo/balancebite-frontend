@@ -5,12 +5,6 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 const ErrorDialog = ({ open, onClose, message, actionLink, actionLabel }) => {
     const theme = useTheme(); // Haal het thema op (light/dark)
 
-    // Voeg logs toe om het thema en de modus te inspecteren
-    console.log("Current theme:", theme);
-    console.log("Theme mode:", theme.palette.mode);
-    console.log("Background paper color:", theme.palette.background.paper);
-    console.log("Text primary color:", theme.palette.text.primary);
-
     return (
         <Dialog
             open={open}

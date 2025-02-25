@@ -4,51 +4,66 @@ import { Box, CircularProgress, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import CustomButton from "./CreateMealButton/CustomButton.jsx";
 import useMeals from "./hooks/useMeals.js";
-import {UserMealsContext} from "../../context/UserMealsContext.jsx";
-import { Button } from "@mui/material";
+import { UserMealsContext } from "../../context/UserMealsContext.jsx";
 
 /**
- * A component that fetches and displays a list of meals based on the current endpoint.
+ * A component that fetches and displays a list of meals based on sorting.
  */
-function MealList({ setCreatedByName, sortBy }) {
-    const { meals, filteredMeals, setFilteredMeals, loading, error, refreshList } = useMeals(setCreatedByName, sortBy);
-    const [filter, setFilter] = useState(null);
-    const { updateEndpoint } = useContext(UserMealsContext);
-    const { userId, currentListEndpoint } = useContext(UserMealsContext);
+function MealList({setCreatedByName, sortBy}) {
+    console.log("✅ Received in MealList - sortBy:", sortBy);
 
+    const {meals, loading, error, refreshList} = useMeals(setCreatedByName);
+    const {updateEndpoint} = useContext(UserMealsContext);
+
+    const [filters, setFilters] = useState({});
 
     /**
-     * Apply filter when filter state changes
+     * Dynamically generates the API endpoint based on sorting.
      */
-    useEffect(() => {
-        let updatedMeals = meals;
+    const generateEndpoint = () => {
+        let baseUrl = `${import.meta.env.VITE_BASE_URL}/meals?page=0&size=10`;
 
-        if (currentListEndpoint.includes("/my-meals")) {
-            updatedMeals = updatedMeals.filter((meal) => meal.createdBy?.userId === userId);
+        // ✅ Filters toevoegen aan de endpoint
+        Object.entries(filters).forEach(([key, value]) => {
+            baseUrl += `&${key}=${encodeURIComponent(value)}`;
+        });
+
+        // ✅ Sorting parameters toevoegen
+        if (sortBy?.sortKey && sortBy?.sortOrder) {
+            baseUrl += `&sortBy=${sortBy.sortKey}&sortOrder=${sortBy.sortOrder}`;
         }
 
-        if (filter) {
-            updatedMeals = updatedMeals.filter((meal) =>
-                meal[filter.category]?.toLowerCase() === filter.value.toLowerCase()
-            );
-        }
-
-        setFilteredMeals(updatedMeals);
-    }, [filter, meals, currentListEndpoint]);
-
+        console.log("🔗 Generated API Endpoint:", baseUrl);
+        return baseUrl;
+    };
 
     /**
-     * Handle filtering meals
+     * Handle filter data received from MealCard.
      */
     const handleFilter = (category, value) => {
-        setFilter({ category, value });
+        console.log(`🔽 Received in MealList - Category: ${category}, Value: ${value}`);
+
+        setFilters((prevFilters) => ({
+            ...prevFilters,
+            [category]: value, // ✅ Filter toevoegen of updaten
+        }));
     };
+
+    /**
+     * Updates the endpoint when sorting changes.
+     */
+    useEffect(() => {
+        const newEndpoint = generateEndpoint();
+        console.log("🔗 Generated API Endpoint:", newEndpoint);
+        updateEndpoint(newEndpoint);
+        refreshList();
+    }, [sortBy, filters]);
 
     // Show a loading indicator while data is being fetched
     if (loading)
         return (
             <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
-                <CircularProgress />
+                <CircularProgress/>
             </Box>
         );
 
@@ -61,7 +76,7 @@ function MealList({ setCreatedByName, sortBy }) {
         );
 
     // Show options to add or view meals if no meals are found
-    if (filteredMeals.length === 0)
+    if (meals.length === 0)
         return (
             <Box
                 marginTop={3}
@@ -72,15 +87,16 @@ function MealList({ setCreatedByName, sortBy }) {
                 gap={1}
             >
                 <Typography variant="h6" gutterBottom>
-                    No meals found for selected filter.
+                    No meals found.
                 </Typography>
                 <CustomButton
                     onClick={() => {
-                        setFilter(null);
-                        updateEndpoint(`${import.meta.env.VITE_BASE_URL}/meals`);
+                        const resetEndpoint = generateEndpoint();
+                        console.log("🔄 Resetting to:", resetEndpoint);
+                        updateEndpoint(resetEndpoint);
                         refreshList();
                     }}
-                    label="All Meals"
+                    label="Reset Sorting"
                     variant="outlined"
                 />
             </Box>
@@ -95,33 +111,15 @@ function MealList({ setCreatedByName, sortBy }) {
             padding={2}
             position="relative"
         >
-            {filter && (
-                <Typography
-                    variant="body1"
-                    sx={{
-                        alignSelf: "center",
-                        marginBottom: 0,
-                        color: "primary.main",
-                        cursor: "pointer",
-                        paddingBottom: 1,
-                        textDecoration: "underline",
-                        "&:hover": { opacity: 0.8 }
-                    }}
-                    onClick={() => setFilter(null)}
-                >
-                    Clear filter: {filter.value}
-                </Typography>
-            )}
-
             {/* Meal List */}
             <Box
                 display="grid"
-                gridTemplateColumns={{ xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(3, 1fr)", lg: "repeat(4, 1fr)" }}
+                gridTemplateColumns={{xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(3, 1fr)", lg: "repeat(4, 1fr)"}}
                 gap={2}
                 padding={0}
             >
-                {filteredMeals.map((meal) => (
-                    <MealCard key={meal.id} meal={meal} refreshList={refreshList} onFilter={handleFilter} />
+                {meals.map((meal) => (
+                    <MealCard key={meal.id} meal={meal} refreshList={refreshList} onFilter={handleFilter}/>
                 ))}
             </Box>
         </Box>
@@ -130,7 +128,10 @@ function MealList({ setCreatedByName, sortBy }) {
 
 MealList.propTypes = {
     setCreatedByName: PropTypes.func,
-    sortBy: PropTypes.string,
+    sortBy: PropTypes.shape({
+        sortKey: PropTypes.string,
+        sortOrder: PropTypes.string,
+    }),
 };
 
 export default MealList;

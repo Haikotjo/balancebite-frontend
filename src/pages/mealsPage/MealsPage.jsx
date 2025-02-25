@@ -22,9 +22,8 @@ function MealPage() {
 
     const [sortBy, setSortBy] = useState(null);
 
-    const handleSort = (nutrient) => {
-        setSortBy(nutrient);
-        console.log(`Sorting by: ${nutrient}`); // Debugging log
+    const handleSort = (sortKey, sortOrder) => {
+        setSortBy({ sortKey, sortOrder });
     };
 
     return (
@@ -38,35 +37,9 @@ function MealPage() {
                 padding: 2,
             }}
         >
-            {/* 🔥 Nutrient Sort Options - Altijd rechtsboven in beeld */}
-            <Box
-                sx={{
-                    position: "fixed",
-                    top: 100,
-                    right: 20,
-                    padding: 0,
-                    borderRadius: "8px",
-                    boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
-                    zIndex: 1000,
-                    backgroundColor: theme.palette.primary.dark,
-                }}
-            >
-                <Typography
-                    variant="h6"
-                    sx={{
-                        fontFamily: "'Nunito', sans-serif",
-                        fontWeight: "bold",
-                        textAlign: "center",
-                        marginBottom: 1,
-                        borderBottom: `1px solid rgba(255, 255, 255, 0.3)`,
-                        color: theme.palette.text.light,
-                    }}
-                >
-                    Sort
-                </Typography>
 
-                <NutrientSortOptions onSort={handleSort} />
-            </Box>
+            {/* Nutrient Sort Options */}
+            <NutrientSortOptions onSort={handleSort} />
 
             {/* Page Title */}
             <Typography

@@ -2,22 +2,18 @@ import PropTypes from "prop-types";
 import { Typography, Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
-const MealDetails = ({ diet, mealType, cuisine, nutrients, onFilter }) => {
+const MealDetails = ({ diet, mealType, cuisine, onFilter }) => {
     const theme = useTheme();
     const isDarkMode = theme.palette.mode === "dark";
 
-    const kcal = nutrients?.find(nutrient => nutrient.nutrientName === "Energy kcal")?.value || "N/A";
-
     const handleClick = (category, value) => {
         if (value && value !== "No Diet" && value !== "No Type" && value !== "No Cuisine") {
+            console.log(`🔍 Filter applied - Category: ${category}, Value: ${value}`);
             onFilter(category, value);
         }
     };
 
-    const formatText = (text) => {
-        return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
-    };
-
+    const formatText = (text) => text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 
     return (
         <Box
@@ -27,7 +23,6 @@ const MealDetails = ({ diet, mealType, cuisine, nutrients, onFilter }) => {
             sx={{
                 backgroundColor: theme.palette.primary.main,
                 color: isDarkMode ? theme.palette.text.primary : theme.palette.text.light,
-
                 overflow: "hidden",
             }}
         >
@@ -35,7 +30,6 @@ const MealDetails = ({ diet, mealType, cuisine, nutrients, onFilter }) => {
                 { label: formatText(diet || "No Diet"), category: "diet" },
                 { label: formatText(mealType || "No Type"), category: "mealType" },
                 { label: formatText(cuisine || "No Cuisine"), category: "cuisine" },
-                { label: kcal !== "N/A" ? `${kcal.toFixed(1)} kcal` : "N/A", bold: true },
             ].map((item, index) => (
                 <Box
                     key={index}
@@ -51,7 +45,7 @@ const MealDetails = ({ diet, mealType, cuisine, nutrients, onFilter }) => {
                         transition: "background-color 0.2s ease-in-out",
                         cursor: item.category ? "pointer" : "default",
                         "&:hover": item.category ? { backgroundColor: theme.palette.primary.light } : {},
-                        borderRight: index !== 3 ? `1px solid rgba(255, 255, 255, 0.3)` : "none",
+                        borderRight: index !== 2 ? `1px solid rgba(255, 255, 255, 0.3)` : "none",
                     }}
                     onClick={() => item.category && handleClick(item.category, item.label)}
                 >
@@ -78,12 +72,6 @@ MealDetails.propTypes = {
     diet: PropTypes.string,
     mealType: PropTypes.string,
     cuisine: PropTypes.string,
-    nutrients: PropTypes.arrayOf(
-        PropTypes.shape({
-            nutrientName: PropTypes.string.isRequired,
-            value: PropTypes.number,
-        })
-    ),
     onFilter: PropTypes.func.isRequired,
 };
 

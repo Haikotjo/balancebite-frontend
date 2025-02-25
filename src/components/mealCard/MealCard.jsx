@@ -19,42 +19,37 @@ import MealCardActionButtons from "./mealCardActionButtons/MealCardActionButtons
 import MealDetailsWithIcons from "./mealDetailsWithIcons/MealDetailsWithIcons.jsx";
 import SectionTitle from "./sectionTitle/SectionTitle.jsx";
 
-function MealCard({ meal, refreshList, onFilter }) { // ✅ onFilter toegevoegd
+function MealCard({ meal, refreshList, onFilter }) {
     const { expanded, toggleExpand } = useExpand();
     const { nutrients } = useNutrients(meal.id);
     const imageSrc = getImageSrc(meal);
 
-    return (
-        <Card sx={{
-            minWidth: 300,
-            maxWidth: 345,
-            position: "relative",
-            display: "flex",
-            flexDirection: "column",
-            height: "100%"
-        }}>
+    // Functie om filter verder door te geven
+    const handleFilter = (category, value) => {
+        console.log(`✅ Received in MealCard - Category: ${category}, Value: ${value}`);
 
+        if (onFilter) {
+            onFilter(category, value); // Stuur door naar een hoger component
+        } else {
+            console.warn("⚠️ onFilter function is undefined in MealCard!");
+        }
+    };
+
+    return (
+        <Card sx={{ minWidth: 300, maxWidth: 345, position: "relative", display: "flex", flexDirection: "column", height: "100%" }}>
+
+            {/* Hier wordt de filterfunctie doorgegeven aan MealDetails */}
             <MealDetails
                 diet={meal.diet}
                 mealType={meal.mealType}
                 cuisine={meal.cuisine}
                 nutrients={nutrients}
-                onFilter={onFilter}
+                onFilter={handleFilter} // Gebruik de aangepaste functie
             />
 
             <Box sx={{ position: "relative" }}>
-                <CardMedia
-                    component="img"
-                    image={imageSrc}
-                    alt={meal.name}
-                    sx={{
-                        width: "100%",
-                        aspectRatio: "16/9",
-                    }}
-                />
-
+                <CardMedia component="img" image={imageSrc} alt={meal.name} sx={{ width: "100%", aspectRatio: "16/9" }} />
                 <MealCardActionButtons meal={meal} />
-
             </Box>
 
             <MealDetailsWithIcons
@@ -62,68 +57,37 @@ function MealCard({ meal, refreshList, onFilter }) { // ✅ onFilter toegevoegd
                 mealType={meal.mealType}
                 cuisine={meal.cuisine}
                 nutrients={nutrients}
-                onFilter={onFilter}
+                onFilter={handleFilter} // Stuur filter door naar een hoger niveau
             />
 
             <CardContent sx={{ flexGrow: 1, paddingBottom: "10px !important" }}>
-
-            <Typography variant="h6" color="text.primary">
-                    {meal.name}
-                </Typography>
-
-                <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ fontFamily: "'Quicksand', sans-serif", fontSize: "0.7rem" }}
-                >
+                <Typography variant="h6" color="text.primary">{meal.name}</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ fontFamily: "'Quicksand', sans-serif", fontSize: "0.7rem" }}>
                     Created By: {" "}
-                    <Link
-                        to={`/users/created-meals/${meal.createdBy?.id}`}
-                        style={{ textDecoration: "underline", color: "inherit" }}
-                    >
+                    <Link to={`/users/created-meals/${meal.createdBy?.id}`} style={{ textDecoration: "underline", color: "inherit" }}>
                         {meal.createdBy?.userName}
                     </Link>
                 </Typography>
-
-                <Typography
-                    variant="body2"
-                    sx={{
-                        fontFamily: "'Quicksand', sans-serif",
-                        fontSize: "0.8rem",
-                        marginTop: "8px",
-                        marginBottom: "8px",
-                    }}
-                >
+                <Typography variant="body2" sx={{ fontFamily: "'Quicksand', sans-serif", fontSize: "0.8rem", marginTop: "8px", marginBottom: "8px" }}>
                     {meal.mealDescription || "No description provided."}
                 </Typography>
-
             </CardContent>
 
-            <MealCardActions
-                meal={meal}
-                expanded={expanded}
-                toggleExpand={toggleExpand}
-                refreshList={refreshList}
-            />
+            <MealCardActions meal={meal} expanded={expanded} toggleExpand={toggleExpand} refreshList={refreshList} />
 
             <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
                     <SectionTitle text="Ingredients:" />
-                    <ErrorBoundary>
-                        <IngredientList ingredients={meal.mealIngredients} />
-                    </ErrorBoundary>
-
+                    <ErrorBoundary><IngredientList ingredients={meal.mealIngredients} /></ErrorBoundary>
                     <SectionTitle text="Nutrients:" sx={{ marginTop: "16px" }} />
-                    <ErrorBoundary>
-                        <NutrientList nutrients={nutrients} />
-                    </ErrorBoundary>
+                    <ErrorBoundary><NutrientList nutrients={nutrients} /></ErrorBoundary>
                 </CardContent>
             </Collapse>
-
 
         </Card>
     );
 }
+
 
 MealCard.propTypes = {
     meal: PropTypes.object.isRequired,

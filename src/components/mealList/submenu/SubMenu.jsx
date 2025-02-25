@@ -59,7 +59,7 @@ function SubMenu() {
     };
 
     return (
-        <Box sx={{ marginBottom: 3, display: "flex", justifyContent: "center" }}>
+        <Box sx={{ marginBottom: 1, display: "flex", justifyContent: "center" }}>
             <ButtonGroup
                 variant="contained"
                 aria-label="submenu"
