@@ -68,16 +68,22 @@ export const removeMealFromFavoritesApi = async (mealId, token) => {
 
 export const fetchMeals = async (endpoint) => {
     try {
-        const response = await Interceptor.get(endpoint);
+        const token = localStorage.getItem("accessToken"); // Haal token op
+
+        const headers = token
+            ? { Authorization: `Bearer ${token}` }  // Stuur token als hij bestaat
+            : {}; // Geen token nodig voor publieke endpoints
+
+        const response = await Interceptor.get(endpoint, { headers });
         logResponse(response);
 
-        // Zorg dat we de juiste data uit de paginering halen
         return response.data?.content ?? []; // Pak de meals uit content, of een lege array
     } catch (error) {
         logError(error);
         return []; // Fallback naar lege array om crashes te voorkomen
     }
 };
+
 
 export const fetchUserMeals = async (token) => {
     const endpoint = import.meta.env.VITE_USER_MEALS_ENDPOINT || "/users/meals";
@@ -269,7 +275,6 @@ export const updateUserInfoApi = async (data) => {
 };
 
 
-// ✅ Nieuwe functie om de refresh token flow te starten
 const refreshAccessToken = async () => {
     const refreshToken = localStorage.getItem("refreshToken");
     if (!refreshToken) {

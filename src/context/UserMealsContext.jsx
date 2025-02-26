@@ -64,7 +64,9 @@ export const UserMealsProvider = ({ children }) => {
      * @param {string} newEndpoint - The new endpoint to be set.
      */
     const updateEndpoint = (newEndpoint) => {
-        if (newEndpoint.startsWith(`${import.meta.env.VITE_BASE_URL}/meals`)) {
+        if ( newEndpoint.startsWith(`${import.meta.env.VITE_BASE_URL}/meals`) ||
+            newEndpoint.startsWith(`${import.meta.env.VITE_BASE_URL}/users/meals`) ||
+            newEndpoint.startsWith(`${import.meta.env.VITE_BASE_URL}/users/created-meals`)) {
             console.log("✅ Allowed endpoint:", newEndpoint);
             setCurrentListEndpoint(newEndpoint);
         } else {

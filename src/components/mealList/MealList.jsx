@@ -2,33 +2,39 @@ import {useContext, useEffect, useState} from "react";
 import MealCard from "../mealCard/MealCard.jsx";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import PropTypes from "prop-types";
-import CustomButton from "./CreateMealButton/CustomButton.jsx";
+import CustomButton from "./createMealButton/CustomButton.jsx";
 import useMeals from "./hooks/useMeals.js";
 import { UserMealsContext } from "../../context/UserMealsContext.jsx";
 
 /**
  * A component that fetches and displays a list of meals based on sorting.
  */
-function MealList({setCreatedByName, sortBy}) {
-    console.log("✅ Received in MealList - sortBy:", sortBy);
+function MealList({setCreatedByName, sortBy, filters, onFiltersChange, activeOption }) {
+    console.log("📥 Received activeOption in MealList:", activeOption);
 
     const {meals, loading, error, refreshList} = useMeals(setCreatedByName);
     const {updateEndpoint} = useContext(UserMealsContext);
-
-    const [filters, setFilters] = useState({});
 
     /**
      * Dynamically generates the API endpoint based on sorting.
      */
     const generateEndpoint = () => {
-        let baseUrl = `${import.meta.env.VITE_BASE_URL}/meals?page=0&size=10`;
+        let baseUrl;
 
-        // ✅ Filters toevoegen aan de endpoint
+        if (activeOption === "My Meals") {
+            baseUrl = `${import.meta.env.VITE_BASE_URL}/users/meals`;
+        } else if (activeOption === "Created Meals") {
+            baseUrl = `${import.meta.env.VITE_BASE_URL}/users/created-meals`;
+        } else {
+            baseUrl = `${import.meta.env.VITE_BASE_URL}/meals`;
+        }
+
+        baseUrl += "?page=0&size=10"; // Voeg standaard paginatie toe
+
         Object.entries(filters).forEach(([key, value]) => {
             baseUrl += `&${key}=${encodeURIComponent(value)}`;
         });
 
-        // ✅ Sorting parameters toevoegen
         if (sortBy?.sortKey && sortBy?.sortOrder) {
             baseUrl += `&sortBy=${sortBy.sortKey}&sortOrder=${sortBy.sortOrder}`;
         }
@@ -37,27 +43,27 @@ function MealList({setCreatedByName, sortBy}) {
         return baseUrl;
     };
 
+
     /**
      * Handle filter data received from MealCard.
      */
     const handleFilter = (category, value) => {
-        console.log(`🔽 Received in MealList - Category: ${category}, Value: ${value}`);
+        const newFilters = {
+            ...filters,
+            [category]: value,
+        };
 
-        setFilters((prevFilters) => ({
-            ...prevFilters,
-            [category]: value, // ✅ Filter toevoegen of updaten
-        }));
+        onFiltersChange(newFilters);
     };
 
     /**
-     * Updates the endpoint when sorting changes.
+     * Updates the endpoint when filters or sorting change.
      */
     useEffect(() => {
         const newEndpoint = generateEndpoint();
-        console.log("🔗 Generated API Endpoint:", newEndpoint);
         updateEndpoint(newEndpoint);
         refreshList();
-    }, [sortBy, filters]);
+    }, [sortBy, filters, activeOption]);
 
     // Show a loading indicator while data is being fetched
     if (loading)
@@ -132,6 +138,9 @@ MealList.propTypes = {
         sortKey: PropTypes.string,
         sortOrder: PropTypes.string,
     }),
+    filters: PropTypes.object.isRequired,
+    onFiltersChange: PropTypes.func.isRequired,
+    activeOption: PropTypes.string.isRequired,
 };
 
 export default MealList;

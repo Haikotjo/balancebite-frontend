@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import {useState, useContext, useEffect} from "react";
 import MealList from "../../components/mealList/MealList.jsx";
 import SubMenu from "../../components/mealList/submenu/SubMenu.jsx";
 import { Box, Typography } from "@mui/material";
@@ -6,7 +6,7 @@ import { UserMealsContext } from "../../context/UserMealsContext.jsx";
 import "./MealsPage.css";
 import SearchBar from "../../components/searchBar/SearchBar.jsx";
 import NutrientSortOptions from "../../components/mealList/nutrientSortOptions/NutrientSortOptions.jsx";
-import {useTheme} from "@mui/material/styles";
+import ActiveFilters from "../../components/mealList/activeFilters/ActiveFilters.jsx";
 
 /**
  * The MealPage component displays a list of meals and a submenu for filtering options.
@@ -16,15 +16,36 @@ import {useTheme} from "@mui/material/styles";
  */
 function MealPage() {
     const [setUserName] = useState(null); // State for displaying creator's name
-    const { activeOption } = useContext(UserMealsContext);
+    // const { activeOption } = useContext(UserMealsContext);
     const [setSearchQuery] = useState("");
-    const theme = useTheme();
 
     const [sortBy, setSortBy] = useState(null);
+    const [filters, setFilters] = useState({});
+    const [activeOption, setActiveOption] = useState("All Meals");
+
 
     const handleSort = (sortKey, sortOrder) => {
         setSortBy({ sortKey, sortOrder });
     };
+
+    const handleFiltersChange = (newFilters) => {
+        console.log("🎯 Received filters in MealPage:", newFilters);
+        setFilters(newFilters);
+    };
+
+    const handleRemoveFilter = (category) => {
+        setFilters((prevFilters) => {
+            const updatedFilters = { ...prevFilters };
+            delete updatedFilters[category];
+            console.log("🗑️ Removed filter:", category, "Updated filters:", updatedFilters);
+            return updatedFilters;
+        });
+    };
+
+    useEffect(() => {
+        console.log("🔄 Updated activeOption in MealPage:", activeOption);
+    }, [activeOption]);
+
 
     return (
         <Box
@@ -58,11 +79,22 @@ function MealPage() {
             <SearchBar onSearch={setSearchQuery} />
 
             {/* SubMenu */}
-            <SubMenu />
+            <SubMenu activeOption={activeOption} setActiveOption={setActiveOption} />
+
+            {/* Active Filters - Only render if there are active filters */}
+            {filters && Object.keys(filters).length > 0 && (
+                <ActiveFilters filters={filters} onFilterClick={handleRemoveFilter} />
+            )}
 
             {/* Meal List */}
             <Box key={activeOption} className="animated-slide-in-up">
-                <MealList setCreatedByName={setUserName} sortBy={sortBy} />
+                <MealList
+                    setCreatedByName={setUserName}
+                    sortBy={sortBy}
+                    filters={filters}
+                    onFiltersChange={handleFiltersChange}
+                    activeOption={activeOption}
+                />
             </Box>
         </Box>
     );

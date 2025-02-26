@@ -8,7 +8,6 @@ const MealDetails = ({ diet, mealType, cuisine, onFilter }) => {
 
     const handleClick = (category, value) => {
         if (value && value !== "No Diet" && value !== "No Type" && value !== "No Cuisine") {
-            console.log(`🔍 Filter applied - Category: ${category}, Value: ${value}`);
             onFilter(category, value);
         }
     };

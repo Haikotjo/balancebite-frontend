@@ -26,7 +26,6 @@ function MealCard({ meal, refreshList, onFilter }) {
 
     // Functie om filter verder door te geven
     const handleFilter = (category, value) => {
-        console.log(`✅ Received in MealCard - Category: ${category}, Value: ${value}`);
 
         if (onFilter) {
             onFilter(category, value); // Stuur door naar een hoger component

@@ -5,20 +5,21 @@ import { AuthContext } from "../../../context/AuthContext.jsx"; // Import AuthCo
 import AccountBoxRoundedIcon from "@mui/icons-material/AccountBoxRounded";
 import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 import FoodBankRoundedIcon from "@mui/icons-material/FoodBankRounded";
+import PropTypes from "prop-types";
 
 /**
- * SubMenu component renders a group of buttons with icons based on the user's context and actions.
- * Each button updates the current endpoint in the UserMealsContext and visually highlights the active button.
+ * SubMenu component renders a group of buttons with icons based on the user's authentication status.
+ * Each button updates the active meal category in the context.
  *
  * @component
  */
-function SubMenu() {
+function SubMenu({ activeOption, setActiveOption }) {
     const { user } = useContext(AuthContext); // Access authenticated user context
-    const { updateEndpoint, availableEndpoints, activeOption, setActiveOption } = useContext(UserMealsContext); // Use context for activeOption
-    const theme = useTheme(); // Access the Material-UI theme for consistent styling
+    // const { activeOption, setActiveOption } = useContext(UserMealsContext); // Use context for activeOption
+    const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm")); // Check if screen size is small
 
-    // Define options based on user's authentication status
+    // Define available options based on user authentication status
     const options = user
         ? [
             { label: "All Meals", smallLabel: "Meals", icon: MenuBookRoundedIcon },
@@ -28,34 +29,12 @@ function SubMenu() {
         : [{ label: "All Meals", smallLabel: "Meals", icon: MenuBookRoundedIcon }];
 
     /**
-     * Handle button click and update the endpoint in the context.
-     * @param {string} option - The label of the clicked button.
+     * Handles button clicks by setting the active meal category.
+     * @param {string} option - The selected meal category.
      */
     const handleButtonClick = (option) => {
-        let newEndpoint;
-
-        switch (option) {
-            case "All Meals":
-                newEndpoint = `${import.meta.env.VITE_BASE_URL}/meals`;
-                break;
-            case "My Meals":
-                newEndpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_USER_MEALS_ENDPOINT}`;
-                break;
-            case "Created Meals":
-                newEndpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_CREATED_MEALS_ENDPOINT}`;
-                break;
-            default:
-                newEndpoint = `${import.meta.env.VITE_BASE_URL}/meals`;
-                break;
-        }
-
-        // Update the endpoint only if it is available
-        if (availableEndpoints.includes(newEndpoint)) {
-            updateEndpoint(newEndpoint);
-            setActiveOption(option); // Update the active option in the context
-        } else {
-            console.warn("Attempted to set an unavailable endpoint:", newEndpoint);
-        }
+        console.log("📌 SubMenu gives:", option); // ✅ Log what is being passed
+        setActiveOption(option); // ✅ Update the active option
     };
 
     return (
@@ -67,14 +46,12 @@ function SubMenu() {
                     "& .MuiButton-root": {
                         backgroundColor: theme.palette.primary.main,
                         color: theme.palette.text.light,
-                        "&:hover": {
-                            backgroundColor: theme.palette.primary.light,
-                        },
+                        "&:hover": { backgroundColor: theme.palette.primary.light },
                         fontSize: "1rem", // Default font size
                         padding: "8px 12px", // Default padding
                         [theme.breakpoints.down("sm")]: {
-                            fontSize: "0.6rem", // Slightly larger font size for small screens
-                            padding: "6px 15px", // Larger padding for small screens
+                            fontSize: "0.6rem",
+                            padding: "6px 15px", // Adjusted for small screens
                         },
                     },
                     "& .MuiButton-root.active": {
@@ -87,19 +64,19 @@ function SubMenu() {
                     <Button
                         key={index}
                         onClick={() => handleButtonClick(option.label)}
-                        className={option.label === activeOption ? "active" : ""} // Highlight active button
+                        className={option.label === activeOption ? "active" : ""}
                         sx={{
                             display: "flex",
-                            flexDirection: isSmallScreen ? "column" : "row", // Icon above text on small screens
+                            flexDirection: isSmallScreen ? "column" : "row",
                             alignItems: "center",
                             justifyContent: "center",
                         }}
                     >
                         <option.icon
                             sx={{
-                                fontSize: isSmallScreen ? "2rem" : "1.5rem", // Larger icon size for small screens
-                                marginBottom: isSmallScreen ? "6px" : "0", // More space between icon and text on small screens
-                                marginRight: isSmallScreen ? "0" : "8px", // Space to the right of the icon on large screens
+                                fontSize: isSmallScreen ? "2rem" : "1.5rem",
+                                marginBottom: isSmallScreen ? "6px" : "0",
+                                marginRight: isSmallScreen ? "0" : "8px",
                             }}
                         />
                         {isSmallScreen ? option.smallLabel : option.label}
@@ -110,6 +87,9 @@ function SubMenu() {
     );
 }
 
-SubMenu.propTypes = {};
+SubMenu.propTypes = {
+    activeOption: PropTypes.string.isRequired,
+    setActiveOption: PropTypes.func.isRequired,
+};
 
 export default SubMenu;
