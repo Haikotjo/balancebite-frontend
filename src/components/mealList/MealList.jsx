@@ -1,4 +1,4 @@
-import {useContext, useEffect, useState} from "react";
+import {useContext, useEffect } from "react";
 import MealCard from "../mealCard/MealCard.jsx";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import PropTypes from "prop-types";
@@ -29,7 +29,7 @@ function MealList({setCreatedByName, sortBy, filters, onFiltersChange, activeOpt
             baseUrl = `${import.meta.env.VITE_BASE_URL}/meals`;
         }
 
-        baseUrl += "?page=0&size=10"; // Voeg standaard paginatie toe
+        baseUrl += "?page=0&size=10";
 
         Object.entries(filters).forEach(([key, value]) => {
             baseUrl += `&${key}=${encodeURIComponent(value)}`;

@@ -30,5 +30,5 @@ export default {
       },
     },
   },
-  plugins: [typography, forms], // Plugins als ES modules
+  plugins: [typography, forms],
 };

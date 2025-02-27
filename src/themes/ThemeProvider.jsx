@@ -1,8 +1,7 @@
 import { createContext, useContext, useMemo, useState, useEffect } from "react";
-import PropTypes from "prop-types"; // Voeg PropTypes toe
+import PropTypes from "prop-types";
 import { ThemeProvider, createTheme, responsiveFontSizes } from "@mui/material/styles";
 
-// De functie om de design tokens op te halen
 const getDesignTokens = (mode) => ({
     palette: {
         mode,
@@ -87,7 +86,7 @@ const getDesignTokens = (mode) => ({
     },
 });
 
-// Context maken
+// Create context
 const ThemeModeContext = createContext();
 
 // Context provider
@@ -100,7 +99,6 @@ export const ThemeModeProvider = ({ children }) => {
 
     const theme = useMemo(() => responsiveFontSizes(createTheme(getDesignTokens(mode))), [mode]);
 
-    // useEffect om de dark class toe te voegen aan de <html> tag
     useEffect(() => {
         if (mode === "dark") {
             document.documentElement.classList.add("dark");
@@ -116,10 +114,8 @@ export const ThemeModeProvider = ({ children }) => {
     );
 };
 
-// Custom hook om de context te gebruiken
 export const useThemeMode = () => useContext(ThemeModeContext);
 
-// Voeg PropTypes toe
 ThemeModeProvider.propTypes = {
     children: PropTypes.node.isRequired,
 };

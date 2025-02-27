@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// Create an Axios instance with default configuration
 export const Interceptor = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
     headers: {
@@ -7,12 +8,18 @@ export const Interceptor = axios.create({
     },
 });
 
-// Voeg je tokens op in de localStorage of een andere veilige opslag
+// Refresh token endpoint
 const REFRESH_ENDPOINT = `${import.meta.env.VITE_BASE_URL}/auth/refresh`;
 let isRefreshing = false;
 let failedQueue = [];
 
-// Helper-functie om mislukte verzoeken in wachtrij te plaatsen
+/**
+ * Processes the queue of failed requests during token refresh.
+ * If a new token is received, it retries the queued requests with the updated token.
+ *
+ * @param {Error|null} error - Error encountered during refresh (if any).
+ * @param {string|null} token - New access token (if available).
+ */
 const processQueue = (error, token = null) => {
     console.log("[DEBUG] Processing queue with token:", token, "and error:", error);
     failedQueue.forEach((prom) => {
@@ -22,11 +29,13 @@ const processQueue = (error, token = null) => {
             prom.resolve(token);
         }
     });
-
     failedQueue = [];
 };
 
-// Interceptor voor response errors
+/**
+ * Axios response interceptor to handle authentication errors.
+ * If a request fails due to a 401 (Unauthorized) error, it attempts to refresh the token and retry the request.
+ */
 Interceptor.interceptors.response.use(
     (response) => response,
     async (error) => {
@@ -36,7 +45,7 @@ Interceptor.interceptors.response.use(
 
         const originalRequest = error.config;
 
-        // Check als het een token-verlopen fout is
+        // Check if the error is due to an expired token
         if (error.response?.status === 401 && !originalRequest._retry) {
             if (isRefreshing) {
                 console.log("[DEBUG] Token refresh in progress. Adding request to queue.");
@@ -59,7 +68,6 @@ Interceptor.interceptors.response.use(
                 const refreshToken = localStorage.getItem("refreshToken");
                 console.log("[DEBUG] Using refresh token:", refreshToken);
 
-
                 if (!refreshToken) {
                     console.error("[DEBUG] No refresh token found in localStorage.");
                     throw new Error("No refresh token available.");
@@ -70,7 +78,7 @@ Interceptor.interceptors.response.use(
                 });
                 console.log("[DEBUG] Token refreshed successfully. New access token:", data.accessToken);
 
-                // Sla het nieuwe token op
+                // Store the new access token
                 localStorage.setItem("accessToken", data.accessToken);
                 Interceptor.defaults.headers.common["Authorization"] = `Bearer ${data.accessToken}`;
                 processQueue(null, data.accessToken);
@@ -89,7 +97,10 @@ Interceptor.interceptors.response.use(
     }
 );
 
-// Interceptor om automatisch tokens toe te voegen aan uitgaande requests
+/**
+ * Axios request interceptor to automatically attach the access token to requests.
+ * Also removes the "Content-Type" header when sending FormData.
+ */
 Interceptor.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem("accessToken");
@@ -98,7 +109,7 @@ Interceptor.interceptors.request.use(
             config.headers["Authorization"] = `Bearer ${token}`;
         }
 
-        // Verwijder expliciete Content-Type header voor FormData
+        // Remove explicit Content-Type header for FormData requests
         if (config.data instanceof FormData) {
             delete config.headers["Content-Type"];
             console.log("[DEBUG] FormData detected. Content-Type header removed.");
@@ -111,6 +122,5 @@ Interceptor.interceptors.request.use(
         return Promise.reject(error);
     }
 );
-
 
 export default Interceptor;
