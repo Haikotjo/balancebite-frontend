@@ -1,7 +1,6 @@
 import { Box, Button, ButtonGroup, useTheme, useMediaQuery } from "@mui/material";
 import { useContext } from "react";
-import { UserMealsContext } from "../../../context/UserMealsContext.jsx"; // Import UserMealsContext
-import { AuthContext } from "../../../context/AuthContext.jsx"; // Import AuthContext
+import { AuthContext } from "../../../context/AuthContext.jsx";
 import AccountBoxRoundedIcon from "@mui/icons-material/AccountBoxRounded";
 import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 import FoodBankRoundedIcon from "@mui/icons-material/FoodBankRounded";
@@ -33,8 +32,8 @@ function SubMenu({ activeOption, setActiveOption }) {
      * @param {string} option - The selected meal category.
      */
     const handleButtonClick = (option) => {
-        console.log("📌 SubMenu gives:", option); // ✅ Log what is being passed
-        setActiveOption(option); // ✅ Update the active option
+        console.log("📌 SubMenu gives:", option);
+        setActiveOption(option);
     };
 
     return (

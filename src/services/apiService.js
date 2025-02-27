@@ -71,16 +71,16 @@ export const fetchMeals = async (endpoint) => {
         const token = localStorage.getItem("accessToken"); // Haal token op
 
         const headers = token
-            ? { Authorization: `Bearer ${token}` }  // Stuur token als hij bestaat
-            : {}; // Geen token nodig voor publieke endpoints
+            ? { Authorization: `Bearer ${token}` }
+            : {};
 
         const response = await Interceptor.get(endpoint, { headers });
         logResponse(response);
 
-        return response.data?.content ?? []; // Pak de meals uit content, of een lege array
+        return response.data?.content ?? [];
     } catch (error) {
         logError(error);
-        return []; // Fallback naar lege array om crashes te voorkomen
+        return [];
     }
 };
 
@@ -172,13 +172,13 @@ export const fetchUserProfile = async (token) => {
 
         if (Object.keys(data).length === 0) {
             console.warn("No user profile found.");
-            return null; // Geen profieldata aanwezig
+            return null;
         }
 
-        return data; // Retourneer de profieldata
+        return data;
     } catch (error) {
         logError(error);
-        throw error; // Hergooi de fout om ermee om te gaan in de aanroepende code
+        throw error;
     }
 };
 
@@ -207,7 +207,7 @@ export const fetchRecommendedNutritionApi = async (token) => {
         logResponse(response);
 
         if (response && response.data) {
-            return roundNutrientValues(response.data); // Rond nutrient-waarden af
+            return roundNutrientValues(response.data);
         } else {
             console.warn("No data received for recommended nutrition.");
             return null;
@@ -230,7 +230,7 @@ export const fetchBaseNutritionApi = async (token) => {
         logResponse(response);
 
         if (response && response.data) {
-            return roundNutrientValues(response.data); // Rond nutrient-waarden af
+            return roundNutrientValues(response.data);
         } else {
             console.warn("No data received for BaseRDI.");
             return null;
@@ -251,7 +251,7 @@ export const consumeMealApi = async (mealId, token) => {
             },
         });
         logResponse(response);
-        return response.data; // Retourneer de overgebleven dagelijkse intake
+        return response.data;
     } catch (error) {
         logError(error);
         throw error;
@@ -264,7 +264,6 @@ export const updateUserInfoApi = async (data) => {
     try {
         const response = await Interceptor.patch(endpoint, data);
 
-        // ✅ Forceer een nieuw access token met de refresh token
         await refreshAccessToken();
 
         return response.data;

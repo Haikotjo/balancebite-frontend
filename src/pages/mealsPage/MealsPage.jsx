@@ -1,8 +1,7 @@
-import {useState, useContext, useEffect} from "react";
+import {useState, useEffect} from "react";
 import MealList from "../../components/mealList/MealList.jsx";
 import SubMenu from "../../components/mealList/submenu/SubMenu.jsx";
 import { Box, Typography } from "@mui/material";
-import { UserMealsContext } from "../../context/UserMealsContext.jsx";
 import "./MealsPage.css";
 import SearchBar from "../../components/searchBar/SearchBar.jsx";
 import NutrientSortOptions from "../../components/mealList/nutrientSortOptions/NutrientSortOptions.jsx";
