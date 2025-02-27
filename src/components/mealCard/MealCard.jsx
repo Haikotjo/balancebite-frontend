@@ -24,11 +24,10 @@ function MealCard({ meal, refreshList, onFilter }) {
     const { nutrients } = useNutrients(meal.id);
     const imageSrc = getImageSrc(meal);
 
-    // Functie om filter verder door te geven
     const handleFilter = (category, value) => {
 
         if (onFilter) {
-            onFilter(category, value); // Stuur door naar een hoger component
+            onFilter(category, value);
         } else {
             console.warn("⚠️ onFilter function is undefined in MealCard!");
         }
@@ -37,13 +36,12 @@ function MealCard({ meal, refreshList, onFilter }) {
     return (
         <Card sx={{ minWidth: 300, maxWidth: 345, position: "relative", display: "flex", flexDirection: "column", height: "100%" }}>
 
-            {/* Hier wordt de filterfunctie doorgegeven aan MealDetails */}
             <MealDetails
                 diet={meal.diet}
                 mealType={meal.mealType}
                 cuisine={meal.cuisine}
                 nutrients={nutrients}
-                onFilter={handleFilter} // Gebruik de aangepaste functie
+                onFilter={handleFilter}
             />
 
             <Box sx={{ position: "relative" }}>
@@ -56,7 +54,7 @@ function MealCard({ meal, refreshList, onFilter }) {
                 mealType={meal.mealType}
                 cuisine={meal.cuisine}
                 nutrients={nutrients}
-                onFilter={handleFilter} // Stuur filter door naar een hoger niveau
+                onFilter={handleFilter}
             />
 
             <CardContent sx={{ flexGrow: 1, paddingBottom: "10px !important" }}>
