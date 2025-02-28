@@ -10,10 +10,10 @@ import { UserMealsContext } from "../../context/UserMealsContext.jsx";
  * A component that fetches and displays a list of meals based on sorting.
  */
 function MealList({setCreatedByName, sortBy, filters, onFiltersChange, activeOption }) {
-    console.log("📥 Received activeOption in MealList:", activeOption);
 
     const {meals, loading, error, refreshList} = useMeals(setCreatedByName);
     const {updateEndpoint} = useContext(UserMealsContext);
+    const { userMeals, loading: userMealsLoading } = useContext(UserMealsContext);
 
     /**
      * Dynamically generates the API endpoint based on sorting.
@@ -39,7 +39,6 @@ function MealList({setCreatedByName, sortBy, filters, onFiltersChange, activeOpt
             baseUrl += `&sortBy=${sortBy.sortKey}&sortOrder=${sortBy.sortOrder}`;
         }
 
-        console.log("🔗 Generated API Endpoint:", baseUrl);
         return baseUrl;
     };
 
@@ -56,17 +55,30 @@ function MealList({setCreatedByName, sortBy, filters, onFiltersChange, activeOpt
         onFiltersChange(newFilters);
     };
 
+    useEffect(() => {
+        refreshList();  // Haal meals opnieuw op als userMeals verandert
+    }, [userMeals]);
+
     /**
      * Updates the endpoint when filters or sorting change.
      */
     useEffect(() => {
+        if (!userMealsLoading) {
         const newEndpoint = generateEndpoint();
         updateEndpoint(newEndpoint);
         refreshList();
-    }, [sortBy, filters, activeOption]);
+    }
+    }, [sortBy, filters, activeOption, userMealsLoading]);
 
     // Show a loading indicator while data is being fetched
     if (loading)
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
+                <CircularProgress/>
+            </Box>
+        );
+
+    if (userMealsLoading)
         return (
             <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
                 <CircularProgress/>
@@ -98,7 +110,6 @@ function MealList({setCreatedByName, sortBy, filters, onFiltersChange, activeOpt
                 <CustomButton
                     onClick={() => {
                         const resetEndpoint = generateEndpoint();
-                        console.log("🔄 Resetting to:", resetEndpoint);
                         updateEndpoint(resetEndpoint);
                         refreshList();
                     }}

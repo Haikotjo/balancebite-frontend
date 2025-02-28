@@ -75,7 +75,7 @@ export const fetchMeals = async (endpoint) => {
             : {};
 
         const response = await Interceptor.get(endpoint, { headers });
-        logResponse(response);
+        // logResponse(response);
 
         return response.data?.content ?? [];
     } catch (error) {
@@ -91,7 +91,7 @@ export const fetchUserMeals = async (token) => {
         const response = await Interceptor.get(endpoint, {
             headers: { Authorization: `Bearer ${token}` },
         });
-        logResponse(response);
+        // logResponse(response);
         return response.data;
     } catch (error) {
         logError(error);
@@ -103,7 +103,7 @@ export const fetchMealById = async (mealId) => {
     const endpoint = `${import.meta.env.VITE_BASE_URL}/meals/${mealId}`;
     try {
         const response = await Interceptor.get(endpoint);
-        logResponse(response);
+        // logResponse(response);
         return response.data;
     } catch (error) {
         logError(error);
@@ -115,7 +115,7 @@ export const fetchMealNutrientsById = async (mealId) => {
     const endpoint = `${import.meta.env.VITE_BASE_URL}/meals/nutrients/${mealId}`;
     try {
         const response = await Interceptor.get(endpoint);
-        logResponse(response);
+        // logResponse(response);
         return response.data;
     } catch (error) {
         logError(error);
@@ -137,7 +137,7 @@ export const createMealApi = async (formData) => {
                 Authorization: `Bearer ${token}`,
             },
         });
-        logResponse(response);
+        // logResponse(response);
         return response.data;
     } catch (error) {
         logError(error);
@@ -166,7 +166,7 @@ export const fetchUserProfile = async (token) => {
                 Authorization: `Bearer ${token}`,
             },
         });
-        logResponse(response);
+        // logResponse(response);
 
         const data = response.data;
 
@@ -204,7 +204,7 @@ export const fetchRecommendedNutritionApi = async (token) => {
                 Authorization: `Bearer ${token}`,
             },
         });
-        logResponse(response);
+        // logResponse(response);
 
         if (response && response.data) {
             return roundNutrientValues(response.data);
@@ -227,7 +227,7 @@ export const fetchBaseNutritionApi = async (token) => {
                 Authorization: `Bearer ${token}`,
             },
         });
-        logResponse(response);
+        // logResponse(response);
 
         if (response && response.data) {
             return roundNutrientValues(response.data);
@@ -250,7 +250,7 @@ export const consumeMealApi = async (mealId, token) => {
                 Authorization: `Bearer ${token}`,
             },
         });
-        logResponse(response);
+        // logResponse(response);
         return response.data;
     } catch (error) {
         logError(error);
@@ -283,11 +283,11 @@ const refreshAccessToken = async () => {
 
     try {
         const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/auth/refresh`, { refreshToken });
-        console.log("[DEBUG] New access token received:", response.data.accessToken);
+        // console.log("[DEBUG] New access token received:", response.data.accessToken);
 
         localStorage.setItem("accessToken", response.data.accessToken);
     } catch (error) {
-        console.error("[DEBUG] Failed to refresh access token:", error);
+        // console.error("[DEBUG] Failed to refresh access token:", error);
     }
 };
 

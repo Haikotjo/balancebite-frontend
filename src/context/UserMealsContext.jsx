@@ -5,20 +5,16 @@ import { fetchUserMeals } from "../services/apiService";
 
 /**
  * Context for managing user-specific meal data and API endpoints.
- * Provides functionality for fetching user meals, setting available endpoints,
- * and managing the current endpoint for meal-related API requests.
  */
 export const UserMealsContext = createContext();
 
 export const UserMealsProvider = ({ children }) => {
-    const { user } = useContext(AuthContext); // Retrieve current user from AuthContext
-    const [userMeals, setUserMeals] = useState([]); // Stores meals associated with the user
-    const [loading, setLoading] = useState(true); // Tracks loading state
-    const [availableEndpoints, setAvailableEndpoints] = useState([]); // List of allowed API endpoints
+    const { user } = useContext(AuthContext);
+    const [userMeals, setUserMeals] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [currentListEndpoint, setCurrentListEndpoint] = useState(
-        `${import.meta.env.VITE_BASE_URL}/meals` // Default endpoint for non-logged-in users
+        `${import.meta.env.VITE_BASE_URL}/meals`
     );
-    const [activeOption, setActiveOption] = useState("All Meals"); // Tracks the currently active option
 
     /**
      * Fetches meals associated with the logged-in user.
@@ -26,52 +22,55 @@ export const UserMealsProvider = ({ children }) => {
     const fetchUserMealsData = async () => {
         try {
             setLoading(true);
-            const token = localStorage.getItem("accessToken"); // Retrieve authentication token
+            const token = localStorage.getItem("accessToken");
             if (token) {
                 const userMealsData = await fetchUserMeals(token);
-                setUserMeals(Array.isArray(userMealsData) ? userMealsData : []);
+                setUserMeals(Array.isArray(userMealsData.content) ? userMealsData.content : []);
             }
         } catch (error) {
             console.error("⚠️ Failed to fetch user meals:", error.message);
-            setUserMeals([]); // Reset meals list if an error occurs
+            setUserMeals([]);
         } finally {
             setLoading(false);
         }
     };
 
     /**
-     * Updates the list of allowed endpoints whenever the user changes.
+     * Fetch user meals when the user logs in.
      */
     useEffect(() => {
         if (user) {
-            // Logged-in users have additional endpoint options
-            setAvailableEndpoints([
-                `${import.meta.env.VITE_BASE_URL}/meals`, // Public meals endpoint
-                `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_USER_MEALS_ENDPOINT}`,
-                `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_CREATED_MEALS_ENDPOINT}`,
-            ]);
-            setCurrentListEndpoint(`${import.meta.env.VITE_BASE_URL}/meals`); // Default for logged-in users
-        } else {
-            // Non-logged-in users only have access to the public meals endpoint
-            setAvailableEndpoints([`${import.meta.env.VITE_BASE_URL}/meals`]);
-            setCurrentListEndpoint(`${import.meta.env.VITE_BASE_URL}/meals`);
+            fetchUserMealsData();
         }
     }, [user]);
 
     /**
-     * Updates the current API endpoint. Now allows any endpoint that starts with "/meals".
-     * This prevents filtering and sorting requests from being blocked.
+     * Updates the current API endpoint dynamically.
      * @param {string} newEndpoint - The new endpoint to be set.
      */
     const updateEndpoint = (newEndpoint) => {
-        if ( newEndpoint.startsWith(`${import.meta.env.VITE_BASE_URL}/meals`) ||
+        if (newEndpoint.startsWith(`${import.meta.env.VITE_BASE_URL}/meals`) ||
             newEndpoint.startsWith(`${import.meta.env.VITE_BASE_URL}/users/meals`) ||
             newEndpoint.startsWith(`${import.meta.env.VITE_BASE_URL}/users/created-meals`)) {
-            console.log("✅ Allowed endpoint:", newEndpoint);
             setCurrentListEndpoint(newEndpoint);
         } else {
-            console.warn("⛔ Attempted to set an endpoint not in the available list:", newEndpoint);
+            console.warn("⛔ Attempted to set an endpoint not in the allowed list:", newEndpoint);
         }
+    };
+
+    useEffect(() => {
+    }, [userMeals]);
+
+    /**
+     * Removes a meal from the user's meal list.
+     * Adds logs to check if the meal is being correctly removed.
+     */
+    const removeMealFromUserMeals = (mealId) => {
+        setUserMeals((prev) => {
+            const updatedMeals = prev.filter((meal) => meal.id !== mealId);
+            console.log("✅ Updated userMeals after removal:", updatedMeals);
+            return [...updatedMeals];  // Nieuwe array zodat React de update ziet
+        });
     };
 
     return (
@@ -82,12 +81,9 @@ export const UserMealsProvider = ({ children }) => {
                 currentListEndpoint,
                 updateEndpoint,
                 fetchUserMealsData,
-                resetUserMeals: () => setUserMeals([]), // Resets the user meals list
-                addMealToUserMeals: (meal) => setUserMeals((prev) => [...prev, meal]), // Adds a new meal
-                removeMealFromUserMeals: (mealId) =>
-                    setUserMeals((prev) => prev.filter((meal) => meal.id !== mealId)), // Removes a meal
-                activeOption,
-                setActiveOption,
+                resetUserMeals: () => setUserMeals([]),
+                addMealToUserMeals: (meal) => setUserMeals((prev) => [...prev, meal]),
+                removeMealFromUserMeals,
             }}
         >
             {children}

@@ -1,33 +1,28 @@
 import PropTypes from "prop-types";
 import { Box } from "@mui/material";
-import { useContext } from "react";
+import {useContext, useEffect} from "react";
 import { UserMealsContext } from "../../../context/UserMealsContext";
 import { RecommendedNutritionContext } from "../../../context/RecommendedNutritionContext.jsx";
 import EatButton from "../eatButton/EatButton";
 import FavoriteButton from "../favoriteButton/FavoriteButton.jsx";
 import { addMealToFavoritesApi, removeMealFromFavoritesApi } from "../../../services/apiService";
+import {AuthContext} from "../../../context/AuthContext.jsx";
 
 const MealCardActionButtons = ({ meal }) => {
     const { userMeals, addMealToUserMeals, removeMealFromUserMeals } = useContext(UserMealsContext);
     const { refetchRecommendedNutrition } = useContext(RecommendedNutritionContext);
     const token = localStorage.getItem("accessToken");
 
-    const isDuplicate = userMeals.some((userMeal) => {
-        const mealIngredientIds = meal.mealIngredients
-            ?.map((ingredient) => ingredient?.foodItemId)
-            .filter(Boolean)
-            .sort();
+    const { user } = useContext(AuthContext);
 
-        const userMealIngredientIds = userMeal.mealIngredients
-            ?.map((ingredient) => ingredient?.foodItemId)
-            .filter(Boolean)
-            .sort();
+    console.log("🔄 Rendering MealCardActionButtons - Meal ID:", meal.id);
+    console.log("🔍 Current userMeals:", userMeals.map(m => m.id));
 
-        return (
-            mealIngredientIds.length === userMealIngredientIds.length &&
-            mealIngredientIds.every((id, index) => id === userMealIngredientIds[index])
-        );
-    });
+    const isDuplicate =
+        meal.isTemplate !== true ||  // Meal is geen template (dus een kopie)
+        userMeals.some(userMeal => userMeal.originalMealId === meal.id) ||  // Meal is een kopie van een andere meal in de lijst
+        userMeals.some(userMeal => userMeal.id === meal.id);  // Meal staat al direct in de lijst1
+
 
     const handleAddToFavorites = async () => {
         try {
@@ -36,16 +31,6 @@ const MealCardActionButtons = ({ meal }) => {
             console.log(`${meal.name} added to favorites.`);
         } catch (error) {
             console.error("Error adding to favorites:", error);
-        }
-    };
-
-    const handleRemoveFromFavorites = async () => {
-        try {
-            await removeMealFromFavoritesApi(meal.id, token);
-            removeMealFromUserMeals(meal.id);
-            console.log(`${meal.name} removed from favorites.`);
-        } catch (error) {
-            console.error("Error removing from favorites:", error);
         }
     };
 
@@ -81,7 +66,6 @@ const MealCardActionButtons = ({ meal }) => {
                 <FavoriteButton
                     isFavorite={isDuplicate}
                     onAdd={handleAddToFavorites}
-                    onRemove={handleRemoveFromFavorites}
                     meal={meal}
                 />
             </Box>
