@@ -2,13 +2,17 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  plugins: [
-    react(), // React plugin blijft
-  ],
+  plugins: [react()],
   css: {
-    postcss: "./postcss.config.js", // Verbind PostCSS expliciet
+    postcss: "./postcss.config.js",
   },
   build: {
-    sourcemap: false, // Disable source maps during the build
+    sourcemap: false,  // Zet sourcemaps uit
+    rollupOptions: {
+      output: {
+        sourcemap: false, // Forceer geen sourcemaps
+      },
+    },
   },
 });
+

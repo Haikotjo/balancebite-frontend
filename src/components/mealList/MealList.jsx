@@ -5,14 +5,15 @@ import PropTypes from "prop-types";
 import CustomButton from "./createMealButton/CustomButton.jsx";
 import useMeals from "./hooks/useMeals.js";
 import { UserMealsContext } from "../../context/UserMealsContext.jsx";
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 /**
  * A component that fetches and displays a list of meals based on sorting.
  */
-function MealList({setCreatedByName, sortBy, filters, onFiltersChange, activeOption }) {
+function MealList({setCreatedByName, sortBy, filters, onFiltersChange, activeOption, setActiveOption }) {
 
     const {meals, loading, error, refreshList} = useMeals(setCreatedByName);
-    const {updateEndpoint} = useContext(UserMealsContext);
+    const {currentListEndpoint, setCurrentListEndpoint } = useContext(UserMealsContext);
     const { userMeals, loading: userMealsLoading } = useContext(UserMealsContext);
 
     /**
@@ -55,20 +56,52 @@ function MealList({setCreatedByName, sortBy, filters, onFiltersChange, activeOpt
         onFiltersChange(newFilters);
     };
 
+    /**
+     * Refreshes the meal list when `userMeals` changes.
+     * Ensures that the latest user meals are displayed.
+     */
     useEffect(() => {
-        refreshList();  // Haal meals opnieuw op als userMeals verandert
+        if (userMeals.length > 0) {
+            (async () => {
+                try {
+                    await refreshList();
+                } catch (error) {
+                    console.error("❌ Error refreshing meal list:", error);
+                }
+            })();
+        }
     }, [userMeals]);
+
 
     /**
      * Updates the endpoint when filters or sorting change.
      */
     useEffect(() => {
         if (!userMealsLoading) {
-        const newEndpoint = generateEndpoint();
-        updateEndpoint(newEndpoint);
-        refreshList();
-    }
-    }, [sortBy, filters, activeOption, userMealsLoading]);
+            const newEndpoint = generateEndpoint();
+
+            console.log("🔄 Updating endpoint due to activeOption change:", newEndpoint);
+
+            if (newEndpoint !== currentListEndpoint) {
+                setCurrentListEndpoint(newEndpoint);
+            }
+        }
+    }, [sortBy, filters, activeOption, userMealsLoading, currentListEndpoint]);
+
+
+    /**
+     * Refreshes the meal list when `currentListEndpoint` changes.
+     * Ensures that meals are fetched from the correct API endpoint.
+     */
+    useEffect(() => {
+        (async () => {
+            try {
+                await refreshList();
+            } catch (error) {
+                console.error("❌ Error refreshing meals on endpoint change:", error);
+            }
+        })();
+    }, [currentListEndpoint]);
 
     // Show a loading indicator while data is being fetched
     if (loading)
@@ -108,14 +141,12 @@ function MealList({setCreatedByName, sortBy, filters, onFiltersChange, activeOpt
                     No meals found.
                 </Typography>
                 <CustomButton
-                    onClick={() => {
-                        const resetEndpoint = generateEndpoint();
-                        updateEndpoint(resetEndpoint);
-                        refreshList();
-                    }}
-                    label="Reset Sorting"
+                    icon={<RefreshIcon />}
+                    onClick={() => setActiveOption("All Meals")}
+                    label="All Meals"
                     variant="outlined"
                 />
+
             </Box>
         );
 

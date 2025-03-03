@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { AuthContext } from "./AuthContext";
-import { fetchUserMeals } from "../services/apiService";
+import { fetchMeals, fetchUserMeals } from "../services/apiService";
 
 /**
  * Context for managing user-specific meal data and API endpoints.
@@ -10,11 +10,32 @@ export const UserMealsContext = createContext();
 
 export const UserMealsProvider = ({ children }) => {
     const { user } = useContext(AuthContext);
+    const [meals, setMeals] = useState([]);
     const [userMeals, setUserMeals] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [currentListEndpoint, setCurrentListEndpoint] = useState(
-        `${import.meta.env.VITE_BASE_URL}/meals`
-    );
+    const [error, setError] = useState(null);
+    const [currentListEndpoint, setCurrentListEndpoint] = useState(() => {
+        return user
+            ? `${import.meta.env.VITE_BASE_URL}/users/meals`
+            : `${import.meta.env.VITE_BASE_URL}/meals`;
+    });
+
+    /**
+     * Fetches meals based on the current endpoint.
+     */
+    const fetchMealsData = async () => {
+        try {
+            setLoading(true);
+            console.log("Fetching from endpoint:", currentListEndpoint);
+            const mealsData = await fetchMeals(currentListEndpoint);
+            setMeals(mealsData);
+            setError(null);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     /**
      * Fetches meals associated with the logged-in user.
@@ -36,11 +57,34 @@ export const UserMealsProvider = ({ children }) => {
     };
 
     /**
+     * Fetch meals when endpoint changes.
+     */
+    useEffect(() => {
+        if (currentListEndpoint) {
+            (async () => {
+                try {
+                    await fetchMealsData();
+                } catch (error) {
+                    console.error("❌ Error fetching meals:", error);
+                }
+            })();
+        }
+    }, [currentListEndpoint]);
+
+    /**
      * Fetch user meals when the user logs in.
      */
     useEffect(() => {
-        if (user) {
-            fetchUserMealsData();
+        if (user && currentListEndpoint !== `${import.meta.env.VITE_BASE_URL}/users/meals`) {
+            setCurrentListEndpoint(`${import.meta.env.VITE_BASE_URL}/users/meals`);
+
+            (async () => {
+                try {
+                    await fetchUserMealsData();
+                } catch (error) {
+                    console.error("❌ Error fetching user meals:", error);
+                }
+            })();
         }
     }, [user]);
 
@@ -58,8 +102,12 @@ export const UserMealsProvider = ({ children }) => {
         }
     };
 
-    useEffect(() => {
-    }, [userMeals]);
+    /**
+     * Refreshes the meal list (same as `fetchMealsData`, but exposed in context).
+     */
+    const refreshMealsList = async () => {
+        await fetchMealsData();
+    };
 
     /**
      * Removes a meal from the user's meal list.
@@ -69,18 +117,22 @@ export const UserMealsProvider = ({ children }) => {
         setUserMeals((prev) => {
             const updatedMeals = prev.filter((meal) => meal.id !== mealId);
             console.log("✅ Updated userMeals after removal:", updatedMeals);
-            return [...updatedMeals];  // Nieuwe array zodat React de update ziet
+            return [...updatedMeals];
         });
     };
 
     return (
         <UserMealsContext.Provider
             value={{
+                meals,
                 userMeals,
                 loading,
+                error,
                 currentListEndpoint,
+                setCurrentListEndpoint,
                 updateEndpoint,
                 fetchUserMealsData,
+                refreshMealsList,
                 resetUserMeals: () => setUserMeals([]),
                 addMealToUserMeals: (meal) => setUserMeals((prev) => [...prev, meal]),
                 removeMealFromUserMeals,

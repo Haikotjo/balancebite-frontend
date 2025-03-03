@@ -101,6 +101,7 @@ function MealPage() {
                     filters={filters}
                     onFiltersChange={handleFiltersChange}
                     activeOption={activeOption}
+                    setActiveOption={setActiveOption}
                 />
             </Box>
         </Box>
