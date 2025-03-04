@@ -57,24 +57,6 @@ export const UserMealsProvider = ({ children }) => {
     };
 
     /**
-     * Adds a meal to the user's meal list and updates the UI instantly.
-     * @param {object} meal - The meal object to be added.
-     */
-    const addMealToFavorites = async (meal) => {
-        try {
-            const token = localStorage.getItem("accessToken");
-            await addMealToFavoritesApi(meal.id, token);
-
-            // ✅ Haal direct de nieuwe lijst op, zodat we de correcte `originalMealId` krijgen.
-            await fetchUserMealsData();
-
-            console.log(`${meal.name} added to favorites.`);
-        } catch (error) {
-            console.error("❌ Error adding meal to favorites:", error);
-        }
-    };
-
-    /**
      * Fetch meals when endpoint changes.
      */
     useEffect(() => {
@@ -166,7 +148,6 @@ export const UserMealsProvider = ({ children }) => {
                 resetUserMeals: () => setUserMeals([]),
                 addMealToUserMeals: (meal) => setUserMeals((prev) => [...prev, meal]),
                 removeMealFromUserMeals,
-                addMealToFavorites,
             }}
         >
             {children}

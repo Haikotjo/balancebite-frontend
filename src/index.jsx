@@ -10,22 +10,25 @@ import { UserMealsProvider } from "./context/UserMealsContext";
 import { RecommendedNutritionProvider } from "./context/RecommendedNutritionContext";
 import "@fontsource/roboto";
 import {SnackbarProvider} from "./context/SnackbarContext.jsx";
+import {LoginModalProvider} from "./context/LoginModalContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
         <SnackbarProvider>
-            <AuthProvider>
-                <UserMealsProvider>
-                    <RecommendedNutritionProvider>
-                        <ThemeModeProvider>
-                            <CssBaseline />
-                            <div className="min-h-screen bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText">
-                                <App />
-                            </div>
-                        </ThemeModeProvider>
-                    </RecommendedNutritionProvider>
-                </UserMealsProvider>
-            </AuthProvider>
+            <LoginModalProvider>
+                <AuthProvider>
+                    <UserMealsProvider>
+                        <RecommendedNutritionProvider>
+                            <ThemeModeProvider>
+                                <CssBaseline />
+                                <div className="min-h-screen bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText">
+                                    <App />
+                                </div>
+                            </ThemeModeProvider>
+                        </RecommendedNutritionProvider>
+                    </UserMealsProvider>
+                </AuthProvider>
+            </LoginModalProvider>
         </SnackbarProvider>
     </React.StrictMode>
 );

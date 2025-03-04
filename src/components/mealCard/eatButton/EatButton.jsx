@@ -18,6 +18,8 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
             const token = localStorage.getItem("accessToken");
             if (!token) {
                 console.error("No token found. User not authenticated.");
+                setErrorMessage("You need to login or register to consume a meal.");
+                setDialogOpen(true); // ✅ Open het foutvenster
                 return;
             }
 

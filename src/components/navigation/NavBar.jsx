@@ -15,7 +15,7 @@ import MealsMenu from "./mealsMenu/MealsMenu.jsx";
 import PropTypes from "prop-types";
 import DarkModeSwitch from "./darkModeSwitch/DarkModeSwitch.jsx";
 import { useThemeMode } from "../../themes/ThemeProvider.jsx";
-import VerticalDivider from "../verticalDivider/VerticalDivider.jsx"; // Gebruik globale context
+import VerticalDivider from "../verticalDivider/VerticalDivider.jsx";
 
 const NavBar = () => {
     const { user } = useContext(AuthContext);

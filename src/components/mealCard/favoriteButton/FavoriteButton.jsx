@@ -6,10 +6,11 @@ import { motion } from "framer-motion";
 import { useContext } from "react";
 import { UserMealsContext } from "../../../context/UserMealsContext";
 import { removeMealFromFavoritesApi } from "../../../services/apiService";
+import useFavorites from "../../../hooks/useFavorites.jsx";
 
 const FavoriteButton = ({ meal }) => {
-    const { userMeals, addMealToFavorites, removeMealFromUserMeals } = useContext(UserMealsContext);
-    const token = localStorage.getItem("accessToken");
+    const { userMeals } = useContext(UserMealsContext); // ✅ Alleen userMeals uit context
+    const { addMealToFavorites, removeMealFromFavorites } = useFavorites();
 
     // 🔥 Fix: Direct de favoriet-status bepalen bij elke render
     const isFavorite = userMeals.some(userMeal => userMeal.id === meal.id);
@@ -17,8 +18,7 @@ const FavoriteButton = ({ meal }) => {
     const handleToggleFavorite = async () => {
         try {
             if (isFavorite) {
-                await removeMealFromFavoritesApi(meal.id, token);
-                removeMealFromUserMeals(meal.id);
+                await removeMealFromFavorites(meal);
             } else {
                 await addMealToFavorites(meal);
             }

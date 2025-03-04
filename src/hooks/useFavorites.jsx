@@ -3,29 +3,32 @@ import { AuthContext } from "../context/AuthContext.jsx";
 import { UserMealsContext } from "../context/UserMealsContext.jsx";
 import { SnackbarContext } from "../context/SnackbarContext.jsx"; // ✅ Import de snackbar context
 import { addMealToFavoritesApi, removeMealFromFavoritesApi } from "../services/apiService.js";
+import {refreshMealsList} from "../utils/helpers/refreshMealsList.js";
 
 const useFavorites = () => {
     const { user, token } = useContext(AuthContext);
-    const { addMealToUserMeals, removeMealFromUserMeals } = useContext(UserMealsContext);
-    const { showSnackbar } = useContext(SnackbarContext); // ✅ Gebruik de globale snackbar
+    const { removeMealFromUserMeals, fetchUserMealsData, refreshMealsList } = useContext(UserMealsContext);
+    const { showSnackbar } = useContext(SnackbarContext);
 
-    // const addMealToFavorites = async (meal) => {
-    //     if (!user) {
-    //         showSnackbar("You need to login or register to add a meal.", "warning");
-    //         return false;
-    //     }
-    //
-    //     try {
-    //         await addMealToFavoritesApi(meal.id, token);
-    //         addMealToUserMeals(meal);
-    //         showSnackbar(`${meal.name} added to favorites!`, "success");
-    //         return true;
-    //     } catch (error) {
-    //         console.error("Error adding meal to favorites:", error);
-    //         showSnackbar("Failed to add meal.", "error");
-    //         return false;
-    //     }
-    // };
+    const addMealToFavorites = async (meal) => {
+        if (!user) {
+            showSnackbar("You need to login or register to add a meal.", "warning");
+            return false;
+        }
+
+        try {
+            await addMealToFavoritesApi(meal.id, token);
+            await fetchUserMealsData();
+            await refreshMealsList();
+
+            showSnackbar(`${meal.name} added to favorites!`, "success");
+            return true;
+        } catch (error) {
+            console.error("Error adding meal to favorites:", error);
+            showSnackbar("Failed to add meal.", "error");
+            return false;
+        }
+    };
 
     const removeMealFromFavorites = async (meal) => {
         if (!user) {

@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
 import { Box } from "@mui/material";
 import { useContext } from "react";
-import { UserMealsContext } from "../../../context/UserMealsContext";
 import { RecommendedNutritionContext } from "../../../context/RecommendedNutritionContext.jsx";
 import EatButton from "../eatButton/EatButton";
 import FavoriteButton from "../favoriteButton/FavoriteButton.jsx";
@@ -21,7 +20,6 @@ const MealCardActionButtons = ({ meal }) => {
                 gap: 1,
             }}
         >
-            {/* FavoriteButton haalt nu zelf de juiste status op */}
             <Box
                 display="flex"
                 alignItems="center"
@@ -41,7 +39,6 @@ const MealCardActionButtons = ({ meal }) => {
                 <FavoriteButton meal={meal} />
             </Box>
 
-            {/* EatButton blijft altijd zichtbaar */}
             <Box
                 display="flex"
                 alignItems="center"
