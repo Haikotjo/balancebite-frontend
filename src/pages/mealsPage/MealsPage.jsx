@@ -23,7 +23,8 @@ function MealPage() {
     const [sortBy, setSortBy] = useState(null);
     const [filters, setFilters] = useState({});
     const { user } = useContext(AuthContext);
-    const [activeOption, setActiveOption] = useState("All Meals");
+    const [activeOption, setActiveOption] = useState(user ? "My Meals" : "All Meals");
+
 
     const handleSort = (sortKey, sortOrder) => {
         setSortBy({ sortKey, sortOrder });

@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { AuthContext } from "./AuthContext";
-import { fetchMeals, fetchUserMeals } from "../services/apiService";
+import {addMealToFavoritesApi, fetchMeals, fetchUserMeals} from "../services/apiService";
 
 /**
  * Context for managing user-specific meal data and API endpoints.
@@ -57,6 +57,24 @@ export const UserMealsProvider = ({ children }) => {
     };
 
     /**
+     * Adds a meal to the user's meal list and updates the UI instantly.
+     * @param {object} meal - The meal object to be added.
+     */
+    const addMealToFavorites = async (meal) => {
+        try {
+            const token = localStorage.getItem("accessToken");
+            await addMealToFavoritesApi(meal.id, token);
+
+            // ✅ Haal direct de nieuwe lijst op, zodat we de correcte `originalMealId` krijgen.
+            await fetchUserMealsData();
+
+            console.log(`${meal.name} added to favorites.`);
+        } catch (error) {
+            console.error("❌ Error adding meal to favorites:", error);
+        }
+    };
+
+    /**
      * Fetch meals when endpoint changes.
      */
     useEffect(() => {
@@ -84,6 +102,18 @@ export const UserMealsProvider = ({ children }) => {
                 } catch (error) {
                     console.error("❌ Error fetching user meals:", error);
                 }
+            })();
+        }
+    }, [user]);
+
+    /**
+     * Fetch user meals when the user logs in or after a page refresh.
+     * Ensures userMeals are always up-to-date.
+     */
+    useEffect(() => {
+        if (user) {
+            (async () => {
+                await fetchUserMealsData();
             })();
         }
     }, [user]);
@@ -136,6 +166,7 @@ export const UserMealsProvider = ({ children }) => {
                 resetUserMeals: () => setUserMeals([]),
                 addMealToUserMeals: (meal) => setUserMeals((prev) => [...prev, meal]),
                 removeMealFromUserMeals,
+                addMealToFavorites,
             }}
         >
             {children}

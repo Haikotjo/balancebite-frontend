@@ -1,75 +1,46 @@
-import { useState } from "react";
 import PropTypes from "prop-types";
 import { IconButton } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { motion } from "framer-motion";
-import useFavorites from "../../../hooks/useFavorites";
+import { useContext } from "react";
+import { UserMealsContext } from "../../../context/UserMealsContext";
+import { removeMealFromFavoritesApi } from "../../../services/apiService";
 
-const FavoriteButton = ({ isFavorite: initialFavorite, meal }) => {
-    const { addMealToFavorites, removeMealFromFavorites, SnackbarComponent } = useFavorites();
-    const [isFavorite, setIsFavorite] = useState(initialFavorite);
-    const [animationKey, setAnimationKey] = useState(0);
-    const [size, setSize] = useState(1);
+const FavoriteButton = ({ meal }) => {
+    const { userMeals, addMealToFavorites, removeMealFromUserMeals } = useContext(UserMealsContext);
+    const token = localStorage.getItem("accessToken");
+
+    // 🔥 Fix: Direct de favoriet-status bepalen bij elke render
+    const isFavorite = userMeals.some(userMeal => userMeal.id === meal.id);
 
     const handleToggleFavorite = async () => {
-        const success = isFavorite
-            ? await removeMealFromFavorites(meal)
-            : await addMealToFavorites(meal);
-
-        if (success) {
-            setIsFavorite(!isFavorite);
-            triggerAnimation(isFavorite ? 0.9 : 1.2);
+        try {
+            if (isFavorite) {
+                await removeMealFromFavoritesApi(meal.id, token);
+                removeMealFromUserMeals(meal.id);
+            } else {
+                await addMealToFavorites(meal);
+            }
+        } catch (error) {
+            console.error("Error updating favorites:", error);
         }
     };
 
-    const triggerAnimation = (newSize) => {
-        setSize(newSize);
-        setAnimationKey((prevKey) => prevKey + 1);
-    };
-
     return (
-        <>
-            <motion.div
-                key={animationKey}
-                animate={{ scale: [1, size, 1] }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
-            >
-                <IconButton onClick={handleToggleFavorite}>
-                    {isFavorite ? (
-                        <FavoriteIcon
-                            sx={{
-                                fontSize: 25,
-                                color: "error.main",
-                                transition: "color 0.2s ease-in-out",
-                                "&:hover": {
-                                    color: "error.light",
-                                },
-                            }}
-                        />
-                    ) : (
-                        <FavoriteBorderIcon
-                            sx={{
-                                fontSize: 25,
-                                color: "error.main",
-                                transition: "color 0.2s ease-in-out",
-                                "&:hover": {
-                                    color: "error.light",
-                                },
-                            }}
-                        />
-                    )}
-                </IconButton>
-
-            </motion.div>
-
-            {SnackbarComponent}
-        </>
+        <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 0.3 }}>
+            <IconButton onClick={handleToggleFavorite}>
+                {isFavorite ? (
+                    <FavoriteIcon sx={{ fontSize: 25, color: "error.main", "&:hover": { color: "error.light" } }} />
+                ) : (
+                    <FavoriteBorderIcon sx={{ fontSize: 25, color: "error.main", "&:hover": { color: "error.light" } }} />
+                )}
+            </IconButton>
+        </motion.div>
     );
 };
 
 FavoriteButton.propTypes = {
-    isFavorite: PropTypes.bool.isRequired,
     meal: PropTypes.object.isRequired,
 };
 

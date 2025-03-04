@@ -1,4 +1,4 @@
-import {useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import MealCard from "../mealCard/MealCard.jsx";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import PropTypes from "prop-types";
@@ -10,11 +10,11 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 /**
  * A component that fetches and displays a list of meals based on sorting.
  */
-function MealList({setCreatedByName, sortBy, filters, onFiltersChange, activeOption, setActiveOption }) {
+function MealList({ setCreatedByName, sortBy, filters, onFiltersChange, activeOption, setActiveOption }) {
 
-    const {meals, loading, error, refreshList} = useMeals(setCreatedByName);
-    const {currentListEndpoint, setCurrentListEndpoint } = useContext(UserMealsContext);
-    const { userMeals, loading: userMealsLoading } = useContext(UserMealsContext);
+    const { meals, loading, error, refreshList } = useMeals(setCreatedByName);
+    const { currentListEndpoint, setCurrentListEndpoint } = useContext(UserMealsContext);
+    const { userMeals } = useContext(UserMealsContext);
 
     /**
      * Dynamically generates the API endpoint based on sorting.
@@ -43,7 +43,6 @@ function MealList({setCreatedByName, sortBy, filters, onFiltersChange, activeOpt
         return baseUrl;
     };
 
-
     /**
      * Handle filter data received from MealCard.
      */
@@ -57,37 +56,16 @@ function MealList({setCreatedByName, sortBy, filters, onFiltersChange, activeOpt
     };
 
     /**
-     * Refreshes the meal list when `userMeals` changes.
-     * Ensures that the latest user meals are displayed.
-     */
-    useEffect(() => {
-        if (userMeals.length > 0) {
-            (async () => {
-                try {
-                    await refreshList();
-                } catch (error) {
-                    console.error("❌ Error refreshing meal list:", error);
-                }
-            })();
-        }
-    }, [userMeals]);
-
-
-    /**
      * Updates the endpoint when filters or sorting change.
      */
     useEffect(() => {
-        if (!userMealsLoading) {
-            const newEndpoint = generateEndpoint();
+        const newEndpoint = generateEndpoint();
 
+        if (newEndpoint !== currentListEndpoint) {
             console.log("🔄 Updating endpoint due to activeOption change:", newEndpoint);
-
-            if (newEndpoint !== currentListEndpoint) {
-                setCurrentListEndpoint(newEndpoint);
-            }
+            setCurrentListEndpoint(newEndpoint);
         }
-    }, [sortBy, filters, activeOption, userMealsLoading, currentListEndpoint]);
-
+    }, [sortBy, filters, activeOption, currentListEndpoint]); // ❌ userMealsLoading verwijderd!
 
     /**
      * Refreshes the meal list when `currentListEndpoint` changes.
@@ -101,20 +79,17 @@ function MealList({setCreatedByName, sortBy, filters, onFiltersChange, activeOpt
                 console.error("❌ Error refreshing meals on endpoint change:", error);
             }
         })();
-    }, [currentListEndpoint]);
+    }, [currentListEndpoint, userMeals])
+
+    useEffect(() => {
+        console.log("🔄 activeOption changed to:", activeOption);
+    }, [activeOption]);
 
     // Show a loading indicator while data is being fetched
     if (loading)
         return (
             <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
-                <CircularProgress/>
-            </Box>
-        );
-
-    if (userMealsLoading)
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
-                <CircularProgress/>
+                <CircularProgress />
             </Box>
         );
 
@@ -146,29 +121,34 @@ function MealList({setCreatedByName, sortBy, filters, onFiltersChange, activeOpt
                     label="All Meals"
                     variant="outlined"
                 />
-
             </Box>
         );
 
     // Render the list of meals
     return (
-        <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            padding={2}
-            position="relative"
-        >
+        <Box display="flex" flexDirection="column" alignItems="center" padding={2} position="relative">
             {/* Meal List */}
             <Box
                 display="grid"
-                gridTemplateColumns={{xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(3, 1fr)", lg: "repeat(4, 1fr)"}}
+                gridTemplateColumns={{ xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(3, 1fr)", lg: "repeat(4, 1fr)" }}
                 gap={2}
                 padding={0}
             >
-                {meals.map((meal) => (
-                    <MealCard key={meal.id} meal={meal} refreshList={refreshList} onFilter={handleFilter}/>
-                ))}
+                {meals.map((meal) => {
+                    const userMealMatch = userMeals.find(userMeal => String(userMeal.originalMealId) === String(meal.id));
+
+                    const mealToRender = userMealMatch || meal;
+
+                    return (
+                        <MealCard
+                            key={mealToRender.id}
+                            meal={mealToRender}
+                            refreshList={refreshList}
+                            onFilter={handleFilter}
+                        />
+                    );
+                })}
+
             </Box>
         </Box>
     );
@@ -183,6 +163,7 @@ MealList.propTypes = {
     filters: PropTypes.object.isRequired,
     onFiltersChange: PropTypes.func.isRequired,
     activeOption: PropTypes.string.isRequired,
+    setActiveOption: PropTypes.func.isRequired,
 };
 
 export default MealList;
