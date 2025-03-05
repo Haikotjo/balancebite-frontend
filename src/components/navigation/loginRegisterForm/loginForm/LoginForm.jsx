@@ -18,7 +18,7 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
         resetUserMeals();
         await handleLogin(email, password, async () => {
             await fetchUserMealsData();
-            if (onClose) onClose(); // Sluit popup als de prop bestaat
+            if (onClose) onClose();
         });
     };
 
@@ -28,7 +28,6 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                // minHeight: "100vh",
                 width: "100%",
                 ...(onClose && {
                     position: "absolute",
@@ -106,7 +105,7 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                 >
                     Don&#39;t have an account? Register
                 </Button>
-                {onClose && ( // Close button alleen tonen als het een popup is
+                {onClose && (
                     <Button
                         variant="text"
                         size="small"
@@ -122,7 +121,7 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
 };
 
 LoginForm.propTypes = {
-    onClose: PropTypes.func, // Niet verplicht meer
+    onClose: PropTypes.func,
     onSwitchToRegister: PropTypes.func.isRequired,
 };
 

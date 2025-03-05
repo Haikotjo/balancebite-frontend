@@ -113,7 +113,7 @@ function MealList({ setCreatedByName, sortBy, filters, onFiltersChange, activeOp
                 gap={1}
             >
                 <Typography variant="h6" gutterBottom>
-                    No meals found.
+                    No meals added yet. Start adding meals!
                 </Typography>
                 <CustomButton
                     icon={<RefreshIcon />}

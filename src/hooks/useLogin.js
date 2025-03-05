@@ -10,14 +10,14 @@ const useLogin = () => {
     const handleLogin = async (email, password, onSuccess) => {
         try {
             await login(email, password);
-            setErrorMessage(null); // Wis eerdere foutmeldingen
+            setErrorMessage(null);
 
-            if (onSuccess) onSuccess(); // Roep callback aan bij succes
+            if (onSuccess) onSuccess();
 
             if (window.location.pathname !== "/meals") {
-                navigate("/meals"); // Navigeer naar MealsPage als je er niet al bent
+                navigate("/meals");
             } else {
-                window.location.reload(); // Vernieuw de pagina als je al op /meals bent
+                window.location.reload();
             }
         } catch (err) {
             setErrorMessage(err.message || "Login failed. Please try again.");

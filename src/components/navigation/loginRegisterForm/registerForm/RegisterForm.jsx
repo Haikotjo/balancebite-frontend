@@ -68,8 +68,8 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
 
             await handleLogin(data.email, data.password, async () => {
                 await fetchUserMealsData();
-                if (onClose) onClose(); // Sluit popup als de prop bestaat
-                navigate("/meals");
+                if (onClose) onClose();
+                navigate("/profile");
             });
         } catch (error) {
             console.error("Registration failed:", error);
@@ -84,7 +84,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
                 justifyContent: "center",
                 alignItems: "center",
                 width: "100%",
-                minHeight: onClose ? "auto" : "100vh", // Alleen 100vh op de pagina, niet in de popup
+                minHeight: onClose ? "auto" : "100vh",
                 ...(onClose && {
                     position: "absolute",
                     top: 0,
@@ -160,7 +160,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
 
                 <Button type="submit" variant="contained" size="small"
                         sx={{
-                            color: theme.palette.text.light, // Tekst uit theme
+                            color: theme.palette.text.light,
                         }}
                 >
                     Register
@@ -175,7 +175,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
                     Already have an account? Login
                 </Button>
 
-                {onClose && ( // Close button alleen tonen als het een popup is
+                {onClose && (
                     <Button
                         variant="text"
                         size="small"
@@ -191,7 +191,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
 };
 
 RegisterForm.propTypes = {
-    onClose: PropTypes.func, // Niet verplicht meer
+    onClose: PropTypes.func,
     onSwitchToLogin: PropTypes.func.isRequired,
 };
 
