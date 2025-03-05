@@ -20,7 +20,7 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
                 console.error("No token found. User not authenticated.");
                 setErrorMessage(
                     <>
-                        Use this function or to consume a meal, please{" "}
+                        To use this function first get a personalized RDI, please{" "}
                         <a href="/register" style={{ color: theme.palette.primary.main, textDecoration: "underline" }}>
                             register
                         </a>{" "}
@@ -30,7 +30,7 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
                         </a>.
                     </>
                 );
-                setDialogOpen(true); // ✅ Open foutvenster
+                setDialogOpen(true);
                 return;
             }
 
