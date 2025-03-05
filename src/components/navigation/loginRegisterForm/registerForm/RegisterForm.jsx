@@ -35,7 +35,7 @@ const schema = yup.object().shape({
 });
 
 const RegisterForm = ({ onClose, onSwitchToLogin }) => {
-    const theme = useTheme(); // Toegang tot het MUI-thema
+    const theme = useTheme();
     const [successMessage, setSuccessMessage] = useState("");
     const navigate = useNavigate();
     const { handleLogin } = useLogin();
@@ -68,7 +68,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
 
             await handleLogin(data.email, data.password, async () => {
                 await fetchUserMealsData();
-                onClose();
+                if (onClose) onClose(); // Sluit popup als de prop bestaat
                 navigate("/meals");
             });
         } catch (error) {
@@ -80,16 +80,20 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
     return (
         <Box
             sx={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100vw",
-                height: "100vh",
-                backgroundColor: theme.palette.action.disabledBackground, // Dynamisch uit thema
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                zIndex: 1300,
+                width: "100%",
+                minHeight: onClose ? "auto" : "100vh", // Alleen 100vh op de pagina, niet in de popup
+                ...(onClose && {
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100vw",
+                    height: "100vh",
+                    backgroundColor: theme.palette.action.disabledBackground,
+                    zIndex: 1300,
+                }),
             }}
         >
             <Box
@@ -99,8 +103,8 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
                     display: "flex",
                     flexDirection: "column",
                     gap: 1.5,
-                    backgroundColor: theme.palette.background.paper, // Dynamisch uit thema
-                    color: theme.palette.text.primary, // Dynamisch uit thema
+                    backgroundColor: theme.palette.background.paper,
+                    color: theme.palette.text.primary,
                     padding: 3,
                     borderRadius: 2,
                     boxShadow: 3,
@@ -154,7 +158,11 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
                     required
                 />
 
-                <Button type="submit" variant="contained" color="primary" size="small">
+                <Button type="submit" variant="contained" size="small"
+                        sx={{
+                            color: theme.palette.text.light, // Tekst uit theme
+                        }}
+                >
                     Register
                 </Button>
 
@@ -167,21 +175,23 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
                     Already have an account? Login
                 </Button>
 
-                <Button
-                    variant="text"
-                    size="small"
-                    onClick={onClose}
-                    sx={{ alignSelf: "flex-end" }}
-                >
-                    Close
-                </Button>
+                {onClose && ( // Close button alleen tonen als het een popup is
+                    <Button
+                        variant="text"
+                        size="small"
+                        onClick={onClose}
+                        sx={{ alignSelf: "flex-end" }}
+                    >
+                        Close
+                    </Button>
+                )}
             </Box>
         </Box>
     );
 };
 
 RegisterForm.propTypes = {
-    onClose: PropTypes.func.isRequired,
+    onClose: PropTypes.func, // Niet verplicht meer
     onSwitchToLogin: PropTypes.func.isRequired,
 };
 
