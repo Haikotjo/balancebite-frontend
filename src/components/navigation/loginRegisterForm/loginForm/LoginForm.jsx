@@ -2,23 +2,23 @@ import { useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { Box, TextField, Button, Alert, useTheme } from "@mui/material";
 import useLogin from "../../../../hooks/useLogin.js";
-import { UserMealsContext } from "../../../../context/UserMealsContext.jsx"; // Import de UserMealsContext
+import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 
 const LoginForm = ({ onClose, onSwitchToRegister }) => {
     const theme = useTheme();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const { handleLogin, errorMessage } = useLogin();
-    const { resetUserMeals, fetchUserMealsData } = useContext(UserMealsContext); // Haal functies uit context
+    const { resetUserMeals, fetchUserMealsData } = useContext(UserMealsContext);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        localStorage.clear(); // Verwijder oude tokens
+        localStorage.clear();
         sessionStorage.clear();
-        resetUserMeals(); // Reset maaltijden van vorige gebruiker
+        resetUserMeals();
         await handleLogin(email, password, async () => {
-            await fetchUserMealsData(); // Haal nieuwe meals op na login
-            onClose(); // Sluit het loginformulier
+            await fetchUserMealsData();
+            onClose();
         });
     };
 

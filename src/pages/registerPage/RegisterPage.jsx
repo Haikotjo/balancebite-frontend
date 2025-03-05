@@ -1,38 +1,30 @@
-import RegisterForm from "../../components/navigation/loginRegisterForm/registerForm/RegisterForm.jsx";
-import { useState } from "react";
+import { Box, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { registerUserApi } from "../../services/authService.js";
+import RegisterForm from "../../components/navigation/loginRegisterForm/registerForm/RegisterForm.jsx";
 
-const RegisterPage = () => {
-    const [errorMessage, setErrorMessage] = useState(null);
+function RegisterPage() {
     const navigate = useNavigate();
 
-    const handleRegister = async (formData) => {
-        try {
-            console.log("[RegisterPage] Submitting registration form:", formData); // Log formuliergegevens
-            await registerUserApi(formData);
-            console.log("[RegisterPage] Registration successful, redirecting to login."); // Log succes
-            navigate("/login");
-        } catch (error) {
-            console.error(
-                "[RegisterPage] Registration failed:",
-                error.response?.data?.error || error.message
-            ); // Log fout
-            setErrorMessage(
-                error.response?.data?.error || "Registration failed. Please try again."
-            );
-        }
-    };
-
     return (
-        <div style={{ padding: "20px" }}>
+        <Box
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: "100vh",
+                padding: 2,
+            }}
+        >
+            <Typography variant="h4" gutterBottom>
+                Register
+            </Typography>
             <RegisterForm
-                onSubmit={handleRegister}
-                errorMessage={errorMessage}
-                onClose={() => navigate("/")}
+                onClose={() => navigate("/")} // Terug naar home of login
+                onSwitchToLogin={() => navigate("/login")}
             />
-        </div>
+        </Box>
     );
-};
+}
 
 export default RegisterPage;
