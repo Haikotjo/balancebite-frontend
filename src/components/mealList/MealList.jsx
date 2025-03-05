@@ -65,7 +65,7 @@ function MealList({ setCreatedByName, sortBy, filters, onFiltersChange, activeOp
             console.log("🔄 Updating endpoint due to activeOption change:", newEndpoint);
             setCurrentListEndpoint(newEndpoint);
         }
-    }, [sortBy, filters, activeOption, currentListEndpoint]); // ❌ userMealsLoading verwijderd!
+    }, [sortBy, filters, activeOption, currentListEndpoint]);
 
     /**
      * Refreshes the meal list when `currentListEndpoint` changes.

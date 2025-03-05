@@ -5,7 +5,7 @@ import LoginForm from "./loginForm/LoginForm.jsx";
 import RegisterForm from "./registerForm/RegisterForm.jsx";
 
 const LoginRegisterForm = ({ onLogin, onRegister, errorMessage, onClose }) => {
-    const theme = useTheme(); // Toegang tot het MUI-thema
+    const theme = useTheme();
     const [isRegistering, setIsRegistering] = useState(false);
 
     return (
@@ -16,7 +16,7 @@ const LoginRegisterForm = ({ onLogin, onRegister, errorMessage, onClose }) => {
                 left: 0,
                 width: "100vw",
                 height: "100vh",
-                backgroundColor: theme.palette.action.disabledBackground, // Dynamisch uit theme
+                backgroundColor: theme.palette.action.disabledBackground,
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -25,8 +25,8 @@ const LoginRegisterForm = ({ onLogin, onRegister, errorMessage, onClose }) => {
         >
             <Box
                 sx={{
-                    backgroundColor: theme.palette.background.paper, // Dynamisch uit theme
-                    color: theme.palette.text.primary, // Tekstkleur uit theme
+                    backgroundColor: theme.palette.background.paper,
+                    color: theme.palette.text.primary,
                     padding: 3,
                     borderRadius: 2,
                     boxShadow: 3,
@@ -38,7 +38,7 @@ const LoginRegisterForm = ({ onLogin, onRegister, errorMessage, onClose }) => {
                     <RegisterForm
                         onClose={onClose}
                         onRegister={onRegister}
-                        onSwitchToLogin={() => setIsRegistering(false)} // Schakel terug naar Login
+                        onSwitchToLogin={() => setIsRegistering(false)}
                     />
                 ) : (
                     <LoginForm

@@ -7,10 +7,10 @@ export default defineConfig({
     postcss: "./postcss.config.js",
   },
   build: {
-    sourcemap: false,  // Zet sourcemaps uit
+    sourcemap: false,
     rollupOptions: {
       output: {
-        sourcemap: false, // Forceer geen sourcemaps
+        sourcemap: false,
       },
     },
   },

@@ -20,7 +20,7 @@ import VerticalDivider from "../verticalDivider/VerticalDivider.jsx";
 const NavBar = () => {
     const { user } = useContext(AuthContext);
     const theme = useTheme();
-    const { mode } = useThemeMode(); // Verkrijg de juiste mode
+    const { mode } = useThemeMode();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const handleLogout = useLogout();
     const { handleLogin, errorMessage } = useLogin();
