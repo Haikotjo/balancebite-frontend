@@ -1,21 +1,42 @@
+import { useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { IconButton } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { motion } from "framer-motion";
-import { useContext } from "react";
 import { UserMealsContext } from "../../../context/UserMealsContext";
-import { removeMealFromFavoritesApi } from "../../../services/apiService";
 import useFavorites from "../../../hooks/useFavorites.jsx";
+import ErrorDialog from "../../errorDialog/ErrorDialog.jsx";
+import { useTheme } from "@mui/material";
 
 const FavoriteButton = ({ meal }) => {
-    const { userMeals } = useContext(UserMealsContext); // ✅ Alleen userMeals uit context
+    const theme = useTheme();
+    const { userMeals } = useContext(UserMealsContext);
     const { addMealToFavorites, removeMealFromFavorites } = useFavorites();
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const token = localStorage.getItem("accessToken");
 
-    // 🔥 Fix: Direct de favoriet-status bepalen bij elke render
     const isFavorite = userMeals.some(userMeal => userMeal.id === meal.id);
 
     const handleToggleFavorite = async () => {
+        if (!token) {
+            setErrorMessage(
+                <>
+                    To use this function, please{" "}
+                    <a href="/register" style={{ color: theme.palette.primary.main, textDecoration: "underline" }}>
+                        register
+                    </a>{" "}
+                    or{" "}
+                    <a href="/login" style={{ color: theme.palette.primary.main, textDecoration: "underline" }}>
+                        login
+                    </a>.
+                </>
+            );
+            setDialogOpen(true);
+            return;
+        }
+
         try {
             if (isFavorite) {
                 await removeMealFromFavorites(meal);
@@ -28,15 +49,19 @@ const FavoriteButton = ({ meal }) => {
     };
 
     return (
-        <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 0.3 }}>
-            <IconButton onClick={handleToggleFavorite}>
-                {isFavorite ? (
-                    <FavoriteIcon sx={{ fontSize: 25, color: "error.main", "&:hover": { color: "error.light" } }} />
-                ) : (
-                    <FavoriteBorderIcon sx={{ fontSize: 25, color: "error.main", "&:hover": { color: "error.light" } }} />
-                )}
-            </IconButton>
-        </motion.div>
+        <>
+            <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 0.3 }}>
+                <IconButton onClick={handleToggleFavorite}>
+                    {isFavorite ? (
+                        <FavoriteIcon sx={{ fontSize: 25, color: "error.main", "&:hover": { color: "error.light" } }} />
+                    ) : (
+                        <FavoriteBorderIcon sx={{ fontSize: 25, color: "error.main", "&:hover": { color: "error.light" } }} />
+                    )}
+                </IconButton>
+            </motion.div>
+
+            <ErrorDialog open={dialogOpen} onClose={() => setDialogOpen(false)} message={errorMessage} />
+        </>
     );
 };
 
