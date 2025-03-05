@@ -12,14 +12,25 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const token = localStorage.getItem("accessToken");
 
     const handleConsumeMeal = async () => {
         try {
-            const token = localStorage.getItem("accessToken");
             if (!token) {
                 console.error("No token found. User not authenticated.");
-                setErrorMessage("You need to login or register to consume a meal.");
-                setDialogOpen(true); // ✅ Open het foutvenster
+                setErrorMessage(
+                    <>
+                        Use this function or to consume a meal, please{" "}
+                        <a href="/register" style={{ color: theme.palette.primary.main, textDecoration: "underline" }}>
+                            register
+                        </a>{" "}
+                        or{" "}
+                        <a href="/login" style={{ color: theme.palette.primary.main, textDecoration: "underline" }}>
+                            login
+                        </a>.
+                    </>
+                );
+                setDialogOpen(true); // ✅ Open foutvenster
                 return;
             }
 
@@ -37,14 +48,11 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
                 error.response?.status === 404 &&
                 error.response?.data?.error?.includes("Recommended daily intake not found")
             ) {
-                setErrorMessage(
-                    "Please update your metrics in your profile to get a Recommended Daily Intake (RDI)."
-                );
-                setDialogOpen(true);
+                setErrorMessage("Please update your metrics in your profile to get a Recommended Daily Intake (RDI).");
             } else {
                 setErrorMessage("An unexpected error occurred. Please try again later.");
-                setDialogOpen(true);
             }
+            setDialogOpen(true);
         }
     };
 
@@ -83,8 +91,10 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
                 open={dialogOpen}
                 onClose={handleCloseDialog}
                 message={errorMessage}
-                actionLink="/profile"
-                actionLabel="Go to Profile"
+                {...(token && {
+                    actionLink: "/profile",
+                    actionLabel: "Go to Profile",
+                })}
             />
 
             <Modal
