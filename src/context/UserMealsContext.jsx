@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { AuthContext } from "./AuthContext";
-import {addMealToFavoritesApi, fetchMeals, fetchUserMeals} from "../services/apiService";
+import { fetchMeals, fetchUserMeals} from "../services/apiService";
 
 /**
  * Context for managing user-specific meal data and API endpoints.

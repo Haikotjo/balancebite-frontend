@@ -46,11 +46,11 @@ const ProfilePage = () => {
                 </Typography>
                 <Grid container spacing={2}>
                     <Grid item xs={12} md={6}>
-                        {/* 📌 Normale RDI (wat nog gegeten mag worden) */}
+
                         <RecommendedNutritionDisplay />
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        {/* 📌 Base RDI (oorspronkelijke voedingsrichtlijn) */}
+
                         <RecommendedNutritionDisplay useBaseRDI={true} />
                     </Grid>
                 </Grid>

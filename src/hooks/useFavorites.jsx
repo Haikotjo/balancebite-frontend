@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { UserMealsContext } from "../context/UserMealsContext.jsx";
-import { SnackbarContext } from "../context/SnackbarContext.jsx"; // ✅ Import de snackbar context
+import { SnackbarContext } from "../context/SnackbarContext.jsx";
 import { addMealToFavoritesApi, removeMealFromFavoritesApi } from "../services/apiService.js";
 
 const useFavorites = () => {

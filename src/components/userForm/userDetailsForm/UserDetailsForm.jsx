@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import {Typography, CircularProgress, Box} from "@mui/material";
+import {Typography, CircularProgress} from "@mui/material";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { userDetailsSchema } from "../../../utils/valadition/userDetailsSchema.js";

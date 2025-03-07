@@ -15,10 +15,16 @@ const PageWrapper = ({ children, sx = {} }) => {
     return (
         <Box
             sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: "100vh",
                 maxWidth: sx.maxWidth || "100%",
                 width: "100%",
                 margin: sx.margin || "auto",
                 paddingX: sx.paddingX || 2,
+                textAlign: "center",
                 ...sx,
             }}
         >
