@@ -35,6 +35,7 @@ const PageWrapper = ({ children, sx = {} }) => {
 
 PageWrapper.propTypes = {
     children: PropTypes.node.isRequired, // The content to be rendered inside the wrapper
+    sx: PropTypes.object,
     padding: PropTypes.oneOfType([PropTypes.number, PropTypes.string]), // Padding value (e.g., 2 or '16px')
     textAlign: PropTypes.string, // Text alignment (e.g., 'center', 'left', 'right')
 };

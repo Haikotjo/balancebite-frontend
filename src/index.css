@@ -1,5 +1,11 @@
 @import "./styles/global.css";
 
+html, body {
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch; /* Zorgt voor het bounce-effect op iOS */
+}
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

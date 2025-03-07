@@ -142,7 +142,7 @@ function HomePage() {
             />
 
             {/* Footer Links Section */}
-            <Box sx={{ marginTop: 4 }}>
+            <Box sx={{ marginTop: 4, marginBottom: 4 }}>
                 <Grid container spacing={2} justifyContent="center">
                     <Grid item>
                         <Link href="/about" underline="hover">
