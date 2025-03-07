@@ -4,35 +4,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import PropTypes from "prop-types";
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import * as yup from "yup";
 import useLogin from "../../../../hooks/useLogin.js";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import { registerUserApi } from "../../../../services/apiService.js";
+import registerSchema from "./registerSchema.js";
 
-// Validation schema using yup
-const schema = yup.object().shape({
-    userName: yup
-        .string()
-        .min(2, "Username must be at least 2 characters.")
-        .max(10, "Username cannot exceed 10 characters.")
-        .required("Username is required."),
-    email: yup
-        .string()
-        .email("Please provide a valid email address.")
-        .required("Email is required."),
-    password: yup
-        .string()
-        .min(6, "Password must be at least 6 characters long.")
-        .matches(/[A-Z]/, "Password must include an uppercase letter.")
-        .matches(/[a-z]/, "Password must include a lowercase letter.")
-        .matches(/\d/, "Password must include a number.")
-        .matches(/[!@#$%^&*()_+=-]/, "Password must include a special character.")
-        .required("Password is required."),
-    confirmPassword: yup
-        .string()
-        .oneOf([yup.ref("password")], "Passwords do not match.")
-        .required("Please confirm your password."),
-});
 
 const RegisterForm = ({ onClose, onSwitchToLogin }) => {
     const theme = useTheme();
@@ -46,7 +22,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
         handleSubmit,
         formState: { errors },
     } = useForm({
-        resolver: yupResolver(schema),
+        resolver: yupResolver(registerSchema),
         mode: "onBlur",
     });
 
@@ -60,7 +36,8 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
             const { accessToken, refreshToken } = responseData;
 
             if (!accessToken || !refreshToken) {
-                throw new Error("Invalid response from server.");
+                setSuccessMessage("Invalid response from server.");
+                return;
             }
 
             localStorage.setItem("accessToken", accessToken);

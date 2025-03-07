@@ -8,7 +8,6 @@ import NutrientSortOptions from "../../components/mealList/nutrientSortOptions/N
 import ActiveFilters from "../../components/mealList/activeFilters/ActiveFilters.jsx";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext.jsx";
-import { UserMealsContext } from "../../context/UserMealsContext.jsx";
 
 /**
  * The MealPage component displays a list of meals and a submenu for filtering options.
@@ -24,11 +23,7 @@ function MealPage() {
     const [sortBy, setSortBy] = useState(null);
     const [filters, setFilters] = useState({});
     const { user } = useContext(AuthContext);
-    const { userMeals } = useContext(UserMealsContext);
-
-    const [activeOption, setActiveOption] = useState(
-        user && userMeals.length > 0 ? "My Meals" : "All Meals"
-    );
+    const [activeOption, setActiveOption] = useState(user ? "My Meals" : "All Meals");
 
 
     const handleSort = (sortKey, sortOrder) => {
@@ -50,10 +45,10 @@ function MealPage() {
     };
 
     useEffect(() => {
-        if (user && userMeals.length > 0) {
+        if (user) {
             setActiveOption("My Meals");
         }
-    }, [userMeals, user]);
+    }, [user]);
 
     useEffect(() => {
         console.log("🔄 Updated activeOption in MealPage:", activeOption);

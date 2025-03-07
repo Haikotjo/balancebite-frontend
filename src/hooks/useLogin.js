@@ -20,7 +20,7 @@ const useLogin = () => {
                 window.location.reload();
             }
         } catch (err) {
-            setErrorMessage(err.message || "Login failed. Please try again.");
+            setErrorMessage(err.response?.data?.error || "Login failed. Please try again.");
         }
     };
 

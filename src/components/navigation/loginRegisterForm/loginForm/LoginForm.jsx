@@ -1,22 +1,33 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import PropTypes from "prop-types";
-import {Box, TextField, Button, Alert, useTheme, Typography} from "@mui/material";
+import { Box, TextField, Button, Alert, useTheme, Typography } from "@mui/material";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import useLogin from "../../../../hooks/useLogin.js";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
+import loginSchema from "./LoginForm.js";
+
 
 const LoginForm = ({ onClose, onSwitchToRegister }) => {
     const theme = useTheme();
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const { handleLogin, errorMessage } = useLogin();
     const { resetUserMeals, fetchUserMealsData } = useContext(UserMealsContext);
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        resolver: yupResolver(loginSchema),
+        mode: "onBlur",
+        reValidateMode: "onChange",
+    });
+
+    const onSubmit = async (data) => {
         localStorage.clear();
         sessionStorage.clear();
         resetUserMeals();
-        await handleLogin(email, password, async () => {
+        await handleLogin(data.email, data.password, async () => {
             await fetchUserMealsData();
             if (onClose) onClose();
         });
@@ -42,7 +53,7 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
         >
             <Box
                 component="form"
-                onSubmit={handleSubmit}
+                onSubmit={handleSubmit(onSubmit)}
                 sx={{
                     display: "flex",
                     flexDirection: "column",
@@ -68,24 +79,27 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                 </Typography>
 
                 {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+
                 <TextField
                     label="Email"
                     type="email"
                     size="small"
-                    value={email}
-                    onChange={(e) => setEmail((e.target.value || "").toLowerCase())}
-                    onBlur={() => window.scrollTo(0, 0)}
+                    {...register("email")}
+                    error={!!errors.email}
+                    helperText={errors.email?.message}
                     required
                 />
+
                 <TextField
                     label="Password"
                     type="password"
                     size="small"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    onBlur={() => window.scrollTo(0, 0)}
+                    {...register("password")}
+                    error={!!errors.password}
+                    helperText={errors.password?.message}
                     required
                 />
+
                 <Button
                     type="submit"
                     variant="contained"

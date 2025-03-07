@@ -115,13 +115,6 @@ export const UserMealsProvider = ({ children }) => {
     };
 
     /**
-     * Refreshes the meal list (same as `fetchMealsData`, but exposed in context).
-     */
-    const refreshMealsList = async () => {
-        await fetchMealsData();
-    };
-
-    /**
      * Removes a meal from the user's meal list.
      * Adds logs to check if the meal is being correctly removed.
      */
@@ -144,7 +137,6 @@ export const UserMealsProvider = ({ children }) => {
                 setCurrentListEndpoint,
                 updateEndpoint,
                 fetchUserMealsData,
-                refreshMealsList,
                 resetUserMeals: () => setUserMeals([]),
                 addMealToUserMeals: (meal) => setUserMeals((prev) => [...prev, meal]),
                 removeMealFromUserMeals,
