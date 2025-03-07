@@ -3,11 +3,10 @@ import { AuthContext } from "../context/AuthContext.jsx";
 import { UserMealsContext } from "../context/UserMealsContext.jsx";
 import { SnackbarContext } from "../context/SnackbarContext.jsx"; // ✅ Import de snackbar context
 import { addMealToFavoritesApi, removeMealFromFavoritesApi } from "../services/apiService.js";
-import {refreshMealsList} from "../utils/helpers/refreshMealsList.js";
 
 const useFavorites = () => {
     const { user, token } = useContext(AuthContext);
-    const { removeMealFromUserMeals, fetchUserMealsData, refreshMealsList } = useContext(UserMealsContext);
+    const { removeMealFromUserMeals, fetchUserMealsData } = useContext(UserMealsContext);
     const { showSnackbar } = useContext(SnackbarContext);
 
     const addMealToFavorites = async (meal) => {
@@ -19,7 +18,6 @@ const useFavorites = () => {
         try {
             await addMealToFavoritesApi(meal.id, token);
             await fetchUserMealsData();
-            await refreshMealsList();
 
             showSnackbar(`${meal.name} added to favorites!`, "success");
             return true;
