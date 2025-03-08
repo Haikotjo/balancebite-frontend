@@ -2,7 +2,7 @@
 
 html, body {
     overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch; /* Zorgt voor het bounce-effect op iOS */
+    -webkit-overflow-scrolling: touch;
 }
 
 

@@ -5,7 +5,7 @@ import { Box } from '@mui/material';
  * AnimatedBox component: Provides a flexible container with animation effects.
  * It supports directional animations, padding, and margin customization.
  */
-const AnimatedBox = ({ children, animation = 'slideIn', direction = 'right', padding = 2, marginBottom = 5 }) => {
+const AnimatedBox = ({ children, className = '', animation = 'slideIn', direction = 'right', padding = 2, marginBottom = 5 }) => {
     /**
      * Determines the starting transformation based on the animation direction.
      * @returns {string} - CSS transform property value.
@@ -30,6 +30,7 @@ const AnimatedBox = ({ children, animation = 'slideIn', direction = 'right', pad
 
     return (
         <Box
+            className={`animated-box ${className}`}
             sx={{
                 maxWidth: 600, // Maximum width constraint
                 marginBottom, // Apply bottom margin
@@ -51,6 +52,8 @@ AnimatedBox.propTypes = {
      * Content to be wrapped by the AnimatedBox.
      */
     children: PropTypes.node.isRequired,
+
+    className: PropTypes.string,
 
     /**
      * Name of the animation effect (default: "slideIn").

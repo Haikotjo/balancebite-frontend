@@ -90,6 +90,7 @@ function HomePage() {
         <PageWrapper>
             {/* Header Section */}
             <AnimatedBox
+                className="animated-logo"
                 animation="fadeIn"
                 direction="down"
                 padding={2}
