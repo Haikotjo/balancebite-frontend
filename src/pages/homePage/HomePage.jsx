@@ -1,10 +1,10 @@
-import {Box, Typography, Grid, Link, ListItem, ListItemText, List, ListItemIcon} from '@mui/material';
+import { Box, Typography, Grid, Link } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import FeatureCard from '../../components/home/featureCard/FeatureCard.jsx';
+import { Divider } from '@mui/material';
 import FoodBankRoundedIcon from '@mui/icons-material/FoodBankRounded';
 import MonitorHeartRoundedIcon from '@mui/icons-material/MonitorHeartRounded';
 import BarChartRoundedIcon from '@mui/icons-material/BarChartRounded';
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import IconLink from "../../components/home/iconWrapper/iconLink/IconLink.jsx";
 import Logo from "../../components/logo/Logo.jsx";
 import IconWrapper from "../../components/home/iconWrapper/IconWrapper.jsx";
@@ -111,11 +111,14 @@ function HomePage() {
                 direction="up"
             />
 
+            <Divider sx={{ width: "100%", my: 6, borderColor: theme.palette.primary.main  }} />
+
             {/* Informative Text Section */}
             <AnimatedBox
                 className="app-info-section"
                 animation="slideIn"
                 direction="right"
+                marginBottom={0}
                 sx={{
                     display: "flex",
                     flexDirection: "column",
@@ -126,12 +129,12 @@ function HomePage() {
                 }}
             >
                 <Typography
-                    variant="h5"
+                    variant="h4"
                     component="h1"
                     sx={{
                         color: theme.palette.text.primary,
                         fontWeight: "bold",
-                        marginBottom: 1,
+                        marginBottom: 2,
                     }}
                 >
                     Your Personal Nutrition Tracker
@@ -146,6 +149,12 @@ function HomePage() {
                         textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
                         maxWidth: 800,
                         marginBottom: 3,
+                        fontSize: {
+                            xs: "0.9rem",
+                            sm: "1rem",
+                            md: "1.1rem",
+                            lg: "1.2rem",
+                        }
                     }}
                 >
                     Stay on top of your nutrition goals with our intuitive meal tracking app.
@@ -158,6 +167,7 @@ function HomePage() {
                 <FeatureList />
             </AnimatedBox>
 
+            <Divider sx={{ width: "100%", my: 4, mb:6, borderColor: theme.palette.primary.main }} />
 
             {/* Features Section */}
             <FeatureSection

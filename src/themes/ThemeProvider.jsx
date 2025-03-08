@@ -26,6 +26,7 @@ const getDesignTokens = (mode) => ({
             light: "#ffffff",
         },
         divider: mode === "light" ? "#4D5061" : "#303030",
+        homePageDivider: mode === "light" ? "#2D2F39" : "#ffffff",
         background: {
             default: mode === "light" ? "#ffffff" : "#121212",
             paper: mode === "light" ? "#f5f5f5" : "#1e1e1e",
