@@ -32,7 +32,7 @@ const AnimatedBox = ({ children, className = '', animation = 'slideIn', directio
         <Box
             className={`animated-box ${className}`}
             sx={{
-                maxWidth: 600, // Maximum width constraint
+                maxWidth: 800, // Maximum width constraint
                 marginBottom, // Apply bottom margin
                 padding, // Apply padding
                 animation: `${keyframesName} 1.5s ease-in-out`, // Animation settings

@@ -1,15 +1,17 @@
-import { Box, Typography, Grid, Link } from '@mui/material';
+import {Box, Typography, Grid, Link, ListItem, ListItemText, List, ListItemIcon} from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import FeatureCard from '../../components/home/featureCard/FeatureCard.jsx';
 import FoodBankRoundedIcon from '@mui/icons-material/FoodBankRounded';
 import MonitorHeartRoundedIcon from '@mui/icons-material/MonitorHeartRounded';
 import BarChartRoundedIcon from '@mui/icons-material/BarChartRounded';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import IconLink from "../../components/home/iconWrapper/iconLink/IconLink.jsx";
 import Logo from "../../components/logo/Logo.jsx";
 import IconWrapper from "../../components/home/iconWrapper/IconWrapper.jsx";
 import AnimatedBox from "../../components/home/animatedBox/AnimatedBox.jsx";
 import PageWrapper from "../../components/pageWrapper/PageWrapper.jsx";
 import FeatureSection from "../../components/home/featureSection/FeatureSection.jsx";
+import FeatureList from "../../components/home/featureList/FeatureList.jsx";
 
 /**
  * HomePage Component
@@ -110,20 +112,52 @@ function HomePage() {
             />
 
             {/* Informative Text Section */}
-            <AnimatedBox animation="slideIn" direction="right">
+            <AnimatedBox
+                className="app-info-section"
+                animation="slideIn"
+                direction="right"
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    textAlign: "center",
+                    maxWidth: 800,
+                    marginX: "auto",
+                }}
+            >
+                <Typography
+                    variant="h5"
+                    component="h1"
+                    sx={{
+                        color: theme.palette.text.primary,
+                        fontWeight: "bold",
+                        marginBottom: 1,
+                    }}
+                >
+                    Your Personal Nutrition Tracker
+                </Typography>
+
                 <Typography
                     variant="h6"
                     component="p"
                     sx={{
                         color: theme.palette.text.primary,
-                        textAlign: 'center',
                         lineHeight: 1.6,
                         textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
+                        maxWidth: 800,
+                        marginBottom: 3,
                     }}
                 >
-                    Balance your nutrition and achieve your health goals with ease. Get personalized recommendations, track meals, and gain insights into your daily and weekly nutrition.
+                    Stay on top of your nutrition goals with our intuitive meal tracking app.
+                    Whether you want to gain muscle, lose weight, or simply eat healthier,
+                    our app makes it easy to <strong><em>track your meals, balance your macros, and stay in control</em></strong>.
+                    Enter your meals, monitor your <strong><em>Recommended Daily Intake (RDI)</em></strong>,
+                    and see how each meal affects your daily nutrition.
                 </Typography>
+
+                <FeatureList />
             </AnimatedBox>
+
 
             {/* Features Section */}
             <FeatureSection
