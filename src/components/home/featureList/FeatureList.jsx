@@ -9,7 +9,7 @@ const FeatureList = () => {
         { primary: "Create and save meals", secondary: "Plan your meals based on your goals." },
         { primary: "Add meals from others", secondary: "Discover and use shared meals." },
         { primary: "Monitor your daily intake", secondary: "Track fats, proteins, and carbohydrates easily." },
-        { primary: "Set your Recommended Daily Intake (RDI)", secondary: "Personalized intake based on weight, age, and goals." },
+        { primary: "Get your Recommended Daily Intake (RDI)", secondary: "Personalized intake based on weight, age, and goals." },
         { primary: "Eat meals with a single click", secondary: "See your intake update automatically." },
     ];
 

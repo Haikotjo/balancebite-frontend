@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import MealCard from "../mealCard/MealCard.jsx";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography, Link  } from "@mui/material";
 import PropTypes from "prop-types";
 import CustomButton from "./createMealButton/CustomButton.jsx";
 import useMeals from "./hooks/useMeals.js";
@@ -112,15 +112,29 @@ function MealList({ setCreatedByName, sortBy, filters, onFiltersChange, activeOp
                 minHeight="50vh"
                 gap={1}
             >
-                <Typography variant="h6" gutterBottom>
-                    No meals added yet. Start adding meals!
-                </Typography>
-                <CustomButton
-                    icon={<RefreshIcon />}
-                    onClick={() => setActiveOption("All Meals")}
-                    label="All Meals"
-                    variant="outlined"
-                />
+                {activeOption === "Created Meals" ? (
+                    <>
+                        <Typography variant="h6" gutterBottom>
+                            You've not yet created any meals. Start making your own recipe{" "}
+                            <Link href="/create-meal" underline="hover" sx={{ fontWeight: "bold", color: "primary.main" }}>
+                                here
+                            </Link>
+                            .
+                        </Typography>
+                    </>
+                ) : (
+                    <>
+                        <Typography variant="h6" gutterBottom>
+                            No meals added yet. Start adding meals!
+                        </Typography>
+                        <CustomButton
+                            icon={<RefreshIcon />}
+                            onClick={() => setActiveOption("All Meals")}
+                            label="All Meals"
+                            variant="outlined"
+                        />
+                    </>
+                )}
             </Box>
         );
 
@@ -130,7 +144,7 @@ function MealList({ setCreatedByName, sortBy, filters, onFiltersChange, activeOp
             {/* Meal List */}
             <Box
                 display="grid"
-                gridTemplateColumns={{ xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(3, 1fr)", lg: "repeat(4, 1fr)" }}
+                gridTemplateColumns={{ xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(3, 1fr)", lg: "repeat(4, 1fr)", xl: "repeat(5, 1fr)" }}
                 gap={2}
                 padding={0}
             >

@@ -21,7 +21,7 @@ const SearchBar = ({ onSearch }) => {
             value={query}
             onChange={handleChange}
             sx={{
-                marginBottom: 2,
+                marginBottom: 4,
                 width: isLargeScreen ? 550 : "100%",
                 maxWidth: 550,
                 backgroundColor: theme.palette.background.paper,
