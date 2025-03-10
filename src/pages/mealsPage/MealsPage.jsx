@@ -9,6 +9,8 @@ import ActiveFilters from "../../components/mealList/activeFilters/ActiveFilters
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import {UserMealsContext} from "../../context/UserMealsContext.jsx";
+import NutrientSortOptionsHorizontal
+    from "../../components/mealList/nutrientSortOptions/NutrientSortOptionsHorizontal.jsx";
 
 /**
  * The MealPage component displays a list of meals and a submenu for filtering options.
@@ -92,6 +94,8 @@ function MealPage() {
 
             {/* SubMenu */}
             <SubMenu activeOption={activeOption} setActiveOption={setActiveOption} />
+
+            <NutrientSortOptionsHorizontal onSort={handleSort} />
 
             {/* Active Filters - Only render if there are active filters */}
             {filters && Object.keys(filters).length > 0 && (

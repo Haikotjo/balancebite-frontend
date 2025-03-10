@@ -13,7 +13,7 @@ import { useTheme } from '@mui/material/styles';
 const ActiveFilters = ({ filters, onFilterClick }) => {
     console.log("🎯 Received filters in ActiveFilters:", filters);
 
-    const theme = useTheme(); // Access theme to match color styles
+    const theme = useTheme();
 
     return (
         <Box
@@ -32,8 +32,8 @@ const ActiveFilters = ({ filters, onFilterClick }) => {
                     key={key}
                     label={value} // Display filter value
                     variant="outlined"
-                    onDelete={() => onFilterClick(key)} // Calls function to remove filter when clicked
-                    deleteIcon={<CircleX size={16} color={theme.palette.text.primary} />} // Close icon with theme color
+                    onDelete={() => onFilterClick(key)}
+                    deleteIcon={<CircleX size={16} color={theme.palette.text.primary} />}
                     sx={{
                         fontSize: "0.8rem",
                         fontWeight: "bold",
@@ -45,8 +45,8 @@ const ActiveFilters = ({ filters, onFilterClick }) => {
 };
 
 ActiveFilters.propTypes = {
-    filters: PropTypes.object.isRequired, // Expects an object with key-value filter pairs
-    onFilterClick: PropTypes.func.isRequired, // Expects a function to handle filter removal
+    filters: PropTypes.object.isRequired,
+    onFilterClick: PropTypes.func.isRequired, //
 };
 
 export default ActiveFilters;
