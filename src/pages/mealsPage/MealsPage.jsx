@@ -1,16 +1,19 @@
 import {useState, useEffect} from "react";
 import MealList from "../../components/mealList/MealList.jsx";
 import SubMenu from "../../components/mealList/submenu/SubMenu.jsx";
-import { Box, Typography } from "@mui/material";
+import {Box, IconButton, Typography} from "@mui/material";
 import "./MealsPage.css";
 import SearchBar from "../../components/searchBar/SearchBar.jsx";
-import NutrientSortOptions from "../../components/mealList/nutrientSortOptions/NutrientSortOptions.jsx";
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ActiveFilters from "../../components/mealList/activeFilters/ActiveFilters.jsx";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import {UserMealsContext} from "../../context/UserMealsContext.jsx";
 import NutrientSortOptionsHorizontal
     from "../../components/mealList/nutrientSortOptions/NutrientSortOptionsHorizontal.jsx";
+import {ArrowUpward} from "@mui/icons-material";
+import {useTheme} from "@mui/material/styles";
+import ScrollToTopButton from "../../components/scrollToTopButton/ScrollToTopButton.jsx";
 
 /**
  * The MealPage component displays a list of meals and a submenu for filtering options.
@@ -22,12 +25,10 @@ function MealPage() {
     const [setUserName] = useState(null);
     const { userMeals } = useContext(UserMealsContext);
     const [setSearchQuery] = useState("");
-
     const [sortBy, setSortBy] = useState(null);
     const [filters, setFilters] = useState({});
     const { user } = useContext(AuthContext);
     const [activeOption, setActiveOption] = useState(user ? "My Meals" : "All Meals");
-
 
     const handleSort = (sortKey, sortOrder) => {
         setSortBy({ sortKey, sortOrder });
@@ -59,7 +60,6 @@ function MealPage() {
         console.log("🔄 Updated activeOption in MealPage:", activeOption);
     }, [activeOption]);
 
-
     return (
         <Box
             sx={{
@@ -71,9 +71,6 @@ function MealPage() {
                 padding: 2,
             }}
         >
-
-            {/* Nutrient Sort Options */}
-            {/*<NutrientSortOptions onSort={handleSort} />*/}
 
             {/* Page Title */}
             <Typography
@@ -114,6 +111,9 @@ function MealPage() {
                     setActiveOption={setActiveOption}
                 />
             </Box>
+
+            {/* "Back to Top" Button */}
+            <ScrollToTopButton />
         </Box>
     );
 }
