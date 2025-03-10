@@ -73,7 +73,7 @@ function MealPage() {
         >
 
             {/* Nutrient Sort Options */}
-            <NutrientSortOptions onSort={handleSort} />
+            {/*<NutrientSortOptions onSort={handleSort} />*/}
 
             {/* Page Title */}
             <Typography
@@ -95,6 +95,7 @@ function MealPage() {
             {/* SubMenu */}
             <SubMenu activeOption={activeOption} setActiveOption={setActiveOption} />
 
+            {/* Nutrient Sort Options */}
             <NutrientSortOptionsHorizontal onSort={handleSort} />
 
             {/* Active Filters - Only render if there are active filters */}

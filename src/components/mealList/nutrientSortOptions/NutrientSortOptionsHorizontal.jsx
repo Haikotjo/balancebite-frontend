@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Stack, Tooltip } from "@mui/material";
+import { Box, Stack, Tooltip, useMediaQuery } from "@mui/material";
 import {
     Flame,
     ChartColumnIncreasing,
@@ -10,30 +10,31 @@ import {
     ArrowDownNarrowWide,
 } from "lucide-react";
 import PropTypes from "prop-types";
-import { useTheme } from "@mui/material/styles";
 import CustomChip from "./customChip/CustomChip.jsx";
 
 const NutrientSortOptionsHorizontal = ({ onSort }) => {
-    const theme = useTheme();
+    const isLargeScreen = useMediaQuery("(min-width: 600px)");
+    const iconSize = isLargeScreen ? 25 : 20;
+    const iconMargin = isLargeScreen ? 25 : 10;
+    const labelFontSize = isLargeScreen ? "0.7rem" : "0.6rem";
+
     const [currentSort, setCurrentSort] = useState({ key: null, order: "asc" });
 
-    // Bepaalt welk sorteericoon wordt gebruikt
     const getSortIcon = (key) => {
-        if (currentSort.key !== key) return <ArrowDownUp size={22} />;
-        return currentSort.order === "asc" ? <ArrowUpNarrowWide size={22} /> : <ArrowDownNarrowWide size={22} />;
+        if (!key) return <ArrowDownUp size={iconSize} />;
+        return currentSort.order === "asc" ? <ArrowUpNarrowWide size={iconSize} /> : <ArrowDownNarrowWide size={iconSize} />;
     };
 
-    // Tooltip text voor de sorteervolgorde
     const getSortTooltip = () => {
         if (!currentSort.key) return "Sort Order";
         return currentSort.order === "asc" ? "Sort: Low → High" : "Sort: High → Low";
     };
 
     const nutrients = [
-        { name: "Energy", label: "Kcal", icon: <Flame size={22} />, sortKey: "calories" },
-        { name: "Protein", label: "Protein", icon: <Dumbbell size={22} />, sortKey: "protein" },
-        { name: "Carbs", label: "Carbs", icon: <ChartColumnIncreasing size={22} />, sortKey: "carbs" },
-        { name: "Fat", label: "Fat", icon: <Droplet size={22} />, sortKey: "fat" },
+        { name: "Energy", label: "Kcal", icon: <Flame size={iconSize} />, sortKey: "calories" },
+        { name: "Protein", label: "Protein", icon: <Dumbbell size={iconSize} />, sortKey: "protein" },
+        { name: "Carbs", label: "Carbs", icon: <ChartColumnIncreasing size={iconSize} />, sortKey: "carbs" },
+        { name: "Fat", label: "Fat", icon: <Droplet size={iconSize} />, sortKey: "fat" },
     ];
 
     const handleSort = (sortKey) => {
@@ -54,7 +55,7 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
     };
 
     const handleSortOrderClick = () => {
-        if (!currentSort.key) return; // Geen actie als er nog geen sorteeroptie is gekozen
+        if (!currentSort.key) return;
 
         setCurrentSort((prevSort) => ({
             key: prevSort.key,
@@ -66,32 +67,44 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
 
     return (
         <Box sx={{ display: "flex", justifyContent: "center", width: "100%", marginTop: 2 }}>
-            <Stack direction="row" spacing={1}>
+            <Stack
+                direction="row"
+                spacing={1}
+                sx={{
+                    flexWrap: "wrap",
+                    justifyContent: "center",
+                    maxWidth: "100%",
+                }}
+            >
                 {nutrients.map((nutrient) => (
                     <Tooltip key={nutrient.sortKey} title={nutrient.label} arrow>
-                        <span>
-                            <CustomChip
-                                icon={nutrient.icon}
-                                selected={currentSort.key === nutrient.sortKey}
-                                onClick={() => handleSort(nutrient.sortKey)}
-                                iconMargin={10}
-                            />
-                        </span>
+                        <CustomChip
+                            icon={nutrient.icon}
+                            label={nutrient.label}
+                            selected={currentSort.key === nutrient.sortKey}
+                            onClick={() => handleSort(nutrient.sortKey)}
+                            iconMargin={iconMargin}
+                            iconSize={iconSize}
+                            labelFontSize={labelFontSize}
+                            labelPosition="bottom"
+                        />
                     </Tooltip>
                 ))}
-                {/* Sorteer icoon altijd rechts met juiste tooltip */}
+
                 <Tooltip title={getSortTooltip()} arrow>
-                    <span>
-                        <CustomChip
-                            icon={getSortIcon(currentSort.key)}
-                            onClick={handleSortOrderClick} // 🔥 Nieuw: Omkeert sortering bij klik!
-                            selected={!!currentSort.key}
-                            iconMargin={10}
-                        />
-                    </span>
+                    <CustomChip
+                        icon={getSortIcon(currentSort.key)}
+                        label={!currentSort.key ? "Direction" : currentSort.order === "asc" ? "Low → High" : "High → Low"}
+                        selected={!!currentSort.key}
+                        onClick={handleSortOrderClick}
+                        iconMargin={iconMargin}
+                        labelFontSize={labelFontSize}
+                        iconSize={iconSize}
+                    />
                 </Tooltip>
             </Stack>
         </Box>
+
     );
 };
 
