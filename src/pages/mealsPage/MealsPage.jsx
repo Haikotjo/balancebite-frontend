@@ -14,6 +14,7 @@ import NutrientSortOptionsHorizontal
 import {ArrowUpward} from "@mui/icons-material";
 import {useTheme} from "@mui/material/styles";
 import ScrollToTopButton from "../../components/scrollToTopButton/ScrollToTopButton.jsx";
+import FilterSidebar from "../../components/filterSidebar/FilterSidebar.jsx";
 
 /**
  * The MealPage component displays a list of meals and a submenu for filtering options.
@@ -88,6 +89,9 @@ function MealPage() {
 
             {/* Search Bar */}
             <SearchBar onSearch={setSearchQuery} />
+
+            {/* Filter Sidebar - Floating Button */}
+            <FilterSidebar />
 
             {/* SubMenu */}
             <SubMenu activeOption={activeOption} setActiveOption={setActiveOption} />

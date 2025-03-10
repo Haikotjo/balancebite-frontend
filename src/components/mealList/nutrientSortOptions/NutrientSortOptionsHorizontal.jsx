@@ -94,7 +94,7 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
                 <Tooltip title={getSortTooltip()} arrow>
                     <CustomChip
                         icon={getSortIcon(currentSort.key)}
-                        label={!currentSort.key ? "Direction" : currentSort.order === "asc" ? "Low → High" : "High → Low"}
+                        label={!currentSort.key ? "Direction" : currentSort.order === "asc" ? "Low > High" : "High > Low"}
                         selected={!!currentSort.key}
                         onClick={handleSortOrderClick}
                         iconMargin={iconMargin}
