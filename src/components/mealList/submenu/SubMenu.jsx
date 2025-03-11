@@ -5,7 +5,7 @@ import AccountBoxRoundedIcon from "@mui/icons-material/AccountBoxRounded";
 import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 import FoodBankRoundedIcon from "@mui/icons-material/FoodBankRounded";
 import PropTypes from "prop-types";
-import CustomChip from "../nutrientSortOptions/customChip/CustomChip.jsx";
+import CustomChip from "../../customChip/CustomChip.jsx";
 
 function SubMenu({ activeOption, setActiveOption }) {
     const { user } = useContext(AuthContext);

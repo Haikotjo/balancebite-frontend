@@ -10,7 +10,7 @@ import {
     ArrowDownNarrowWide,
 } from "lucide-react";
 import PropTypes from "prop-types";
-import CustomChip from "./customChip/CustomChip.jsx";
+import CustomChip from "../../customChip/CustomChip.jsx";
 
 const NutrientSortOptionsHorizontal = ({ onSort }) => {
     const isLargeScreen = useMediaQuery("(min-width: 600px)");

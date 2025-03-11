@@ -24,6 +24,7 @@ const CustomChip = ({
                         iconSize = 0,
                         labelPosition = "bottom",
                         labelFontSize = "0.7rem",
+                        className,
                     }) => {
     const theme = useTheme();
     const extraWidth = icon ? iconMargin * 2 : 0; // Adjust chip width based on icon margin
@@ -31,6 +32,7 @@ const CustomChip = ({
 
     return (
         <Box
+            className={className}
             sx={{
                 display: "flex",
                 flexDirection: labelPosition === "bottom" ? "column-reverse" : "column",
@@ -41,10 +43,10 @@ const CustomChip = ({
             onClick={onClick} // Make the entire chip clickable
         >
             {/* Render the label above or below the chip */}
-            {label && (
+            {icon ? (
                 <Typography
                     sx={{
-                        fontSize: labelFontSize, // Dynamic font size
+                        fontSize: labelFontSize,
                         textAlign: "center",
                         marginBottom: labelPosition === "top" ? "4px" : "0px",
                         marginTop: labelPosition === "bottom" ? "4px" : "0px",
@@ -54,7 +56,7 @@ const CustomChip = ({
                 >
                     {label}
                 </Typography>
-            )}
+            ) : null}
 
             {/* Render the chip containing the icon */}
             <Box
@@ -73,7 +75,7 @@ const CustomChip = ({
                     "&:hover": { backgroundColor: selected ? theme.palette.primary.dark : theme.palette.primary.light },
                 }}
             >
-                {icon}
+                {icon || label}
             </Box>
         </Box>
     );
@@ -81,7 +83,8 @@ const CustomChip = ({
 
 // Define the expected prop types for the component
 CustomChip.propTypes = {
-    icon: PropTypes.element.isRequired, // The icon must be a React element
+    className: PropTypes.string,
+    icon: PropTypes.element, // The icon must be a React element
     label: PropTypes.string, // Optional label text
     selected: PropTypes.bool, // Boolean indicating if the chip is selected
     onClick: PropTypes.func.isRequired, // Function that is called when the chip is clicked

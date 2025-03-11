@@ -91,7 +91,8 @@ function MealPage() {
             <SearchBar onSearch={setSearchQuery} />
 
             {/* Filter Sidebar - Floating Button */}
-            <FilterSidebar />
+            <FilterSidebar filters={filters} onFilter={handleFiltersChange} />
+
 
             {/* SubMenu */}
             <SubMenu activeOption={activeOption} setActiveOption={setActiveOption} />

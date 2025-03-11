@@ -1,0 +1,20 @@
+.sidebar-chip {
+    font-size: 0.6rem; /* Standaard voor kleine schermen */
+    line-height: 1;
+    white-space: nowrap; /* Voorkomt afbreken van tekst */
+}
+
+/* Medium schermen (tablets) */
+@media (min-width: 600px) {
+    .sidebar-chip {
+        font-size: 0.8rem;
+    }
+}
+
+/* Grote schermen (laptops) */
+@media (min-width: 900px) {
+    .sidebar-chip {
+        font-size: 1rem;
+    }
+}
+
