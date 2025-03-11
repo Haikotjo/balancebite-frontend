@@ -24,7 +24,7 @@ const ActiveFilters = ({ filters, onFilterClick }) => {
                 marginTop: 2,
                 padding: 1,
                 gap: 1,
-                flexWrap: "wrap", // Ensures filters wrap to a new line if needed
+                flexWrap: "wrap",
             }}
         >
             {Object.entries(filters).map(([key, value]) => (

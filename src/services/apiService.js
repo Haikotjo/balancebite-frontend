@@ -291,6 +291,18 @@ const refreshAccessToken = async () => {
     }
 };
 
+export const fetchMealEnums = async () => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_MEAL_ENUMS_ENDPOINT}`;
+    try {
+        const response = await Interceptor.get(endpoint);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+
 
 export const fetchSortedMeals = async (sortField, sortOrder = "desc") => {
     const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_SORT_MEALS_ENDPOINT}?sortField=${sortField}&sortOrder=${sortOrder}`;
