@@ -1,34 +1,42 @@
-import { useState, useEffect } from "react";
-import { Box, Drawer, IconButton, Typography, Divider, useMediaQuery, CircularProgress } from "@mui/material";
-import { FilterList, Close } from "@mui/icons-material";
+import { Box, Drawer, IconButton, useMediaQuery, CircularProgress } from "@mui/material";
+import { FilterList } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import { useTheme } from "@mui/material/styles";
-import CustomChip from "../customChip/CustomChip.jsx";
 import "./FilterSidebar.css";
-import {fetchMealEnums} from "../../services/apiService.js";
-import {formatEnum} from "./helper/formatEnum.js";
 import useSidebarState from "./hooks/useSidebarState.js";
 import useFetchMealEnums from "./hooks/useFetchMealEnums.js";
-import useSyncFilters from "./hooks/useSyncFilters.js";
 import FilterSection from "./filterSection/FilterSection.jsx";
 import useFilterSelection from "./hooks/useFilterSelection.js";
 import SidebarHeader from "./sidebarHeader/SidebarHeader.jsx";
 
 /**
- * FilterSidebar component - Displays a floating filter button that expands into a sidebar.
+ * FilterSidebar component - Displays a sidebar with filtering options for meals.
+ * Users can filter by meal type, diet, and cuisine.
  *
- * Fetches enum values for diet, cuisine, and meal type dynamically.
+ * The component fetches filter options dynamically and updates selections via a callback function.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {boolean} props.isOpen - Determines whether the sidebar should be initially open.
+ * @param {Function} props.onFilter - Callback function triggered when filters are applied or removed.
+ * @param {Object} props.filters - The currently applied filters.
  */
 const FilterSidebar = ({ isOpen, onFilter, filters }) => {
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
+    // Manage sidebar state (open/close)
     const { open, toggleSidebar } = useSidebarState(isOpen);
+
+    // Fetch filterable options (diet types, cuisines, meal types)
     const { diets, cuisines, mealTypes, loading } = useFetchMealEnums(open);
+
+    // Manage selected filters
     const { selectedFilters, handleFilterClick } = useFilterSelection(filters, onFilter);
 
     return (
         <>
+            {/* Floating filter button to open the sidebar */}
             {!open && (
                 <IconButton
                     onClick={toggleSidebar}
@@ -52,7 +60,7 @@ const FilterSidebar = ({ isOpen, onFilter, filters }) => {
                 </IconButton>
             )}
 
-            {/* Sidebar Drawer */}
+            {/* Sidebar Drawer - Contains filter options */}
             <Drawer anchor="right" open={open} onClose={toggleSidebar}>
                 <Box
                     sx={{
@@ -69,13 +77,14 @@ const FilterSidebar = ({ isOpen, onFilter, filters }) => {
                     }}
                 >
 
-                {/* Header */}
+                    {/* Sidebar Header with Close Button */}
                     <SidebarHeader title="Filters" onClose={toggleSidebar} />
 
-                    {/* Loading-indicator */}
-                    {loading ? <CircularProgress sx={{ alignSelf: "center", marginY: 2 }} /> : (
+                    {/* Loading Indicator */}
+                    {loading ? (
+                        <CircularProgress sx={{ alignSelf: "center", marginY: 2 }} />
+                    ) : (
                         <>
-
                             {/* Filter Sections */}
                             <FilterSection
                                 title="Type"
@@ -110,7 +119,6 @@ const FilterSidebar = ({ isOpen, onFilter, filters }) => {
 
 FilterSidebar.propTypes = {
     isOpen: PropTypes.bool,
-    onClose: PropTypes.func,
     onFilter: PropTypes.func.isRequired,
     filters: PropTypes.object.isRequired,
 };
