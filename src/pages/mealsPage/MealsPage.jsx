@@ -4,17 +4,17 @@ import SubMenu from "../../components/mealList/submenu/SubMenu.jsx";
 import {Box, IconButton, Typography} from "@mui/material";
 import "./MealsPage.css";
 import SearchBar from "../../components/searchBar/SearchBar.jsx";
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ActiveFilters from "../../components/mealList/activeFilters/ActiveFilters.jsx";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import {UserMealsContext} from "../../context/UserMealsContext.jsx";
 import NutrientSortOptionsHorizontal
     from "../../components/mealList/nutrientSortOptions/NutrientSortOptionsHorizontal.jsx";
-import {ArrowUpward} from "@mui/icons-material";
-import {useTheme} from "@mui/material/styles";
 import ScrollToTopButton from "../../components/scrollToTopButton/ScrollToTopButton.jsx";
 import FilterSidebar from "../../components/filterSidebar/FilterSidebar.jsx";
+import SearchIcon from "@mui/icons-material/Search";
+import { useRef } from "react";
+
 
 /**
  * The MealPage component displays a list of meals and a submenu for filtering options.
@@ -30,6 +30,13 @@ function MealPage() {
     const [filters, setFilters] = useState({});
     const { user } = useContext(AuthContext);
     const [activeOption, setActiveOption] = useState(user ? "My Meals" : "All Meals");
+    const searchRef = useRef(null);
+    const [isSearchVisible, setIsSearchVisible] = useState(false);
+
+    const toggleSearch = () => {
+        setIsSearchVisible((prev) => !prev);
+    };
+
 
     const handleSort = (sortKey, sortOrder) => {
         setSortBy({ sortKey, sortOrder });
@@ -61,6 +68,22 @@ function MealPage() {
         console.log("🔄 Updated activeOption in MealPage:", activeOption);
     }, [activeOption]);
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (searchRef.current && !searchRef.current.contains(event.target)) {
+                setIsSearchVisible(false);
+            }
+        };
+
+        if (isSearchVisible) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isSearchVisible]);
+
     return (
         <Box
             sx={{
@@ -88,7 +111,16 @@ function MealPage() {
             </Typography>
 
             {/* Search Bar */}
-            <SearchBar onSearch={setSearchQuery} />
+            {/* Search Toggle */}
+            {!isSearchVisible ? (
+                <IconButton onClick={toggleSearch} sx={{ marginBottom: 2 }}>
+                    <SearchIcon sx={{ fontSize: 30 }} />
+                </IconButton>
+            ) : (
+                <div ref={searchRef}>
+                    <SearchBar onSearch={setSearchQuery} />
+                </div>
+            )}
 
             {/* Filter Sidebar - Floating Button */}
             <FilterSidebar filters={filters} onFilter={handleFiltersChange} />
