@@ -100,10 +100,9 @@ export const fetchUserMeals = async (token) => {
 };
 
 export const fetchMealById = async (mealId) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}/meals/${mealId}`;
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_MEAL_BY_ID_ENDPOINT}/${mealId}`;
     try {
         const response = await Interceptor.get(endpoint);
-        // logResponse(response);
         return response.data;
     } catch (error) {
         logError(error);
@@ -112,10 +111,9 @@ export const fetchMealById = async (mealId) => {
 };
 
 export const fetchMealNutrientsById = async (mealId) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}/meals/nutrients/${mealId}`;
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_MEAL_NUTRIENTS_ENDPOINT}/${mealId}`;
     try {
         const response = await Interceptor.get(endpoint);
-        // logResponse(response);
         return response.data;
     } catch (error) {
         logError(error);
@@ -151,14 +149,13 @@ export const getAllFoodItems = async () => {
 };
 
 export const getAllFoodItemNames = async () => {
-    const response = await fetch("http://localhost:8080/fooditems/names");
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_FOODITEM_NAMES_ENDPOINT}`);
     if (!response.ok) throw new Error("Failed to fetch food item names");
     return await response.json();
 };
 
-
 export const searchFoodItemsByName = async (prefix) => {
-    const response = await Interceptor.get(`${import.meta.env.VITE_BASE_URL}/fooditems/search-by-name?prefix=${prefix}`);
+    const response = await Interceptor.get(`${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_SEARCH_FOODITEMS_ENDPOINT}?prefix=${prefix}`);
     return response.data;
 };
 
