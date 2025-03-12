@@ -1,21 +1,39 @@
 import { useState, useEffect } from "react";
-import { getAllFoodItems, searchFoodItemsByName } from "../services/apiService.js";
+import { getAllFoodItemNames, searchFoodItemsByName } from "../services/apiService.js";
 
+/**
+ * Custom hook to manage food item retrieval and search functionality.
+ * This hook fetches food item names and allows searching by name.
+ *
+ * @returns {Object} Contains options (food items), noResults state, and handleSearch function.
+ */
 const useFoodItems = () => {
     const [options, setOptions] = useState([]);
     const [noResults, setNoResults] = useState([]);
 
+    /**
+     * Fetches all food item names (ID and name only).
+     * Optimized for search functionality where full item details are not needed.
+     */
     const fetchAllFoodItems = async () => {
         try {
-            const data = await getAllFoodItems();
+            const data = await getAllFoodItemNames();
             setOptions(data);
             return data;
         } catch (error) {
-            console.error("Error fetching all food items:", error);
+            console.error("Error fetching food item names:", error);
             return [];
         }
     };
 
+    /**
+     * Handles searching for food items based on user input.
+     * - If the query length is greater than 1, it fetches filtered results.
+     * - Otherwise, it loads the full list of food items.
+     *
+     * @param {string} query - User input for search.
+     * @param {number} index - Index to track search instances.
+     */
     const handleSearch = async (query, index) => {
         if (query.length > 1) {
             try {
@@ -27,7 +45,7 @@ const useFoodItems = () => {
                 setOptions(newOptions);
                 setNoResults(newNoResults);
             } catch (error) {
-                console.error("Error fetching food items:", error);
+                console.error("Error searching food items:", error);
             }
         } else {
             const allItems = await fetchAllFoodItems();
@@ -40,8 +58,17 @@ const useFoodItems = () => {
         }
     };
 
+    /**
+     * Fetches all food item names when the component using this hook is mounted.
+     */
     useEffect(() => {
-        fetchAllFoodItems();
+        (async () => {
+            try {
+                await fetchAllFoodItems();
+            } catch (error) {
+                console.error("Error fetching food items:", error);
+            }
+        })();
     }, []);
 
     return { options, noResults, handleSearch };

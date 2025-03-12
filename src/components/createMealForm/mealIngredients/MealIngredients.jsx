@@ -1,4 +1,4 @@
-import { Box, Typography, IconButton, Autocomplete, MenuItem, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Typography, IconButton, Autocomplete, useMediaQuery, useTheme } from "@mui/material";
 import PropTypes from "prop-types";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
 import useFoodItems from "../../../hooks/useFoodItems.js";

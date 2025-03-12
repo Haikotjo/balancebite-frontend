@@ -150,6 +150,13 @@ export const getAllFoodItems = async () => {
     return response.data;
 };
 
+export const getAllFoodItemNames = async () => {
+    const response = await fetch("http://localhost:8080/fooditems/names");
+    if (!response.ok) throw new Error("Failed to fetch food item names");
+    return await response.json();
+};
+
+
 export const searchFoodItemsByName = async (prefix) => {
     const response = await Interceptor.get(`${import.meta.env.VITE_BASE_URL}/fooditems/search-by-name?prefix=${prefix}`);
     return response.data;
@@ -183,7 +190,7 @@ export const fetchUserProfile = async (token) => {
 };
 
 export const updateUserDetails = async (data) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}/users/details`; // Controleer deze URL
+    const endpoint = `${import.meta.env.VITE_BASE_URL}/users/details`;
     try {
         const response = await Interceptor.put(endpoint, data, {
             headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
