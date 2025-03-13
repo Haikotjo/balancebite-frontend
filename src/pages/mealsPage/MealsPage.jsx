@@ -14,6 +14,7 @@ import ScrollToTopButton from "../../components/scrollToTopButton/ScrollToTopBut
 import FilterSidebar from "../../components/filterSidebar/FilterSidebar.jsx";
 import SearchIcon from "@mui/icons-material/Search";
 import { useRef } from "react";
+import {getAllMealNames} from "../../services/apiService.js";
 
 
 /**
@@ -30,6 +31,7 @@ function MealPage() {
     const [filters, setFilters] = useState({});
     const { user } = useContext(AuthContext);
     const [activeOption, setActiveOption] = useState(user ? "My Meals" : "All Meals");
+
     const searchRef = useRef(null);
     const [isSearchVisible, setIsSearchVisible] = useState(false);
 
@@ -84,6 +86,27 @@ function MealPage() {
         };
     }, [isSearchVisible]);
 
+    /**
+     * Fetches meals based on search query.
+     * @param {string} query - The search query.
+     * @returns {Promise<Array>} - List of meal results.
+     */
+    const handleSearch = async (query) => {
+        if (!query) return [];
+        return await getAllMealNames(); // Ophalen van meal-namen via API
+    };
+
+    /**
+     * Handles when a user selects a meal from search results.
+     * @param {Object} meal - The selected meal object.
+     */
+    const handleSelectMeal = (meal) => {
+        setSelectedMeal(meal);
+        console.log("🔍 Selected meal:", meal);
+        // Hier kan je bijvoorbeeld een redirect doen naar de meal detail pagina
+        // navigate(`/meals/${meal.id}`);
+    };
+
     return (
         <Box
             sx={{
@@ -110,15 +133,14 @@ function MealPage() {
                 {activeOption}
             </Typography>
 
-            {/* Search Bar */}
-            {/* Search Toggle */}
+            {/* Search Bar Toggle */}
             {!isSearchVisible ? (
                 <IconButton onClick={toggleSearch} sx={{ marginBottom: 2 }}>
                     <SearchIcon sx={{ fontSize: 30 }} />
                 </IconButton>
             ) : (
                 <div ref={searchRef}>
-                    <SearchBar onSearch={setSearchQuery} />
+                    <SearchBar onSearch={handleSearch} onSelect={handleSelectMeal} placeholder="Search for a meal..." />
                 </div>
             )}
 

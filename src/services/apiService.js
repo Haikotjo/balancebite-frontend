@@ -306,6 +306,17 @@ export const fetchMealEnums = async () => {
     }
 };
 
+export const getAllMealNames = async () => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_MEAL_NAMES_ENDPOINT}`;
+    try {
+        const response = await Interceptor.get(endpoint);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        return [];
+    }
+};
+
 
 
 export const fetchSortedMeals = async (sortField, sortOrder = "desc") => {
