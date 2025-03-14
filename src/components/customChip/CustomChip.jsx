@@ -1,5 +1,6 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import PropTypes from "prop-types";
+import React from "react";
 
 /**
  * CustomChip component: A manually styled alternative to MUI Chip.
@@ -15,71 +16,77 @@ import PropTypes from "prop-types";
  * @param {string} [props.labelPosition="bottom"] - Determines whether the label appears "top" or "bottom".
  * @param {string} [props.labelFontSize="0.7rem"] - The font size of the label.
  */
-const CustomChip = ({
-                        icon,
-                        label,
-                        selected,
-                        onClick,
-                        iconMargin = 0,
-                        iconSize = 0,
-                        labelPosition = "bottom",
-                        labelFontSize = "0.7rem",
-                        className,
-                    }) => {
-    const theme = useTheme();
-    const extraWidth = icon ? iconMargin * 2 : 0; // Adjust chip width based on icon margin
-    const chipHeight = iconSize + 10; // Adjust chip height based on icon size
+const CustomChip = React.forwardRef(
+    (
+        {
+            icon,
+            label,
+            selected,
+            onClick,
+            iconMargin = 0,
+            iconSize = 0,
+            labelPosition = "bottom",
+            labelFontSize = "0.7rem",
+            className,
+        },
+        ref // Add ref here
+    ) => {
+        const theme = useTheme();
+        const extraWidth = icon ? iconMargin * 2 : 0; // Adjust chip width based on icon margin
+        const chipHeight = iconSize + 10; // Adjust chip height based on icon size
 
-    return (
-        <Box
-            className={className}
-            sx={{
-                display: "flex",
-                flexDirection: labelPosition === "bottom" ? "column-reverse" : "column",
-                alignItems: "center",
-                cursor: "pointer",
-                "&:hover": { opacity: 0.8 },
-            }}
-            onClick={onClick} // Make the entire chip clickable
-        >
-            {/* Render the label above or below the chip */}
-            {icon ? (
-                <Typography
-                    sx={{
-                        fontSize: labelFontSize,
-                        textAlign: "center",
-                        marginBottom: labelPosition === "top" ? "4px" : "0px",
-                        marginTop: labelPosition === "bottom" ? "4px" : "0px",
-                        color: selected ? theme.palette.primary.main : theme.palette.text.primary,
-                        fontWeight: "bold",
-                    }}
-                >
-                    {label}
-                </Typography>
-            ) : null}
-
-            {/* Render the chip containing the icon */}
+        return (
             <Box
+                ref={ref}
+                className={className}
                 sx={{
                     display: "flex",
+                    flexDirection: labelPosition === "bottom" ? "column-reverse" : "column",
                     alignItems: "center",
-                    justifyContent: "center",
-                    minWidth: 40 + extraWidth, // Adjust width dynamically
-                    height: `${chipHeight}px`, // Adjust height dynamically
-                    paddingX: "12px",
-                    borderRadius: `${chipHeight / 2}px`, // Rounded chip design
-                    border: `2px solid ${theme.palette.primary.main}`,
-                    backgroundColor: selected ? theme.palette.primary.main : "transparent",
-                    color: selected ? theme.palette.text.light : theme.palette.primary.main,
-                    transition: "background-color 0.3s ease",
-                    "&:hover": { backgroundColor: selected ? theme.palette.primary.dark : theme.palette.primary.light },
+                    cursor: "pointer",
+                    "&:hover": { opacity: 0.8 },
                 }}
+                onClick={onClick} // Make the entire chip clickable
             >
-                {icon || label}
+                {/* Render the label above or below the chip */}
+                {icon ? (
+                    <Typography
+                        sx={{
+                            fontSize: labelFontSize,
+                            textAlign: "center",
+                            marginBottom: labelPosition === "top" ? "4px" : "0px",
+                            marginTop: labelPosition === "bottom" ? "4px" : "0px",
+                            color: selected ? theme.palette.primary.main : theme.palette.text.primary,
+                            fontWeight: "bold",
+                        }}
+                    >
+                        {label}
+                    </Typography>
+                ) : null}
+
+                {/* Render the chip containing the icon */}
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        minWidth: 40 + extraWidth, // Adjust width dynamically
+                        height: `${chipHeight}px`, // Adjust height dynamically
+                        paddingX: "12px",
+                        borderRadius: `${chipHeight / 2}px`, // Rounded chip design
+                        border: `2px solid ${theme.palette.primary.main}`,
+                        backgroundColor: selected ? theme.palette.primary.main : "transparent",
+                        color: selected ? theme.palette.text.light : theme.palette.primary.main,
+                        transition: "background-color 0.3s ease",
+                        "&:hover": { backgroundColor: selected ? theme.palette.primary.dark : theme.palette.primary.light },
+                    }}
+                >
+                    {icon || label}
+                </Box>
             </Box>
-        </Box>
-    );
-};
+        );
+    }
+);
 
 // Define the expected prop types for the component
 CustomChip.propTypes = {

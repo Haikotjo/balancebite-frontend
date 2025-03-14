@@ -78,30 +78,36 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
             >
                 {nutrients.map((nutrient) => (
                     <Tooltip key={nutrient.sortKey} title={nutrient.label} arrow>
-                        <CustomChip
-                            icon={nutrient.icon}
-                            label={nutrient.label}
-                            selected={currentSort.key === nutrient.sortKey}
-                            onClick={() => handleSort(nutrient.sortKey)}
-                            iconMargin={iconMargin}
-                            iconSize={iconSize}
-                            labelFontSize={labelFontSize}
-                            labelPosition="bottom"
-                        />
+    <span>
+        <CustomChip
+            icon={nutrient.icon}
+            label={nutrient.label}
+            selected={currentSort.key === nutrient.sortKey}
+            onClick={() => handleSort(nutrient.sortKey)}
+            iconMargin={iconMargin}
+            iconSize={iconSize}
+            labelFontSize={labelFontSize}
+            labelPosition="bottom"
+        />
+    </span>
                     </Tooltip>
+
                 ))}
 
                 <Tooltip title={getSortTooltip()} arrow>
-                    <CustomChip
-                        icon={getSortIcon(currentSort.key)}
-                        label={!currentSort.key ? "Direction" : currentSort.order === "asc" ? "Low > High" : "High > Low"}
-                        selected={!!currentSort.key}
-                        onClick={handleSortOrderClick}
-                        iconMargin={iconMargin}
-                        labelFontSize={labelFontSize}
-                        iconSize={iconSize}
-                    />
+    <span>
+        <CustomChip
+            icon={getSortIcon(currentSort.key)}
+            label={!currentSort.key ? "Direction" : currentSort.order === "asc" ? "Low > High" : "High > Low"}
+            selected={!!currentSort.key}
+            onClick={handleSortOrderClick}
+            iconMargin={iconMargin}
+            labelFontSize={labelFontSize}
+            iconSize={iconSize}
+        />
+    </span>
                 </Tooltip>
+
             </Stack>
         </Box>
 
