@@ -15,13 +15,13 @@ import {
 } from "@mui/material";
 import { Flame, ChartColumnIncreasing, Dumbbell, Droplet } from "lucide-react";
 import MealCardActionButtons from "../mealCard/mealCardActionButtons/MealCardActionButtons.jsx";
-import { formatEnum } from "../filterSidebar/helper/formatEnum.js";
 import { getImageSrc } from "../../utils/helpers/getImageSrc.js";
-import CustomChip from "./customChip/CustomChip.jsx";
 import { calculateMacrosPer100g } from "../../utils/helpers/calculateMacrosPer100g.js";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import ExpandableDescription from "../expandableDescription/ExpandableDescription.jsx";
 import MealInfoOverlay from "../mealInfoOverlay/MealInfoOverlay.jsx";
+import MealTags from "../mealTags/MealTags.jsx";
+import {useNavigate} from "react-router-dom";
 
 const MealDetailCard = ({ meal }) => {
     const theme = useTheme();
@@ -29,6 +29,12 @@ const MealDetailCard = ({ meal }) => {
 
     const imageSrc = getImageSrc(meal);
     const calculatedMacros = calculateMacrosPer100g(meal);
+
+    const navigate = useNavigate();
+
+    const handleFilterRedirect = (category, value) => {
+        navigate(`/meals?${category}=${encodeURIComponent(value)}`);
+    };
 
     const macros = {
         Calories: {
@@ -97,26 +103,13 @@ const MealDetailCard = ({ meal }) => {
             {/* Details Section */}
             <Box sx={{ flex: 1, display: "flex", flexDirection: "column", padding: 2 }}>
                 <CardContent>
-                    {/* Meal Tags */}
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
-                        {Array.isArray(meal.cuisine) ? meal.cuisine.map((cuisine, index) => (
-                            <CustomChip key={index} label={formatEnum(cuisine)} color="primary" />
-                        )) : (
-                            <CustomChip label={formatEnum(meal.cuisine)} color="primary" />
-                        )}
-
-                        {Array.isArray(meal.diet) ? meal.diet.map((diet, index) => (
-                            <CustomChip key={index} label={formatEnum(diet)} color="secondary" />
-                        )) : (
-                            <CustomChip label={formatEnum(meal.diet)} color="secondary" />
-                        )}
-
-                        {Array.isArray(meal.mealType) ? meal.mealType.map((type, index) => (
-                            <CustomChip key={index} label={formatEnum(type)} color="success" />
-                        )) : (
-                            <CustomChip label={formatEnum(meal.mealType)} color="success" />
-                        )}
-                    </Box>
+                    // MealTags met navigatie
+                    <MealTags
+                        cuisine={meal.cuisine}
+                        diet={meal.diet}
+                        mealType={meal.mealType}
+                        onFilter={handleFilterRedirect}
+                    />
 
                     {/* Meal Title & Description */}
                     <Typography

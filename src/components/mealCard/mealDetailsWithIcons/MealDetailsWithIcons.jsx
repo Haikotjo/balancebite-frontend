@@ -25,10 +25,8 @@ const MealDetailsWithIcons = ({ nutrients }) => {
             justifyContent="space-between"
             alignItems="center"
             sx={{
-                backgroundColor: theme.palette.primary.dark,
+                backgroundColor: theme.palette.primary.main,
                 color: theme.palette.text.light,
-                borderBottomLeftRadius: "8px",
-                borderBottomRightRadius: "8px",
                 overflow: "hidden",
             }}
         >

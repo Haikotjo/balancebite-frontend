@@ -21,6 +21,7 @@ import SectionTitle from "./sectionTitle/SectionTitle.jsx";
 import ExpandableDescription from "../expandableDescription/ExpandableDescription.jsx";
 import TruncatedTitle from "../expandableTitle/ExpandableTitle.jsx";
 import MealInfoOverlay from "../mealInfoOverlay/MealInfoOverlay.jsx";
+import MealTags from "../mealTags/MealTags.jsx";
 
 function MealCard({ meal, refreshList, onFilter }) {
     const { expanded, toggleExpand } = useExpand();
@@ -39,20 +40,6 @@ function MealCard({ meal, refreshList, onFilter }) {
     return (
         <Card sx={{ minWidth: 300, maxWidth: 345, position: "relative", display: "flex", flexDirection: "column", height: "100%" }}>
 
-            <MealDetails
-                diet={meal.diet}
-                mealType={meal.mealType}
-                cuisine={meal.cuisine}
-                nutrients={nutrients}
-                onFilter={handleFilter}
-            />
-
-            <Box sx={{ position: "relative" }}>
-                <CardMedia component="img" image={imageSrc} alt={meal.name} sx={{ width: "100%", aspectRatio: "16/9" }} />
-                <MealInfoOverlay meal={meal} />
-                <MealCardActionButtons meal={meal} />
-            </Box>
-
             <MealDetailsWithIcons
                 diet={meal.diet}
                 mealType={meal.mealType}
@@ -61,10 +48,40 @@ function MealCard({ meal, refreshList, onFilter }) {
                 onFilter={handleFilter}
             />
 
+            {/*<MealDetails*/}
+            {/*    diet={meal.diet}*/}
+            {/*    mealType={meal.mealType}*/}
+            {/*    cuisine={meal.cuisine}*/}
+            {/*    nutrients={nutrients}*/}
+            {/*    onFilter={handleFilter}*/}
+            {/*/>*/}
+
+            <Box sx={{ position: "relative" }}>
+                <CardMedia component="img" image={imageSrc} alt={meal.name} sx={{ width: "100%", aspectRatio: "16/9" }} />
+                <MealInfoOverlay meal={meal} />
+                <MealCardActionButtons meal={meal} />
+            </Box>
+
+
+
             <CardContent sx={{ flexGrow: 1, paddingBottom: "10px !important" }}>
+                {/* Title */}
                 <TruncatedTitle title={meal.name} mealId={meal.id} />
 
-                <ExpandableDescription description={meal.mealDescription} />
+                {/* Description */}
+                <Box sx={{ mb: 2 }}>
+                    <ExpandableDescription description={meal.mealDescription} />
+                </Box>
+
+                {/* Meal Tags */}
+                <MealTags
+                    cuisine={meal.cuisine}
+                    diet={meal.diet}
+                    mealType={meal.mealType}
+                    size="small"
+                    onFilter={onFilter}
+                />
+
             </CardContent>
 
             <MealCardActions meal={meal} expanded={expanded} toggleExpand={toggleExpand} refreshList={refreshList} />

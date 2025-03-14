@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 import { Modal, Box, Button, useTheme } from "@mui/material";
 import { motion } from "framer-motion";
 import RestaurantRoundedIcon from "@mui/icons-material/RestaurantRounded";
-import { consumeMealApi } from "../../../services/apiService";
-import RecommendedNutritionDisplay from "../../recommendedNutritionDisplay/RecommendedNutritionDisplay.jsx";
-import ErrorDialog from "../../errorDialog/ErrorDialog.jsx";
+import { consumeMealApi } from "../../services/apiService.js";
+import RecommendedNutritionDisplay from "../recommendedNutritionDisplay/RecommendedNutritionDisplay.jsx";
+import ErrorDialog from "../errorDialog/ErrorDialog.jsx";
 
 const EatButton = ({ meal, refetchRecommendedNutrition }) => {
     const theme = useTheme();

@@ -4,9 +4,9 @@ import { IconButton } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { motion } from "framer-motion";
-import { UserMealsContext } from "../../../context/UserMealsContext";
-import useFavorites from "../../../hooks/useFavorites.jsx";
-import ErrorDialog from "../../errorDialog/ErrorDialog.jsx";
+import { UserMealsContext } from "../../context/UserMealsContext.jsx";
+import useFavorites from "../../hooks/useFavorites.jsx";
+import ErrorDialog from "../errorDialog/ErrorDialog.jsx";
 import { useTheme } from "@mui/material";
 
 const FavoriteButton = ({ meal }) => {

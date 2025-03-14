@@ -2,8 +2,8 @@ import PropTypes from "prop-types";
 import { Box } from "@mui/material";
 import { useContext } from "react";
 import { RecommendedNutritionContext } from "../../../context/RecommendedNutritionContext.jsx";
-import EatButton from "../eatButton/EatButton";
-import FavoriteButton from "../favoriteButton/FavoriteButton.jsx";
+import EatButton from "../../eatButton/EatButton";
+import FavoriteButton from "../../favoriteButton/FavoriteButton.jsx";
 import OpenMealButton from "../../openMealButton/OpenMealButton.jsx";
 
 const MealCardActionButtons = ({ meal, iconSize = 35, showOpenMealButton = true }) => {

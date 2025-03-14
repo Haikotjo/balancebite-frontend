@@ -15,6 +15,7 @@ import FilterSidebar from "../../components/filterSidebar/FilterSidebar.jsx";
 import SearchIcon from "@mui/icons-material/Search";
 import { useRef } from "react";
 import {getAllMealNames} from "../../services/apiService.js";
+import {useSearchParams} from "react-router-dom";
 
 
 /**
@@ -31,6 +32,7 @@ function MealPage() {
     const [filters, setFilters] = useState({});
     const { user } = useContext(AuthContext);
     const [activeOption, setActiveOption] = useState(user ? "My Meals" : "All Meals");
+    const [searchParams] = useSearchParams();
 
     const searchRef = useRef(null);
     const [isSearchVisible, setIsSearchVisible] = useState(false);
@@ -106,6 +108,25 @@ function MealPage() {
         // Hier kan je bijvoorbeeld een redirect doen naar de meal detail pagina
         // navigate(`/meals/${meal.id}`);
     };
+
+    useEffect(() => {
+        const newFilters = {};
+
+        if (searchParams.get("cuisine")) {
+            newFilters.cuisine = searchParams.get("cuisine");
+        }
+        if (searchParams.get("diet")) {
+            newFilters.diet = searchParams.get("diet");
+        }
+        if (searchParams.get("mealType")) {
+            newFilters.mealType = searchParams.get("mealType");
+        }
+
+        if (Object.keys(newFilters).length > 0) {
+            console.log("🔄 Filters loaded from URL:", newFilters);
+            setFilters(newFilters);
+        }
+    }, [searchParams]);
 
     return (
         <Box
