@@ -18,6 +18,9 @@ import MealDetails from "./mealDetails/MealDetails.jsx";
 import MealCardActionButtons from "./mealCardActionButtons/MealCardActionButtons.jsx";
 import MealDetailsWithIcons from "./mealDetailsWithIcons/MealDetailsWithIcons.jsx";
 import SectionTitle from "./sectionTitle/SectionTitle.jsx";
+import ExpandableDescription from "../expandableDescription/ExpandableDescription.jsx";
+import TruncatedTitle from "../expandableTitle/ExpandableTitle.jsx";
+import MealInfoOverlay from "../mealInfoOverlay/MealInfoOverlay.jsx";
 
 function MealCard({ meal, refreshList, onFilter }) {
     const { expanded, toggleExpand } = useExpand();
@@ -46,6 +49,7 @@ function MealCard({ meal, refreshList, onFilter }) {
 
             <Box sx={{ position: "relative" }}>
                 <CardMedia component="img" image={imageSrc} alt={meal.name} sx={{ width: "100%", aspectRatio: "16/9" }} />
+                <MealInfoOverlay meal={meal} />
                 <MealCardActionButtons meal={meal} />
             </Box>
 
@@ -58,16 +62,9 @@ function MealCard({ meal, refreshList, onFilter }) {
             />
 
             <CardContent sx={{ flexGrow: 1, paddingBottom: "10px !important" }}>
-                <Typography variant="h6" color="text.primary">{meal.name}</Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ fontFamily: "'Quicksand', sans-serif", fontSize: "0.7rem" }}>
-                    Created By: {" "}
-                    <Link to={`/users/created-meals/${meal.createdBy?.id}`} style={{ textDecoration: "underline", color: "inherit" }}>
-                        {meal.createdBy?.userName}
-                    </Link>
-                </Typography>
-                <Typography variant="body2" sx={{ fontFamily: "'Quicksand', sans-serif", fontSize: "0.8rem", marginTop: "8px", marginBottom: "8px" }}>
-                    {meal.mealDescription || "No description provided."}
-                </Typography>
+                <TruncatedTitle title={meal.name} mealId={meal.id} />
+
+                <ExpandableDescription description={meal.mealDescription} />
             </CardContent>
 
             <MealCardActions meal={meal} expanded={expanded} toggleExpand={toggleExpand} refreshList={refreshList} />

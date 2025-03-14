@@ -32,7 +32,8 @@ const OpenMealButton = ({ mealId }) => {
 };
 
 OpenMealButton.propTypes = {
-    mealId: PropTypes.string.isRequired,
+    mealId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
+
 
 export default OpenMealButton;
