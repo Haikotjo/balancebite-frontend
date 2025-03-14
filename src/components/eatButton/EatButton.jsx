@@ -78,7 +78,7 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
                 <RestaurantRoundedIcon
                     sx={{
                         fontSize: 25,
-                        color: theme.palette.primary.dark,
+                        color: theme.palette.primary.main,
                         transition: "color 0.2s ease-in-out",
                         "&:hover": {
                             color: theme.palette.primary.light,

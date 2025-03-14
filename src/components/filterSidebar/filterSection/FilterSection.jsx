@@ -1,6 +1,6 @@
 import { Box, Typography, Divider, Chip } from "@mui/material";
 import PropTypes from "prop-types";
-import { formatEnum } from "../helper/formatEnum.js";
+import { formatEnum } from "../../../utils/helpers/formatEnum.js";
 import { useTheme } from "@mui/material/styles";
 
 /**

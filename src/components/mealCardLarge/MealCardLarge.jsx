@@ -95,7 +95,7 @@ const MealDetailCard = ({ meal }) => {
                         objectFit: "cover",
                     }}
                 />
-                <MealInfoOverlay meal={meal} />
+                <MealInfoOverlay meal={meal} fontSize="0.8rem" />
 
                 <MealCardActionButtons meal={meal} showOpenMealButton={false} />
             </Box>
@@ -103,7 +103,7 @@ const MealDetailCard = ({ meal }) => {
             {/* Details Section */}
             <Box sx={{ flex: 1, display: "flex", flexDirection: "column", padding: 2 }}>
                 <CardContent>
-                    // MealTags met navigatie
+                    {/*// MealTags met navigatie*/}
                     <MealTags
                         cuisine={meal.cuisine}
                         diet={meal.diet}

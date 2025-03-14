@@ -2,6 +2,7 @@ import { Box, Chip } from "@mui/material";
 import PropTypes from "prop-types";
 import { CircleX } from "lucide-react";
 import { useTheme } from '@mui/material/styles';
+import {formatEnum} from "../../../utils/helpers/formatEnum.js";
 
 /**
  * ActiveFilters component - Displays active filters as removable chips.
@@ -30,7 +31,7 @@ const ActiveFilters = ({ filters, onFilterClick }) => {
             {Object.entries(filters).map(([key, value]) => (
                 <Chip
                     key={key}
-                    label={value} // Display filter value
+                    label={formatEnum(value)} // Pas formatEnum toe
                     variant="outlined"
                     onDelete={() => onFilterClick(key)}
                     deleteIcon={<CircleX size={16} color={theme.palette.text.primary} />}

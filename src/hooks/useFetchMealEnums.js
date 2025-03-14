@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchMealEnums } from "../../../services/apiService.js";
+import { fetchMealEnums } from "../services/apiService.js";
 
 /**
  * Custom hook to fetch meal-related enums (diets, cuisines, meal types).

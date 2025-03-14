@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { Box, Chip, Button } from "@mui/material";
 import { useState } from "react";
-import { formatEnum } from "../filterSidebar/helper/formatEnum.js";
+import { formatEnum } from "../../utils/helpers/formatEnum.js";
 
 /**
  * MealTags component that displays cuisine, diet, and mealType tags.

@@ -3,14 +3,15 @@ import { Typography, Box } from "@mui/material";
 
 /**
  * MealInfoOverlay component displays the "Created By" and "User Count" information
- * at the bottom of a meal card image, with responsive font sizes.
+ * at the bottom of a meal card image, with customizable font sizes.
  *
  * @component
  * @param {Object} props - Component properties.
  * @param {Object} props.meal - The meal object containing createdBy and userCount.
+ * @param {string} props.fontSize - The font size for text (default: "0.6rem").
  * @returns {JSX.Element} An overlay with meal creator and user count.
  */
-const MealInfoOverlay = ({ meal }) => {
+const MealInfoOverlay = ({ meal, fontSize = "0.6rem" }) => {
     return (
         <Box
             sx={{
@@ -29,7 +30,7 @@ const MealInfoOverlay = ({ meal }) => {
                 variant="body2"
                 sx={{
                     fontFamily: "'Quicksand', sans-serif",
-                    fontSize: { xs: "0.6rem", sm: "0.75rem", md: "0.8rem" },
+                    fontSize: fontSize,
                 }}
             >
                 {`Created By: ${meal.createdBy?.userName}`}
@@ -38,7 +39,7 @@ const MealInfoOverlay = ({ meal }) => {
                 variant="body2"
                 sx={{
                     fontFamily: "'Quicksand', sans-serif",
-                    fontSize: { xs: "0.6rem", sm: "0.75rem", md: "0.8rem" },
+                    fontSize: fontSize,
                 }}
             >
                 {`Added by ${meal.userCount} user${meal.userCount === 1 ? "" : "s"}`}
@@ -55,6 +56,7 @@ MealInfoOverlay.propTypes = {
         }),
         userCount: PropTypes.number,
     }).isRequired,
+    fontSize: PropTypes.string, // ✅ Nieuwe prop om de fontgrootte aan te passen
 };
 
 export default MealInfoOverlay;

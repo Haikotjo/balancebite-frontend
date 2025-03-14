@@ -144,7 +144,6 @@ function MealPage() {
             <Typography
                 variant="h3"
                 sx={{
-                    fontFamily: "'Nunito', sans-serif",
                     fontWeight: "bold",
                     textAlign: "center",
                     margin: 0,
@@ -176,6 +175,9 @@ function MealPage() {
             <NutrientSortOptionsHorizontal onSort={handleSort} />
 
             {/* Active Filters - Only render if there are active filters */}
+            {Object.keys(filters).length === 0 && (
+                <Box sx={{ marginBottom: 3 }} />
+            )}
             {filters && Object.keys(filters).length > 0 && (
                 <ActiveFilters filters={filters} onFilterClick={handleRemoveFilter} />
             )}

@@ -3,10 +3,10 @@ import { FilterList } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import { useTheme } from "@mui/material/styles";
 import "./FilterSidebar.css";
-import useSidebarState from "./hooks/useSidebarState.js";
-import useFetchMealEnums from "./hooks/useFetchMealEnums.js";
+import useSidebarState from "../../hooks/useSidebarState.js";
+import useFetchMealEnums from "../../hooks/useFetchMealEnums.js";
 import FilterSection from "./filterSection/FilterSection.jsx";
-import useFilterSelection from "./hooks/useFilterSelection.js";
+import useFilterSelection from "../../hooks/useFilterSelection.js";
 import SidebarHeader from "./sidebarHeader/SidebarHeader.jsx";
 
 /**

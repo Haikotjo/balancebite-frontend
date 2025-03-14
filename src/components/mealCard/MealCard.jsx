@@ -2,11 +2,9 @@ import PropTypes from "prop-types";
 import {
     Card,
     CardContent,
-    Typography,
     CardMedia,
     Collapse, Box,
 } from "@mui/material";
-import { Link } from "react-router-dom";
 import useNutrients from "../../hooks/useNutrients.js";
 import useExpand from "../../hooks/useExpand";
 import NutrientList from "./nutrientList/NutrientList";
@@ -14,7 +12,6 @@ import IngredientList from "./ingredientList/IngredientList";
 import { getImageSrc } from "../../utils/helpers/getImageSrc.js";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 import MealCardActions from "./mealCardActions/MealCardActions.jsx";
-import MealDetails from "./mealDetails/MealDetails.jsx";
 import MealCardActionButtons from "./mealCardActionButtons/MealCardActionButtons.jsx";
 import MealDetailsWithIcons from "./mealDetailsWithIcons/MealDetailsWithIcons.jsx";
 import SectionTitle from "./sectionTitle/SectionTitle.jsx";
@@ -38,7 +35,17 @@ function MealCard({ meal, refreshList, onFilter }) {
     };
 
     return (
-        <Card sx={{ minWidth: 300, maxWidth: 345, position: "relative", display: "flex", flexDirection: "column", height: "100%" }}>
+        <Card sx={{ minWidth: 300, maxWidth: 345, position: "relative", display: "flex", flexDirection: "column", height: "100%", border: "1px solid rgba(0, 0, 0, 0.05)",
+            boxShadow: "0px 0px 8px 2px rgba(0, 0, 0, 0.1)"
+            , }}>
+
+
+
+            <Box sx={{ position: "relative" }}>
+                <CardMedia component="img" image={imageSrc} alt={meal.name} sx={{ width: "100%", aspectRatio: "16/9" }} />
+                <MealInfoOverlay meal={meal} />
+                <MealCardActionButtons meal={meal} />
+            </Box>
 
             <MealDetailsWithIcons
                 diet={meal.diet}
@@ -47,21 +54,6 @@ function MealCard({ meal, refreshList, onFilter }) {
                 nutrients={nutrients}
                 onFilter={handleFilter}
             />
-
-            {/*<MealDetails*/}
-            {/*    diet={meal.diet}*/}
-            {/*    mealType={meal.mealType}*/}
-            {/*    cuisine={meal.cuisine}*/}
-            {/*    nutrients={nutrients}*/}
-            {/*    onFilter={handleFilter}*/}
-            {/*/>*/}
-
-            <Box sx={{ position: "relative" }}>
-                <CardMedia component="img" image={imageSrc} alt={meal.name} sx={{ width: "100%", aspectRatio: "16/9" }} />
-                <MealInfoOverlay meal={meal} />
-                <MealCardActionButtons meal={meal} />
-            </Box>
-
 
 
             <CardContent sx={{ flexGrow: 1, paddingBottom: "10px !important" }}>
