@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { AuthContext } from "./AuthContext";
 import { fetchMeals, fetchUserMeals} from "../services/apiService";
@@ -16,26 +16,24 @@ export const UserMealsProvider = ({ children }) => {
     const [error, setError] = useState(null);
     const [currentListEndpoint, setCurrentListEndpoint] = useState(() => {
         return user
-            ? `${import.meta.env.VITE_BASE_URL}/users/meals`
-            : `${import.meta.env.VITE_BASE_URL}/meals`;
+            ? `${import.meta.env.VITE_BASE_URL}/users/meals?page=0&size=10`
+            : `${import.meta.env.VITE_BASE_URL}/meals?page=0&size=10`;
     });
 
-    /**
-     * Fetches meals based on the current endpoint.
-     */
-    const fetchMealsData = async () => {
+    const fetchMealsData = useCallback(async () => {
+        setLoading(true);
         try {
-            setLoading(true);
             console.log("Fetching from endpoint:", currentListEndpoint);
             const mealsData = await fetchMeals(currentListEndpoint);
             setMeals(mealsData);
             setError(null);
         } catch (err) {
+            console.error("❌ Error fetching meals:", err);
             setError(err.message);
         } finally {
             setLoading(false);
         }
-    };
+    }, [currentListEndpoint]);
 
     /**
      * Fetches meals associated with the logged-in user.
@@ -56,37 +54,6 @@ export const UserMealsProvider = ({ children }) => {
         }
     };
 
-    /**
-     * Fetch meals when endpoint changes.
-     */
-    useEffect(() => {
-        if (currentListEndpoint) {
-            (async () => {
-                try {
-                    await fetchMealsData();
-                } catch (error) {
-                    console.error("❌ Error fetching meals:", error);
-                }
-            })();
-        }
-    }, [currentListEndpoint]);
-
-    /**
-     * Fetch user meals when the user logs in.
-     */
-    useEffect(() => {
-        if (user && currentListEndpoint !== `${import.meta.env.VITE_BASE_URL}/users/meals`) {
-            setCurrentListEndpoint(`${import.meta.env.VITE_BASE_URL}/users/meals`);
-
-            (async () => {
-                try {
-                    await fetchUserMealsData();
-                } catch (error) {
-                    console.error("❌ Error fetching user meals:", error);
-                }
-            })();
-        }
-    }, [user]);
 
     /**
      * Fetch user meals when the user logs in or after a page refresh.
@@ -94,25 +61,34 @@ export const UserMealsProvider = ({ children }) => {
      */
     useEffect(() => {
         if (user) {
-            (async () => {
-                await fetchUserMealsData();
-            })();
+            fetchUserMealsData();
         }
     }, [user]);
+
+    useEffect(() => {
+        if (userMeals.length > 0) {
+            setCurrentListEndpoint(`${import.meta.env.VITE_BASE_URL}/users/meals?page=0&size=10`);
+        } else {
+            setCurrentListEndpoint(`${import.meta.env.VITE_BASE_URL}/meals?page=0&size=10`);
+        }
+    }, [userMeals, user]);
 
     /**
      * Updates the current API endpoint dynamically.
      * @param {string} newEndpoint - The new endpoint to be set.
      */
     const updateEndpoint = (newEndpoint) => {
-        if (newEndpoint.startsWith(`${import.meta.env.VITE_BASE_URL}/meals`) ||
+        if (
+            newEndpoint.startsWith(`${import.meta.env.VITE_BASE_URL}/meals`) ||
             newEndpoint.startsWith(`${import.meta.env.VITE_BASE_URL}/users/meals`) ||
-            newEndpoint.startsWith(`${import.meta.env.VITE_BASE_URL}/users/created-meals`)) {
+            newEndpoint.startsWith(`${import.meta.env.VITE_BASE_URL}/users/created-meals`)
+        ) {
             setCurrentListEndpoint(newEndpoint);
         } else {
             console.warn("⛔ Attempted to set an endpoint not in the allowed list:", newEndpoint);
         }
     };
+
 
     /**
      * Removes a meal from the user's meal list.
@@ -130,13 +106,17 @@ export const UserMealsProvider = ({ children }) => {
         <UserMealsContext.Provider
             value={{
                 meals,
+                setMeals,
                 userMeals,
                 loading,
                 error,
+                setLoading,
+                setError,
                 currentListEndpoint,
                 setCurrentListEndpoint,
                 updateEndpoint,
                 fetchUserMealsData,
+                fetchMealsData,
                 resetUserMeals: () => setUserMeals([]),
                 addMealToUserMeals: (meal) => setUserMeals((prev) => [...prev, meal]),
                 removeMealFromUserMeals,

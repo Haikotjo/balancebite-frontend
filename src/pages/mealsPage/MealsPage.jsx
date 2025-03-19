@@ -1,46 +1,56 @@
-import {useState, useEffect} from "react";
-import MealList from "../../components/mealList/MealList.jsx";
-import SubMenu from "../../components/mealList/submenu/SubMenu.jsx";
-import {Box, IconButton, Typography} from "@mui/material";
-import "./MealsPage.css";
+import {useState, useEffect, useRef, useContext} from "react";
+import { Box, IconButton, Typography } from "@mui/material";
 import SearchBar from "../../components/searchBar/SearchBar.jsx";
+import SubMenu from "../../components/submenu/SubMenu.jsx";
+import NutrientSortOptionsHorizontal from "../../components/mealList/nutrientSortOptions/NutrientSortOptionsHorizontal.jsx";
 import ActiveFilters from "../../components/mealList/activeFilters/ActiveFilters.jsx";
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext.jsx";
-import {UserMealsContext} from "../../context/UserMealsContext.jsx";
-import NutrientSortOptionsHorizontal
-    from "../../components/mealList/nutrientSortOptions/NutrientSortOptionsHorizontal.jsx";
+import MealList from "../../components/mealList/MealList.jsx";
 import ScrollToTopButton from "../../components/scrollToTopButton/ScrollToTopButton.jsx";
 import FilterSidebar from "../../components/filterSidebar/FilterSidebar.jsx";
+import { getAllMealNames } from "../../services/apiService.js";
+import { useSearchParams } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
-import { useRef } from "react";
-import {getAllMealNames} from "../../services/apiService.js";
-import {useSearchParams} from "react-router-dom";
+import {UserMealsContext} from "../../context/UserMealsContext.jsx";
 
-
-/**
- * The MealPage component displays a list of meals and a submenu for filtering options.
- * It dynamically updates the displayed list based on the user's context and selected filter.
- *
- * @component
- */
 function MealPage() {
-    const [setUserName] = useState(null);
-    const { userMeals } = useContext(UserMealsContext);
-    const [setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState(null);
     const [filters, setFilters] = useState({});
-    const { user } = useContext(AuthContext);
-    const [activeOption, setActiveOption] = useState(user ? "My Meals" : "All Meals");
+    const { currentListEndpoint } = useContext(UserMealsContext);
     const [searchParams] = useSearchParams();
+    const { updateEndpoint } = useContext(UserMealsContext);
 
     const searchRef = useRef(null);
     const [isSearchVisible, setIsSearchVisible] = useState(false);
 
+    const getActiveOptionFromEndpoint = () => {
+        if (currentListEndpoint.includes("/users/meals")) return "My Meals";
+        if (currentListEndpoint.includes("/users/created-meals")) return "Created Meals";
+        return "All Meals";
+    };
+
+    const [activeOption, setActiveOption] = useState(() => getActiveOptionFromEndpoint());
+
+    useEffect(() => {
+        const detectedOption = getActiveOptionFromEndpoint();
+        if (activeOption !== detectedOption) {
+            console.log("🔄 Updating activeOption in MealPage:", detectedOption);
+            setActiveOption(detectedOption);
+        }
+    }, [currentListEndpoint]);
+
+    useEffect(() => {
+        let baseUrl = activeOption === "My Meals"
+            ? `${import.meta.env.VITE_BASE_URL}/users/meals?page=0&size=10`
+            : activeOption === "Created Meals"
+                ? `${import.meta.env.VITE_BASE_URL}/users/created-meals?page=0&size=10`
+                : `${import.meta.env.VITE_BASE_URL}/meals?page=0&size=10`;
+
+        updateEndpoint(baseUrl);
+    }, [activeOption]);
+
     const toggleSearch = () => {
         setIsSearchVisible((prev) => !prev);
     };
-
 
     const handleSort = (sortKey, sortOrder) => {
         setSortBy({ sortKey, sortOrder });
@@ -61,66 +71,14 @@ function MealPage() {
     };
 
     useEffect(() => {
-        if (user) {
-            setActiveOption(userMeals.length > 0 ? "My Meals" : "All Meals");
-        } else {
-            setActiveOption("All Meals");
-        }
-    }, [user, userMeals]);
-
-    useEffect(() => {
         console.log("🔄 Updated activeOption in MealPage:", activeOption);
     }, [activeOption]);
 
     useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (searchRef.current && !searchRef.current.contains(event.target)) {
-                setIsSearchVisible(false);
-            }
-        };
-
-        if (isSearchVisible) {
-            document.addEventListener("mousedown", handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [isSearchVisible]);
-
-    /**
-     * Fetches meals based on search query.
-     * @param {string} query - The search query.
-     * @returns {Promise<Array>} - List of meal results.
-     */
-    const handleSearch = async (query) => {
-        if (!query) return [];
-        return await getAllMealNames(); // Ophalen van meal-namen via API
-    };
-
-    /**
-     * Handles when a user selects a meal from search results.
-     * @param {Object} meal - The selected meal object.
-     */
-    const handleSelectMeal = (meal) => {
-        setSelectedMeal(meal);
-        console.log("🔍 Selected meal:", meal);
-        // Hier kan je bijvoorbeeld een redirect doen naar de meal detail pagina
-        // navigate(`/meals/${meal.id}`);
-    };
-
-    useEffect(() => {
         const newFilters = {};
-
-        if (searchParams.get("cuisine")) {
-            newFilters.cuisine = searchParams.get("cuisine");
-        }
-        if (searchParams.get("diet")) {
-            newFilters.diet = searchParams.get("diet");
-        }
-        if (searchParams.get("mealType")) {
-            newFilters.mealType = searchParams.get("mealType");
-        }
+        if (searchParams.get("cuisine")) newFilters.cuisine = searchParams.get("cuisine");
+        if (searchParams.get("diet")) newFilters.diet = searchParams.get("diet");
+        if (searchParams.get("mealType")) newFilters.mealType = searchParams.get("mealType");
 
         if (Object.keys(newFilters).length > 0) {
             console.log("🔄 Filters loaded from URL:", newFilters);
@@ -129,27 +87,10 @@ function MealPage() {
     }, [searchParams]);
 
     return (
-        <Box
-            sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "flex-start",
-                minHeight: "100vh",
-                padding: 2,
-            }}
-        >
+        <Box display="flex" flexDirection="column" alignItems="center" padding={2}>
 
             {/* Page Title */}
-            <Typography
-                variant="h3"
-                sx={{
-                    fontWeight: "bold",
-                    textAlign: "center",
-                    margin: 0,
-                    marginBottom: 4,
-                }}
-            >
+            <Typography variant="h3" sx={{ fontWeight: "bold", textAlign: "center", marginBottom: 4 }}>
                 {activeOption}
             </Typography>
 
@@ -160,41 +101,34 @@ function MealPage() {
                 </IconButton>
             ) : (
                 <div ref={searchRef}>
-                    <SearchBar onSearch={handleSearch} onSelect={handleSelectMeal} placeholder="Search for a meal..." />
+                    <SearchBar onSearch={getAllMealNames} placeholder="Search for a meal..." />
                 </div>
             )}
 
-            {/* Filter Sidebar - Floating Button */}
+            {/* Filter Sidebar */}
             <FilterSidebar filters={filters} onFilter={handleFiltersChange} />
 
-
             {/* SubMenu */}
-            <SubMenu activeOption={activeOption} setActiveOption={setActiveOption} />
+            <SubMenu activeOption={activeOption} onOptionSelect={setActiveOption} />
 
             {/* Nutrient Sort Options */}
             <NutrientSortOptionsHorizontal onSort={handleSort} />
 
-            {/* Active Filters - Only render if there are active filters */}
-            {Object.keys(filters).length === 0 && (
-                <Box sx={{ marginBottom: 3 }} />
-            )}
+            {/* Active Filters */}
             {filters && Object.keys(filters).length > 0 && (
                 <ActiveFilters filters={filters} onFilterClick={handleRemoveFilter} />
             )}
 
             {/* Meal List */}
-            <Box key={activeOption} className="animated-slide-in-up">
-                <MealList
-                    setCreatedByName={setUserName}
-                    sortBy={sortBy}
-                    filters={filters}
-                    onFiltersChange={handleFiltersChange}
-                    activeOption={activeOption}
-                    setActiveOption={setActiveOption}
-                />
-            </Box>
+            <MealList
+                sortBy={sortBy}
+                filters={filters}
+                activeOption={activeOption}
+                setActiveOption={setActiveOption}
+                onFiltersChange={handleFiltersChange}
+            />
 
-            {/* "Back to Top" Button */}
+            {/* Back to Top */}
             <ScrollToTopButton />
         </Box>
     );

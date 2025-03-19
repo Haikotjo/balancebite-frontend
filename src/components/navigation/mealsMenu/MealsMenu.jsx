@@ -31,7 +31,7 @@ import { UserMealsContext } from "../../../context/UserMealsContext.jsx"; // Imp
 const MealsMenu = ({ iconColor, text, onClose }) => {
     const [anchorEl, setAnchorEl] = useState(null); // Tracks whether the menu is open
     const { user } = useContext(AuthContext); // Access user authentication status
-    const { updateEndpoint, availableEndpoints, setActiveOption } = useContext(UserMealsContext); // Access meal-related endpoints and active option
+    const { updateEndpoint } = useContext(UserMealsContext);// Access meal-related endpoints and active option
     const navigate = useNavigate(); // Hook for programmatic navigation
 
     /**
@@ -70,38 +70,28 @@ const MealsMenu = ({ iconColor, text, onClose }) => {
             </div>
 
             {/* Dropdown menu */}
-            <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
-            >
-                {/* Option: All Meals */}
+            <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
                 <MenuItemComponent
                     icon={MenuBookRoundedIcon}
                     label="All Meals"
                     path="/meals"
                     onClose={() => {
                         handleMenuClose();
-                        const newEndpoint = `${import.meta.env.VITE_BASE_URL}/meals`;
-                        updateEndpoint(newEndpoint);
-                        setActiveOption("All Meals"); // Update the active option in the context
+                        updateEndpoint(`${import.meta.env.VITE_BASE_URL}/meals?page=0&size=10`);
                         navigate("/meals");
                     }}
                     requiresAuth={false}
                 />
                 <Divider sx={{ height: "1px", margin: 0 }} />
 
-                {/* Option: My Meals */}
                 <MenuItemComponent
                     icon={FoodBankRoundedIcon}
                     label="My Meals"
                     path="/meals"
                     onClose={() => {
                         handleMenuClose();
-                        const userMealsEndpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_USER_MEALS_ENDPOINT}`;
-                        if (user && availableEndpoints.includes(userMealsEndpoint)) {
-                            updateEndpoint(userMealsEndpoint);
-                            setActiveOption("My Meals"); // Update the active option in the context
+                        if (user) {
+                            updateEndpoint(`${import.meta.env.VITE_BASE_URL}/users/meals?page=0&size=10`);
                             navigate("/meals");
                         }
                     }}
@@ -109,17 +99,14 @@ const MealsMenu = ({ iconColor, text, onClose }) => {
                 />
                 <Divider sx={{ height: "1px", margin: 0 }} />
 
-                {/* Option: My Created Meals */}
                 <MenuItemComponent
                     icon={AccountBoxRoundedIcon}
                     label="Created Meals"
                     path="/meals"
                     onClose={() => {
                         handleMenuClose();
-                        const createdMealsEndpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_CREATED_MEALS_ENDPOINT}`;
-                        if (user && availableEndpoints.includes(createdMealsEndpoint)) {
-                            updateEndpoint(createdMealsEndpoint);
-                            setActiveOption("Created Meals"); // Update the active option in the context
+                        if (user) {
+                            updateEndpoint(`${import.meta.env.VITE_BASE_URL}/users/created-meals?page=0&size=10`);
                             navigate("/meals");
                         }
                     }}
@@ -127,17 +114,13 @@ const MealsMenu = ({ iconColor, text, onClose }) => {
                 />
                 <Divider sx={{ height: "1px", margin: 0 }} />
 
-                {/* Option: Create Meal */}
                 <MenuItemComponent
                     icon={CreateRoundedIcon}
                     label="Create Meal"
                     path="/create-meal"
                     onClose={() => {
                         handleMenuClose();
-                        if (user) {
-                            setActiveOption(null); // No active option for "Create Meal"
-                            navigate("/create-meal");
-                        }
+                        if (user) navigate("/create-meal");
                     }}
                     requiresAuth={true}
                 />

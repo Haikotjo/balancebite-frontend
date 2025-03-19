@@ -49,6 +49,7 @@ export const RecommendedNutritionProvider = ({ children }) => {
         }
     }, [token]);
 
+
     const calculateConsumedNutrition = () => {
         if (!baseNutrition || !recommendedNutrition) return null;
 
