@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import CloseIcon from "@mui/icons-material/Close";
 import MealCard from "../mealCard/MealCard.jsx"; // Importeer MealCard
 
-const MealModal = ({ meal, open, onClose, refreshList, onFilter }) => {
+const MealModal = ({ meal, open, onClose, onFilter }) => {
     if (!meal) return null;
 
     return (
@@ -29,7 +29,7 @@ const MealModal = ({ meal, open, onClose, refreshList, onFilter }) => {
                 >
                     <CloseIcon />
                 </IconButton>
-                <MealCard meal={meal} refreshList={refreshList} onFilter={onFilter} />
+                <MealCard meal={meal} onFilter={onFilter} />
             </Box>
         </Modal>
     );
@@ -39,7 +39,6 @@ MealModal.propTypes = {
     meal: PropTypes.object,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    refreshList: PropTypes.func.isRequired,
     onFilter: PropTypes.func.isRequired,
 };
 

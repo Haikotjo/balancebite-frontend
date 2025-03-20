@@ -20,7 +20,7 @@ import TruncatedTitle from "../expandableTitle/ExpandableTitle.jsx";
 import MealInfoOverlay from "../mealInfoOverlay/MealInfoOverlay.jsx";
 import MealTags from "../mealTags/MealTags.jsx";
 
-function MealCard({ meal, refreshList, onFilter }) {
+function MealCard({ meal, onFilter }) {
     const { expanded, toggleExpand } = useExpand();
     const { nutrients } = useNutrients(meal.id);
     const imageSrc = getImageSrc(meal);
@@ -76,7 +76,7 @@ function MealCard({ meal, refreshList, onFilter }) {
 
             </CardContent>
 
-            <MealCardActions meal={meal} expanded={expanded} toggleExpand={toggleExpand} refreshList={refreshList} />
+            <MealCardActions meal={meal} expanded={expanded} toggleExpand={toggleExpand} />
 
             <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
@@ -94,7 +94,6 @@ function MealCard({ meal, refreshList, onFilter }) {
 
 MealCard.propTypes = {
     meal: PropTypes.object.isRequired,
-    refreshList: PropTypes.func.isRequired,
     onFilter: PropTypes.func.isRequired,
 };
 

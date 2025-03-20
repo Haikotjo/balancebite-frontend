@@ -5,7 +5,7 @@ import { UserMealsContext } from "../../context/UserMealsContext.jsx";
 import PropTypes from "prop-types";
 
 function MealList({ filters, sortBy }) {
-    const { meals, loading, error, fetchMealsData, userMeals, setFilters, setSortBy } = useContext(UserMealsContext);
+    const { meals, loading, error, userMeals, setFilters, setSortBy } = useContext(UserMealsContext);
 
     // ✅ Filters opslaan in de context
     const handleFilter = (category, value) => {
@@ -73,9 +73,8 @@ function MealList({ filters, sortBy }) {
                     <MealCard
                         key={mealToRender.id}
                         meal={mealToRender}
-                        refreshList={fetchMealsData}
-                        onFilter={handleFilter} // ✅ Filters werken weer
-                        onSort={handleSort}     // ✅ Sorting werkt weer
+                        onFilter={handleFilter}
+                        onSort={handleSort}
                     />
                 );
             })}

@@ -10,7 +10,6 @@ import FilterSidebar from "../../components/filterSidebar/FilterSidebar.jsx";
 import { getAllMealNames } from "../../services/apiService.js";
 import { useSearchParams } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
-import {UserMealsContext} from "../../context/UserMealsContext.jsx";
 
 function MealPage() {
     const [sortBy, setSortBy] = useState(null);

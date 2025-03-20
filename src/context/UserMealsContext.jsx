@@ -16,14 +16,32 @@ export const UserMealsProvider = ({ children }) => {
     const [activeOption, setActiveOption] = useState("All Meals");
     const [currentListEndpoint, setCurrentListEndpoint] = useState("");
 
-    /** 🔹 **Bepaal `activeOption` zodra de gebruiker of zijn maaltijden veranderen** */
-    useEffect(() => {
-        if (user) {
-            setActiveOption(userMeals.length > 0 ? "My Meals" : "All Meals");
-        } else {
-            setActiveOption("All Meals");
+    /** 🔹 **Haalt user meals op zodra de gebruiker inlogt of verandert** */
+    const fetchUserMealsData = async () => {
+        try {
+            setLoading(true);
+            const token = localStorage.getItem("accessToken");
+            if (token) {
+                const userMealsData = await fetchUserMeals(token);
+                setUserMeals(Array.isArray(userMealsData.content) ? userMealsData.content : []);
+            }
+        } catch (error) {
+            console.error("⚠️ Failed to fetch user meals:", error.message);
+            setUserMeals([]);
+        } finally {
+            setLoading(false);
         }
-    }, [user, userMeals]);
+    };
+
+
+    const replaceMealInMeals = (originalMealId, newMeal) => {
+        setMeals((prevMeals) =>
+            prevMeals.map((meal) =>
+                String(meal.id) === String(originalMealId) ? newMeal : meal
+            )
+        );
+    };
+
 
     /** 🔹 **Genereer het endpoint correct met filters & sorting** */
     useEffect(() => {
@@ -69,25 +87,14 @@ export const UserMealsProvider = ({ children }) => {
     }, [currentListEndpoint]);
 
     useEffect(() => {
-        fetchMealsData();
-    }, [currentListEndpoint]);
-
-    /** 🔹 **Haalt user meals op zodra de gebruiker inlogt of verandert** */
-    const fetchUserMealsData = async () => {
-        try {
-            setLoading(true);
-            const token = localStorage.getItem("accessToken");
-            if (token) {
-                const userMealsData = await fetchUserMeals(token);
-                setUserMeals(Array.isArray(userMealsData.content) ? userMealsData.content : []);
-            }
-        } catch (error) {
-            console.error("⚠️ Failed to fetch user meals:", error.message);
-            setUserMeals([]);
-        } finally {
-            setLoading(false);
+        if (user) {
+            fetchUserMealsData();  // 🔹 Alleen bij login, NIET elke keer als je van lijst wisselt
         }
-    };
+    }, [user]); // 🔹 Deze afhankelijkheid zorgt dat het enkel wordt uitgevoerd bij login/logout
+
+    useEffect(() => {
+        fetchMealsData();  // 🔹 Voert ALLEEN de meal-fetch uit bij verandering van lijst (All Meals / My Meals)
+    }, [currentListEndpoint]);
 
     /** 🔹 **Verwijdert een maaltijd uit de gebruikerslijst** */
     const removeMealFromUserMeals = (mealId) => {
@@ -97,6 +104,21 @@ export const UserMealsProvider = ({ children }) => {
             return [...updatedMeals];
         });
     };
+
+    const addMealToUserMeals = (meal) => {
+        setUserMeals((prevUserMeals) => [...prevUserMeals, meal]);
+    };
+
+    const removeMealFromMeals = (mealId) => {
+        setMeals((prevMeals) => prevMeals.filter((meal) => meal.id !== mealId));
+    };
+
+    useEffect(() => {
+        if (activeOption === "My Meals" && user) {
+            fetchUserMealsData(); // Zorgt voor actuele data zodra je naar My Meals gaat
+        }
+    }, [activeOption, user]);
+
 
     return (
         <UserMealsContext.Provider
@@ -114,6 +136,9 @@ export const UserMealsProvider = ({ children }) => {
                 fetchUserMealsData,
                 fetchMealsData,
                 removeMealFromUserMeals,
+                addMealToUserMeals,
+                removeMealFromMeals,
+                replaceMealInMeals,
             }}
         >
             {children}

@@ -30,7 +30,7 @@ import { UserMealsContext } from "../../../context/UserMealsContext.jsx"; // Imp
 const MealsMenu = ({ iconColor, text, onClose }) => {
     const [anchorEl, setAnchorEl] = useState(null); // Tracks whether the menu is open
     const { user } = useContext(AuthContext); // Access user authentication status
-    const { updateEndpoint, setActiveOption  } = useContext(UserMealsContext);// Access meal-related endpoints and active option
+    const { setActiveOption  } = useContext(UserMealsContext);// Access meal-related endpoints and active option
     const navigate = useNavigate(); // Hook for programmatic navigation
 
 
@@ -78,7 +78,6 @@ const MealsMenu = ({ iconColor, text, onClose }) => {
                     onClose={() => {
                         handleMenuClose();
                         setActiveOption("All Meals");
-                        updateEndpoint(`${import.meta.env.VITE_BASE_URL}/meals?page=0&size=10`);
                         navigate("/meals");
                     }}
                     requiresAuth={false}
@@ -93,7 +92,6 @@ const MealsMenu = ({ iconColor, text, onClose }) => {
                         handleMenuClose();
                         if (user) {
                             setActiveOption("My Meals");
-                            updateEndpoint(`${import.meta.env.VITE_BASE_URL}/users/meals?page=0&size=10`);
                             navigate("/meals");
                         }
                     }}
@@ -109,7 +107,6 @@ const MealsMenu = ({ iconColor, text, onClose }) => {
                         handleMenuClose();
                         if (user) {
                             setActiveOption("Created Meals");
-                            updateEndpoint(`${import.meta.env.VITE_BASE_URL}/users/created-meals?page=0&size=10`);
                             navigate("/meals");
                         }
                     }}
