@@ -1,11 +1,8 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { AuthContext } from "./AuthContext";
-import { fetchMeals, fetchUserMeals} from "../services/apiService";
+import { fetchMeals, fetchUserMeals } from "../services/apiService";
 
-/**
- * Context for managing user-specific meal data and API endpoints.
- */
 export const UserMealsContext = createContext();
 
 export const UserMealsProvider = ({ children }) => {
@@ -14,13 +11,49 @@ export const UserMealsProvider = ({ children }) => {
     const [userMeals, setUserMeals] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [currentListEndpoint, setCurrentListEndpoint] = useState(() => {
-        return user
-            ? `${import.meta.env.VITE_BASE_URL}/users/meals?page=0&size=10`
-            : `${import.meta.env.VITE_BASE_URL}/meals?page=0&size=10`;
-    });
+    const [filters, setFilters] = useState({});
+    const [sortBy, setSortBy] = useState(null);
+    const [activeOption, setActiveOption] = useState("All Meals");
+    const [currentListEndpoint, setCurrentListEndpoint] = useState("");
 
+    /** 🔹 **Bepaal `activeOption` zodra de gebruiker of zijn maaltijden veranderen** */
+    useEffect(() => {
+        if (user) {
+            setActiveOption(userMeals.length > 0 ? "My Meals" : "All Meals");
+        } else {
+            setActiveOption("All Meals");
+        }
+    }, [user, userMeals]);
+
+    /** 🔹 **Genereer het endpoint correct met filters & sorting** */
+    useEffect(() => {
+        let baseUrl =
+            activeOption === "My Meals"
+                ? `${import.meta.env.VITE_BASE_URL}/users/meals?page=0&size=10`
+                : activeOption === "Created Meals"
+                    ? `${import.meta.env.VITE_BASE_URL}/users/created-meals?page=0&size=10`
+                    : `${import.meta.env.VITE_BASE_URL}/meals?page=0&size=10`;
+
+        // **Filters toevoegen**
+        Object.entries(filters).forEach(([key, value]) => {
+            baseUrl += `&${key}=${encodeURIComponent(value)}`;
+        });
+
+        // **Sorting toevoegen**
+        if (sortBy?.sortKey && sortBy?.sortOrder) {
+            baseUrl += `&sortBy=${sortBy.sortKey}&sortOrder=${sortBy.sortOrder}`;
+        }
+
+        // **Voorkom onnodige updates**
+        if (baseUrl !== currentListEndpoint) {
+            setCurrentListEndpoint(baseUrl);
+        }
+    }, [activeOption, filters, sortBy]);
+
+    /** 🔹 **Haalt maaltijden op wanneer `currentListEndpoint` verandert** */
     const fetchMealsData = useCallback(async () => {
+        if (!currentListEndpoint) return;
+
         setLoading(true);
         try {
             console.log("Fetching from endpoint:", currentListEndpoint);
@@ -35,9 +68,11 @@ export const UserMealsProvider = ({ children }) => {
         }
     }, [currentListEndpoint]);
 
-    /**
-     * Fetches meals associated with the logged-in user.
-     */
+    useEffect(() => {
+        fetchMealsData();
+    }, [currentListEndpoint]);
+
+    /** 🔹 **Haalt user meals op zodra de gebruiker inlogt of verandert** */
     const fetchUserMealsData = async () => {
         try {
             setLoading(true);
@@ -54,46 +89,7 @@ export const UserMealsProvider = ({ children }) => {
         }
     };
 
-
-    /**
-     * Fetch user meals when the user logs in or after a page refresh.
-     * Ensures userMeals are always up-to-date.
-     */
-    useEffect(() => {
-        if (user) {
-            fetchUserMealsData();
-        }
-    }, [user]);
-
-    useEffect(() => {
-        if (userMeals.length > 0) {
-            setCurrentListEndpoint(`${import.meta.env.VITE_BASE_URL}/users/meals?page=0&size=10`);
-        } else {
-            setCurrentListEndpoint(`${import.meta.env.VITE_BASE_URL}/meals?page=0&size=10`);
-        }
-    }, [userMeals, user]);
-
-    /**
-     * Updates the current API endpoint dynamically.
-     * @param {string} newEndpoint - The new endpoint to be set.
-     */
-    const updateEndpoint = (newEndpoint) => {
-        if (
-            newEndpoint.startsWith(`${import.meta.env.VITE_BASE_URL}/meals`) ||
-            newEndpoint.startsWith(`${import.meta.env.VITE_BASE_URL}/users/meals`) ||
-            newEndpoint.startsWith(`${import.meta.env.VITE_BASE_URL}/users/created-meals`)
-        ) {
-            setCurrentListEndpoint(newEndpoint);
-        } else {
-            console.warn("⛔ Attempted to set an endpoint not in the allowed list:", newEndpoint);
-        }
-    };
-
-
-    /**
-     * Removes a meal from the user's meal list.
-     * Adds logs to check if the meal is being correctly removed.
-     */
+    /** 🔹 **Verwijdert een maaltijd uit de gebruikerslijst** */
     const removeMealFromUserMeals = (mealId) => {
         setUserMeals((prev) => {
             const updatedMeals = prev.filter((meal) => meal.id !== mealId);
@@ -106,19 +102,17 @@ export const UserMealsProvider = ({ children }) => {
         <UserMealsContext.Provider
             value={{
                 meals,
-                setMeals,
                 userMeals,
                 loading,
                 error,
-                setLoading,
-                setError,
-                currentListEndpoint,
-                setCurrentListEndpoint,
-                updateEndpoint,
+                activeOption,
+                setActiveOption,
+                filters,
+                setFilters,
+                sortBy,
+                setSortBy,
                 fetchUserMealsData,
                 fetchMealsData,
-                resetUserMeals: () => setUserMeals([]),
-                addMealToUserMeals: (meal) => setUserMeals((prev) => [...prev, meal]),
                 removeMealFromUserMeals,
             }}
         >

@@ -6,8 +6,10 @@ import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 import FoodBankRoundedIcon from "@mui/icons-material/FoodBankRounded";
 import PropTypes from "prop-types";
 import CustomChip from "../customChip/CustomChip.jsx";
+import {UserMealsContext} from "../../context/UserMealsContext.jsx";
 
-function SubMenu({ activeOption, onOptionSelect }) {
+function SubMenu() {
+    const { activeOption, setActiveOption } = useContext(UserMealsContext);
     const { user } = useContext(AuthContext);
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -28,7 +30,7 @@ function SubMenu({ activeOption, onOptionSelect }) {
     const handleChipClick = (option) => {
         if (activeOption !== option) {
             console.log("📌 SubMenu selected:", option);
-            onOptionSelect(option);
+            setActiveOption(option); // Nu uit de context
         }
     };
 
@@ -61,10 +63,5 @@ function SubMenu({ activeOption, onOptionSelect }) {
         </Box>
     );
 }
-
-SubMenu.propTypes = {
-    activeOption: PropTypes.string.isRequired,
-    onOptionSelect: PropTypes.func.isRequired,
-};
 
 export default SubMenu;

@@ -1,48 +1,30 @@
-import { useContext, useEffect } from "react";
+import {useContext, useEffect} from "react";
 import MealCard from "../mealCard/MealCard.jsx";
-import { Box, CircularProgress, Typography, Link } from "@mui/material";
-import PropTypes from "prop-types";
-import CustomButton from "./createMealButton/CustomButton.jsx";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { UserMealsContext } from "../../context/UserMealsContext.jsx";
-import RefreshIcon from '@mui/icons-material/Refresh';
+import PropTypes from "prop-types";
 
-function MealList({ sortBy, filters }) {
+function MealList({ filters, sortBy }) {
+    const { meals, loading, error, fetchMealsData, userMeals, setFilters, setSortBy } = useContext(UserMealsContext);
 
-    const { meals, loading, error, fetchMealsData, userMeals, currentListEndpoint, setCurrentListEndpoint } = useContext(UserMealsContext);
-
-    const generateEndpoint = () => {
-        let baseUrl = currentListEndpoint.split("?")[0]; // behoud huidige endpoint zonder query parameters
-        baseUrl += "?page=0&size=10";
-
-        Object.entries(filters).forEach(([key, value]) => {
-            baseUrl += `&${key}=${encodeURIComponent(value)}`;
-        });
-
-        if (sortBy?.sortKey && sortBy?.sortOrder) {
-            baseUrl += `&sortBy=${sortBy.sortKey}&sortOrder=${sortBy.sortOrder}`;
-        }
-
-        return baseUrl;
-    };
-
+    // ✅ Filters opslaan in de context
     const handleFilter = (category, value) => {
-        const newFilters = { ...filters, [category]: value };
-        onFiltersChange(newFilters);
+        setFilters((prevFilters) => ({
+            ...prevFilters,
+            [category]: value,
+        }));
     };
 
+    // ✅ Sorting opslaan in de context
+    const handleSort = (sortKey, sortOrder) => {
+        setSortBy({ sortKey, sortOrder });
+    };
+
+    // ⬇️ ✅ Stuur filters en sorting door naar de context (1 keer bij laden)
     useEffect(() => {
-        const newEndpoint = generateEndpoint();
-        if (newEndpoint !== currentListEndpoint) {
-            setCurrentListEndpoint(newEndpoint);
-        }
-    }, [filters, sortBy, setCurrentListEndpoint]);  // ❗️ Geen `currentListEndpoint` in de dependencies!
-
-    useEffect(() => {
-        fetchMealsData();
-    }, [currentListEndpoint, fetchMealsData]);
-
-
-
+        setFilters(filters);
+        setSortBy(sortBy);
+    }, [filters, sortBy, setFilters, setSortBy]);
 
     if (loading)
         return (
@@ -92,7 +74,8 @@ function MealList({ sortBy, filters }) {
                         key={mealToRender.id}
                         meal={mealToRender}
                         refreshList={fetchMealsData}
-                        onFilter={handleFilter}
+                        onFilter={handleFilter} // ✅ Filters werken weer
+                        onSort={handleSort}     // ✅ Sorting werkt weer
                     />
                 );
             })}
@@ -101,9 +84,11 @@ function MealList({ sortBy, filters }) {
 }
 
 MealList.propTypes = {
-    sortBy: PropTypes.object,
     filters: PropTypes.object.isRequired,
-    onFiltersChange: PropTypes.func.isRequired,
+    sortBy: PropTypes.shape({
+        sortKey: PropTypes.string,
+        sortOrder: PropTypes.string
+    }),
 };
 
 export default MealList;

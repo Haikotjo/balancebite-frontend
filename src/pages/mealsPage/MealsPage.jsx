@@ -15,38 +15,11 @@ import {UserMealsContext} from "../../context/UserMealsContext.jsx";
 function MealPage() {
     const [sortBy, setSortBy] = useState(null);
     const [filters, setFilters] = useState({});
-    const { currentListEndpoint } = useContext(UserMealsContext);
     const [searchParams] = useSearchParams();
-    const { updateEndpoint } = useContext(UserMealsContext);
 
     const searchRef = useRef(null);
     const [isSearchVisible, setIsSearchVisible] = useState(false);
 
-    const getActiveOptionFromEndpoint = () => {
-        if (currentListEndpoint.includes("/users/meals")) return "My Meals";
-        if (currentListEndpoint.includes("/users/created-meals")) return "Created Meals";
-        return "All Meals";
-    };
-
-    const [activeOption, setActiveOption] = useState(() => getActiveOptionFromEndpoint());
-
-    useEffect(() => {
-        const detectedOption = getActiveOptionFromEndpoint();
-        if (activeOption !== detectedOption) {
-            console.log("🔄 Updating activeOption in MealPage:", detectedOption);
-            setActiveOption(detectedOption);
-        }
-    }, [currentListEndpoint]);
-
-    useEffect(() => {
-        let baseUrl = activeOption === "My Meals"
-            ? `${import.meta.env.VITE_BASE_URL}/users/meals?page=0&size=10`
-            : activeOption === "Created Meals"
-                ? `${import.meta.env.VITE_BASE_URL}/users/created-meals?page=0&size=10`
-                : `${import.meta.env.VITE_BASE_URL}/meals?page=0&size=10`;
-
-        updateEndpoint(baseUrl);
-    }, [activeOption]);
 
     const toggleSearch = () => {
         setIsSearchVisible((prev) => !prev);
@@ -71,10 +44,6 @@ function MealPage() {
     };
 
     useEffect(() => {
-        console.log("🔄 Updated activeOption in MealPage:", activeOption);
-    }, [activeOption]);
-
-    useEffect(() => {
         const newFilters = {};
         if (searchParams.get("cuisine")) newFilters.cuisine = searchParams.get("cuisine");
         if (searchParams.get("diet")) newFilters.diet = searchParams.get("diet");
@@ -91,7 +60,7 @@ function MealPage() {
 
             {/* Page Title */}
             <Typography variant="h3" sx={{ fontWeight: "bold", textAlign: "center", marginBottom: 4 }}>
-                {activeOption}
+                {}
             </Typography>
 
             {/* Search Bar Toggle */}
@@ -109,7 +78,7 @@ function MealPage() {
             <FilterSidebar filters={filters} onFilter={handleFiltersChange} />
 
             {/* SubMenu */}
-            <SubMenu activeOption={activeOption} onOptionSelect={setActiveOption} />
+            <SubMenu  />
 
             {/* Nutrient Sort Options */}
             <NutrientSortOptionsHorizontal onSort={handleSort} />
@@ -123,8 +92,6 @@ function MealPage() {
             <MealList
                 sortBy={sortBy}
                 filters={filters}
-                activeOption={activeOption}
-                setActiveOption={setActiveOption}
                 onFiltersChange={handleFiltersChange}
             />
 
