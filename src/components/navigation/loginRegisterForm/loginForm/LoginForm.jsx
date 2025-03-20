@@ -11,7 +11,7 @@ import loginSchema from "./LoginForm.js";
 const LoginForm = ({ onClose, onSwitchToRegister }) => {
     const theme = useTheme();
     const { handleLogin, errorMessage } = useLogin();
-    const { resetUserMeals, fetchUserMealsData } = useContext(UserMealsContext);
+    const { fetchUserMealsData } = useContext(UserMealsContext);
 
     const {
         register,
@@ -26,7 +26,6 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
     const onSubmit = async (data) => {
         localStorage.clear();
         sessionStorage.clear();
-        resetUserMeals();
         await handleLogin(data.email, data.password, async () => {
             await fetchUserMealsData();
             if (onClose) onClose();

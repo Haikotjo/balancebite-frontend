@@ -18,8 +18,12 @@ const useFavorites = () => {
         try {
             const response = await addMealToFavoritesApi(meal.id, token);
 
-            // ⚠️ Haal hier de juiste meal uit het user-object (jouw backend-response)
-            const newMeal = response.meals.find(m => String(m.originalMealId) === String(meal.id));
+            let newMeal = response.meals.find(m => String(m.originalMealId) === String(meal.id));
+
+            if (!newMeal) {
+                // ❗️Als geen nieuwe meal, gebruik de originele meal (zelfde id)
+                newMeal = response.meals.find(m => String(m.id) === String(meal.id));
+            }
 
             if (newMeal) {
                 addMealToUserMeals(newMeal);

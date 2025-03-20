@@ -15,7 +15,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
     const [successMessage, setSuccessMessage] = useState("");
     const navigate = useNavigate();
     const { handleLogin } = useLogin();
-    const { resetUserMeals, fetchUserMealsData } = useContext(UserMealsContext);
+    const { fetchUserMealsData } = useContext(UserMealsContext);
 
     const {
         register,
@@ -30,7 +30,6 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
         try {
             localStorage.clear();
             sessionStorage.clear();
-            resetUserMeals();
 
             const responseData = await registerUserApi(data);
             const { accessToken, refreshToken } = responseData;
