@@ -1,7 +1,7 @@
 import { Modal, Box, IconButton } from "@mui/material";
 import PropTypes from "prop-types";
 import CloseIcon from "@mui/icons-material/Close";
-import MealCard from "../mealCard/MealCard.jsx"; // Importeer MealCard
+import MealCard from "../mealCard/MealCard.jsx";
 
 const MealModal = ({ meal, open, onClose, onFilter }) => {
     if (!meal) return null;

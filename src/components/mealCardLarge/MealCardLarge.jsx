@@ -22,13 +22,19 @@ import ExpandableDescription from "../expandableDescription/ExpandableDescriptio
 import MealInfoOverlay from "../mealInfoOverlay/MealInfoOverlay.jsx";
 import MealTags from "../mealTags/MealTags.jsx";
 import {useNavigate} from "react-router-dom";
+import {useContext} from "react";
+import {UserMealsContext} from "../../context/UserMealsContext.jsx";
 
 const MealDetailCard = ({ meal }) => {
+    const { userMeals } = useContext(UserMealsContext);
+    const userMealMatch = userMeals.find(m => String(m.originalMealId) === String(meal.id));
+    const mealToRender = userMealMatch || meal;
+
     const theme = useTheme();
     const isMedium = useMediaQuery(theme.breakpoints.up("md"));
 
-    const imageSrc = getImageSrc(meal);
-    const calculatedMacros = calculateMacrosPer100g(meal);
+    const imageSrc = getImageSrc(mealToRender);
+    const calculatedMacros = calculateMacrosPer100g(mealToRender);
 
     const navigate = useNavigate();
 
@@ -88,16 +94,16 @@ const MealDetailCard = ({ meal }) => {
                 <CardMedia
                     component="img"
                     image={imageSrc}
-                    alt={meal.name}
+                    alt={mealToRender.name}
                     sx={{
                         width: "100%",
                         height: { xs: 200, md: "100%" },
                         objectFit: "cover",
                     }}
                 />
-                <MealInfoOverlay meal={meal} fontSize="0.8rem" />
+                <MealInfoOverlay meal={mealToRender} fontSize="0.8rem" />
 
-                <MealCardActionButtons meal={meal} showOpenMealButton={false} />
+                <MealCardActionButtons meal={mealToRender} showOpenMealButton={false} />
             </Box>
 
             {/* Details Section */}
@@ -105,9 +111,9 @@ const MealDetailCard = ({ meal }) => {
                 <CardContent>
                     {/*// MealTags met navigatie*/}
                     <MealTags
-                        cuisine={meal.cuisine}
-                        diet={meal.diet}
-                        mealType={meal.mealType}
+                        cuisine={mealToRender.cuisine}
+                        diet={mealToRender.diet}
+                        mealType={mealToRender.mealType}
                         onFilter={handleFilterRedirect}
                     />
 
@@ -117,10 +123,10 @@ const MealDetailCard = ({ meal }) => {
                         sx={{ fontSize: { xs: "1.5rem", md: "2rem" } }}
                         gutterBottom
                     >
-                        {meal.name}
+                        {mealToRender.name}
                     </Typography>
 
-                    <ExpandableDescription description={meal.mealDescription} />
+                    <ExpandableDescription description={mealToRender.mealDescription} />
 
                     {/* Macros Section */}
                     <Divider sx={{ width: "100%", my: 2, borderColor: theme.palette.primary.main }} />
@@ -158,7 +164,7 @@ const MealDetailCard = ({ meal }) => {
                         Ingredients:
                     </Typography>
                     <List sx={{ padding: 0 }}>
-                        {meal.mealIngredients?.map((ingredient) => (
+                        {mealToRender.mealIngredients?.map((ingredient) => (
                             <ListItem key={ingredient.id} sx={{ py: 0.3 }}>
                                 <ListItemIcon sx={{ minWidth: "24px" }}>
                                     <FiberManualRecordIcon sx={{ fontSize: "0.6rem", color: theme.palette.primary.main}} />
