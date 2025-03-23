@@ -19,8 +19,9 @@ import ExpandableDescription from "../expandableDescription/ExpandableDescriptio
 import TruncatedTitle from "../truncatedTitle/TruncatedTitle.jsx";
 import MealInfoOverlay from "../mealInfoOverlay/MealInfoOverlay.jsx";
 import MealTags from "../mealTags/MealTags.jsx";
+import MealCardFooter from "../mealCardFooter/MealCardFooter.jsx";
 
-function MealCard({ meal, onFilter }) {
+function MealCard({ meal, onFilter, onTitleClick  }) {
     const { expanded, toggleExpand } = useExpand();
     const { nutrients } = useNutrients(meal.id);
     const imageSrc = getImageSrc(meal);
@@ -39,8 +40,6 @@ function MealCard({ meal, onFilter }) {
             boxShadow: "0px 0px 8px 2px rgba(0, 0, 0, 0.1)"
             , }}>
 
-
-
             <Box sx={{ position: "relative" }}>
                 <CardMedia component="img" image={imageSrc} alt={meal.name} sx={{ width: "100%", aspectRatio: "16/9" }} />
                 <MealInfoOverlay meal={meal} />
@@ -55,10 +54,14 @@ function MealCard({ meal, onFilter }) {
                 onFilter={handleFilter}
             />
 
-
             <CardContent sx={{ flexGrow: 1, paddingBottom: "10px !important" }}>
                 {/* Title */}
-                <TruncatedTitle title={meal.name} mealId={meal.id} />
+                <Box
+                    onClick={() => onTitleClick?.(meal)}
+                    sx={{ cursor: "pointer", "&:hover": { textDecoration: "underline" } }}
+                >
+                    <TruncatedTitle title={meal.name} mealId={meal.id}  onClick={() => onTitleClick?.(meal)}/>
+                </Box>
 
                 {/* Description */}
                 <Box sx={{ mb: 2 }}>
@@ -72,20 +75,12 @@ function MealCard({ meal, onFilter }) {
                     mealType={meal.mealTypes}
                     size="small"
                     onFilter={onFilter}
+                    onExpandRequest={() => onTitleClick?.(meal)}
                 />
 
             </CardContent>
 
-            <MealCardActions meal={meal} expanded={expanded} toggleExpand={toggleExpand} />
-
-            <Collapse in={expanded} timeout="auto" unmountOnExit>
-                <CardContent>
-                    <SectionTitle text="Ingredients:" />
-                    <ErrorBoundary><IngredientList ingredients={meal.mealIngredients} /></ErrorBoundary>
-                    <SectionTitle text="Nutrients:" sx={{ marginTop: "16px" }} />
-                    <ErrorBoundary><NutrientList nutrients={nutrients} /></ErrorBoundary>
-                </CardContent>
-            </Collapse>
+            <MealCardFooter onClick={() => onTitleClick?.(meal)} />
 
         </Card>
     );
@@ -95,6 +90,7 @@ function MealCard({ meal, onFilter }) {
 MealCard.propTypes = {
     meal: PropTypes.object.isRequired,
     onFilter: PropTypes.func.isRequired,
+    onTitleClick: PropTypes.func,
 };
 
 export default MealCard;

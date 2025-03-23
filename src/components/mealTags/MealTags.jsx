@@ -17,7 +17,7 @@ import { formatEnum } from "../../utils/helpers/formatEnum.js";
  * @param {Function} props.onFilter - Function to handle filtering when a tag is clicked.
  * @returns {JSX.Element} A component rendering meal tags with expand functionality and filtering.
  */
-const MealTags = ({ cuisine, diet, mealType, size = "default", onFilter }) => {
+const MealTags = ({ cuisine, diet, mealType, size = "default", onFilter, forceExpand = false, onExpandRequest  }) => {
     const [expanded, setExpanded] = useState(false);
 
     // Size mapping for font and padding
@@ -33,63 +33,73 @@ const MealTags = ({ cuisine, diet, mealType, size = "default", onFilter }) => {
         }
     };
 
-    // Function to format and display tags with filtering
-    const renderTags = (items, color, category) => {
-        if (!items || (Array.isArray(items) && items.length === 0)) return null;
-
-        const itemsArray = Array.isArray(items) ? items : [items];
-        const visibleTags = expanded ? itemsArray : [itemsArray[0]];
-        const hasMore = itemsArray.length > 1 && !expanded;
-
-        return (
-            <>
-                {visibleTags.map((item, index) => (
-                    <Chip
-                        key={index}
-                        label={formatEnum(item)}
-                        color={color}
-                        variant="outlined"
-                        onClick={() => handleFilterClick(category, item)}
-                        sx={{
-                            fontSize: sizeStyles[size].fontSize,
-                            padding: sizeStyles[size].padding,
-                            cursor: "pointer", // Maak klikbaar
-                            transition: "background-color 0.2s",
-                            "&:hover": { backgroundColor: `${color}.light` },
-                            boxShadow: 3,
-                        }}
-                    />
-                ))}
-                {hasMore && (
-                    <Button
-                        size="small"
-                        onClick={() => setExpanded(true)}
-                        sx={{
-                            textTransform: "none",
-                            fontSize: sizeStyles[size].fontSize,
-                            padding: "2px 6px",
-                            minWidth: "auto",
-                        }}
-                    >
-                        +{itemsArray.length - 1} more
-                    </Button>
-                )}
-            </>
-        );
+    const shuffleArray = (array) => {
+        return [...array].sort(() => Math.random() - 0.5);
     };
+
+    const allTags = [
+        ...(Array.isArray(cuisine) ? cuisine : [cuisine]).filter(Boolean).map(value => ({ value, color: "primary", category: "cuisine" })),
+        ...(Array.isArray(diet) ? diet : [diet]).filter(Boolean).map(value => ({ value, color: "secondary", category: "diet" })),
+        ...(Array.isArray(mealType) ? mealType : [mealType]).filter(Boolean).map(value => ({ value, color: "success", category: "mealType" })),
+    ];
+
+    const shuffledTags = (expanded || forceExpand)
+        ? shuffleArray(allTags)
+        : shuffleArray([
+            ...(Array.isArray(cuisine) ? cuisine : [cuisine]).filter(Boolean).slice(0, 1).map(value => ({ value, color: "primary", category: "cuisine" })),
+            ...(Array.isArray(diet) ? diet : [diet]).filter(Boolean).slice(0, 1).map(value => ({ value, color: "secondary", category: "diet" })),
+            ...(Array.isArray(mealType) ? mealType : [mealType]).filter(Boolean).slice(0, 1).map(value => ({ value, color: "success", category: "mealType" })),
+        ]);
+
 
     return (
         <Box
             sx={{
                 display: "flex",
                 flexWrap: "wrap",
+                justifyContent: forceExpand ? "center" : "flex-start",
                 gap: 1,
-                mb: 2,
+                mb: size === "small" ? 0 : 2,
             }}
         >
-            {renderTags(cuisine, "primary", "cuisine")}
-            {renderTags(diet, "secondary", "diet")}
-            {renderTags(mealType, "success", "mealType")}
+            {shuffledTags.map((tag, index) => (
+                <Chip
+                    key={index}
+                    label={formatEnum(tag.value)}
+                    color={tag.color}
+                    variant="outlined"
+                    onClick={() => handleFilterClick(tag.category, tag.value)}
+                    sx={{
+                        fontSize: sizeStyles[size].fontSize,
+                        padding: sizeStyles[size].padding,
+                        cursor: "pointer",
+                        transition: "background-color 0.2s",
+                        "&:hover": { backgroundColor: `${tag.color}.light` },
+                        boxShadow: 3,
+                    }}
+                />
+            ))}
+
+            {!forceExpand && allTags.length > 3 && (
+                <Button
+                    size="small"
+                    onClick={() => {
+                        if (size === "small" && onExpandRequest) {
+                            onExpandRequest();
+                        } else {
+                            setExpanded(prev => !prev);
+                        }
+                    }}
+                    sx={{
+                        textTransform: "none",
+                        fontSize: sizeStyles[size].fontSize,
+                        padding: "2px 6px",
+                        minWidth: "auto",
+                    }}
+                >
+                    {expanded ? "- less" : `+${allTags.length - shuffledTags.length} more`}
+                </Button>
+            )}
         </Box>
     );
 };
@@ -99,8 +109,10 @@ MealTags.propTypes = {
     cuisine: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.string]),
     diet: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.string]),
     mealType: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.string]),
-    size: PropTypes.oneOf(["small", "default"]), // "small" voor MealCard, "default" voor MealCardLarge
+    size: PropTypes.oneOf(["small", "default"]),
+    forceExpand: PropTypes.bool,
     onFilter: PropTypes.func.isRequired,
+    onExpandRequest: PropTypes.func,
 };
 
 export default MealTags;

@@ -1,45 +1,45 @@
-import { Modal, Box, IconButton } from "@mui/material";
+import { Dialog, DialogContent, IconButton } from "@mui/material";
 import PropTypes from "prop-types";
-import CloseIcon from "@mui/icons-material/Close";
-import MealCard from "../mealCard/MealCard.jsx";
+import MealDetailCard from "../mealCardLarge/MealCardLarge.jsx";
+import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
+import { useTheme } from "@mui/material/styles";
+import { Minimize2 } from 'lucide-react';
 
-const MealModal = ({ meal, open, onClose, onFilter }) => {
-    if (!meal) return null;
+const MealDetailModal = ({ open, onClose, meal }) => {
+    const theme = useTheme();
 
     return (
-        <Modal open={open} onClose={onClose} aria-labelledby="meal-modal">
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: "90%",
-                    maxWidth: 400,
-                    bgcolor: "background.paper",
-                    borderRadius: 2,
-                    boxShadow: 24,
-                    p: 2,
-                    outline: "none",
-                }}
+        <Dialog
+            open={open}
+            onClose={onClose}
+            fullWidth
+            maxWidth="md"
+            scroll="body"
+        >
+            <IconButton
+                onClick={onClose}
+                sx={{ position: "absolute", zIndex: 10, top: 5, left: 5 }}
             >
-                <IconButton
-                    sx={{ position: "absolute", top: 8, right: 8 }}
-                    onClick={onClose}
-                >
-                    <CloseIcon />
-                </IconButton>
-                <MealCard meal={meal} onFilter={onFilter} />
-            </Box>
-        </Modal>
+                <Minimize2
+                    size={20}
+                    style={{
+                        // color: "#4D5061",
+                        filter: "drop-shadow(0 0 3px rgba(0, 0, 0, 0.5))",
+                    }}
+                />
+            </IconButton>
+
+            <DialogContent sx={{ p: 0 }}>
+                <MealDetailCard meal={meal} isModal />
+            </DialogContent>
+        </Dialog>
     );
 };
 
-MealModal.propTypes = {
-    meal: PropTypes.object,
+MealDetailModal.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    onFilter: PropTypes.func.isRequired,
+    meal: PropTypes.object.isRequired,
 };
 
-export default MealModal;
+export default MealDetailModal;

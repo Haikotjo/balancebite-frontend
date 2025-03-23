@@ -26,7 +26,7 @@ import {useContext} from "react";
 import {UserMealsContext} from "../../context/UserMealsContext.jsx";
 import ExpandableTitle from "../expandableTitle/ExpandableTitle.jsx";
 
-const MealDetailCard = ({ meal }) => {
+const MealDetailCard = ({ meal, isModal = false }) => {
     const { userMeals } = useContext(UserMealsContext);
     const userMealMatch = userMeals.find(m => String(m.originalMealId) === String(meal.id));
     const mealToRender = userMealMatch || meal;
@@ -73,15 +73,14 @@ const MealDetailCard = ({ meal }) => {
             sx={{
                 display: "flex",
                 flexDirection: { xs: "column", md: "row-reverse" },
-                width: { xs: "90vw", md: "80vw" },
-                minHeight: "auto",
-                // height: { md: "85vh" },
-                maxWidth: "1000px",
-                margin: "auto",
-                mt: { xs: 2, md: 4 },
+                width: isModal ? "100%" : { xs: "90vw", md: "80vw" },
+                maxWidth: isModal ? "100%" : "1000px",
+                height: isModal ? "100%" : "auto",
                 boxShadow: 3,
                 borderRadius: 3,
                 overflow: "hidden",
+                margin: isModal ? 0 : "auto",
+                mt: isModal ? 0 : { xs: 2, md: 4 },
             }}
         >
             {/* Image Section */}
@@ -89,26 +88,39 @@ const MealDetailCard = ({ meal }) => {
                 sx={{
                     position: "relative",
                     width: { xs: "100%", md: "50%" },
-                    height: { xs: 200, md: 400 }, // vaste hoogte op md+
-                    flexShrink: 0, // voorkom dat hij kleiner wordt
+                    height: { xs: 200, md: "auto" },
+                    flexShrink: 0,
                     display: "flex",
                     flexDirection: "column",
-                    boxShadow: "8px 8px 12px rgba(0, 0, 0, 0.8)"
+                    justifyContent: "flex-start"
                 }}
             >
-                <CardMedia
-                    component="img"
-                    image={imageSrc}
-                    alt={mealToRender.name}
-                    sx={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        borderRadius: 2
-                    }}
-                />
-                <MealInfoOverlay meal={mealToRender} fontSize="0.8rem" />
-                <MealCardActionButtons meal={mealToRender} showOpenMealButton={false} />
+                <Box sx={{ height: { xs: 200, md: 400 }, position: "relative", boxShadow: "8px 8px 12px rgba(0, 0, 0, 0.8)",}}>
+                    <CardMedia
+                        component="img"
+                        image={imageSrc}
+                        alt={mealToRender.name}
+                        sx={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            borderRadius: 2,
+                        }}
+                    />
+                    <MealInfoOverlay meal={mealToRender} fontSize="0.8rem" />
+                    <MealCardActionButtons meal={mealToRender} showOpenMealButton={false} />
+                </Box>
+
+                {/* MealTags onderaan de image op md+ */}
+                <Box sx={{ display: { xs: "none", md: "flex" }, px: 2, py: 1, mt:2 }}>
+                    <MealTags
+                        cuisine={mealToRender.cuisines}
+                        diet={mealToRender.diets}
+                        mealType={mealToRender.mealTypes}
+                        onFilter={handleFilterRedirect}
+                        forceExpand
+                    />
+                </Box>
             </Box>
 
 
@@ -116,12 +128,15 @@ const MealDetailCard = ({ meal }) => {
             <Box sx={{ flex: 1, display: "flex", flexDirection: "column", padding: 2 }}>
                 <CardContent>
                     {/*// MealTags met navigatie*/}
-                    <MealTags
-                        cuisine={mealToRender.cuisines}
-                        diet={mealToRender.diets}
-                        mealType={mealToRender.mealTypes}
-                        onFilter={handleFilterRedirect}
-                    />
+                    <Box sx={{ display: { xs: "flex", md: "none" } }}>
+                        <MealTags
+                            cuisine={mealToRender.cuisines}
+                            diet={mealToRender.diets}
+                            mealType={mealToRender.mealTypes}
+                            onFilter={handleFilterRedirect}
+                        />
+                    </Box>
+
 
                     {/* Meal Title & Description */}
                     <ExpandableTitle title={mealToRender.name} />
@@ -196,6 +211,7 @@ const MealDetailCard = ({ meal }) => {
 
 MealDetailCard.propTypes = {
     meal: PropTypes.object.isRequired,
+    isModal: PropTypes.bool,
 };
 
 export default MealDetailCard;

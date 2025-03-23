@@ -1,11 +1,21 @@
-import {useContext, useEffect} from "react";
+import {useContext, useEffect, useState} from "react";
 import MealCard from "../mealCard/MealCard.jsx";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { UserMealsContext } from "../../context/UserMealsContext.jsx";
 import PropTypes from "prop-types";
+import MealModal from "../mealModal/MealModal.jsx";
 
 function MealList({ filters, sortBy }) {
     const { meals, loading, error, userMeals, setFilters, setSortBy } = useContext(UserMealsContext);
+
+    const [selectedMeal, setSelectedMeal] = useState(null);
+    const [modalOpen, setModalOpen] = useState(false);
+
+    const handleTitleClick = (meal) => {
+        setSelectedMeal(meal);
+        setModalOpen(true);
+    };
+
 
     // ✅ Filters opslaan in de context
     const handleFilter = (category, value) => {
@@ -19,6 +29,7 @@ function MealList({ filters, sortBy }) {
     const handleSort = (sortKey, sortOrder) => {
         setSortBy({ sortKey, sortOrder });
     };
+
 
     // ⬇️ ✅ Stuur filters en sorting door naar de context (1 keer bij laden)
     useEffect(() => {
@@ -48,41 +59,53 @@ function MealList({ filters, sortBy }) {
         );
 
     return (
-        <Box
-            display="grid"
-            sx={{
-                gridTemplateColumns: {
-                    xs: "1fr",
-                    sm: "repeat(2, 1fr)",
-                    md: "repeat(3, 1fr)",
-                    lg: "repeat(4, 1fr)",
-                    xl: "repeat(5, 1fr)",
-                },
-                gap: 3,
-                padding: 2,
-                width: "100%",
-                maxWidth: "1200px",
-                margin: "0 auto",
-            }}
-        >
-            {meals.map((meal) => {
-                const userMealMatch = userMeals.find(userMeal => String(userMeal.originalMealId) === String(meal.id));
-                const mealToRender = userMealMatch || meal;
+        <>
+            <Box
+                display="grid"
+                sx={{
+                    gridTemplateColumns: {
+                        xs: "1fr",
+                        sm: "repeat(2, 1fr)",
+                        md: "repeat(3, 1fr)",
+                        lg: "repeat(4, 1fr)",
+                        xl: "repeat(5, 1fr)",
+                    },
+                    gap: 3,
+                    padding: 2,
+                    width: "100%",
+                    maxWidth: "1200px",
+                    margin: "0 auto",
+                    justifyContent: "center",
+                }}
+            >
+                {meals.map((meal) => {
+                    const userMealMatch = userMeals.find(userMeal => String(userMeal.originalMealId) === String(meal.id));
+                    const mealToRender = userMealMatch || meal;
 
-                return (
-                    <MealCard
-                        key={mealToRender.id}
-                        meal={mealToRender}
-                        onFilter={handleFilter}
-                        onSort={handleSort}
-                    />
-                );
-            })}
-        </Box>
+                    return (
+                        <MealCard
+                            key={mealToRender.id}
+                            meal={mealToRender}
+                            onFilter={handleFilter}
+                            onSort={handleSort}
+                            onTitleClick={handleTitleClick}
+                        />
+                    );
+                })}
+            </Box>
+
+            {selectedMeal && (
+                <MealModal
+                    open={modalOpen}
+                    onClose={() => setModalOpen(false)}
+                    meal={selectedMeal}
+                />
+            )}
+        </>
     );
 }
 
-MealList.propTypes = {
+    MealList.propTypes = {
     filters: PropTypes.object.isRequired,
     sortBy: PropTypes.shape({
         sortKey: PropTypes.string,

@@ -12,14 +12,22 @@ import { useNavigate } from "react-router-dom";
  * @param {string | number} props.mealId - The ID of the meal for navigation.
  * @returns {JSX.Element} A meal title truncated to two lines, linking to its details page.
  */
-const TruncatedTitle = ({ title, mealId }) => {
+const TruncatedTitle = ({ title, mealId, onClick }) => {
     const navigate = useNavigate();
+
+    const handleClick = () => {
+        if (onClick) {
+            onClick();
+        } else {
+            navigate(`/meal/${mealId}`);
+        }
+    };
 
     return (
         <Box>
             <Typography
                 variant="h6"
-                onClick={() => navigate(`/meal/${mealId}`)}
+                onClick={handleClick}
                 sx={{
                     color: "primary.main", // Uses theme primary color
                     cursor: "pointer", // Makes it clickable
@@ -30,6 +38,10 @@ const TruncatedTitle = ({ title, mealId }) => {
                     overflow: "hidden", // Hide overflowing text
                     textOverflow: "ellipsis", // Adds "..." when truncated
                     maxWidth: "100%", // Ensures ellipsis works properly
+                    "&:hover": {
+                        color: "primary.light",
+                        textDecoration: "underline",
+                    },
                 }}
                 gutterBottom
             >
@@ -43,6 +55,7 @@ const TruncatedTitle = ({ title, mealId }) => {
 TruncatedTitle.propTypes = {
     title: PropTypes.string.isRequired, // Ensures "title" is a required string
     mealId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired, // Ensures "mealId" is a required string or number
+    onClick: PropTypes.func,
 };
 
 export default TruncatedTitle;
