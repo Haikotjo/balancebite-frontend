@@ -55,7 +55,8 @@ const MealTags = ({ cuisine, diet, mealType, size = "default", onFilter }) => {
                             padding: sizeStyles[size].padding,
                             cursor: "pointer", // Maak klikbaar
                             transition: "background-color 0.2s",
-                            "&:hover": { backgroundColor: `${color}.light` }, // Visuele feedback bij hover
+                            "&:hover": { backgroundColor: `${color}.light` },
+                            boxShadow: 3,
                         }}
                     />
                 ))}
@@ -99,7 +100,7 @@ MealTags.propTypes = {
     diet: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.string]),
     mealType: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.string]),
     size: PropTypes.oneOf(["small", "default"]), // "small" voor MealCard, "default" voor MealCardLarge
-    onFilter: PropTypes.func.isRequired, // Verplicht, zodat filtering werkt
+    onFilter: PropTypes.func.isRequired,
 };
 
 export default MealTags;

@@ -16,7 +16,7 @@ import MealCardActionButtons from "./mealCardActionButtons/MealCardActionButtons
 import MealDetailsWithIcons from "./mealDetailsWithIcons/MealDetailsWithIcons.jsx";
 import SectionTitle from "./sectionTitle/SectionTitle.jsx";
 import ExpandableDescription from "../expandableDescription/ExpandableDescription.jsx";
-import TruncatedTitle from "../expandableTitle/ExpandableTitle.jsx";
+import TruncatedTitle from "../truncatedTitle/TruncatedTitle.jsx";
 import MealInfoOverlay from "../mealInfoOverlay/MealInfoOverlay.jsx";
 import MealTags from "../mealTags/MealTags.jsx";
 
@@ -48,9 +48,9 @@ function MealCard({ meal, onFilter }) {
             </Box>
 
             <MealDetailsWithIcons
-                diet={meal.diet}
-                mealType={meal.mealType}
-                cuisine={meal.cuisine}
+                diet={meal.diets}
+                mealType={meal.mealTypes}
+                cuisine={meal.cuisines}
                 nutrients={nutrients}
                 onFilter={handleFilter}
             />
@@ -67,9 +67,9 @@ function MealCard({ meal, onFilter }) {
 
                 {/* Meal Tags */}
                 <MealTags
-                    cuisine={meal.cuisine}
-                    diet={meal.diet}
-                    mealType={meal.mealType}
+                    cuisine={meal.cuisines}
+                    diet={meal.diets}
+                    mealType={meal.mealTypes}
                     size="small"
                     onFilter={onFilter}
                 />

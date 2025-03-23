@@ -1,48 +1,71 @@
+import { useState } from "react";
 import PropTypes from "prop-types";
 import { Typography, Box } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
-/**
- * TruncatedTitle component that truncates the meal title after two lines
- * and links to the meal details page when clicked.
- *
- * @component
- * @param {Object} props - Component properties.
- * @param {string} props.title - The meal title text.
- * @param {string | number} props.mealId - The ID of the meal for navigation.
- * @returns {JSX.Element} A meal title truncated to two lines, linking to its details page.
- */
-const TruncatedTitle = ({ title, mealId }) => {
-    const navigate = useNavigate();
+const ExpandableTitle = ({ title }) => {
+    // State to track whether the text is expanded or collapsed
+    const [expanded, setExpanded] = useState(false);
+
+    // Check if text is longer than 160 characters
+    const isLongText = title.length > 50;
 
     return (
-        <Box>
+        <Box sx={{ display: "flex", alignItems: "center", maxWidth: "100%", marginBottom: 1 }}>
             <Typography
-                variant="h6"
-                onClick={() => navigate(`/meal/${mealId}`)}
+                variant="h4"
                 sx={{
-                    color: "primary.main", // Uses theme primary color
-                    cursor: "pointer", // Makes it clickable
-                    fontWeight: "bold", // Makes it stand out
-                    display: "-webkit-box", // Required for line clamping
-                    WebkitBoxOrient: "vertical", // Ensures vertical text layout
-                    WebkitLineClamp: 2, // Limit text to 2 lines
-                    overflow: "hidden", // Hide overflowing text
-                    textOverflow: "ellipsis", // Adds "..." when truncated
-                    maxWidth: "100%", // Ensures ellipsis works properly
+                    fontSize: { xs: "1.5rem", md: "2rem" },
+                    fontWeight: 600,
+                    color: "text.primary",
+                    overflow: "hidden",
+                    display: expanded ? "block" : "-webkit-box",
+                    transition: "max-height 0.3s ease-in-out",
                 }}
-                gutterBottom
             >
-                {title}
+                {expanded || !isLongText ? (
+                    <>
+                        {title}{" "}
+                        {isLongText && (
+                            <Typography
+                                component="span"
+                                onClick={() => setExpanded(false)}
+                                sx={{
+                                    fontSize: { xs: "0.8rem", md: "1rem" },
+                                    fontStyle: "normal", // Prevents the "Read less" link from being italic
+                                    color: "primary.main", // Uses primary color from MUI theme
+                                    cursor: "pointer", // Makes it clickable
+                                }}
+                            >
+                                Read less
+                            </Typography>
+                        )}
+                    </>
+                ) : (
+                    <>
+                        {/* Displays only the first 160 characters in collapsed state */}
+                        {title.substring(0, 50)}{" "}
+                        <Typography
+                            component="span"
+                            onClick={() => setExpanded(true)}
+                            sx={{
+                                fontSize: { xs: "0.8rem", md: "1rem" },
+                                fontStyle: "normal", // Prevents the "Read more" link from being italic
+                                color: "primary.main",
+                                cursor: "pointer",
+                            }}
+                        >
+                            ...Read more
+                        </Typography>
+                    </>
+                )}
             </Typography>
         </Box>
     );
 };
 
-// PropTypes validation for TruncatedTitle
-TruncatedTitle.propTypes = {
-    title: PropTypes.string.isRequired, // Ensures "title" is a required string
-    mealId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired, // Ensures "mealId" is a required string or number
+ExpandableTitle.propTypes = {
+    title: PropTypes.string.isRequired,
 };
 
-export default TruncatedTitle;
+export default ExpandableTitle;

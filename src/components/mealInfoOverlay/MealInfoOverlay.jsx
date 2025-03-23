@@ -24,6 +24,8 @@ const MealInfoOverlay = ({ meal, fontSize = "0.6rem" }) => {
                 backgroundColor: "rgba(0, 0, 0, 0.5)",
                 color: "white",
                 padding: "5px 10px",
+                borderBottomLeftRadius: 8,
+                borderBottomRightRadius: 8,
             }}
         >
             <Typography
