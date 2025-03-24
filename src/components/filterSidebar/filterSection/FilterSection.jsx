@@ -11,7 +11,7 @@ import { useTheme } from "@mui/material/styles";
  * @param {string} props.title - The title of the filter section
  * @param {string[]} props.items - The list of filter options
  * @param {Object} props.selectedFilters - The currently selected filters
- * @param {string} props.category - The filter category (e.g., "mealType", "diet", "cuisine")
+ * @param {string} props.category - The filter category (e.g., "mealTypes", "diets", "cuisines")
  * @param {Function} props.onFilterClick - Callback function to handle filter selection
  */
 const FilterSection = ({ title, items, selectedFilters, category, onFilterClick }) => {

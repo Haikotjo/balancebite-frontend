@@ -1,11 +1,11 @@
-export const mealTypeOptions = [
+export const mealTypesOptions = [
     { value: "BREAKFAST", label: "Breakfast" },
     { value: "LUNCH", label: "Lunch" },
     { value: "DINNER", label: "Dinner" },
     { value: "SNACK", label: "Snack" },
 ];
 
-export const cuisineOptions = [
+export const cuisinesOptions = [
     { value: "ITALIAN", label: "Italian" },
     { value: "FRENCH", label: "French" },
     { value: "JAPANESE", label: "Japanese" },
@@ -24,7 +24,7 @@ export const cuisineOptions = [
     { value: "BRAZILIAN", label: "Brazilian" },
 ];
 
-export const dietOptions = [
+export const dietsOptions = [
     { value: "VEGETARIAN", label: "Vegetarian" },
     { value: "VEGAN", label: "Vegan" },
     { value: "PESCATARIAN", label: "Pescatarian" },

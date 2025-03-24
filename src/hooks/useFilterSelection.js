@@ -26,7 +26,7 @@ const useFilterSelection = (initialFilters, onFilter) => {
      * - If the filter is not selected, it is added.
      * - Updates the parent component by calling `onFilter`.
      *
-     * @param {string} category - The filter category (e.g., "mealType", "diet", "cuisine").
+     * @param {string} category - The filter category (e.g., "mealTypes", "diets", "cuisines").
      * @param {string} value - The selected filter value.
      */
     const handleFilterClick = (category, value) => {

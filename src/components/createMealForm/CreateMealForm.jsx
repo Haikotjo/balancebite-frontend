@@ -46,9 +46,9 @@ const CreateMealForm = () => {
             const userId = jwtDecode(token).sub || null;
             const mealData = {
                 ...data,
-                mealType: data.mealType || "",
-                cuisine: data.cuisine || "",
-                diet: data.diet || "",
+                mealTypes: (data.mealTypes || []).map(type => type.value || type),
+                cuisines: (data.cuisines || []).map(cuisine => cuisine.value || cuisine),
+                diets: (data.diets || []).map(diet => diet.value || diet),
             };
             const formData = await buildMealFormData(mealData, capturedImage, uploadedImage, imageUrl);
             const response = await createMealApi(formData, token);

@@ -8,7 +8,7 @@ import {formatEnum} from "../../../utils/helpers/formatEnum.js";
  * ActiveFilters component - Displays active filters as removable chips.
  *
  * @component
- * @param {Object} filters - An object containing active filters, where keys are categories (e.g., "diet") and values are selected filter options.
+ * @param {Object} filters - An object containing active filters, where keys are categories (e.g., "diets") and values are selected filter options.
  * @param {Function} onFilterClick - Function to handle filter removal when a chip is clicked.
  */
 const ActiveFilters = ({ filters, onFilterClick }) => {

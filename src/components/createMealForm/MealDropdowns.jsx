@@ -1,31 +1,46 @@
 import { Controller } from "react-hook-form";
 import PropTypes from "prop-types";
 import { MenuItem } from "@mui/material";
-import { cuisineOptions, dietOptions, mealTypeOptions } from "./dropdownOptionsMeals.js";
+import { cuisinesOptions, dietsOptions, mealTypesOptions } from "./dropdownOptionsMeals.js";
 import TextFieldCreateMeal from "./textFieldCreateMeal/TextFieldCreateMeal.jsx";
+import Select from "react-select"
 
 const MealDropdowns = ({ control, errors }) => {
     return (
         <>
             {/* Meal Type Dropdown */}
             <Controller
-                name="mealType"
+                name="mealTypes"
                 control={control}
                 defaultValue=""
                 render={({ field }) => (
                     <TextFieldCreateMeal
                         {...field}
                         select
-                        label="Meal Type"
+                        label="Meal Types"
+                        SelectProps={{ multiple: true }}
+                        value={field.value || []}
+                        onChange={(e) => field.onChange(e.target.value)}
                         InputLabelProps={{ shrink: true }}
                         fullWidth
-                        error={!!errors?.mealType}
-                        helperText={errors?.mealType?.message || ""}
-                        sx={{ mt: 2 }} // Extra ruimte boven elk dropdown veld
+                        error={!!errors?.mealTypes}
+                        helperText={errors?.mealTypes?.message || ""}
+                        sx={{ mt: 2 }}
                     >
-                        <MenuItem value="" disabled>Select a Meal Type</MenuItem>
-                        {mealTypeOptions.map((option) => (
-                            <MenuItem key={option.value} value={option.value}>
+                        {mealTypesOptions.map((option) => (
+                            <MenuItem
+                                key={option.value}
+                                value={option.value}
+                                sx={{
+                                    '&.Mui-selected': {
+                                        backgroundColor: 'primary.light',
+                                        color: 'white',
+                                    },
+                                    '&.Mui-selected:hover': {
+                                        backgroundColor: 'primary.main',
+                                    },
+                                }}
+                            >
                                 {option.label}
                             </MenuItem>
                         ))}
@@ -33,25 +48,39 @@ const MealDropdowns = ({ control, errors }) => {
                 )}
             />
 
-            {/* Cuisine Dropdown */}
+            {/* Cuisines Dropdown */}
             <Controller
-                name="cuisine"
+                name="cuisines"
                 control={control}
                 defaultValue=""
                 render={({ field }) => (
                     <TextFieldCreateMeal
                         {...field}
                         select
-                        label="Cuisine"
+                        label="Cuisines"
+                        SelectProps={{ multiple: true }}
+                        value={field.value || []}
+                        onChange={(e) => field.onChange(e.target.value)}
                         InputLabelProps={{ shrink: true }}
                         fullWidth
-                        error={!!errors?.cuisine}
-                        helperText={errors?.cuisine?.message || ""}
+                        error={!!errors?.cuisines}
+                        helperText={errors?.cuisines?.message || ""}
                         sx={{ mt: 2 }}
                     >
-                        <MenuItem value="" disabled>Select a Cuisine</MenuItem>
-                        {cuisineOptions.map((option) => (
-                            <MenuItem key={option.value} value={option.value}>
+                        {cuisinesOptions.map((option) => (
+                            <MenuItem
+                                key={option.value}
+                                value={option.value}
+                                sx={{
+                                    '&.Mui-selected': {
+                                        backgroundColor: 'primary.light',
+                                        color: 'white',
+                                    },
+                                    '&.Mui-selected:hover': {
+                                        backgroundColor: 'primary.main',
+                                    },
+                                }}
+                            >
                                 {option.label}
                             </MenuItem>
                         ))}
@@ -59,25 +88,39 @@ const MealDropdowns = ({ control, errors }) => {
                 )}
             />
 
-            {/* Diet Dropdown */}
+            {/* Diets Dropdown */}
             <Controller
-                name="diet"
+                name="diets"
                 control={control}
                 defaultValue=""
                 render={({ field }) => (
                     <TextFieldCreateMeal
                         {...field}
                         select
-                        label="Diet"
+                        label="Diets"
+                        SelectProps={{ multiple: true }}
+                        value={field.value || []}
+                        onChange={(e) => field.onChange(e.target.value)}
                         InputLabelProps={{ shrink: true }}
                         fullWidth
-                        error={!!errors?.diet}
-                        helperText={errors?.diet?.message || ""}
+                        error={!!errors?.diets}
+                        helperText={errors?.diets?.message || ""}
                         sx={{ mt: 2 }}
                     >
-                        <MenuItem value="" disabled>Select a Diet</MenuItem>
-                        {dietOptions.map((option) => (
-                            <MenuItem key={option.value} value={option.value}>
+                        {dietsOptions.map((option) => (
+                            <MenuItem
+                                key={option.value}
+                                value={option.value}
+                                sx={{
+                                    '&.Mui-selected': {
+                                        backgroundColor: 'primary.light',
+                                        color: 'white',
+                                    },
+                                    '&.Mui-selected:hover': {
+                                        backgroundColor: 'primary.main',
+                                    },
+                                }}
+                            >
                                 {option.label}
                             </MenuItem>
                         ))}
@@ -98,9 +141,9 @@ MealDropdowns.propTypes = {
         trigger: PropTypes.func,
     }).isRequired,
     errors: PropTypes.shape({
-        mealType: PropTypes.shape({ message: PropTypes.string }),
-        cuisine: PropTypes.shape({ message: PropTypes.string }),
-        diet: PropTypes.shape({ message: PropTypes.string }),
+        mealTypes: PropTypes.shape({ message: PropTypes.string }),
+        cuisines: PropTypes.shape({ message: PropTypes.string }),
+        diets: PropTypes.shape({ message: PropTypes.string }),
     }),
 };
 

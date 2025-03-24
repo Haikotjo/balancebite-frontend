@@ -3,18 +3,13 @@ import {
     Card,
     CardContent,
     CardMedia,
-    Collapse, Box,
+    Box,
 } from "@mui/material";
 import useNutrients from "../../hooks/useNutrients.js";
 import useExpand from "../../hooks/useExpand";
-import NutrientList from "./nutrientList/NutrientList";
-import IngredientList from "./ingredientList/IngredientList";
 import { getImageSrc } from "../../utils/helpers/getImageSrc.js";
-import ErrorBoundary from "../errorBoundary/ErrorBoundary";
-import MealCardActions from "./mealCardActions/MealCardActions.jsx";
 import MealCardActionButtons from "./mealCardActionButtons/MealCardActionButtons.jsx";
 import MealDetailsWithIcons from "./mealDetailsWithIcons/MealDetailsWithIcons.jsx";
-import SectionTitle from "./sectionTitle/SectionTitle.jsx";
 import ExpandableDescription from "../expandableDescription/ExpandableDescription.jsx";
 import TruncatedTitle from "../truncatedTitle/TruncatedTitle.jsx";
 import MealInfoOverlay from "../mealInfoOverlay/MealInfoOverlay.jsx";
@@ -47,9 +42,9 @@ function MealCard({ meal, onFilter, onTitleClick  }) {
             </Box>
 
             <MealDetailsWithIcons
-                diet={meal.diets}
-                mealType={meal.mealTypes}
-                cuisine={meal.cuisines}
+                diets={meal.diets}
+                mealTypes={meal.mealTypes}
+                cuisines={meal.cuisines}
                 nutrients={nutrients}
                 onFilter={handleFilter}
             />
@@ -70,9 +65,9 @@ function MealCard({ meal, onFilter, onTitleClick  }) {
 
                 {/* Meal Tags */}
                 <MealTags
-                    cuisine={meal.cuisines}
-                    diet={meal.diets}
-                    mealType={meal.mealTypes}
+                    cuisines={meal.cuisines}
+                    diets={meal.diets}
+                    mealTypes={meal.mealTypes}
                     size="small"
                     onFilter={onFilter}
                     onExpandRequest={() => onTitleClick?.(meal)}

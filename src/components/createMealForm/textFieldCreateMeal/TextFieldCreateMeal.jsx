@@ -25,7 +25,7 @@ const TextFieldCreateMeal = React.forwardRef(({
         <TextField
             label={label}
             variant="outlined"
-            inputRef={ref} // ✅ Fix: ref correct doorgeven
+            inputRef={ref}
             {...(register ? register(name) : {})}
             error={!!error}
             helperText={helperText}
@@ -56,7 +56,7 @@ const TextFieldCreateMeal = React.forwardRef(({
     );
 });
 
-TextFieldCreateMeal.displayName = "TextFieldCreateMeal"; // ✅ Fix: display name toevoegen
+TextFieldCreateMeal.displayName = "TextFieldCreateMeal";
 
 TextFieldCreateMeal.propTypes = {
     label: PropTypes.string.isRequired,

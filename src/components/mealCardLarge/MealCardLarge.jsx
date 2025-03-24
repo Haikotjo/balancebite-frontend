@@ -114,9 +114,9 @@ const MealDetailCard = ({ meal, isModal = false }) => {
                 {/* MealTags onderaan de image op md+ */}
                 <Box sx={{ display: { xs: "none", md: "flex" }, px: 2, py: 1, mt:2 }}>
                     <MealTags
-                        cuisine={mealToRender.cuisines}
-                        diet={mealToRender.diets}
-                        mealType={mealToRender.mealTypes}
+                        cuisines={mealToRender.cuisines}
+                        diets={mealToRender.diets}
+                        mealTypes={mealToRender.mealTypes}
                         onFilter={handleFilterRedirect}
                         forceExpand
                     />
@@ -130,9 +130,9 @@ const MealDetailCard = ({ meal, isModal = false }) => {
                     {/*// MealTags met navigatie*/}
                     <Box sx={{ display: { xs: "flex", md: "none" } }}>
                         <MealTags
-                            cuisine={mealToRender.cuisines}
-                            diet={mealToRender.diets}
-                            mealType={mealToRender.mealTypes}
+                            cuisines={mealToRender.cuisines}
+                            diets={mealToRender.diets}
+                            mealTypes={mealToRender.mealTypes}
                             onFilter={handleFilterRedirect}
                         />
                     </Box>

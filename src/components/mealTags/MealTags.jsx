@@ -4,20 +4,20 @@ import { useState } from "react";
 import { formatEnum } from "../../utils/helpers/formatEnum.js";
 
 /**
- * MealTags component that displays cuisine, diet, and mealType tags.
+ * MealTags component that displays cuisines, diets, and mealTypes tags.
  * If there are multiple tags in a category, only the first is shown with an option to expand.
  * Font size is controlled by the "size" prop. Tags are clickable for filtering.
  *
  * @component
  * @param {Object} props - Component properties.
- * @param {Array|string} props.cuisine - List of cuisines.
- * @param {Array|string} props.diet - List of diets.
- * @param {Array|string} props.mealType - List of meal types.
+ * @param {Array|string} props.cuisines - List of cuisines.
+ * @param {Array|string} props.diets - List of diets.
+ * @param {Array|string} props.mealTypes - List of meal types.
  * @param {string} props.size - Font size setting ("small" or "default").
  * @param {Function} props.onFilter - Function to handle filtering when a tag is clicked.
  * @returns {JSX.Element} A component rendering meal tags with expand functionality and filtering.
  */
-const MealTags = ({ cuisine, diet, mealType, size = "default", onFilter, forceExpand = false, onExpandRequest  }) => {
+const MealTags = ({ cuisines, diets, mealTypes, size = "default", onFilter, forceExpand = false, onExpandRequest  }) => {
     const [expanded, setExpanded] = useState(false);
 
     // Size mapping for font and padding
@@ -38,17 +38,17 @@ const MealTags = ({ cuisine, diet, mealType, size = "default", onFilter, forceEx
     };
 
     const allTags = [
-        ...(Array.isArray(cuisine) ? cuisine : [cuisine]).filter(Boolean).map(value => ({ value, color: "primary", category: "cuisine" })),
-        ...(Array.isArray(diet) ? diet : [diet]).filter(Boolean).map(value => ({ value, color: "secondary", category: "diet" })),
-        ...(Array.isArray(mealType) ? mealType : [mealType]).filter(Boolean).map(value => ({ value, color: "success", category: "mealType" })),
+        ...(Array.isArray(cuisines) ? cuisines : [cuisines]).filter(Boolean).map(value => ({ value, color: "primary", category: "cuisines" })),
+        ...(Array.isArray(diets) ? diets : [diets]).filter(Boolean).map(value => ({ value, color: "secondary", category: "diets" })),
+        ...(Array.isArray(mealTypes) ? mealTypes : [mealTypes]).filter(Boolean).map(value => ({ value, color: "success", category: "mealTypes" })),
     ];
 
     const shuffledTags = (expanded || forceExpand)
         ? shuffleArray(allTags)
         : shuffleArray([
-            ...(Array.isArray(cuisine) ? cuisine : [cuisine]).filter(Boolean).slice(0, 1).map(value => ({ value, color: "primary", category: "cuisine" })),
-            ...(Array.isArray(diet) ? diet : [diet]).filter(Boolean).slice(0, 1).map(value => ({ value, color: "secondary", category: "diet" })),
-            ...(Array.isArray(mealType) ? mealType : [mealType]).filter(Boolean).slice(0, 1).map(value => ({ value, color: "success", category: "mealType" })),
+            ...(Array.isArray(cuisines) ? cuisines : [cuisines]).filter(Boolean).slice(0, 1).map(value => ({ value, color: "primary", category: "cuisines" })),
+            ...(Array.isArray(diets) ? diets : [diets]).filter(Boolean).slice(0, 1).map(value => ({ value, color: "secondary", category: "diets" })),
+            ...(Array.isArray(mealTypes) ? mealTypes : [mealTypes]).filter(Boolean).slice(0, 1).map(value => ({ value, color: "success", category: "mealTypes" })),
         ]);
 
 
@@ -106,9 +106,9 @@ const MealTags = ({ cuisine, diet, mealType, size = "default", onFilter, forceEx
 
 // PropTypes validation
 MealTags.propTypes = {
-    cuisine: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.string]),
-    diet: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.string]),
-    mealType: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.string]),
+    cuisines: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.string]),
+    diets: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.string]),
+    mealTypes: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.string]),
     size: PropTypes.oneOf(["small", "default"]),
     forceExpand: PropTypes.bool,
     onFilter: PropTypes.func.isRequired,

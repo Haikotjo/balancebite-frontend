@@ -11,7 +11,7 @@ import SidebarHeader from "./sidebarHeader/SidebarHeader.jsx";
 
 /**
  * FilterSidebar component - Displays a sidebar with filtering options for meals.
- * Users can filter by meal type, diet, and cuisine.
+ * Users can filter by meal types, diets, and cuisines.
  *
  * The component fetches filter options dynamically and updates selections via a callback function.
  *
@@ -28,7 +28,7 @@ const FilterSidebar = ({ isOpen, onFilter, filters }) => {
     // Manage sidebar state (open/close)
     const { open, toggleSidebar } = useSidebarState(isOpen);
 
-    // Fetch filterable options (diet types, cuisines, meal types)
+    // Fetch filterable options (diets types, cuisines, meal types)
     const { diets, cuisines, mealTypes, loading } = useFetchMealEnums(open);
 
     // Manage selected filters
@@ -87,18 +87,18 @@ const FilterSidebar = ({ isOpen, onFilter, filters }) => {
                         <>
                             {/* Filter Sections */}
                             <FilterSection
-                                title="Type"
+                                title="Types"
                                 items={mealTypes}
                                 selectedFilters={selectedFilters}
-                                category="mealType"
+                                category="mealTypes"
                                 onFilterClick={handleFilterClick}
                             />
 
                             <FilterSection
-                                title="Diet"
+                                title="Diets"
                                 items={diets}
                                 selectedFilters={selectedFilters}
-                                category="diet"
+                                category="diets"
                                 onFilterClick={handleFilterClick}
                             />
 
@@ -106,7 +106,7 @@ const FilterSidebar = ({ isOpen, onFilter, filters }) => {
                                 title="Cuisine"
                                 items={cuisines}
                                 selectedFilters={selectedFilters}
-                                category="cuisine"
+                                category="cuisines"
                                 onFilterClick={handleFilterClick}
                             />
                         </>

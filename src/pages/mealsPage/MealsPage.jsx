@@ -44,9 +44,9 @@ function MealPage() {
 
     useEffect(() => {
         const newFilters = {};
-        if (searchParams.get("cuisine")) newFilters.cuisine = searchParams.get("cuisine");
-        if (searchParams.get("diet")) newFilters.diet = searchParams.get("diet");
-        if (searchParams.get("mealType")) newFilters.mealType = searchParams.get("mealType");
+        if (searchParams.get("cuisines")) newFilters.cuisine = searchParams.get("cuisines");
+        if (searchParams.get("diets")) newFilters.diet = searchParams.get("diets");
+        if (searchParams.get("mealTypes")) newFilters.mealType = searchParams.get("mealTypes");
 
         if (Object.keys(newFilters).length > 0) {
             console.log("🔄 Filters loaded from URL:", newFilters);

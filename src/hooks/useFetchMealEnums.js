@@ -5,7 +5,7 @@ import { fetchMealEnums } from "../services/apiService.js";
  * Custom hook to fetch meal-related enums (diets, cuisines, meal types).
  *
  * This hook:
- * - Fetches diet, cuisine, and meal type options from the API.
+ * - Fetches diets, cuisines, and meal types options from the API.
  * - Stores the fetched data in state variables.
  * - Manages a loading state to indicate the fetching process.
  *
