@@ -1,137 +1,56 @@
 import { Controller } from "react-hook-form";
 import PropTypes from "prop-types";
-import { MenuItem } from "@mui/material";
+import Select from "react-select";
+import { useTheme } from "@mui/material/styles";
 import { cuisinesOptions, dietsOptions, mealTypesOptions } from "./dropdownOptionsMeals.js";
-import TextFieldCreateMeal from "./textFieldCreateMeal/TextFieldCreateMeal.jsx";
-import Select from "react-select"
+import customSelectStyles from "../../styles/customSelectStyles.js";
 
 const MealDropdowns = ({ control, errors }) => {
+    const theme = useTheme();
+
+    const renderSelect = (name, label, options, error) => (
+        <Controller
+            name={name}
+            control={control}
+            defaultValue={[]}
+            render={({ field }) => (
+                <div style={{ marginTop: '16px' }}>
+                    <Select
+                        {...field}
+                        isMulti
+                        options={options.map(opt => ({ value: opt.value, label: opt.label }))}
+                        placeholder={`Select ${label.toLowerCase()}`}
+                        closeMenuOnSelect={false}
+                        hideSelectedOptions={false}
+                        onChange={(selectedOptions) =>
+                            field.onChange(selectedOptions.map((opt) => opt.value))
+                        }
+                        value={options
+                            .filter((opt) => field.value?.includes(opt.value))
+                            .map((opt) => ({ value: opt.value, label: opt.label }))
+                        }
+                        styles={customSelectStyles(theme)}
+                        isSearchable={false}
+                    />
+                    {error && (
+                        <p style={{ color: 'red', fontSize: '0.8rem', marginTop: 4 }}>
+                            {error.message}
+                        </p>
+                    )}
+                </div>
+            )}
+        />
+    );
+
     return (
         <>
-            {/* Meal Type Dropdown */}
-            <Controller
-                name="mealTypes"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                    <TextFieldCreateMeal
-                        {...field}
-                        select
-                        label="Meal Types"
-                        SelectProps={{ multiple: true }}
-                        value={field.value || []}
-                        onChange={(e) => field.onChange(e.target.value)}
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                        error={!!errors?.mealTypes}
-                        helperText={errors?.mealTypes?.message || ""}
-                        sx={{ mt: 2 }}
-                    >
-                        {mealTypesOptions.map((option) => (
-                            <MenuItem
-                                key={option.value}
-                                value={option.value}
-                                sx={{
-                                    '&.Mui-selected': {
-                                        backgroundColor: 'primary.light',
-                                        color: 'white',
-                                    },
-                                    '&.Mui-selected:hover': {
-                                        backgroundColor: 'primary.main',
-                                    },
-                                }}
-                            >
-                                {option.label}
-                            </MenuItem>
-                        ))}
-                    </TextFieldCreateMeal>
-                )}
-            />
-
-            {/* Cuisines Dropdown */}
-            <Controller
-                name="cuisines"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                    <TextFieldCreateMeal
-                        {...field}
-                        select
-                        label="Cuisines"
-                        SelectProps={{ multiple: true }}
-                        value={field.value || []}
-                        onChange={(e) => field.onChange(e.target.value)}
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                        error={!!errors?.cuisines}
-                        helperText={errors?.cuisines?.message || ""}
-                        sx={{ mt: 2 }}
-                    >
-                        {cuisinesOptions.map((option) => (
-                            <MenuItem
-                                key={option.value}
-                                value={option.value}
-                                sx={{
-                                    '&.Mui-selected': {
-                                        backgroundColor: 'primary.light',
-                                        color: 'white',
-                                    },
-                                    '&.Mui-selected:hover': {
-                                        backgroundColor: 'primary.main',
-                                    },
-                                }}
-                            >
-                                {option.label}
-                            </MenuItem>
-                        ))}
-                    </TextFieldCreateMeal>
-                )}
-            />
-
-            {/* Diets Dropdown */}
-            <Controller
-                name="diets"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                    <TextFieldCreateMeal
-                        {...field}
-                        select
-                        label="Diets"
-                        SelectProps={{ multiple: true }}
-                        value={field.value || []}
-                        onChange={(e) => field.onChange(e.target.value)}
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                        error={!!errors?.diets}
-                        helperText={errors?.diets?.message || ""}
-                        sx={{ mt: 2 }}
-                    >
-                        {dietsOptions.map((option) => (
-                            <MenuItem
-                                key={option.value}
-                                value={option.value}
-                                sx={{
-                                    '&.Mui-selected': {
-                                        backgroundColor: 'primary.light',
-                                        color: 'white',
-                                    },
-                                    '&.Mui-selected:hover': {
-                                        backgroundColor: 'primary.main',
-                                    },
-                                }}
-                            >
-                                {option.label}
-                            </MenuItem>
-                        ))}
-                    </TextFieldCreateMeal>
-                )}
-            />
+            {renderSelect("mealTypes", "Meal Types", mealTypesOptions, errors?.mealTypes)}
+            {renderSelect("cuisines", "Cuisines", cuisinesOptions, errors?.cuisines)}
+            {renderSelect("diets", "Diets", dietsOptions, errors?.diets)}
         </>
     );
 };
 
-// ✅ PropTypes validatie
 MealDropdowns.propTypes = {
     control: PropTypes.shape({
         register: PropTypes.func,
