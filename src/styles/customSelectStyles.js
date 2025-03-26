@@ -4,7 +4,7 @@ const customSelectStyles = (theme) => {
     return {
         control: (base) => ({
             ...base,
-            backgroundColor: isDarkMode ? '#2d2f39' : '#FFFFFF', // handmatig instellen
+            backgroundColor: isDarkMode ? '#2d2f39' : '#FFFFFF',
             borderWidth: '1px',
             borderStyle: 'solid',
             color: theme.palette.text.primary,
@@ -19,12 +19,14 @@ const customSelectStyles = (theme) => {
 
         menu: (base) => ({
             ...base,
-            backgroundColor: isDarkMode ? '#2d2f39' : '#FFFFFF', // ook hier
+            backgroundColor: isDarkMode ? '#2d2f39' : '#FFFFFF',
             color: theme.palette.text.primary,
             zIndex: 9999,
             position: 'absolute',
             border: `1px solid ${theme.palette.primary.main}`,
         }),
+
+
 
         option: (base, state) => ({
             ...base,

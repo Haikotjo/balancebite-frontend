@@ -33,3 +33,33 @@ body {
     margin: 0;
     font-family: 'Nunito', sans-serif; /* Standaardlettertype gewijzigd */
 }
+
+
+/* WebKit Scrollbar */
+.react-select__menu-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.react-select__menu-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* 🔆 Light mode */
+.react-select__menu-list::-webkit-scrollbar-thumb {
+    background-color: #7b809e; /* donkergrijs in light mode */
+}
+
+/* 🌙 Dark mode */
+.dark .react-select__menu-list::-webkit-scrollbar-thumb {
+    background-color: #ffffff; /* wit in dark mode */
+}
+
+/* Firefox Scrollbar */
+.react-select__menu-list {
+    scrollbar-width: thin;
+    scrollbar-color: #7b809e transparent; /* light mode */
+}
+
+.dark .react-select__menu-list {
+    scrollbar-color: #ffffff transparent; /* dark mode */
+}

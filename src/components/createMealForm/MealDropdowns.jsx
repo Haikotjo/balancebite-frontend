@@ -13,34 +13,55 @@ const MealDropdowns = ({ control, errors }) => {
             name={name}
             control={control}
             defaultValue={[]}
-            render={({ field }) => (
-                <div style={{ marginTop: '16px' }}>
-                    <Select
-                        {...field}
-                        isMulti
-                        options={options.map(opt => ({ value: opt.value, label: opt.label }))}
-                        placeholder={`Select ${label.toLowerCase()}`}
-                        closeMenuOnSelect={false}
-                        hideSelectedOptions={false}
-                        onChange={(selectedOptions) =>
-                            field.onChange(selectedOptions.map((opt) => opt.value))
-                        }
-                        value={options
-                            .filter((opt) => field.value?.includes(opt.value))
-                            .map((opt) => ({ value: opt.value, label: opt.label }))
-                        }
-                        styles={customSelectStyles(theme)}
-                        isSearchable={false}
-                    />
-                    {error && (
-                        <p style={{ color: 'red', fontSize: '0.8rem', marginTop: 4 }}>
-                            {error.message}
-                        </p>
-                    )}
-                </div>
-            )}
+            render={({ field }) => {
+                // Toegang tot field.onChange, field.value, etc.
+                return (
+                    <div style={{ position: "relative", marginTop: "24px" }}>
+                        {/* 1. Het 'zwevende' label */}
+                        <label
+                            style={{
+                                position: "absolute",
+                                top: "-10px",
+                                left: "12px",
+                                background: theme.palette.mode === "dark" ? "#2d2f39" : "#FFFFFF",
+                                padding: "0 4px",
+                                fontSize: "0.75rem",
+                                color: theme.palette.text.primary,
+                                zIndex: 1,
+                            }}
+                        >
+                            {label.replace(/s$/, "")}
+                        </label>
+
+                        {/* 2. Je react-select component */}
+                        <Select
+                            {...field}
+                            isMulti
+                            options={options.map(opt => ({ value: opt.value, label: opt.label }))}
+                            placeholder={`Select ${label.replace(/s$/, "")}`}
+                            closeMenuOnSelect={false}
+                            hideSelectedOptions={false}
+                            onChange={(selectedOptions) =>
+                                field.onChange(selectedOptions.map((opt) => opt.value))
+                            }
+                            value={options
+                                .filter((opt) => field.value?.includes(opt.value))
+                                .map((opt) => ({ value: opt.value, label: opt.label }))}
+                            styles={customSelectStyles(theme)}
+                            isSearchable={false}
+                            classNamePrefix="react-select"
+                        />
+                        {error && (
+                            <p style={{ color: "red", fontSize: "0.8rem", marginTop: 4 }}>
+                                {error.message}
+                            </p>
+                        )}
+                    </div>
+                );
+            }}
         />
     );
+
 
     return (
         <>
