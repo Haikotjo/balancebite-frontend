@@ -61,7 +61,7 @@ const customSelectStyles = (theme) => {
         }),
         placeholder: (base) => ({
             ...base,
-            color: theme.palette.text.main,
+            color: theme.palette.mode === "dark" ? "#ffffff" : "#7a7c8b",
         }),
         singleValue: (base) => ({
             ...base,

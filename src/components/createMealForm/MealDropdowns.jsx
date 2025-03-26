@@ -16,7 +16,7 @@ const MealDropdowns = ({ control, errors }) => {
             render={({ field }) => {
                 // Toegang tot field.onChange, field.value, etc.
                 return (
-                    <div style={{ position: "relative", marginTop: "24px" }}>
+                    <div style={{position: "relative", marginTop: "24px"}}>
                         {/* 1. Het 'zwevende' label */}
                         <label
                             style={{
@@ -26,7 +26,7 @@ const MealDropdowns = ({ control, errors }) => {
                                 background: theme.palette.mode === "dark" ? "#2d2f39" : "#FFFFFF",
                                 padding: "0 4px",
                                 fontSize: "0.75rem",
-                                color: theme.palette.text.primary,
+                                color: theme.palette.mode === "dark" ? "#ffffff" : "#7a7c8b",
                                 zIndex: 1,
                             }}
                         >
@@ -37,7 +37,7 @@ const MealDropdowns = ({ control, errors }) => {
                         <Select
                             {...field}
                             isMulti
-                            options={options.map(opt => ({ value: opt.value, label: opt.label }))}
+                            options={options.map(opt => ({value: opt.value, label: opt.label}))}
                             placeholder={`Select ${label.replace(/s$/, "")}`}
                             closeMenuOnSelect={false}
                             hideSelectedOptions={false}
@@ -46,13 +46,13 @@ const MealDropdowns = ({ control, errors }) => {
                             }
                             value={options
                                 .filter((opt) => field.value?.includes(opt.value))
-                                .map((opt) => ({ value: opt.value, label: opt.label }))}
+                                .map((opt) => ({value: opt.value, label: opt.label}))}
                             styles={customSelectStyles(theme)}
                             isSearchable={false}
                             classNamePrefix="react-select"
                         />
                         {error && (
-                            <p style={{ color: "red", fontSize: "0.8rem", marginTop: 4 }}>
+                            <p style={{color: "red", fontSize: "0.8rem", marginTop: 4}}>
                                 {error.message}
                             </p>
                         )}

@@ -20,6 +20,7 @@ const TextFieldCreateMeal = React.forwardRef(({
                                                   ...rest
                                               }, ref) => {
     const theme = useTheme();
+    const isDarkMode = theme.palette.mode === "dark";
 
     return (
         <TextField
@@ -36,19 +37,37 @@ const TextFieldCreateMeal = React.forwardRef(({
             onChange={onChange}
             fullWidth={fullWidth}
             slotProps={slotProps}
-            InputLabelProps={{ shrink: true }}
+            InputLabelProps={{
+                shrink: true,
+                sx: {
+                    fontSize: { xs: "0.8rem", sm: "1rem" },
+                    color: theme.palette.mode === "dark" ? "#ffffff" : "#7a7c8b",
+                    "&.Mui-focused": {
+                        color: theme.palette.mode === "dark" ? "#ffffff" : theme.palette.primary.main,
+                    },
+                },
+            }}
             sx={{
                 "& .MuiOutlinedInput-root": {
-                    "& fieldset": { borderColor: theme.palette.primary.main },
-                    "&:hover fieldset": { borderColor: theme.palette.primary.dark },
-                    "&.Mui-focused fieldset": { borderColor: theme.palette.primary.main, borderWidth: 2 },
+                    backgroundColor: isDarkMode ? "#2d2f39" : "#FFFFFF",
+                    "& fieldset": {
+                        borderColor: theme.palette.primary.main,
+                        borderWidth: "1px",
+                        borderStyle: "solid",
+                    },
+                    "&:hover fieldset": {
+                        borderColor: theme.palette.primary.dark,
+                    },
+                    "&.Mui-focused fieldset": {
+                        borderColor: theme.palette.primary.main,
+                        borderWidth: "1px",
+                    },
                 },
-                "& .MuiInputBase-input": { fontSize: { xs: "0.8rem", sm: "1rem" }, padding: "10px 14px" },
-                "& .MuiInputLabel-root": {
-                    fontSize: { xs: "0.8rem", sm: "1rem" },
-                    color: "text.primary",
+                "& .MuiInputBase-input": {
+                    fontSize: "0.9rem",
+                    color: theme.palette.text.primary,
+                    padding: "10px 14px",
                 },
-                "& .MuiInputLabel-root.Mui-focused": { color: theme.palette.primary.main },
                 ...sx,
             }}
             {...rest}

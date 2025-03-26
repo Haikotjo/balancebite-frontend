@@ -18,7 +18,7 @@ import { UserMealsContext } from "../../context/UserMealsContext";
 import { refreshMealsList } from "../../utils/helpers/refreshMealsList.js";
 import MealImageUploader from "./mealImageUploader/MealImageUploader.jsx";
 import MealIngredients from "./mealIngredients/MealIngredients.jsx";
-import TextFieldCreateMeal from "./textFieldCreateMeal/TextFieldCreateMeal.jsx";
+import TextFieldCreateMeal from "../textFieldCreateMeal/TextFieldCreateMeal.jsx";
 import MealDropdowns from "./MealDropdowns.jsx";
 
 const CreateMealForm = () => {
@@ -79,7 +79,7 @@ const CreateMealForm = () => {
             onSubmit={handleSubmit(onSubmit)}
         >
             <Typography variant="h4" align="left">
-                Upload Meal
+                Upload Your Meal
             </Typography>
 
             {successMessage && <Alert severity="success">{successMessage}</Alert>}
