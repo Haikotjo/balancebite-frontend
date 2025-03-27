@@ -4,15 +4,16 @@ import { AuthContext } from "../../context/AuthContext.jsx";
 import AccountBoxRoundedIcon from "@mui/icons-material/AccountBoxRounded";
 import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 import FoodBankRoundedIcon from "@mui/icons-material/FoodBankRounded";
-import PropTypes from "prop-types";
 import CustomChip from "../customChip/CustomChip.jsx";
 import {UserMealsContext} from "../../context/UserMealsContext.jsx";
+import {useNavigate} from "react-router-dom";
 
-function SubMenu() {
+function SubMenu({ isDetailPage = false }) {
     const { activeOption, setActiveOption } = useContext(UserMealsContext);
     const { user } = useContext(AuthContext);
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+    const navigate = useNavigate();
 
     const iconSize = isSmallScreen ? 30 : 50;
     const chipMargin = isSmallScreen ? 15 : 30;
@@ -28,9 +29,13 @@ function SubMenu() {
         : [{ label: "All Meals", icon: <MenuBookRoundedIcon sx={{ fontSize: chipFontSize }} /> }];
 
     const handleChipClick = (option) => {
-        if (activeOption !== option) {
-            console.log("📌 SubMenu selected:", option);
-            setActiveOption(option); // Nu uit de context
+        if (isDetailPage) {
+            navigate(`/meals?filter=${option}`);
+        } else {
+            if (activeOption !== option) {
+                console.log("📌 SubMenu selected:", option);
+                setActiveOption(option);
+            }
         }
     };
 

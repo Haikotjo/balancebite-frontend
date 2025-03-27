@@ -40,7 +40,7 @@ const TextFieldCreateMeal = React.forwardRef(({
             InputLabelProps={{
                 shrink: true,
                 sx: {
-                    fontSize: { xs: "0.8rem", sm: "1rem" },
+                    fontSize: { xs: "0.8rem"},
                     color: theme.palette.mode === "dark" ? "#ffffff" : "#7a7c8b",
                     "&.Mui-focused": {
                         color: theme.palette.mode === "dark" ? "#ffffff" : theme.palette.primary.main,

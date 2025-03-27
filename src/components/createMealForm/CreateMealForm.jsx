@@ -1,10 +1,4 @@
-import { useState, useContext } from "react";
-import {
-    Box,
-    Button,
-    Typography,
-    Alert,
-} from "@mui/material";
+import { Box, Button, Typography, Alert } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { jwtDecode } from "jwt-decode";
@@ -20,6 +14,7 @@ import MealImageUploader from "./mealImageUploader/MealImageUploader.jsx";
 import MealIngredients from "./mealIngredients/MealIngredients.jsx";
 import TextFieldCreateMeal from "../textFieldCreateMeal/TextFieldCreateMeal.jsx";
 import MealDropdowns from "./MealDropdowns.jsx";
+import {useContext, useState} from "react";
 
 const CreateMealForm = () => {
     const [capturedImage, setCapturedImage] = useState(null);
@@ -28,7 +23,6 @@ const CreateMealForm = () => {
     const [successMessage, setSuccessMessage] = useState("");
     const [cameraError] = useState(null);
     const navigate = useNavigate();
-
     const { fetchUserMealsData } = useContext(UserMealsContext);
 
     const {
@@ -43,20 +37,20 @@ const CreateMealForm = () => {
     const onSubmit = async (data) => {
         try {
             const token = getAccessToken();
+            // Gebruik de userId eventueel nog voor andere doeleinden, maar voor navigatie gebruiken we het meal id.
             const userId = jwtDecode(token).sub || null;
             const mealData = {
                 ...data,
-                mealTypes: (data.mealTypes || []).map(type => type.value || type),
-                cuisines: (data.cuisines || []).map(cuisine => cuisine.value || cuisine),
-                diets: (data.diets || []).map(diet => diet.value || diet),
+                mealTypes: (data.mealTypes || []).map((type) => type.value || type),
+                cuisines: (data.cuisines || []).map((cuisine) => cuisine.value || cuisine),
+                diets: (data.diets || []).map((diet) => diet.value || diet),
             };
             const formData = await buildMealFormData(mealData, capturedImage, uploadedImage, imageUrl);
             const response = await createMealApi(formData, token);
             setSuccessMessage(`Meal created: ${response.name || "Unknown meal"}`);
-
             await refreshMealsList(fetchUserMealsData);
-
-            navigate(`/meals/${userId}`);
+            // Navigeer naar de pagina van de maaltijd op basis van het id uit de respons
+            navigate(`/meal/${response.id}`);
         } catch (error) {
             handleApiError(error);
         }
@@ -65,15 +59,13 @@ const CreateMealForm = () => {
     return (
         <Box
             sx={{
-                maxWidth: 600,
+                width: "100%",
+                // Breedte wordt bepaald door de wrapper (PageWrapper) die een maxWidth van 600px heeft.
                 margin: "auto",
                 padding: 2,
                 display: "flex",
                 flexDirection: "column",
                 gap: 2,
-                "@media (max-width:600px)": {
-                    padding: 1,
-                },
             }}
             component="form"
             onSubmit={handleSubmit(onSubmit)}
@@ -118,7 +110,6 @@ const CreateMealForm = () => {
 
             <MealDropdowns control={control} errors={errors} />
 
-
             <MealImageUploader
                 onImageChange={(image, type) => {
                     if (type === "captured") setCapturedImage(image);
@@ -133,7 +124,13 @@ const CreateMealForm = () => {
                 type="submit"
                 variant="contained"
                 color="primary"
-                sx={{ fontSize: "0.9rem", padding: "10px 16px", color: "text.light", fontWeight: "bold", marginBottom: "20px" }}
+                sx={{
+                    fontSize: "0.9rem",
+                    padding: "10px 16px",
+                    color: "text.light",
+                    fontWeight: "bold",
+                    marginBottom: "20px",
+                }}
             >
                 Upload Meal
             </Button>

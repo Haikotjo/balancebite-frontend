@@ -1,20 +1,30 @@
-import { Box, Typography, IconButton, Autocomplete, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Typography, IconButton, useMediaQuery, useTheme } from "@mui/material";
 import PropTypes from "prop-types";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
 import useFoodItems from "../../../hooks/useFoodItems.js";
 import RemoveFoodItemButton from "./removeFooditemButton/RemoveFoodItemButton.jsx";
-import TextFieldCreateMeal from "../../textFieldCreateMeal/TextFieldCreateMeal.jsx";
+import FloatingLabelSelectIngredient from "../../floatingLabelSelect/FloatingLabelSelectIngredient.jsx";
+import FloatingLabelQuantityField from "../../floatingLabelQuantityField/FloatingLabelQuantityField.jsx";
 
 const MealIngredients = ({ value, onChange, errors }) => {
-    const { options, handleSearch } = useFoodItems();
-
-    // Haal de theme op, en check of het scherm ‘sm’ of kleiner is:
+    const { options } = useFoodItems();
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-    const isAddDisabled = value.filter((item) => item.foodItemId !== "").length < 2;
+    // Map food item options to react-select format:
+    const ingredientOptions = options.map((item) => ({
+        value: item.id.toString(),
+        label: item.name,
+    }));
 
-    // Event-handler om de quantity te updaten:
+    // Handler for ingredient selection:
+    const handleIngredientChange = (index, selectedOption) => {
+        const newIngredients = [...value];
+        newIngredients[index].foodItemId = selectedOption ? selectedOption.value : "";
+        onChange(newIngredients);
+    };
+
+    // Handler for quantity changes:
     const handleQuantityChange = (newVal, index) => {
         const newIngredients = [...value];
         newIngredients[index].quantity = newVal === "" ? "" : Math.max(0, Number(newVal));
@@ -23,10 +33,6 @@ const MealIngredients = ({ value, onChange, errors }) => {
 
     return (
         <Box sx={{ maxWidth: "600px" }}>
-            {/*<Typography sx={{ fontSize: "1.2rem", color: "text.secondary", fontWeight: "normal" }}>*/}
-            {/*    Ingredients*/}
-            {/*</Typography>*/}
-
             {value.map((ingredient, index) => (
                 <Box
                     key={index}
@@ -34,63 +40,39 @@ const MealIngredients = ({ value, onChange, errors }) => {
                     gap={1}
                     alignItems="center"
                     sx={{
-                        flexWrap: "nowrap",
+                        flexWrap: "nowrap", // Zorgt ervoor dat alles op één regel blijft
                         mb: 1,
-                        "@media (max-width:600px)": { flexWrap: "wrap" },
                     }}
                 >
-                    {/* Autocomplete for searching food items by name */}
-                    <Autocomplete
-                        options={options}
-                        getOptionLabel={(option) => option.name}
-                        onInputChange={(event, newInputValue) => handleSearch(newInputValue)}
-                        value={options.find((item) => item.id === ingredient.foodItemId) || null}
-                        onChange={(event, newValue) => {
-                            const newIngredients = [...value];
-                            newIngredients[index].foodItemId = newValue ? newValue.id : "";
-                            onChange(newIngredients);
-                        }}
-                        renderInput={(params) => (
-                            <TextFieldCreateMeal
-                                {...params}
-                                label="Ingredient"
-                                InputLabelProps={{ shrink: true }}
-                                sx={{
-                                    flex: 3,
-                                    minWidth: { xs: "50%", sm: "60%" },
-                                    "& .MuiInputBase-input": {
-                                        fontSize: { xs: "0.8rem", sm: "1rem" },
-                                    },
-                                    "& .MuiInputLabel-root": {
-                                        fontSize: { xs: "0.8rem", sm: "1rem" },
-                                    },
-                                }}
-                            />
-                        )}
-                        sx={{ flex: 3, minWidth: { xs: "50%", sm: "70%" }, marginTop: 1 }}
-                    />
-
-                    <TextFieldCreateMeal
-                        label={isSmallScreen ? "(grams)" : "Quantity (g)"}
-                        type="text"
-                        inputMode="numeric"
-                        pattern="[0-9]*"
-                        value={ingredient.quantity === 0 ? "" : ingredient.quantity.toString()}
-                        onChange={(e) => handleQuantityChange(e.target.value, index)}
-                        onBlur={() => {
-                            if (ingredient.quantity === "" || ingredient.quantity === null) {
-                                handleQuantityChange(0, index);
+                    {/* Ingredient selector */}
+                    <Box sx={{ flex: isSmallScreen ? 2 : 3 }}>
+                        <FloatingLabelSelectIngredient
+                            label="Ingredient"
+                            isMulti={false}
+                            options={ingredientOptions}
+                            value={
+                                ingredientOptions.find(
+                                    (opt) => opt.value === ingredient.foodItemId
+                                ) || null
                             }
-                        }}
-                        error={errors?.[index]?.quantity}
-                        helperText={errors?.[index]?.quantity?.message || ""}
-                        InputLabelProps={{ shrink: true }}
-                        slotProps={{ input: { min: 0 } }}
-                        sx={{
-                            flex: 1,
-                        }}
-                    />
+                            onChange={(selected) =>
+                                handleIngredientChange(index, selected)
+                            }
+                        />
+                    </Box>
 
+                    {/* Quantity field */}
+                    <Box sx={{ flex: 1 }}>
+                        <FloatingLabelQuantityField
+                            label="Quantity (g)"
+                            value={
+                                ingredient.quantity === 0 ? "" : ingredient.quantity.toString()
+                            }
+                            onChange={(e) => handleQuantityChange(e.target.value, index)}
+                        />
+                    </Box>
+
+                    {/* Remove button */}
                     <RemoveFoodItemButton
                         value={value}
                         index={index}
@@ -102,6 +84,7 @@ const MealIngredients = ({ value, onChange, errors }) => {
                 </Box>
             ))}
 
+            {/* Nieuwe entry-rij voor een ingrediënt */}
             <Box
                 display="flex"
                 flexDirection="column"
@@ -113,22 +96,20 @@ const MealIngredients = ({ value, onChange, errors }) => {
                 <Typography
                     sx={{ fontSize: "0.8rem", color: "text.secondary", cursor: "pointer" }}
                     onClick={() => {
-                        if (!isAddDisabled) {
-                            onChange([...value, { foodItemId: "", quantity: 0 }]);
-                        }
+                        onChange([...value, { foodItemId: "", quantity: 0 }]);
                     }}
                 >
-                    {isAddDisabled ? "Add two or more ingredients" : "Click to add more ingredients"}
+                    {value.filter((item) => item.foodItemId !== "").length < 2
+                        ? "Add two or more ingredients"
+                        : "Click to add more ingredients"}
                 </Typography>
 
                 <IconButton
                     aria-label="add ingredient"
                     color="primary"
-                    disabled={isAddDisabled}
+                    disabled={value.filter((item) => item.foodItemId !== "").length < 2}
                     onClick={() => {
-                        if (!isAddDisabled) {
-                            onChange([...value, { foodItemId: "", quantity: 0 }]);
-                        }
+                        onChange([...value, { foodItemId: "", quantity: 0 }]);
                     }}
                 >
                     <AddCircleOutlineRoundedIcon />
@@ -141,19 +122,17 @@ const MealIngredients = ({ value, onChange, errors }) => {
 MealIngredients.propTypes = {
     value: PropTypes.arrayOf(
         PropTypes.shape({
-            foodItemId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-            quantity: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+            foodItemId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+                .isRequired,
+            quantity: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+                .isRequired,
         })
     ).isRequired,
     onChange: PropTypes.func.isRequired,
     errors: PropTypes.arrayOf(
         PropTypes.shape({
-            foodItemId: PropTypes.shape({
-                message: PropTypes.string,
-            }),
-            quantity: PropTypes.shape({
-                message: PropTypes.string,
-            }),
+            foodItemId: PropTypes.shape({ message: PropTypes.string }),
+            quantity: PropTypes.shape({ message: PropTypes.string }),
         })
     ),
 };

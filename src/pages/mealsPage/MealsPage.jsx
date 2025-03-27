@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef, useContext} from "react";
+import {useState, useEffect, useRef} from "react";
 import { Box, IconButton, Typography } from "@mui/material";
 import SearchBar from "../../components/searchBar/SearchBar.jsx";
 import SubMenu from "../../components/submenu/SubMenu.jsx";
