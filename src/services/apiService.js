@@ -331,3 +331,25 @@ export const fetchSortedMeals = async (sortField, sortOrder = "desc") => {
         throw error;
     }
 };
+
+export const updateMealApi = async (mealId, formData) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_UPDATE_MEAL_ENDPOINT}/${mealId}`;
+    const token = localStorage.getItem("accessToken");
+
+    if (!token) {
+        throw new Error("No access token available.");
+    }
+
+    try {
+        const response = await Interceptor.patch(endpoint, formData, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+

@@ -57,10 +57,10 @@ function MealPage() {
     return (
         <Box display="flex" flexDirection="column" alignItems="center" padding={2}>
 
-            {/* Page Title */}
-            <Typography variant="h3" sx={{ fontWeight: "bold", textAlign: "center", marginBottom: 4 }}>
-                {}
-            </Typography>
+            {/*/!* Page Title *!/*/}
+            {/*<Typography variant="h3" sx={{ fontWeight: "bold", textAlign: "center", marginBottom: 4 }}>*/}
+            {/*    {}*/}
+            {/*</Typography>*/}
 
             {/* Search Bar Toggle */}
             {!isSearchVisible ? (

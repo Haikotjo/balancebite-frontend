@@ -10,7 +10,6 @@ const MealDetailsPage = () => {
     const { mealId } = useParams();
     const [meal, setMeal] = useState(null);
     const [loading, setLoading] = useState(true);
-    const theme = useTheme(); // Voor dynamische styling
 
     useEffect(() => {
         const fetchMeal = async () => {

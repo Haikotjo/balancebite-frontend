@@ -14,7 +14,7 @@ import {
     useTheme, Grid,
 } from "@mui/material";
 import { Flame, ChartColumnIncreasing, Dumbbell, Droplet } from "lucide-react";
-import MealCardActionButtons from "../mealCard/mealCardActionButtons/MealCardActionButtons.jsx";
+import MealCardActionButtons from "../mealCardActionButtons/MealCardActionButtons.jsx";
 import { getImageSrc } from "../../utils/helpers/getImageSrc.js";
 import { calculateMacrosPer100g } from "../../utils/helpers/calculateMacrosPer100g.js";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
@@ -30,6 +30,7 @@ const MealDetailCard = ({ meal, isModal = false }) => {
     const { userMeals } = useContext(UserMealsContext);
     const userMealMatch = userMeals.find(m => String(m.originalMealId) === String(meal.id));
     const mealToRender = userMealMatch || meal;
+    const showUpdateButton = userMeals.some((m) => m.id === meal.id);
 
     const theme = useTheme();
     const isMedium = useMediaQuery(theme.breakpoints.up("md"));
@@ -108,7 +109,7 @@ const MealDetailCard = ({ meal, isModal = false }) => {
                         }}
                     />
                     <MealInfoOverlay meal={mealToRender} fontSize="0.8rem" />
-                    <MealCardActionButtons meal={mealToRender} showOpenMealButton={false} />
+                    <MealCardActionButtons meal={mealToRender} showOpenMealButton={false}    showUpdateButton={showUpdateButton}/>
                 </Box>
 
                 {/* MealTags onderaan de image op md+ */}

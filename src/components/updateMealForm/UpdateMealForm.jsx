@@ -1,32 +1,30 @@
 import { Box, Button, Typography, Alert } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useState, useContext } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { createMealSchema } from "../../utils/valadition/validationSchemas.js";
-import { createMealApi } from "../../services/apiService.js";
-import { getAccessToken } from "../../utils/helpers/getAccessToken.js";
 import { buildMealFormData } from "../../utils/helpers/buildMealFormData.js";
 import { handleApiError } from "../../utils/helpers/handleApiError.js";
+import { updateMealApi } from "../../services/apiService.js";
 import { refreshMealsList } from "../../utils/helpers/refreshMealsList.js";
 import { UserMealsContext } from "../../context/UserMealsContext";
+import { useMealFormData } from "../../hooks/useMealFormData.js";
 
-import MealImageUploader from "./mealImageUploader/MealImageUploader.jsx";
-import MealIngredients from "./mealIngredients/MealIngredients.jsx";
 import TextFieldCreateMeal from "../textFieldCreateMeal/TextFieldCreateMeal.jsx";
-import MealDropdowns from "./MealDropdowns.jsx";
+import MealIngredients from "../createMealForm/mealIngredients/MealIngredients.jsx";
+import MealImageUploader from "../createMealForm/mealImageUploader/MealImageUploader.jsx";
+import MealDropdowns from "../createMealForm/MealDropdowns.jsx";
 
 /**
- * Component for creating a new meal.
- * Handles form input, image upload, and API submission.
+ * Form component for updating an existing meal.
+ * Handles data population, form submission and image upload.
  */
-const CreateMealForm = () => {
-    const [capturedImage, setCapturedImage] = useState(null); // Image taken from camera
-    const [uploadedImage, setUploadedImage] = useState(null); // Image selected from file input
-    const [imageUrl, setImageUrl] = useState("");             // Image URL (external)
+const UpdateMealForm = () => {
+    const { mealId } = useParams();
     const [successMessage, setSuccessMessage] = useState("");
-    const [cameraError] = useState(null);
+    const [formImageFile, setFormImageFile] = useState(null);
     const navigate = useNavigate();
     const { fetchUserMealsData } = useContext(UserMealsContext);
 
@@ -34,43 +32,47 @@ const CreateMealForm = () => {
         register,
         control,
         handleSubmit,
+        reset,
         formState: { errors },
     } = useForm({
         resolver: yupResolver(createMealSchema),
+        defaultValues: {},
     });
 
+    const { loading, imageUrl, setImageUrl } = useMealFormData(mealId, reset);
+
     /**
-     * Handles the form submission and sends data to the backend.
-     * @param {Object} data - Form values.
+     * Handles form submission by preparing data and sending API request.
+     * @param {Object} data - Form data submitted by user
      */
     const onSubmit = async (data) => {
         try {
-            const token = getAccessToken();
-
-            const mealData = {
+            const mealDataToUpdate = {
                 ...data,
                 mealTypes: (data.mealTypes || []).map((type) => type.value || type),
                 cuisines: (data.cuisines || []).map((cuisine) => cuisine.value || cuisine),
                 diets: (data.diets || []).map((diet) => diet.value || diet),
             };
 
-            const formData = await buildMealFormData(mealData, capturedImage, uploadedImage, imageUrl);
-            const response = await createMealApi(formData, token);
+            const formData = await buildMealFormData(mealDataToUpdate, null, formImageFile, imageUrl);
+            const responseData = await updateMealApi(mealId, formData);
 
-            setSuccessMessage(`Meal created: ${response.name || "Unknown meal"}`);
+            setSuccessMessage(`Meal updated: ${responseData.name || "Unknown meal"}`);
             await refreshMealsList(fetchUserMealsData);
-            navigate(`/meal/${response.id}`);
+            navigate(`/meal/${responseData.id}`);
         } catch (error) {
-            console.error("[Meal Creation Error]", error);
             handleApiError(error);
         }
     };
+
+    if (loading) {
+        return <Typography align="center" sx={{ mt: 4 }}>Loading...</Typography>;
+    }
 
     return (
         <Box
             sx={{
                 width: "100%",
-                margin: "auto",
                 padding: 2,
                 display: "flex",
                 flexDirection: "column",
@@ -80,13 +82,11 @@ const CreateMealForm = () => {
             onSubmit={handleSubmit(onSubmit)}
         >
             <Typography variant="h4" align="left">
-                Upload Your Meal
+                Update Your Meal
             </Typography>
 
             {successMessage && <Alert severity="success">{successMessage}</Alert>}
-            {cameraError && <Alert severity="error">{cameraError}</Alert>}
 
-            {/* Input for meal name */}
             <TextFieldCreateMeal
                 label="Meal Name"
                 register={register}
@@ -95,11 +95,10 @@ const CreateMealForm = () => {
                 helperText={errors.name?.message}
             />
 
-            {/* Dynamic list of ingredients */}
             <Controller
                 name="mealIngredients"
                 control={control}
-                defaultValue={[{ foodItemId: "", quantity: 0 }, { foodItemId: "", quantity: 0 }]}
+                defaultValue={[{ foodItemId: "", quantity: 0 }]}
                 render={({ field: { onChange, value } }) => (
                     <MealIngredients
                         value={value}
@@ -109,7 +108,6 @@ const CreateMealForm = () => {
                 )}
             />
 
-            {/* Text area for meal description */}
             <TextFieldCreateMeal
                 label="Meal Description"
                 register={register}
@@ -120,21 +118,23 @@ const CreateMealForm = () => {
                 rows={4}
             />
 
-            {/* Select dropdowns for meal type, cuisine, and diet */}
             <MealDropdowns control={control} errors={errors} />
 
-            {/* Image uploader/capture/url handler */}
             <MealImageUploader
+                imageUrl={imageUrl}
                 onImageChange={(image, type) => {
-                    if (type === "captured") setCapturedImage(image);
-                    else if (type === "uploaded") setUploadedImage(image);
-                    else if (type === "url") setImageUrl(image);
+                    if (type === "uploaded" || type === "captured") {
+                        setFormImageFile(image);
+                        setImageUrl("");
+                    } else if (type === "url") {
+                        setFormImageFile(null);
+                        setImageUrl(image);
+                    }
                 }}
                 errors={errors}
                 register={register}
             />
 
-            {/* Submit button */}
             <Button
                 type="submit"
                 variant="contained"
@@ -147,10 +147,10 @@ const CreateMealForm = () => {
                     marginBottom: "20px",
                 }}
             >
-                Upload Meal
+                Update Meal
             </Button>
         </Box>
     );
 };
 
-export default CreateMealForm;
+export default UpdateMealForm;

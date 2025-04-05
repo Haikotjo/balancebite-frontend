@@ -6,10 +6,11 @@ import AddImageUrlComponent from "./addImageUrlComponent/AddImageUrlComponent.js
 import UploadImageComponent from "./uploadImageComponent/UploadImageComponent.jsx";
 import DeleteForeverRoundedIcon from "@mui/icons-material/DeleteForeverRounded";
 
-const MealImageUploader = ({ register, errors, onImageChange }) => {
+const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialImageUrl }) => {
+
     const [capturedImage, setCapturedImage] = useState(null);
     const [uploadedImage, setUploadedImage] = useState(null);
-    const [imageUrl, setImageUrl] = useState("");
+    const [imageUrl, setImageUrl] = useState(initialImageUrl || "");
     const [resetTrigger, setResetTrigger] = useState(false);
 
     const handleReset = () => {
@@ -97,6 +98,7 @@ MealImageUploader.propTypes = {
     register: PropTypes.func.isRequired,
     errors: PropTypes.object.isRequired,
     onImageChange: PropTypes.func.isRequired,
+    imageUrl: PropTypes.string,
 };
 
 export default MealImageUploader;

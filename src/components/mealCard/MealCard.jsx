@@ -8,18 +8,21 @@ import {
 import useNutrients from "../../hooks/useNutrients.js";
 import useExpand from "../../hooks/useExpand";
 import { getImageSrc } from "../../utils/helpers/getImageSrc.js";
-import MealCardActionButtons from "./mealCardActionButtons/MealCardActionButtons.jsx";
+import MealCardActionButtons from "../mealCardActionButtons/MealCardActionButtons.jsx";
 import MealDetailsWithIcons from "./mealDetailsWithIcons/MealDetailsWithIcons.jsx";
 import ExpandableDescription from "../expandableDescription/ExpandableDescription.jsx";
 import TruncatedTitle from "../truncatedTitle/TruncatedTitle.jsx";
 import MealInfoOverlay from "../mealInfoOverlay/MealInfoOverlay.jsx";
 import MealTags from "../mealTags/MealTags.jsx";
 import MealCardFooter from "../mealCardFooter/MealCardFooter.jsx";
+import { UserMealsContext } from "../../context/UserMealsContext";
+import {useContext} from "react";
 
 function MealCard({ meal, onFilter, onTitleClick  }) {
     const { expanded, toggleExpand } = useExpand();
     const { nutrients } = useNutrients(meal.id);
     const imageSrc = getImageSrc(meal);
+    const { userMeals } = useContext(UserMealsContext);
 
     const handleFilter = (category, value) => {
 
@@ -30,6 +33,8 @@ function MealCard({ meal, onFilter, onTitleClick  }) {
         }
     };
 
+    const showUpdateButton = userMeals.some((m) => m.id === meal.id);
+
     return (
         <Card sx={{ minWidth: 300, maxWidth: 345, position: "relative", display: "flex", flexDirection: "column", height: "100%", border: "1px solid rgba(0, 0, 0, 0.05)",
             boxShadow: "0px 0px 8px 2px rgba(0, 0, 0, 0.1)"
@@ -38,7 +43,11 @@ function MealCard({ meal, onFilter, onTitleClick  }) {
             <Box sx={{ position: "relative" }}>
                 <CardMedia component="img" image={imageSrc} alt={meal.name} sx={{ width: "100%", aspectRatio: "16/9" }} />
                 <MealInfoOverlay meal={meal} />
-                <MealCardActionButtons meal={meal} />
+                <MealCardActionButtons
+                    meal={meal}
+                    showUpdateButton={showUpdateButton}
+                    layout="horizontal"
+                />
             </Box>
 
             <MealDetailsWithIcons

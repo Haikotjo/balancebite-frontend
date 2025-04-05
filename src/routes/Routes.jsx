@@ -1,13 +1,14 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import NavBar from "../components/navigation/NavBar"; // NavBar importeren
+import NavBar from "../components/navigation/NavBar";
 import HomePage from "../pages/homePage/HomePage";
 import AboutPage from "../pages/aboutPage/AboutPage";
 import MealsPage from "../pages/mealsPage/MealsPage";
 import LoginPage from "../pages/loginPage/LoginPage";
-import RegisterPage from "../pages/registerPage/RegisterPage"; // Nieuwe RegisterPage toevoegen
+import RegisterPage from "../pages/registerPage/RegisterPage";
 import CreateMealPage from "../pages/createMealPage/CreateMealPage";
 import ProfilePage from "../pages/profilePage/ProfilePage.jsx";
-import MealDetailsPage from "../pages/mealDetailsPage/MealDetailsPage.jsx"; // Nieuwe CreateMealPage toevoegen
+import MealDetailsPage from "../pages/mealDetailsPage/MealDetailsPage.jsx";
+import UpdateMealPage from "../pages/updateMealPage/UpdateMealPage.jsx";
 
 function AppRoutes() {
     return (
@@ -17,7 +18,6 @@ function AppRoutes() {
                 v7_relativeSplatPath: true,
             }}
         >
-            {/* NavBar komt buiten de Routes, zodat het altijd zichtbaar is */}
             <NavBar />
             <Routes>
                 <Route path="/" element={<HomePage />} />
@@ -28,6 +28,7 @@ function AppRoutes() {
                 <Route path="/create-meal" element={<CreateMealPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/meal/:mealId" element={<MealDetailsPage />} />
+                <Route path="/update-meal/:mealId" element={<UpdateMealPage />} />
             </Routes>
         </Router>
     );
