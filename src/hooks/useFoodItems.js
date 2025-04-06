@@ -5,7 +5,7 @@ import { getAllFoodItemNames, searchFoodItemsByName } from "../services/apiServi
  * Custom hook to manage food item retrieval and search functionality.
  * This hook fetches food item names and allows searching by name.
  *
- * @returns {Object} Contains options (food items), noResults state, and handleSearch function.
+ * @returns {Object} Contains options (food items), noResults state, handleSearch and refetch function.
  */
 const useFoodItems = () => {
     const [options, setOptions] = useState([]);
@@ -71,7 +71,8 @@ const useFoodItems = () => {
         })();
     }, []);
 
-    return { options, noResults, handleSearch };
+    // Make fetchAllFoodItems available as refetch
+    return { options, noResults, handleSearch, refetch: fetchAllFoodItems };
 };
 
 export default useFoodItems;

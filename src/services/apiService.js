@@ -375,4 +375,18 @@ export const createFoodItemApi = async (data) => {
     }
 };
 
+export const deleteFoodItemApi = async (id, token) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_DELETE_FOODITEM_ENDPOINT}/${id}`;
+    try {
+        const response = await Interceptor.delete(endpoint, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return response;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+
 
