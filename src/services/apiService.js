@@ -353,3 +353,26 @@ export const updateMealApi = async (mealId, formData) => {
     }
 };
 
+export const createFoodItemApi = async (data) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_CREATE_FOODITEM_ENDPOINT}`;
+    const token = localStorage.getItem("accessToken");
+
+    if (!token) {
+        throw new Error("No access token available.");
+    }
+
+    try {
+        const response = await Interceptor.post(endpoint, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+

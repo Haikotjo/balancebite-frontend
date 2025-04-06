@@ -31,3 +31,46 @@ export const createMealSchema = yup.object().shape({
         .url("Invalid URL format.")
         .max(500, "The image URL must not exceed 500 characters."),
 });
+
+// Validation schema for Create Food Item Form
+export const foodItemSchema = yup.object().shape({
+    name: yup
+        .string()
+        .required("Name is required")
+        .max(100, "Name must not exceed 100 characters."),
+    source: yup
+        .string()
+        .required("Source is required")
+        .max(100, "Source must not exceed 100 characters."),
+    portionDescription: yup
+        .string()
+        .transform((value, originalValue) => originalValue === "" ? null : value)
+        .max(100, "Portion description must not exceed 100 characters.")
+        .nullable(),
+    gramWeight: yup
+        .number()
+        .transform((value, originalValue) => originalValue === "" ? null : value)
+        .typeError("Gram weight must be a number")
+        .positive("Gram weight must be greater than 0")
+        .nullable(),
+    calories: yup
+        .number()
+        .typeError("Calories must be a number")
+        .min(0, "Calories cannot be negative")
+        .required("Calories is required"),
+    protein: yup
+        .number()
+        .typeError("Protein must be a number")
+        .min(0, "Protein cannot be negative")
+        .required("Protein is required"),
+    carbohydrates: yup
+        .number()
+        .typeError("Carbohydrates must be a number")
+        .min(0, "Carbohydrates cannot be negative")
+        .required("Carbohydrates is required"),
+    fat: yup
+        .number()
+        .typeError("Fat must be a number")
+        .min(0, "Fat cannot be negative")
+        .required("Fat is required"),
+});
