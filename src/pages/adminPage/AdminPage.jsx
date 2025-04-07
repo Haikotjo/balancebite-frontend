@@ -11,11 +11,13 @@ import AddBoxIcon from "@mui/icons-material/AddBox";
 import PromoteUserForm from "../../components/promoteUserForm/PromoteUserForm.jsx";
 import DeleteUserForm from "../../components/deleteUserForm/DeleteUserForm.jsx";
 import CreateUserFormForAdmin from "../../components/createUserFormForAdmin/CreateUserFormForAdmin.jsx";
+import DeleteMealForm from "../../components/deleteMealForm/DeleteMealForm.jsx";
 
 const AdminPage = () => {
     const [activeOption, setActiveOption] = useState("Create Meal");
     const [foodItemAction, setFoodItemAction] = useState("Create");
     const [userAction, setUserAction] = useState("Promote");
+    const [mealAction, setMealAction] = useState("Create");
 
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -25,7 +27,7 @@ const AdminPage = () => {
     const labelFontSize = isSmallScreen ? "0.6rem" : "0.7rem";
 
     const options = [
-        { label: "Create Meal", icon: <RestaurantIcon sx={{ fontSize: chipFontSize }} /> },
+        { label: "Meals", icon: <RestaurantIcon sx={{ fontSize: chipFontSize }} /> },
         { label: "Food Item", icon: <AddBoxIcon sx={{ fontSize: chipFontSize }} /> },
         { label: "Users", icon: <SettingsIcon sx={{ fontSize: chipFontSize }} /> },
         { label: "Settings", icon: <SettingsIcon sx={{ fontSize: chipFontSize }} /> },
@@ -70,6 +72,22 @@ const AdminPage = () => {
             );
         }
 
+        if (activeOption === "Meals") {
+            return (
+                <Box>
+                    <Select
+                        value={mealAction}
+                        onChange={(e) => setMealAction(e.target.value)}
+                        sx={{ mb: 2, width: "100%" }}
+                    >
+                        <MenuItem value="Create">Create Meal</MenuItem>
+                        <MenuItem value="Delete">Delete Meal</MenuItem>
+                    </Select>
+                    {mealAction === "Create" && <CreateMealForm />}
+                    {mealAction === "Delete" && <DeleteMealForm />}
+                </Box>
+            );
+        }
 
         switch (activeOption) {
             case "Create Meal":
@@ -89,7 +107,7 @@ const AdminPage = () => {
                 Admin Dashboard
             </Typography>
 
-            <Box sx={{ marginBottom: 2, display: "flex", justifyContent: "center" }}>
+            <Box sx={{ marginBottom: 5, display: "flex", justifyContent: "center" }}>
                 <Stack direction="row" spacing={2} alignItems="center">
                     {options.map((option) => (
                         <Box key={option.label} display="flex" flexDirection="column" alignItems="center">

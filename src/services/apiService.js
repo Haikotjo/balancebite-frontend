@@ -474,4 +474,34 @@ export const createUserAsAdminApi = async (data, token) => {
     }
 };
 
+export const getAllMealsApi = async (token) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_GET_ALL_MEALS_ENDPOINT}`;
+    try {
+        const response = await Interceptor.get(endpoint, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("[API Error] Failed to fetch all meals:", error);
+        throw error;
+    }
+};
+
+export const deleteMealApi = async (mealId, token) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_DELETE_MEAL_ENDPOINT}/${mealId}`;
+    try {
+        const response = await Interceptor.delete(endpoint, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response;
+    } catch (error) {
+        console.error("[API Error] Failed to delete meal:", error);
+        throw error;
+    }
+};
+
 
