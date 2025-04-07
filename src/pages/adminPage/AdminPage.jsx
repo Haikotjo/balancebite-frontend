@@ -8,10 +8,13 @@ import FetchFoodItemForm from "../../components/fetchFoodItemForm/FetchFoodItemF
 import SettingsIcon from "@mui/icons-material/Settings";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import AddBoxIcon from "@mui/icons-material/AddBox";
+import PromoteUserForm from "../../components/promoteUserForm/PromoteUserForm.jsx";
+import DeleteUserForm from "../../components/deleteUserForm/DeleteUserForm.jsx";
 
 const AdminPage = () => {
     const [activeOption, setActiveOption] = useState("Create Meal");
     const [foodItemAction, setFoodItemAction] = useState("Create");
+    const [userAction, setUserAction] = useState("Promote");
 
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -23,6 +26,7 @@ const AdminPage = () => {
     const options = [
         { label: "Create Meal", icon: <RestaurantIcon sx={{ fontSize: chipFontSize }} /> },
         { label: "Food Item", icon: <AddBoxIcon sx={{ fontSize: chipFontSize }} /> },
+        { label: "Users", icon: <SettingsIcon sx={{ fontSize: chipFontSize }} /> },
         { label: "Settings", icon: <SettingsIcon sx={{ fontSize: chipFontSize }} /> },
     ];
 
@@ -46,9 +50,28 @@ const AdminPage = () => {
             );
         }
 
+        if (activeOption === "Users") {
+            return (
+                <Box>
+                    <Select
+                        value={userAction}
+                        onChange={(e) => setUserAction(e.target.value)}
+                        sx={{ mb: 2, width: "100%" }}
+                    >
+                        <MenuItem value="Promote">Promote User</MenuItem>
+                        <MenuItem value="Delete">Delete User</MenuItem>
+                    </Select>
+                    {userAction === "Promote" && <PromoteUserForm />}
+                    {userAction === "Delete" && <DeleteUserForm />}
+                </Box>
+            );
+        }
+
         switch (activeOption) {
             case "Create Meal":
                 return <CreateMealForm />;
+            case "Users":
+                return <Typography>Manage users coming soon...</Typography>;
             case "Settings":
                 return <Typography>Admin settings coming soon...</Typography>;
             default:

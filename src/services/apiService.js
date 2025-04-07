@@ -408,5 +408,53 @@ export const fetchFoodItemsBulkApi = async (fdcIds) => {
     return response.data;
 };
 
+export const getAllUsersApi = async (token) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_GET_ALL_USERS_ENDPOINT}`;
+    try {
+        const response = await Interceptor.get(endpoint, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response;
+    } catch (error) {
+        console.error("[API Error] Failed to fetch users:", error);
+        throw error;
+    }
+};
+
+
+export const promoteUserApi = async (data, token) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_PROMOTE_USER_ENDPOINT}`;
+    try {
+        const response = await Interceptor.patch(endpoint, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+        return response;
+    } catch (error) {
+        console.error("[API Error] Failed to promote user:", error);
+        throw error;
+    }
+};
+
+export const deleteUserApi = async (data, token) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_DELETE_USER_ENDPOINT}`;
+    try {
+        const response = await Interceptor.delete(endpoint, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            data,
+        });
+        return response;
+    } catch (error) {
+        console.error("[API Error] Failed to delete user:", error);
+        throw error;
+    }
+};
 
 
