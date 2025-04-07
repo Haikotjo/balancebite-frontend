@@ -10,6 +10,7 @@ import RestaurantIcon from "@mui/icons-material/Restaurant";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import PromoteUserForm from "../../components/promoteUserForm/PromoteUserForm.jsx";
 import DeleteUserForm from "../../components/deleteUserForm/DeleteUserForm.jsx";
+import CreateUserFormForAdmin from "../../components/createUserFormForAdmin/CreateUserFormForAdmin.jsx";
 
 const AdminPage = () => {
     const [activeOption, setActiveOption] = useState("Create Meal");
@@ -60,12 +61,15 @@ const AdminPage = () => {
                     >
                         <MenuItem value="Promote">Promote User</MenuItem>
                         <MenuItem value="Delete">Delete User</MenuItem>
+                        <MenuItem value="Create">Create User</MenuItem>
                     </Select>
                     {userAction === "Promote" && <PromoteUserForm />}
                     {userAction === "Delete" && <DeleteUserForm />}
+                    {userAction === "Create" && <CreateUserFormForAdmin />}
                 </Box>
             );
         }
+
 
         switch (activeOption) {
             case "Create Meal":

@@ -82,7 +82,7 @@ const CreateFoodItemForm = () => {
                 variant="contained"
                 color="primary"
                 sx={{
-                    fontSize: "0.9rem",
+                    fontSize: "0.8rem",
                     padding: "10px 16px",
                     color: "text.light",
                     fontWeight: "bold",

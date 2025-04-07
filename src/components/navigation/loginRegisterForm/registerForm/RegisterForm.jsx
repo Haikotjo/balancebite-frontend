@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import useLogin from "../../../../hooks/useLogin.js";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import { registerUserApi } from "../../../../services/apiService.js";
-import registerSchema from "./registerSchema.js";
+import registerSchema from "../../../../utils/helpers/registerSchema.js";
 
 
 const RegisterForm = ({ onClose, onSwitchToLogin }) => {

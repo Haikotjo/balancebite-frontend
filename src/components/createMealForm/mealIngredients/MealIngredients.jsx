@@ -40,7 +40,7 @@ const MealIngredients = ({ value, onChange, errors }) => {
                     gap={1}
                     alignItems="center"
                     sx={{
-                        flexWrap: "nowrap", // Zorgt ervoor dat alles op één regel blijft
+                        flexWrap: "nowrap",
                         mb: 1,
                     }}
                 >

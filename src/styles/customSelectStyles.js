@@ -67,6 +67,11 @@ const customSelectStyles = (theme) => {
             ...base,
             color: theme.palette.text.primary,
         }),
+        input: (base) => ({
+            ...base,
+            color: theme.palette.text.primary,
+        }),
+
     };
 };
 

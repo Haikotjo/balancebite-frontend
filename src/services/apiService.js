@@ -458,3 +458,20 @@ export const deleteUserApi = async (data, token) => {
 };
 
 
+export const createUserAsAdminApi = async (data, token) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_ADMIN_CREATE_USER_ENDPOINT}`;
+    try {
+        const response = await Interceptor.post(endpoint, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+        return response;
+    } catch (error) {
+        console.error("[API Error] Failed to create user as admin:", error);
+        throw error;
+    }
+};
+
+

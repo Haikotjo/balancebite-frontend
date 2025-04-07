@@ -63,7 +63,13 @@ const PromoteUserForm = () => {
                 variant="contained"
                 onClick={handlePromote}
                 disabled={!selectedUser}
-                sx={{ mt: 2 }}
+                sx={{
+                    mt: 2,
+                    fontSize: "0.8rem",
+                    color: "text.light",
+                    fontWeight: "bold",
+                    marginBottom: "20px",
+                }}
             >
                 Promote User
             </Button>
