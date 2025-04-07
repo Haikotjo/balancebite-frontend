@@ -3,7 +3,8 @@ import { useState } from "react";
 import CustomChip from "../../components/customChip/CustomChip.jsx";
 import CreateMealForm from "../../components/createMealForm/CreateMealForm.jsx";
 import CreateFoodItemForm from "../../components/createFoodItemForm/CreateFoodItemForm.jsx";
-import DeleteFoodItemForm from "../../components/DeleteFoodItemForm/DeleteFoodItemForm.jsx";
+import DeleteFoodItemForm from "../../components/deleteFoodItemForm/DeleteFoodItemForm.jsx";
+import FetchFoodItemForm from "../../components/fetchFoodItemForm/FetchFoodItemForm.jsx";
 import SettingsIcon from "@mui/icons-material/Settings";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import AddBoxIcon from "@mui/icons-material/AddBox";
@@ -36,9 +37,11 @@ const AdminPage = () => {
                     >
                         <MenuItem value="Create">Create Food Item</MenuItem>
                         <MenuItem value="Delete">Delete Food Item</MenuItem>
+                        <MenuItem value="Fetch">Fetch Food Item(s)</MenuItem>
                     </Select>
                     {foodItemAction === "Create" && <CreateFoodItemForm />}
                     {foodItemAction === "Delete" && <DeleteFoodItemForm />}
+                    {foodItemAction === "Fetch" && <FetchFoodItemForm />}
                 </Box>
             );
         }

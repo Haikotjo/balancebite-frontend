@@ -388,5 +388,25 @@ export const deleteFoodItemApi = async (id, token) => {
     }
 };
 
+// Fetch single food item by FDC ID
+export const fetchFoodItemByFdcIdApi = async (fdcId, token) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_FETCH_FOODITEM_BY_ID_ENDPOINT}/${fdcId}`;
+    const response = await Interceptor.get(endpoint, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+};
+
+// Bulk fetch multiple food items by FDC IDs
+export const fetchFoodItemsBulkApi = async (fdcIds) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_FETCH_FOODITEMS_BULK_ENDPOINT}`;
+    const response = await Interceptor.post(endpoint, fdcIds, {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+    return response.data;
+};
+
 
 
