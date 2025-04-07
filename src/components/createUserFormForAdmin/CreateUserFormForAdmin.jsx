@@ -74,6 +74,16 @@ const CreateUserFormForAdmin = () => {
             />
 
             <TextField
+                label="Password"
+                type="password"
+                {...register("password")}
+                error={!!errors.password}
+                helperText={errors.password?.message}
+                required
+            />
+
+
+            <TextField
                 label="Confirm Password"
                 type="password"
                 {...register("confirmPassword")}
