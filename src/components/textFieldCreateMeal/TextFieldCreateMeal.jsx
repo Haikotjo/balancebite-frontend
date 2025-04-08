@@ -27,7 +27,10 @@ const TextFieldCreateMeal = React.forwardRef(({
             label={label}
             variant="outlined"
             inputRef={ref}
-            {...(register ? register(name) : {})}
+            inputProps={{
+                ...rest,
+                ...(register ? register(name) : {}),
+            }}
             error={!!error}
             helperText={helperText}
             multiline={multiline}

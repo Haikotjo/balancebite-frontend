@@ -10,6 +10,7 @@ const FloatingLabelSelectIngredient = ({
                                            value = null,
                                            onChange,
                                            placeholder = "",
+                                           containerStyle = {},
                                            ...rest
                                        }) => {
     const theme = useTheme();
@@ -17,7 +18,14 @@ const FloatingLabelSelectIngredient = ({
     const fixedWidth = isSmallScreen ? "180px" : "390px";
 
     return (
-        <div style={{ position: "relative", marginTop: "16px", width: fixedWidth }}>
+        <div
+            style={{
+                position: "relative",
+                marginTop: "16px",
+                width: fixedWidth,
+                ...containerStyle,
+            }}
+        >
             <label
                 style={{
                     position: "absolute",
@@ -46,7 +54,9 @@ const FloatingLabelSelectIngredient = ({
     );
 };
 
+
 FloatingLabelSelectIngredient.propTypes = {
+    containerStyle: PropTypes.object,
     label: PropTypes.string.isRequired,
     isMulti: PropTypes.bool,
     options: PropTypes.arrayOf(

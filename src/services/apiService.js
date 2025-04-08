@@ -504,4 +504,27 @@ export const deleteMealApi = async (mealId, token) => {
     }
 };
 
+export const getFoodSourcesApi = async () => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_FOOD_SOURCES_ENDPOINT}`;
+    try {
+        const response = await fetch(endpoint, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch food sources");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("[API Error] Failed to fetch food sources:", error);
+        throw error;
+    }
+};
+
+
+
 
