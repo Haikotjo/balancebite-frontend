@@ -4,8 +4,9 @@ import { Box, CircularProgress, Typography } from "@mui/material";
 import { UserMealsContext } from "../../context/UserMealsContext.jsx";
 import PropTypes from "prop-types";
 import MealModal from "../mealModal/MealModal.jsx";
+import { useLocation } from "react-router-dom";
 
-function MealList({ filters, sortBy }) {
+function MealList({ filters, sortBy, onFiltersChange }) {
     const { meals, loading, error, userMeals, setFilters, setSortBy } = useContext(UserMealsContext);
 
     const [selectedMeal, setSelectedMeal] = useState(null);
@@ -19,10 +20,13 @@ function MealList({ filters, sortBy }) {
 
     // ✅ Filters opslaan in de context
     const handleFilter = (category, value) => {
-        setFilters((prevFilters) => ({
-            ...prevFilters,
+        const updated = {
+            ...filters,
             [category]: value,
-        }));
+        };
+
+        setFilters(updated);
+        onFiltersChange?.(updated);
     };
 
     // ✅ Sorting opslaan in de context
@@ -31,11 +35,18 @@ function MealList({ filters, sortBy }) {
     };
 
 
-    // ⬇️ ✅ Stuur filters en sorting door naar de context (1 keer bij laden)
+    const location = useLocation();
+
     useEffect(() => {
-        setFilters(filters);
+        const stateFilters = location.state?.filtersFromRedirect;
+        if (stateFilters) {
+            setFilters(stateFilters);
+        } else {
+            setFilters(filters);
+        }
         setSortBy(sortBy);
-    }, [filters, sortBy, setFilters, setSortBy]);
+    }, [filters, sortBy, setFilters, setSortBy, location.state]);
+
 
     if (loading)
         return (
@@ -111,6 +122,7 @@ function MealList({ filters, sortBy }) {
         sortKey: PropTypes.string,
         sortOrder: PropTypes.string
     }),
+        onFiltersChange: PropTypes.func,
 };
 
 export default MealList;

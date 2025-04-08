@@ -26,7 +26,7 @@ import {useContext} from "react";
 import {UserMealsContext} from "../../context/UserMealsContext.jsx";
 import ExpandableTitle from "../expandableTitle/ExpandableTitle.jsx";
 
-const MealDetailCard = ({ meal, isModal = false }) => {
+const MealDetailCard = ({ meal, isModal = false, onClose }) => {
     const { userMeals } = useContext(UserMealsContext);
     const userMealMatch = userMeals.find(m => String(m.originalMealId) === String(meal.id));
     const mealToRender = userMealMatch || meal;
@@ -38,11 +38,24 @@ const MealDetailCard = ({ meal, isModal = false }) => {
 
     const imageSrc = getImageSrc(mealToRender);
     const calculatedMacros = calculateMacrosPer100g(mealToRender);
-
+    const userMealsContext = useContext(UserMealsContext);
+    const setFilters = userMealsContext?.setFilters || (() => {});
     const navigate = useNavigate();
 
+
+    const categoryMap = {
+        mealTypes: "mealTypes",
+        diets: "diets",
+        cuisines: "cuisines",
+    };
+
     const handleFilterRedirect = (category, value) => {
-        navigate(`/meals?${category}=${encodeURIComponent(value)}`);
+        if (isModal && onClose) {
+            onClose();
+        }
+
+        const mapped = categoryMap[category] || category;
+        navigate(`/meals?${mapped}=${value}`);
     };
 
     const macros = {
@@ -213,6 +226,7 @@ const MealDetailCard = ({ meal, isModal = false }) => {
 MealDetailCard.propTypes = {
     meal: PropTypes.object.isRequired,
     isModal: PropTypes.bool,
+    onClose: PropTypes.func,
 };
 
 export default MealDetailCard;

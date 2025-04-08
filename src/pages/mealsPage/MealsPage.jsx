@@ -8,14 +8,14 @@ import MealList from "../../components/mealList/MealList.jsx";
 import ScrollToTopButton from "../../components/scrollToTopButton/ScrollToTopButton.jsx";
 import FilterSidebar from "../../components/filterSidebar/FilterSidebar.jsx";
 import { getAllMealNames } from "../../services/apiService.js";
-import { useSearchParams } from "react-router-dom";
+import {useLocation, useSearchParams} from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 
 function MealPage() {
     const [sortBy, setSortBy] = useState(null);
     const [filters, setFilters] = useState({});
     const [searchParams] = useSearchParams();
-
+    const location = useLocation();
     const searchRef = useRef(null);
     const [isSearchVisible, setIsSearchVisible] = useState(false);
 
@@ -44,15 +44,15 @@ function MealPage() {
 
     useEffect(() => {
         const newFilters = {};
-        if (searchParams.get("cuisines")) newFilters.cuisine = searchParams.get("cuisines");
-        if (searchParams.get("diets")) newFilters.diet = searchParams.get("diets");
-        if (searchParams.get("mealTypes")) newFilters.mealType = searchParams.get("mealTypes");
+        if (searchParams.get("mealTypes")) newFilters.mealTypes = searchParams.get("mealTypes");
+        if (searchParams.get("diets")) newFilters.diets = searchParams.get("diets");
+        if (searchParams.get("cuisines")) newFilters.cuisines = searchParams.get("cuisines");
 
         if (Object.keys(newFilters).length > 0) {
-            console.log("🔄 Filters loaded from URL:", newFilters);
             setFilters(newFilters);
         }
     }, [searchParams]);
+
 
     return (
         <Box display="flex" flexDirection="column" alignItems="center" padding={2}>

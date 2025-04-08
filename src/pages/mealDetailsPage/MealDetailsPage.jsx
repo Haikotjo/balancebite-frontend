@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { fetchMealById } from "../../services/apiService.js";
 import { useTheme } from "@mui/material/styles";
-import MealCardLarge from "../../components/mealCardLarge/MealCardLarge";
+import MealCardLarge from "../../components/mealCardLarge/MealDetailCard.jsx";
 import SubMenu from "../../components/submenu/SubMenu.jsx"; // Importeer SubMenu
 
 const MealDetailsPage = () => {

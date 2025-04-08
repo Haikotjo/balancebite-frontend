@@ -1,9 +1,10 @@
 import { Dialog, DialogContent, IconButton } from "@mui/material";
 import PropTypes from "prop-types";
-import MealDetailCard from "../mealCardLarge/MealCardLarge.jsx";
+import MealCardLarge from "../mealCardLarge/MealDetailCard.jsx";
 import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
 import { useTheme } from "@mui/material/styles";
 import { Minimize2 } from 'lucide-react';
+import MealDetailCard from "../mealCardLarge/MealDetailCard.jsx";
 
 const MealDetailModal = ({ open, onClose, meal }) => {
     const theme = useTheme();
@@ -30,7 +31,7 @@ const MealDetailModal = ({ open, onClose, meal }) => {
             </IconButton>
 
             <DialogContent sx={{ p: 0 }}>
-                <MealDetailCard meal={meal} isModal />
+                <MealDetailCard meal={meal} isModal onClose={onClose} />
             </DialogContent>
         </Dialog>
     );
