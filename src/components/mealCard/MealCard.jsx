@@ -54,7 +54,7 @@ function MealCard({ meal, onFilter, onTitleClick  }) {
                 diets={meal.diets}
                 mealTypes={meal.mealTypes}
                 cuisines={meal.cuisines}
-                nutrients={nutrients}
+                meal={meal}
                 onFilter={handleFilter}
             />
 

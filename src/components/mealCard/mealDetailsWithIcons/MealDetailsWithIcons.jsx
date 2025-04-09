@@ -3,23 +3,15 @@ import { Typography, Box, Divider } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Flame, ChartColumnIncreasing, Dumbbell, Droplet } from "lucide-react";
 
-const MealDetailsWithIcons = ({ nutrients }) => {
+const MealDetailsWithIcons = ({ meal }) => {
     const theme = useTheme();
-    const isDarkMode = theme.palette.mode === "dark"; // Check of dark mode aanstaat
 
-    // Mapping nutrients to icons and colors
-    const nutrientConfig = {
-        "Energy kcal": { icon: <Flame size={16} color={theme.palette.primary.main}/> },
-        "Protein g": { icon: <Dumbbell size={16} color={theme.palette.primary.main} /> },
-        "Carbohydrates g": { icon: <ChartColumnIncreasing size={16} color={theme.palette.primary.main}/> },
-        "Total lipid (fat) g": { icon: <Droplet size={16} color={theme.palette.primary.main} /> },
-    };
-
-    const nutrientOrder = ["Energy kcal", "Protein g", "Carbohydrates g", "Total lipid (fat) g"];
-
-    const filteredNutrients = nutrients
-        .filter(nutrient => Object.keys(nutrientConfig).includes(nutrient.nutrientName))
-        .sort((a, b) => nutrientOrder.indexOf(a.nutrientName) - nutrientOrder.indexOf(b.nutrientName));
+    const macros = [
+        { label: "Calories", value: meal.totalCalories, icon: <Flame size={16} color={theme.palette.primary.main} /> },
+        { label: "Protein", value: meal.totalProtein, icon: <Dumbbell size={16} color={theme.palette.primary.main} /> },
+        { label: "Carbs", value: meal.totalCarbs, icon: <ChartColumnIncreasing size={16} color={theme.palette.primary.main} /> },
+        { label: "Fats", value: meal.totalFat, icon: <Droplet size={16} color={theme.palette.primary.main} /> },
+    ];
 
     return (
         <Box
@@ -34,9 +26,9 @@ const MealDetailsWithIcons = ({ nutrients }) => {
                 borderRadius: "0 0 5px 5px",
             }}
         >
-            {filteredNutrients.map((nutrient, index) => (
+            {macros.map((macro, index) => (
                 <Box
-                    key={nutrient.nutrientName}
+                    key={macro.label}
                     flexGrow={1}
                     flexBasis={0}
                     textAlign="center"
@@ -51,7 +43,7 @@ const MealDetailsWithIcons = ({ nutrients }) => {
                         position: "relative",
                     }}
                 >
-                    {nutrientConfig[nutrient.nutrientName].icon}
+                    {macro.icon}
                     <Typography
                         variant="body2"
                         sx={{
@@ -60,11 +52,10 @@ const MealDetailsWithIcons = ({ nutrients }) => {
                             fontWeight: "bold",
                         }}
                     >
-                        {nutrient.value ? nutrient.value.toFixed(0) : "N/A"}
+                        {macro.value ? Math.round(macro.value) : "N/A"}
                     </Typography>
 
-                    {/* Divider - Alleen als het NIET het laatste item is */}
-                    {index !== filteredNutrients.length - 1 && (
+                    {index !== macros.length - 1 && (
                         <Divider
                             orientation="vertical"
                             flexItem
@@ -72,13 +63,11 @@ const MealDetailsWithIcons = ({ nutrients }) => {
                                 position: "absolute",
                                 right: 0,
                                 height: "60%",
-                                borderColor: theme.palette.primary.main, // Dit werkt voor de kleur
+                                borderColor: theme.palette.primary.main,
                                 borderStyle: "solid",
                             }}
                         />
-
                     )}
-
                 </Box>
             ))}
         </Box>
@@ -86,12 +75,12 @@ const MealDetailsWithIcons = ({ nutrients }) => {
 };
 
 MealDetailsWithIcons.propTypes = {
-    nutrients: PropTypes.arrayOf(
-        PropTypes.shape({
-            nutrientName: PropTypes.string.isRequired,
-            value: PropTypes.number,
-        })
-    ).isRequired,
+    meal: PropTypes.shape({
+        totalCalories: PropTypes.number,
+        totalProtein: PropTypes.number,
+        totalCarbs: PropTypes.number,
+        totalFat: PropTypes.number,
+    }).isRequired,
 };
 
 export default MealDetailsWithIcons;
