@@ -19,6 +19,7 @@ const CreateFoodItemForm = () => {
         formState: { errors },
         watch,
         setValue,
+        reset,
     } = useForm({
         resolver: yupResolver(foodItemSchema),
         defaultValues: {
@@ -26,14 +27,24 @@ const CreateFoodItemForm = () => {
             gramWeight: 100,
             foodSource: "",
         },
+        shouldUnregister: true,
     });
 
     const onSubmit = async (data) => {
         try {
             const token = getAccessToken();
+            const formattedFoodSource = data.foodSource
+                ? ` (${data.foodSource
+                    .replaceAll("_", " ")
+                    .toLowerCase()
+                    .split(" ")
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(" ")})`
+                : "";
+            const fullName = `${data.name}${formattedFoodSource}`;
 
             const payload = {
-                name: data.name,
+                name: fullName,
                 gramWeight: parseFloat(data.gramWeight),
                 portionDescription: data.portionDescription,
                 source: data.source,
@@ -48,6 +59,17 @@ const CreateFoodItemForm = () => {
 
             const response = await createFoodItemApi(payload, token);
             setSuccessMessage(`Food item created: ${response.name || "Unknown"}`);
+            reset({
+                name: "",
+                source: "",
+                foodSource: "",
+                portionDescription: "Standard portion (100 gram)",
+                gramWeight: 100,
+                calories: "",
+                protein: "",
+                carbohydrates: "",
+                fat: "",
+            });
         } catch (error) {
             console.error("[FoodItem Creation Error]", error);
             handleApiError(error);
@@ -108,17 +130,19 @@ const CreateFoodItemForm = () => {
                 name="portionDescription"
                 error={errors.portionDescription}
                 helperText={errors.portionDescription?.message}
+                onFocus={(e) => e.target.select()}
             />
 
             <TextFieldCreateMeal
-                label="Gram Weight"
+                label="Portion Size (grams, used for '1 portion' in description)"
                 placeholder="e.g. 100"
                 register={register}
                 name="gramWeight"
                 error={errors.gramWeight}
                 helperText={errors.gramWeight?.message}
-                type="number"
+                type="text"
                 step="any"
+                onFocus={(e) => e.target.select()}
             />
 
             <FloatingLabelSelect
@@ -150,7 +174,7 @@ const CreateFoodItemForm = () => {
                 name="calories"
                 error={errors.calories}
                 helperText={errors.calories?.message}
-                type="number"
+                type="text"
                 step="any"
             />
 
@@ -160,7 +184,7 @@ const CreateFoodItemForm = () => {
                 name="protein"
                 error={errors.protein}
                 helperText={errors.protein?.message}
-                type="number"
+                type="text"
                 step="any"
             />
 
@@ -170,7 +194,7 @@ const CreateFoodItemForm = () => {
                 name="carbohydrates"
                 error={errors.carbohydrates}
                 helperText={errors.carbohydrates?.message}
-                type="number"
+                type="text"
                 step="any"
             />
 
@@ -180,7 +204,7 @@ const CreateFoodItemForm = () => {
                 name="fat"
                 error={errors.fat}
                 helperText={errors.fat?.message}
-                type="number"
+                type="text"
                 step="any"
             />
 

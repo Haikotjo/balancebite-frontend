@@ -99,15 +99,15 @@ const MealIngredients = ({ value, onChange, errors }) => {
                         onChange([...value, { foodItemId: "", quantity: 0 }]);
                     }}
                 >
-                    {value.filter((item) => item.foodItemId !== "").length < 2
-                        ? "Add two or more ingredients"
+                    {value.filter((item) => item.foodItemId !== "").length < 1
+                        ? "Add at least one ingredient"
                         : "Click to add more ingredients"}
                 </Typography>
 
                 <IconButton
                     aria-label="add ingredient"
                     color="primary"
-                    disabled={value.filter((item) => item.foodItemId !== "").length < 2}
+                    disabled={value.filter((item) => item.foodItemId !== "").length < 1}
                     onClick={() => {
                         onChange([...value, { foodItemId: "", quantity: 0 }]);
                     }}

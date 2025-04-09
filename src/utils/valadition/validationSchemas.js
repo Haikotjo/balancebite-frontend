@@ -1,4 +1,5 @@
 import * as yup from "yup";
+import {transformToNumber} from "./transforms.js";
 
 // Validation schema for Create Meal Form
 export const createMealSchema = yup.object().shape({
@@ -21,7 +22,7 @@ export const createMealSchema = yup.object().shape({
                     .min(0, "Quantity must be zero or greater."),
             })
         )
-        .min(2, "The meal must contain at least two ingredients."),
+        .min(1, "The meal must contain at least one ingredient."),
     mealDescription: yup
         .string()
         .max(1000, "The meal description must not exceed 1000 characters."),
@@ -32,45 +33,58 @@ export const createMealSchema = yup.object().shape({
         .max(500, "The image URL must not exceed 500 characters."),
 });
 
-// Validation schema for Create Food Item Form
 export const foodItemSchema = yup.object().shape({
     name: yup
         .string()
         .required("Name is required")
         .max(100, "Name must not exceed 100 characters."),
+
     source: yup
         .string()
-        .required("Source is required")
-        .max(100, "Source must not exceed 100 characters."),
+        .transform((value, originalValue) => originalValue === "" ? null : value)
+        .url("Source must be a valid URL")
+        .max(100, "Source must not exceed 100 characters.")
+        .nullable(),
+
     portionDescription: yup
         .string()
         .transform((value, originalValue) => originalValue === "" ? null : value)
-        .max(100, "Portion description must not exceed 100 characters.")
+        .max(100, "Portion description must not exceed 200 characters.")
         .nullable(),
+
     gramWeight: yup
         .number()
-        .transform((value, originalValue) => originalValue === "" ? null : value)
+        .transform(transformToNumber)
         .typeError("Gram weight must be a number")
         .positive("Gram weight must be greater than 0")
         .nullable(),
+
     calories: yup
         .number()
+        .transform(transformToNumber)
         .typeError("Calories must be a number")
         .min(0, "Calories cannot be negative")
         .required("Calories is required"),
+
     protein: yup
         .number()
+        .transform(transformToNumber)
         .typeError("Protein must be a number")
         .min(0, "Protein cannot be negative")
         .required("Protein is required"),
+
     carbohydrates: yup
         .number()
+        .transform(transformToNumber)
         .typeError("Carbohydrates must be a number")
         .min(0, "Carbohydrates cannot be negative")
         .required("Carbohydrates is required"),
+
     fat: yup
         .number()
+        .transform(transformToNumber)
         .typeError("Fat must be a number")
         .min(0, "Fat cannot be negative")
         .required("Fat is required"),
 });
+

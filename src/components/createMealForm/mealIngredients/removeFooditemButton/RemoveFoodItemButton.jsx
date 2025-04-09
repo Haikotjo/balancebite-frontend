@@ -6,8 +6,8 @@ const RemoveFoodItemButton = ({ value, index, onRemove }) => (
     <IconButton
         onClick={() => onRemove(index)}
         aria-label="remove ingredient"
-        disabled={value.length <= 2}
-        color={value.length > 2 ? "error" : "default"}
+        disabled={value.length <= 1}
+        color={value.length > 1 ? "error" : "default"}
     >
         <RemoveCircleOutlineRoundedIcon />
     </IconButton>

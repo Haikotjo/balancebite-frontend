@@ -99,7 +99,7 @@ const CreateMealForm = () => {
             <Controller
                 name="mealIngredients"
                 control={control}
-                defaultValue={[{ foodItemId: "", quantity: 0 }, { foodItemId: "", quantity: 0 }]}
+                defaultValue={[{ foodItemId: "", quantity: 0 }]}
                 render={({ field: { onChange, value } }) => (
                     <MealIngredients
                         value={value}
