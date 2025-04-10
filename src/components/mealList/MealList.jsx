@@ -1,16 +1,19 @@
 import {useContext, useEffect, useState} from "react";
-import MealCard from "../mealCard/MealCard.jsx";
+
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { UserMealsContext } from "../../context/UserMealsContext.jsx";
 import PropTypes from "prop-types";
 import MealModal from "../mealModal/MealModal.jsx";
 import { useLocation } from "react-router-dom";
+import MealDetailCard from "../mealCardLarge/MealDetailCard.jsx";
 
 function MealList({ filters, sortBy, onFiltersChange }) {
     const { meals, loading, error, userMeals, setFilters, setSortBy } = useContext(UserMealsContext);
 
     const [selectedMeal, setSelectedMeal] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
+
+
 
     const handleTitleClick = (meal) => {
         setSelectedMeal(meal);
@@ -94,12 +97,12 @@ function MealList({ filters, sortBy, onFiltersChange }) {
                     const mealToRender = userMealMatch || meal;
 
                     return (
-                        <MealCard
+                        <MealDetailCard
                             key={mealToRender.id}
                             meal={mealToRender}
-                            onFilter={handleFilter}
-                            onSort={handleSort}
-                            onTitleClick={handleTitleClick}
+                            onClick={() => handleTitleClick(mealToRender)}
+                            isModal={false}
+                            isListItem={true}
                         />
                     );
                 })}

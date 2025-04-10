@@ -19,6 +19,8 @@ export default {
         darkText: "#ffffff",
         lightBackground: "#FFFFFF",
         darkBackground: "#2d2f39",
+        cardLight: "#e1e1e1",
+        cardDark: "#191e23",
       },
       fontFamily: {
         sans: ["Nunito", "sans-serif"],

@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import {
-    Card,
     CardContent,
     Typography,
     Box,
@@ -20,25 +19,24 @@ import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import ExpandableDescription from "../expandableDescription/ExpandableDescription.jsx";
 import MealInfoOverlay from "../mealInfoOverlay/MealInfoOverlay.jsx";
 import MealTags from "../mealTags/MealTags.jsx";
-import {useNavigate} from "react-router-dom";
-import {useContext} from "react";
-import {UserMealsContext} from "../../context/UserMealsContext.jsx";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { UserMealsContext } from "../../context/UserMealsContext.jsx";
 import ExpandableTitle from "../expandableTitle/ExpandableTitle.jsx";
 import PreparationTimeIcon from "../preparationTimeIcon/PreparationTimeIcon.jsx";
 import MealCardMacrosSection from "../MealCardMacrosSection/MeaCardlMacrosSection.jsx";
-import {buildMacrosObject} from "../../utils/helpers/buildMacrosObject.js";
+import { buildMacrosObject } from "../../utils/helpers/buildMacrosObject.js";
+import CustomCard from "../customCard/CustomCard.jsx";
 
-const MealDetailCard = ({ meal, isModal = false, onClose }) => {
+const MealDetailCard = ({ meal, isModal = false, onClose, isListItem = false }) => {
     const { userMeals } = useContext(UserMealsContext);
     const userMealMatch = userMeals.find(m => String(m.originalMealId) === String(meal.id));
     const mealToRender = userMealMatch || meal;
     const showUpdateButton = userMeals.some((m) => m.id === meal.id);
 
     const theme = useTheme();
-
     const imageSrc = getImageSrc(mealToRender);
     const navigate = useNavigate();
-
 
     const categoryMap = {
         mealTypes: "mealTypes",
@@ -58,20 +56,17 @@ const MealDetailCard = ({ meal, isModal = false, onClose }) => {
     const calculatedMacros = calculateMacrosPer100g(mealToRender);
     const macros = buildMacrosObject(meal, calculatedMacros);
 
-
     return (
-        <Card
-            sx={{
+        <CustomCard
+            style={{
                 display: "flex",
-                flexDirection: { xs: "column", md: "row-reverse" },
-                width: isModal ? "100%" : { xs: "90vw", md: "80vw" },
-                maxWidth: isModal ? "100%" : "1000px",
+                flexDirection: isListItem ? "column" : "row",
+                width: "100%",
+                maxWidth: isModal ? "100%" : undefined,
+                boxSizing: "border-box",
                 height: isModal ? "100%" : "auto",
-                boxShadow: 3,
-                borderRadius: 3,
-                overflow: "hidden",
                 margin: isModal ? 0 : "auto",
-                mt: isModal ? 0 : { xs: 2, md: 4 },
+                marginTop: isModal ? 0 : "1rem",
             }}
         >
             {/* Image Section */}
@@ -86,7 +81,7 @@ const MealDetailCard = ({ meal, isModal = false, onClose }) => {
                     justifyContent: "flex-start"
                 }}
             >
-                <Box sx={{ height: { xs: 200, md: 400 }, position: "relative", boxShadow: "8px 8px 12px rgba(0, 0, 0, 0.8)",}}>
+                <Box sx={{ height: { xs: 200, md: 400 }, position: "relative", boxShadow: "8px 8px 12px rgba(0, 0, 0, 0.8)" }}>
                     <CardMedia
                         component="img"
                         image={imageSrc}
@@ -104,11 +99,15 @@ const MealDetailCard = ({ meal, isModal = false, onClose }) => {
                             <PreparationTimeIcon preparationTime={mealToRender.preparationTime} />
                         </Box>
                     )}
-                    <MealCardActionButtons meal={mealToRender} showOpenMealButton={false}    showUpdateButton={showUpdateButton}/>
+                    <MealCardActionButtons
+                        meal={mealToRender}
+                        showOpenMealButton={false}
+                        showUpdateButton={showUpdateButton}
+                    />
                 </Box>
 
                 {/* MealTags onderaan de image op md+ */}
-                <Box sx={{ display: { xs: "none", md: "flex" }, px: 2, py: 1, mt:2 }}>
+                <Box sx={{ display: { xs: "none", md: "flex" }, px: 2, py: 1, mt: 2 }}>
                     <MealTags
                         cuisines={mealToRender.cuisines}
                         diets={mealToRender.diets}
@@ -119,11 +118,9 @@ const MealDetailCard = ({ meal, isModal = false, onClose }) => {
                 </Box>
             </Box>
 
-
             {/* Details Section */}
             <Box sx={{ flex: 1, display: "flex", flexDirection: "column", padding: 2 }}>
                 <CardContent>
-                    {/*// MealTags met navigatie*/}
                     <Box sx={{ display: { xs: "flex", md: "none" } }}>
                         <MealTags
                             cuisines={mealToRender.cuisines}
@@ -133,28 +130,23 @@ const MealDetailCard = ({ meal, isModal = false, onClose }) => {
                         />
                     </Box>
 
-
-                    {/* Meal Title & Description */}
                     <ExpandableTitle title={mealToRender.name} />
-
                     <Divider sx={{ width: "100%", my: 2, borderColor: theme.palette.primary.main }} />
 
                     <ExpandableDescription description={mealToRender.mealDescription} />
-
-                    {/* Macros Section */}
                     <Divider sx={{ width: "100%", my: 2, borderColor: theme.palette.primary.main }} />
+
                     <MealCardMacrosSection macros={macros} />
-
-                    {/* Ingredients Section */}
                     <Divider sx={{ width: "100%", my: 2, borderColor: theme.palette.primary.main }} />
-                    <Typography variant="h6" gutterBottom >
+
+                    <Typography variant="h6" gutterBottom>
                         Ingredients:
                     </Typography>
                     <List sx={{ padding: 0 }}>
                         {mealToRender.mealIngredients?.map((ingredient) => (
                             <ListItem key={ingredient.id} sx={{ py: 0.3 }}>
                                 <ListItemIcon sx={{ minWidth: "24px" }}>
-                                    <FiberManualRecordIcon sx={{ fontSize: "0.6rem", color: theme.palette.primary.main}} />
+                                    <FiberManualRecordIcon sx={{ fontSize: "0.6rem", color: theme.palette.primary.main }} />
                                 </ListItemIcon>
                                 <ListItemText
                                     primary={
@@ -168,7 +160,7 @@ const MealDetailCard = ({ meal, isModal = false, onClose }) => {
                     </List>
                 </CardContent>
             </Box>
-        </Card>
+        </CustomCard>
     );
 };
 
@@ -176,6 +168,7 @@ MealDetailCard.propTypes = {
     meal: PropTypes.object.isRequired,
     isModal: PropTypes.bool,
     onClose: PropTypes.func,
+    isListItem: PropTypes.bool,
 };
 
 export default MealDetailCard;
