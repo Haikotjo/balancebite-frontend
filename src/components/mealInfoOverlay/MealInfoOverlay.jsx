@@ -12,6 +12,7 @@ import { Typography, Box } from "@mui/material";
  * @returns {JSX.Element} An overlay with meal creator and user count.
  */
 const MealInfoOverlay = ({ meal, fontSize = "0.6rem" }) => {
+    console.log("MealInfoOverlay meal:", meal);
     return (
         <Box
             sx={{
@@ -37,15 +38,17 @@ const MealInfoOverlay = ({ meal, fontSize = "0.6rem" }) => {
             >
                 {`Created By: ${meal.createdBy?.userName}`}
             </Typography>
-            <Typography
-                variant="body2"
-                sx={{
-                    fontFamily: "'Quicksand', sans-serif",
-                    fontSize: fontSize,
-                }}
-            >
-                {`Added by ${meal.userCount} user${meal.userCount === 1 ? "" : "s"}`}
-            </Typography>
+            {meal.isTemplate === true && (
+                <Typography
+                    variant="body2"
+                    sx={{
+                        fontFamily: "'Quicksand', sans-serif",
+                        fontSize: fontSize,
+                    }}
+                >
+                    {`Added by ${meal.userCount} user${meal.userCount === 1 ? "" : "s"}`}
+                </Typography>
+            )}
         </Box>
     );
 };
@@ -57,8 +60,10 @@ MealInfoOverlay.propTypes = {
             userName: PropTypes.string,
         }),
         userCount: PropTypes.number,
+        isTemplate: PropTypes.bool,
     }).isRequired,
-    fontSize: PropTypes.string, // ✅ Nieuwe prop om de fontgrootte aan te passen
+    fontSize: PropTypes.string,
 };
+
 
 export default MealInfoOverlay;

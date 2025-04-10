@@ -26,14 +26,13 @@ const customSelectStyles = (theme) => {
             border: `1px solid ${theme.palette.primary.main}`,
         }),
 
-
-
         option: (base, state) => ({
             ...base,
+            fontSize: "0.85rem",
             backgroundColor: state.isSelected
                 ? theme.palette.primary.main
                 : state.isFocused
-                    ? theme.palette.primary.light
+                    ? theme.palette.primary.main
                     : isDarkMode ? '#2d2f39' : '#FFFFFF',
             color: (state.isSelected || state.isFocused)
                 ? theme.palette.text.light
@@ -45,7 +44,7 @@ const customSelectStyles = (theme) => {
 
         multiValue: (base) => ({
             ...base,
-            backgroundColor: theme.palette.primary.light,
+            backgroundColor: theme.palette.primary.main,
         }),
         multiValueLabel: (base) => ({
             ...base,

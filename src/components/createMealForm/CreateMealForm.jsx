@@ -1,4 +1,4 @@
-import { Box, Button, Typography, Alert } from "@mui/material";
+import {Box, Button, Typography, Alert, MenuItem, TextField} from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,7 @@ import { UserMealsContext } from "../../context/UserMealsContext";
 import MealImageUploader from "./mealImageUploader/MealImageUploader.jsx";
 import MealIngredients from "./mealIngredients/MealIngredients.jsx";
 import TextFieldCreateMeal from "../textFieldCreateMeal/TextFieldCreateMeal.jsx";
-import MealDropdowns from "./MealDropdowns.jsx";
+import CreateMealDropdowns from "../createMealDropdowns/MealDropdowns.jsx";
 
 /**
  * Component for creating a new meal.
@@ -121,7 +121,7 @@ const CreateMealForm = () => {
             />
 
             {/* Select dropdowns for meal type, cuisine, and diet */}
-            <MealDropdowns control={control} errors={errors} />
+            <CreateMealDropdowns control={control} errors={errors} />
 
             {/* Image uploader/capture/url handler */}
             <MealImageUploader

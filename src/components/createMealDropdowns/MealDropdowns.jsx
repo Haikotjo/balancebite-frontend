@@ -2,8 +2,9 @@ import { Controller } from "react-hook-form";
 import PropTypes from "prop-types";
 import Select from "react-select";
 import { useTheme } from "@mui/material/styles";
-import { cuisinesOptions, dietsOptions, mealTypesOptions } from "./dropdownOptionsMeals.js";
+import { cuisinesOptions, dietsOptions, mealTypesOptions } from "../createMealForm/dropdownOptionsMeals.js";
 import customSelectStyles from "../../styles/customSelectStyles.js";
+import {preparationTimeOptions} from "../../utils/helpers/dropdownOptionsMeals.js";
 
 /**
  * Component that renders meal dropdowns for meal types, cuisines, and diets.
@@ -11,9 +12,9 @@ import customSelectStyles from "../../styles/customSelectStyles.js";
  * @param {Object} props - The component props.
  * @param {Object} props.control - The react-hook-form control object.
  * @param {Object} props.errors - The form errors.
- * @returns {JSX.Element} The rendered MealDropdowns component.
+ * @returns {JSX.Element} The rendered CreateMealDropdowns component.
  */
-const MealDropdowns = ({ control, errors }) => {
+const CreateMealDropdowns = ({ control, errors }) => {
     const theme = useTheme();
 
     /**
@@ -23,9 +24,11 @@ const MealDropdowns = ({ control, errors }) => {
      * @param {string} label - The label to display (in singular form).
      * @param {Array} options - The array of options for the select.
      * @param {Object} error - The error object for the field.
+     * @param isMulti
      * @returns {JSX.Element} The rendered select component.
      */
-    const renderSelect = (name, label, options, error) => (
+    const renderSelect = (name, label, options, error, isMulti = true) => (
+
         <Controller
             name={name}
             control={control}
@@ -53,14 +56,18 @@ const MealDropdowns = ({ control, errors }) => {
                         {/* React-select component */}
                         <Select
                             {...field}
-                            isMulti
+                            isMulti={isMulti}
                             options={options.map(opt => ({ value: opt.value, label: opt.label }))}
                             // Overschrijf de standaard placeholder door een lege string te gebruiken
                             placeholder=""
-                            closeMenuOnSelect={false}
+                            closeMenuOnSelect={!isMulti}
                             hideSelectedOptions={false}
                             onChange={(selectedOptions) =>
-                                field.onChange(selectedOptions.map((opt) => opt.value))
+                                field.onChange(
+                                    isMulti
+                                        ? selectedOptions.map((opt) => opt.value)
+                                        : selectedOptions?.value || ""
+                                )
                             }
                             value={options
                                 .filter((opt) => field.value?.includes(opt.value))
@@ -82,14 +89,25 @@ const MealDropdowns = ({ control, errors }) => {
 
     return (
         <>
-            {renderSelect("mealTypes", "Meal Types", mealTypesOptions, errors?.mealTypes)}
-            {renderSelect("cuisines", "Cuisines", cuisinesOptions, errors?.cuisines)}
-            {renderSelect("diets", "Diets", dietsOptions, errors?.diets)}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
+                <div style={{ flex: "1 1 250px", minWidth: "250px" }}>
+                    {renderSelect("preparationTime", "Preparation Time", preparationTimeOptions, errors?.preparationTime, false)}
+                </div>
+                <div style={{ flex: "1 1 250px", minWidth: "250px" }}>
+                    {renderSelect("mealTypes", "Meal Types", mealTypesOptions, errors?.mealTypes)}
+                </div>
+                <div style={{ flex: "1 1 250px", minWidth: "250px" }}>
+                    {renderSelect("cuisines", "Cuisines", cuisinesOptions, errors?.cuisines)}
+                </div>
+                <div style={{ flex: "1 1 250px", minWidth: "250px" }}>
+                    {renderSelect("diets", "Diets", dietsOptions, errors?.diets)}
+                </div>
+            </div>
         </>
     );
 };
 
-MealDropdowns.propTypes = {
+CreateMealDropdowns.propTypes = {
     control: PropTypes.shape({
         register: PropTypes.func,
         unregister: PropTypes.func,
@@ -101,7 +119,8 @@ MealDropdowns.propTypes = {
         mealTypes: PropTypes.shape({ message: PropTypes.string }),
         cuisines: PropTypes.shape({ message: PropTypes.string }),
         diets: PropTypes.shape({ message: PropTypes.string }),
+        preparationTime: PropTypes.shape({ message: PropTypes.string }), // ← voeg dit toe
     }),
 };
 
-export default MealDropdowns;
+export default CreateMealDropdowns;

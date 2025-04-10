@@ -26,6 +26,11 @@ export const createMealSchema = yup.object().shape({
     mealDescription: yup
         .string()
         .max(1000, "The meal description must not exceed 1000 characters."),
+    preparationTime: yup
+        .string()
+        .nullable()
+        .matches(/^PT(\d+H)?(\d+M)?(\d+S)?$/, "Invalid duration format (e.g. PT30M or PT1H30M)")
+        .notRequired(),
     image: yup.mixed(),
     imageUrl: yup
         .string()

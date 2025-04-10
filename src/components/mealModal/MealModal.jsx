@@ -1,13 +1,9 @@
 import { Dialog, DialogContent, IconButton } from "@mui/material";
 import PropTypes from "prop-types";
-import MealCardLarge from "../mealCardLarge/MealDetailCard.jsx";
-import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
-import { useTheme } from "@mui/material/styles";
 import { Minimize2 } from 'lucide-react';
 import MealDetailCard from "../mealCardLarge/MealDetailCard.jsx";
 
 const MealDetailModal = ({ open, onClose, meal }) => {
-    const theme = useTheme();
 
     return (
         <Dialog
@@ -24,7 +20,6 @@ const MealDetailModal = ({ open, onClose, meal }) => {
                 <Minimize2
                     size={20}
                     style={{
-                        // color: "#4D5061",
                         filter: "drop-shadow(0 0 3px rgba(0, 0, 0, 0.5))",
                     }}
                 />

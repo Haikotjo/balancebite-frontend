@@ -15,7 +15,7 @@ import { useMealFormData } from "../../hooks/useMealFormData.js";
 import TextFieldCreateMeal from "../textFieldCreateMeal/TextFieldCreateMeal.jsx";
 import MealIngredients from "../createMealForm/mealIngredients/MealIngredients.jsx";
 import MealImageUploader from "../createMealForm/mealImageUploader/MealImageUploader.jsx";
-import MealDropdowns from "../createMealForm/MealDropdowns.jsx";
+import CreateMealDropdowns from "../createMealDropdowns/MealDropdowns.jsx";
 
 /**
  * Form component for updating an existing meal.
@@ -118,7 +118,7 @@ const UpdateMealForm = () => {
                 rows={4}
             />
 
-            <MealDropdowns control={control} errors={errors} />
+            <CreateMealDropdowns control={control} errors={errors} />
 
             <MealImageUploader
                 imageUrl={imageUrl}
