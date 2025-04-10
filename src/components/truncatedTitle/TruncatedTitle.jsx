@@ -39,7 +39,7 @@ const TruncatedTitle = ({ title, mealId, onClick }) => {
                     textOverflow: "ellipsis", // Adds "..." when truncated
                     maxWidth: "100%", // Ensures ellipsis works properly
                     "&:hover": {
-                        color: "primary.light",
+                        color: "text.primary",
                         textDecoration: "underline",
                     },
                 }}

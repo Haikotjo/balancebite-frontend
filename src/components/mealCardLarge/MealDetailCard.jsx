@@ -33,13 +33,10 @@ const MealDetailCard = ({ meal, isModal = false, onClose }) => {
     const showUpdateButton = userMeals.some((m) => m.id === meal.id);
 
     const theme = useTheme();
-    const isMedium = useMediaQuery(theme.breakpoints.up("md"));
     const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
 
     const imageSrc = getImageSrc(mealToRender);
     const calculatedMacros = calculateMacrosPer100g(mealToRender);
-    const userMealsContext = useContext(UserMealsContext);
-    const setFilters = userMealsContext?.setFilters || (() => {});
     const navigate = useNavigate();
 
 

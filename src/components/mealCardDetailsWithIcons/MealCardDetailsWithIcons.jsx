@@ -3,7 +3,7 @@ import { Typography, Box, Divider } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Flame, ChartColumnIncreasing, Dumbbell, Droplet } from "lucide-react";
 
-const MealDetailsWithIcons = ({ meal }) => {
+const MealCardDetailsWithIcons = ({ meal }) => {
     const theme = useTheme();
 
     const macros = [
@@ -74,7 +74,7 @@ const MealDetailsWithIcons = ({ meal }) => {
     );
 };
 
-MealDetailsWithIcons.propTypes = {
+MealCardDetailsWithIcons.propTypes = {
     meal: PropTypes.shape({
         totalCalories: PropTypes.number,
         totalProtein: PropTypes.number,
@@ -83,4 +83,4 @@ MealDetailsWithIcons.propTypes = {
     }).isRequired,
 };
 
-export default MealDetailsWithIcons;
+export default MealCardDetailsWithIcons;

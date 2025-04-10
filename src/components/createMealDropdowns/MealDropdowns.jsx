@@ -58,7 +58,6 @@ const CreateMealDropdowns = ({ control, errors }) => {
                             {...field}
                             isMulti={isMulti}
                             options={options.map(opt => ({ value: opt.value, label: opt.label }))}
-                            // Overschrijf de standaard placeholder door een lege string te gebruiken
                             placeholder=""
                             closeMenuOnSelect={!isMulti}
                             hideSelectedOptions={false}

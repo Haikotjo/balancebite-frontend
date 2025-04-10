@@ -6,7 +6,7 @@ import RemoveFoodItemButton from "./removeFooditemButton/RemoveFoodItemButton.js
 import FloatingLabelSelectIngredient from "../../floatingLabelSelect/FloatingLabelSelectIngredient.jsx";
 import FloatingLabelQuantityField from "../../floatingLabelQuantityField/FloatingLabelQuantityField.jsx";
 
-const MealIngredients = ({ value, onChange, errors }) => {
+const MealIngredients = ({ value, onChange }) => {
     const { options } = useFoodItems();
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));

@@ -5,11 +5,9 @@ import {
     CardMedia,
     Box,
 } from "@mui/material";
-import useNutrients from "../../hooks/useNutrients.js";
-import useExpand from "../../hooks/useExpand";
 import { getImageSrc } from "../../utils/helpers/getImageSrc.js";
 import MealCardActionButtons from "../mealCardActionButtons/MealCardActionButtons.jsx";
-import MealDetailsWithIcons from "./mealDetailsWithIcons/MealDetailsWithIcons.jsx";
+import MealCardDetailsWithIcons from "../mealCardDetailsWithIcons/MealCardDetailsWithIcons.jsx";
 import ExpandableDescription from "../expandableDescription/ExpandableDescription.jsx";
 import TruncatedTitle from "../truncatedTitle/TruncatedTitle.jsx";
 import MealInfoOverlay from "../mealInfoOverlay/MealInfoOverlay.jsx";
@@ -19,8 +17,6 @@ import { UserMealsContext } from "../../context/UserMealsContext";
 import {useContext} from "react";
 
 function MealCard({ meal, onFilter, onTitleClick  }) {
-    const { expanded, toggleExpand } = useExpand();
-    const { nutrients } = useNutrients(meal.id);
     const imageSrc = getImageSrc(meal);
     const { userMeals } = useContext(UserMealsContext);
 
@@ -50,7 +46,7 @@ function MealCard({ meal, onFilter, onTitleClick  }) {
                 />
             </Box>
 
-            <MealDetailsWithIcons
+            <MealCardDetailsWithIcons
                 diets={meal.diets}
                 mealTypes={meal.mealTypes}
                 cuisines={meal.cuisines}
