@@ -13,6 +13,7 @@ export const buildMealFormData = async (data, capturedImage, uploadedImage, imag
         mealTypes: data.mealTypes || null,
         cuisines: data.cuisines || null,
         diets: data.diets || null,
+        preparationTime: data.preparationTime || null,
     };
 
     console.log("MealInputDTO before adding files:", mealInputDTO);

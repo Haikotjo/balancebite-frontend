@@ -12,7 +12,6 @@ import { Typography, Box } from "@mui/material";
  * @returns {JSX.Element} An overlay with meal creator and user count.
  */
 const MealInfoOverlay = ({ meal, fontSize = "0.6rem" }) => {
-    console.log("MealInfoOverlay meal:", meal);
     return (
         <Box
             sx={{

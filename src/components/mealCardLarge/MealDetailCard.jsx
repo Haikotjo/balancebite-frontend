@@ -11,9 +11,8 @@ import {
     ListItemText,
     Divider,
     useMediaQuery,
-    useTheme, Grid,
+    useTheme,
 } from "@mui/material";
-import { Flame, ChartColumnIncreasing, Dumbbell, Droplet } from "lucide-react";
 import MealCardActionButtons from "../mealCardActionButtons/MealCardActionButtons.jsx";
 import { getImageSrc } from "../../utils/helpers/getImageSrc.js";
 import { calculateMacrosPer100g } from "../../utils/helpers/calculateMacrosPer100g.js";
@@ -25,6 +24,9 @@ import {useNavigate} from "react-router-dom";
 import {useContext} from "react";
 import {UserMealsContext} from "../../context/UserMealsContext.jsx";
 import ExpandableTitle from "../expandableTitle/ExpandableTitle.jsx";
+import PreparationTimeIcon from "../preparationTimeIcon/PreparationTimeIcon.jsx";
+import MealCardMacrosSection from "../MealCardMacrosSection/MeaCardlMacrosSection.jsx";
+import {buildMacrosObject} from "../../utils/helpers/buildMacrosObject.js";
 
 const MealDetailCard = ({ meal, isModal = false, onClose }) => {
     const { userMeals } = useContext(UserMealsContext);
@@ -33,10 +35,8 @@ const MealDetailCard = ({ meal, isModal = false, onClose }) => {
     const showUpdateButton = userMeals.some((m) => m.id === meal.id);
 
     const theme = useTheme();
-    const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
 
     const imageSrc = getImageSrc(mealToRender);
-    const calculatedMacros = calculateMacrosPer100g(mealToRender);
     const navigate = useNavigate();
 
 
@@ -55,28 +55,8 @@ const MealDetailCard = ({ meal, isModal = false, onClose }) => {
         navigate(`/meals?${mapped}=${value}`);
     };
 
-    const macros = {
-        Calories: {
-            total: Math.round(meal.totalCalories),
-            per100g: Math.round(calculatedMacros.caloriesPer100g),
-            unit: "kcal",
-        },
-        Protein: {
-            total: Math.round(meal.totalProtein),
-            per100g: Math.round(calculatedMacros.proteinPer100g),
-            unit: "g",
-        },
-        Carbs: {
-            total: Math.round(meal.totalCarbs),
-            per100g: Math.round(calculatedMacros.carbsPer100g),
-            unit: "g",
-        },
-        Fats: {
-            total: Math.round(meal.totalFat),
-            per100g: Math.round(calculatedMacros.fatsPer100g),
-            unit: "g",
-        },
-    };
+    const calculatedMacros = calculateMacrosPer100g(mealToRender);
+    const macros = buildMacrosObject(meal, calculatedMacros);
 
 
     return (
@@ -119,6 +99,11 @@ const MealDetailCard = ({ meal, isModal = false, onClose }) => {
                         }}
                     />
                     <MealInfoOverlay meal={mealToRender} fontSize="0.8rem" />
+                    {mealToRender.preparationTime && (
+                        <Box sx={{ position: "absolute", top: 15, left: 10 }}>
+                            <PreparationTimeIcon preparationTime={mealToRender.preparationTime} />
+                        </Box>
+                    )}
                     <MealCardActionButtons meal={mealToRender} showOpenMealButton={false}    showUpdateButton={showUpdateButton}/>
                 </Box>
 
@@ -158,40 +143,7 @@ const MealDetailCard = ({ meal, isModal = false, onClose }) => {
 
                     {/* Macros Section */}
                     <Divider sx={{ width: "100%", my: 2, borderColor: theme.palette.primary.main }} />
-                    <Grid container spacing={2} marginTop={2} marginBottom={3}>
-                        {Object.entries(macros).map(([key, macro]) => (
-                            <Grid item xs={12} sm={6} key={key}>
-                                <Box display="flex" alignItems="flex-start" gap={1}>
-                                    <Box sx={{ marginTop: "2px" }}>
-                                        <Box sx={{ marginTop: "2px" }}>
-                                            {key === "Calories" && <Flame size={isSmall ? 20 : 30} color={theme.palette.error.main} />}
-                                            {key === "Protein" && <Dumbbell size={isSmall ? 20 : 30} color={theme.palette.primary.main} />}
-                                            {key === "Carbs" && <ChartColumnIncreasing size={isSmall ? 20 : 30} color={theme.palette.success.light} />}
-                                            {key === "Fats" && <Droplet size={isSmall ? 20 : 30} color={theme.palette.secondary.main} />}
-                                        </Box>
-
-                                    </Box>
-                                    <Box>
-                                        <Typography
-                                            variant="body1"
-                                            sx={{ fontSize: { xs: "0.9rem", md: "1.1rem" }, fontWeight: 500 }}
-                                        >
-                                            {key === "Calories"
-                                                ? `${key}: ${macro.total}`
-                                                : `${key}: ${macro.total} ${macro.unit}`}
-                                        </Typography>
-                                        <Typography
-                                            variant="body2"
-                                            color="text.secondary"
-                                            sx={{ fontSize: { xs: "0.75rem", md: "0.95rem" } }}
-                                        >
-                                            {`(${macro.per100g} per 100g)`}
-                                        </Typography>
-                                    </Box>
-                                </Box>
-                            </Grid>
-                        ))}
-                    </Grid>
+                    <MealCardMacrosSection macros={macros} />
 
                     {/* Ingredients Section */}
                     <Divider sx={{ width: "100%", my: 2, borderColor: theme.palette.primary.main }} />

@@ -6,6 +6,7 @@ import EatButton from "../eatButton/EatButton.jsx";
 import FavoriteButton from "../favoriteButton/FavoriteButton.jsx";
 import OpenMealButton from "../openMealButton/OpenMealButton.jsx";
 import UpdateMealButton from "../updateMealButton/UpdateMealButton.jsx";
+import PreparationTimeIcon from "../preparationTimeIcon/PreparationTimeIcon.jsx";
 
 const MealCardActionButtons = ({
                                    meal,
@@ -62,6 +63,8 @@ const MealCardActionButtons = ({
                     <UpdateMealButton mealId={meal.id} />
                 </Box>
             )}
+
+
         </Box>
     );
 };
