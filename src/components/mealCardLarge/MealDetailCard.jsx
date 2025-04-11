@@ -2,14 +2,10 @@ import PropTypes from "prop-types";
 import {
     CardContent,
     Typography,
-    Box,
-    CardMedia,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
-    Divider,
-    useMediaQuery,
     useTheme,
 } from "@mui/material";
 import MealCardActionButtons from "../mealCardActionButtons/MealCardActionButtons.jsx";
@@ -20,19 +16,26 @@ import ExpandableDescription from "../expandableDescription/ExpandableDescriptio
 import MealInfoOverlay from "../mealInfoOverlay/MealInfoOverlay.jsx";
 import MealTags from "../mealTags/MealTags.jsx";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import {useContext, useState} from "react";
 import { UserMealsContext } from "../../context/UserMealsContext.jsx";
 import ExpandableTitle from "../expandableTitle/ExpandableTitle.jsx";
 import PreparationTimeIcon from "../preparationTimeIcon/PreparationTimeIcon.jsx";
 import MealCardMacrosSection from "../MealCardMacrosSection/MeaCardlMacrosSection.jsx";
 import { buildMacrosObject } from "../../utils/helpers/buildMacrosObject.js";
 import CustomCard from "../customCard/CustomCard.jsx";
+import CustomBox from "../layout/CustomBox.jsx";
+import clsx from "clsx";
+import CustomImage from "../layout/CustomImage.jsx";
+import { Flame, ChartColumnIncreasing, Dumbbell, Droplet } from "lucide-react";
+import CustomDivider from "../layout/CustomDivider.jsx";
+import { ChevronUp, ChevronDown } from "lucide-react";
 
-const MealDetailCard = ({ meal, isModal = false, onClose, isListItem = false }) => {
+const MealDetailCard = ({ meal, isModal = false, onClose, isListItem = false, onOpenAsModal }) => {
     const { userMeals } = useContext(UserMealsContext);
     const userMealMatch = userMeals.find(m => String(m.originalMealId) === String(meal.id));
     const mealToRender = userMealMatch || meal;
     const showUpdateButton = userMeals.some((m) => m.id === meal.id);
+    const [showMacros, setShowMacros] = useState(!isListItem);
 
     const theme = useTheme();
     const imageSrc = getImageSrc(mealToRender);
@@ -58,56 +61,40 @@ const MealDetailCard = ({ meal, isModal = false, onClose, isListItem = false }) 
 
     return (
         <CustomCard
-            style={{
-                display: "flex",
-                flexDirection: isListItem ? "column" : "row",
-                width: "100%",
-                maxWidth: isModal ? "100%" : undefined,
-                boxSizing: "border-box",
-                height: isModal ? "100%" : "auto",
-                margin: isModal ? 0 : "auto",
-                marginTop: isModal ? 0 : "1rem",
-            }}
+            className={clsx(
+                "flex w-full box-border",
+                isListItem ? "flex-col" : "flex-row",
+                isModal ? "max-w-full h-full m-0 mt-0" : "max-w-[1000px] h-auto mx-auto mt-4"
+            )}
         >
-            {/* Image Section */}
-            <Box
-                sx={{
-                    position: "relative",
-                    width: { xs: "100%", md: "50%" },
-                    height: { xs: 200, md: "auto" },
-                    flexShrink: 0,
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "flex-start"
-                }}
-            >
-                <Box sx={{ height: { xs: 200, md: 400 }, position: "relative", boxShadow: "8px 8px 12px rgba(0, 0, 0, 0.8)" }}>
-                    <CardMedia
-                        component="img"
-                        image={imageSrc}
+
+        {/* Image Section */}
+            <CustomBox className={clsx(
+                "relative w-full flex flex-col justify-start shrink-0",
+                !isListItem && "md:w-1/2"
+            )}>
+                <CustomBox className="relative aspect-[4/3] w-full shadow-[8px_8px_12px_rgba(0,0,0,0.8)] overflow-hidden rounded-md">
+                    <CustomImage
+                        src={imageSrc}
                         alt={mealToRender.name}
-                        sx={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                            borderRadius: 2,
-                        }}
+                        className="rounded-md"
                     />
                     <MealInfoOverlay meal={mealToRender} fontSize="0.8rem" />
                     {mealToRender.preparationTime && (
-                        <Box sx={{ position: "absolute", top: 15, left: 10 }}>
+                        <CustomBox className="absolute top-[15px] left-[10px]">
                             <PreparationTimeIcon preparationTime={mealToRender.preparationTime} />
-                        </Box>
+                        </CustomBox>
                     )}
                     <MealCardActionButtons
                         meal={mealToRender}
-                        showOpenMealButton={false}
+                        showOpenMealButton={isListItem}
                         showUpdateButton={showUpdateButton}
+                        onOpenAsModal={onOpenAsModal}
                     />
-                </Box>
+                </CustomBox>
 
                 {/* MealTags onderaan de image op md+ */}
-                <Box sx={{ display: { xs: "none", md: "flex" }, px: 2, py: 1, mt: 2 }}>
+                <CustomBox className="hidden md:flex px-2 py-1 mt-2">
                     <MealTags
                         cuisines={mealToRender.cuisines}
                         diets={mealToRender.diets}
@@ -115,31 +102,66 @@ const MealDetailCard = ({ meal, isModal = false, onClose, isListItem = false }) 
                         onFilter={handleFilterRedirect}
                         forceExpand
                     />
-                </Box>
-            </Box>
+                </CustomBox>
+            </CustomBox>
 
             {/* Details Section */}
-            <Box sx={{ flex: 1, display: "flex", flexDirection: "column", padding: 2 }}>
-                <CardContent>
-                    <Box sx={{ display: { xs: "flex", md: "none" } }}>
+            <CustomBox className="flex flex-col flex-1 p-2">
+            <CardContent>
+                    <CustomBox className="flex md:hidden">
                         <MealTags
                             cuisines={mealToRender.cuisines}
                             diets={mealToRender.diets}
                             mealTypes={mealToRender.mealTypes}
                             onFilter={handleFilterRedirect}
                         />
-                    </Box>
+                    </CustomBox>
 
                     <ExpandableTitle title={mealToRender.name} />
-                    <Divider sx={{ width: "100%", my: 2, borderColor: theme.palette.primary.main }} />
+                <CustomDivider className="my-6" />
 
+                <CustomBox className="mb-6">
                     <ExpandableDescription description={mealToRender.mealDescription} />
-                    <Divider sx={{ width: "100%", my: 2, borderColor: theme.palette.primary.main }} />
+                    <CustomDivider className="my-6" />
+                </CustomBox>
 
-                    <MealCardMacrosSection macros={macros} />
-                    <Divider sx={{ width: "100%", my: 2, borderColor: theme.palette.primary.main }} />
+                {isListItem && (
+                    <CustomBox
+                        onClick={() => setShowMacros(prev => !prev)}
+                        className={clsx(
+                            "my-4 rounded-md p-3 cursor-pointer transition-all duration-300",
+                            "bg-lightBackground dark:bg-darkBackground",
+                            "shadow-md border border-borderLight dark:border-borderDark"
+                        )}
+                    >
+                        {!showMacros && (
+                            <div className="flex justify-between items-center">
+                                <div className="flex items-center gap-1">
+                                    <Flame size={16} className="text-error" />
+                                    <Dumbbell size={16} className="text-primary" />
+                                    <ChartColumnIncreasing size={16} className="text-success" />
+                                    <Droplet size={16} className="text-secondary" />
+                                    <span className="text-sm">Nutrition</span>
+                                </div>
+                                <ChevronDown size={18} />
+                            </div>
+                        )}
 
-                    <Typography variant="h6" gutterBottom>
+                        {showMacros && (
+                            <>
+                                <MealCardMacrosSection macros={macros} />
+                                <div className="flex justify-center mt-4">
+                                    <ChevronUp size={18} />
+                                </div>
+                            </>
+                        )}
+                    </CustomBox>
+                )}
+
+
+                <CustomDivider className="my-6" />
+
+                <Typography variant="h6" gutterBottom>
                         Ingredients:
                     </Typography>
                     <List sx={{ padding: 0 }}>
@@ -159,7 +181,7 @@ const MealDetailCard = ({ meal, isModal = false, onClose, isListItem = false }) 
                         ))}
                     </List>
                 </CardContent>
-            </Box>
+            </CustomBox>
         </CustomCard>
     );
 };
@@ -169,6 +191,7 @@ MealDetailCard.propTypes = {
     isModal: PropTypes.bool,
     onClose: PropTypes.func,
     isListItem: PropTypes.bool,
+    onOpenAsModal: PropTypes.func,
 };
 
 export default MealDetailCard;

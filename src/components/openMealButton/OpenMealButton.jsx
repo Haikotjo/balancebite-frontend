@@ -3,16 +3,20 @@ import { IconButton } from "@mui/material";
 import { ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const OpenMealButton = ({ mealId }) => {
+const OpenMealButton = ({ mealId, onClick }) => {
     const navigate = useNavigate();
 
-    const handleOpenMeal = () => {
-        navigate(`/meal/${mealId}`);
+    const handleClick = () => {
+        if (onClick) {
+            onClick();
+        } else {
+            navigate(`/meal/${mealId}`);
+        }
     };
 
     return (
         <IconButton
-            onClick={handleOpenMeal}
+            onClick={handleClick}
             sx={{
                 backgroundColor: "rgba(0, 0, 0, 0.5)",
                 borderRadius: "40%",
@@ -33,7 +37,7 @@ const OpenMealButton = ({ mealId }) => {
 
 OpenMealButton.propTypes = {
     mealId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    onClick: PropTypes.func,
 };
-
 
 export default OpenMealButton;

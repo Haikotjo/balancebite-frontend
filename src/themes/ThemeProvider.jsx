@@ -49,9 +49,6 @@ const getDesignTokens = (mode) => ({
     components: {
         MuiCssBaseline: {
             styleOverrides: {
-                body: {
-                    fontFamily: "'Roboto', sans-serif",
-                },
                 ul: {
                     fontFamily: "'Quicksand', sans-serif",
                     listStyle: "none",

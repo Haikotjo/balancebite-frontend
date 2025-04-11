@@ -21,6 +21,18 @@ export default {
         darkBackground: "#2d2f39",
         cardLight: "#e1e1e1",
         cardDark: "#191e23",
+        cardAccentLight: "#d6d6d6",
+        cardAccentDark: "#393838",
+        borderLight: "#95979a",
+        borderDark: "#6B7280",
+        friendlyGray: "#8f8f8f",
+        softIvory: "#F0EAE2",
+
+        // 🎨 User-configurable kleuren (via CSS variables)
+        userPrimary: "var(--user-primary)",
+        userSecondary: "var(--user-secondary)",
+        userBackground: "var(--user-background)",
+        userText: "var(--user-text)",
       },
       fontFamily: {
         sans: ["Nunito", "sans-serif"],

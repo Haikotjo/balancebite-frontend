@@ -14,6 +14,7 @@ const MealCardActionButtons = ({
                                    showOpenMealButton = true,
                                    showUpdateButton = true,
                                    layout = "column",
+                                   onOpenAsModal,
                                }) => {
     const { refetchRecommendedNutrition } = useContext(RecommendedNutritionContext);
 
@@ -54,7 +55,7 @@ const MealCardActionButtons = ({
 
             {showOpenMealButton && (
                 <Box sx={commonBoxStyle}>
-                    <OpenMealButton mealId={meal.id} />
+                    <OpenMealButton mealId={meal.id} onClick={onOpenAsModal} />
                 </Box>
             )}
 
@@ -75,6 +76,7 @@ MealCardActionButtons.propTypes = {
     showOpenMealButton: PropTypes.bool,
     showUpdateButton: PropTypes.bool,
     layout: PropTypes.oneOf(["horizontal", "vertical"]),
+    onOpenAsModal: PropTypes.func,
 };
 
 export default MealCardActionButtons;

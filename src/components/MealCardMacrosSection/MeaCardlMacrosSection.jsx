@@ -1,43 +1,48 @@
 import PropTypes from "prop-types";
-import { Box, Grid, Typography, useTheme, useMediaQuery } from "@mui/material";
 import { Flame, ChartColumnIncreasing, Dumbbell, Droplet } from "lucide-react";
+import CustomBox from "../layout/CustomBox.jsx";
+import CustomTypography from "../layout/CustomTypography.jsx";
+
+const iconClassMap = {
+    Calories: "text-error",
+    Protein: "text-primary",
+    Carbs: "text-success",
+    Fats: "text-secondary",
+};
+
+const iconMap = {
+    Calories: Flame,
+    Protein: Dumbbell,
+    Carbs: ChartColumnIncreasing,
+    Fats: Droplet,
+};
 
 const MealCardMacrosSection = ({ macros }) => {
-    const theme = useTheme();
-    const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
-
     return (
-        <Grid container spacing={2} marginTop={2} marginBottom={3}>
-            {Object.entries(macros).map(([key, macro]) => (
-                <Grid item xs={12} sm={6} key={key}>
-                    <Box display="flex" alignItems="flex-start" gap={1}>
-                        <Box sx={{ marginTop: "2px" }}>
-                            {key === "Calories" && <Flame size={20} color={theme.palette.error.main} />}
-                            {key === "Protein" && <Dumbbell size={20} color={theme.palette.primary.main} />}
-                            {key === "Carbs" && <ChartColumnIncreasing size={20} color={theme.palette.success.light} />}
-                            {key === "Fats" && <Droplet size={20} color={theme.palette.secondary.main} />}
-                        </Box>
-                        <Box>
-                            <Typography
-                                variant="body1"
-                                sx={{ fontSize: "0.9rem", fontWeight: 500 }}
-                            >
+        <CustomBox className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
+            {Object.entries(macros).map(([key, macro]) => {
+                const Icon = iconMap[key];
+                const iconClass = iconClassMap[key];
+
+                return (
+                    <CustomBox key={key} className="flex items-start gap-1">
+                        <CustomBox className="mt-[2px]">
+                            {Icon && <Icon size={20} className={iconClass} />}
+                        </CustomBox>
+                        <CustomBox>
+                            <CustomTypography variant="paragraph" bold className="md:text-sm">
                                 {key === "Calories"
                                     ? `${key}: ${macro.total}`
                                     : `${key}: ${macro.total} ${macro.unit}`}
-                            </Typography>
-                            <Typography
-                                variant="body2"
-                                color="text.secondary"
-                                sx={{ fontSize: { xs: "0.75rem", md: "0.95rem" } }}
-                            >
+                            </CustomTypography>
+                            <CustomTypography variant="small">
                                 ({macro.per100g} per 100g)
-                            </Typography>
-                        </Box>
-                    </Box>
-                </Grid>
-            ))}
-        </Grid>
+                            </CustomTypography>
+                        </CustomBox>
+                    </CustomBox>
+                );
+            })}
+        </CustomBox>
     );
 };
 

@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import MealModal from "../mealModal/MealModal.jsx";
 import { useLocation } from "react-router-dom";
 import MealDetailCard from "../mealCardLarge/MealDetailCard.jsx";
+import CustomGrid from "../layout/CustomGrid.jsx";
 
 function MealList({ filters, sortBy, onFiltersChange }) {
     const { meals, loading, error, userMeals, setFilters, setSortBy } = useContext(UserMealsContext);
@@ -13,7 +14,10 @@ function MealList({ filters, sortBy, onFiltersChange }) {
     const [selectedMeal, setSelectedMeal] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
 
-
+    const handleOpenAsModal = (meal) => {
+        setSelectedMeal(meal);
+        setModalOpen(true);
+    };
 
     const handleTitleClick = (meal) => {
         setSelectedMeal(meal);
@@ -74,39 +78,24 @@ function MealList({ filters, sortBy, onFiltersChange }) {
 
     return (
         <>
-            <Box
-                display="grid"
-                sx={{
-                    gridTemplateColumns: {
-                        xs: "1fr",
-                        sm: "repeat(2, 1fr)",
-                        md: "repeat(3, 1fr)",
-                        lg: "repeat(4, 1fr)",
-                        xl: "repeat(5, 1fr)",
-                    },
-                    gap: 3,
-                    padding: 2,
-                    width: "100%",
-                    maxWidth: "1200px",
-                    margin: "0 auto",
-                    justifyContent: "center",
-                }}
-            >
+            <CustomGrid>
                 {meals.map((meal) => {
                     const userMealMatch = userMeals.find(userMeal => String(userMeal.originalMealId) === String(meal.id));
                     const mealToRender = userMealMatch || meal;
 
                     return (
-                        <MealDetailCard
-                            key={mealToRender.id}
-                            meal={mealToRender}
-                            onClick={() => handleTitleClick(mealToRender)}
-                            isModal={false}
-                            isListItem={true}
-                        />
+                        <div key={mealToRender.id} className="mb-4 break-inside-avoid">
+                            <MealDetailCard
+                                meal={mealToRender}
+                                onClick={() => handleTitleClick(mealToRender)}
+                                isModal={false}
+                                isListItem={true}
+                                onOpenAsModal={() => handleOpenAsModal(mealToRender)}
+                            />
+                        </div>
                     );
                 })}
-            </Box>
+            </CustomGrid>
 
             {selectedMeal && (
                 <MealModal
