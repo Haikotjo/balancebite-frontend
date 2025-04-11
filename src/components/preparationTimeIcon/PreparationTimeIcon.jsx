@@ -1,47 +1,47 @@
-import { IconButton, Typography, Box } from "@mui/material";
-import { Timer } from "lucide-react";
-import PropTypes from "prop-types";
+// src/components/meal/PreparationTimeIcon.jsx
 
+import PropTypes from "prop-types";
+import { Timer } from "lucide-react";
+import CustomBox from "../layout/CustomBox.jsx";
+
+/**
+ * PreparationTimeIcon component displays a timer icon and formatted prep time below it.
+ * Used to indicate how long a meal takes to prepare.
+ * Tailwind-based styling ensures smooth transition to React Native in the future.
+ *
+ * @component
+ * @param {Object} props - Component properties.
+ * @param {string} props.preparationTime - ISO-8601 duration string (e.g. "PT20M").
+ * @param {number} [props.iconSize=30] - Diameter of the icon in pixels.
+ * @returns {JSX.Element|null} Rendered component or null if no preparationTime is provided.
+ */
 const PreparationTimeIcon = ({ preparationTime, iconSize = 30 }) => {
     if (!preparationTime) return null;
 
-    const sharedStyle = {
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        borderRadius: "40%",
-        boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.5)",
-        width: iconSize + 10,
-        height: iconSize + 10,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-    };
+    // Shared style for both icon and time label
+    const sharedClasses = `
+        bg-[rgba(0,0,0,0.5)] rounded-[40%]
+        shadow-md text-white flex items-center justify-center
+    `;
 
     return (
-        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0.5 }}>
-            <IconButton disableRipple sx={{ ...sharedStyle, cursor: "default", padding: "6px"}}>
+        <CustomBox className="flex flex-col items-center gap-[2px]">
+            {/* Timer icon box */}
+            <CustomBox
+                className={`${sharedClasses} w-[40px] h-[40px] p-[6px]`}
+            >
                 <Timer size={iconSize + 2} color="white" />
-            </IconButton>
+            </CustomBox>
 
-            <Box sx={{
-                ...sharedStyle,
-                height: "auto", // laat de hoogte afhangen van content
-                paddingY: "6px", // gelijke verticale ruimte als de iconbutton (die nu padding 2px heeft)
-                paddingX: "6px",
-            }}>
-                <Typography
-                    variant="caption"
-                    sx={{
-                        fontSize: "0.8rem",
-                        fontFamily: "'Quicksand', sans-serif",
-                        color: "white",
-                        paddingX: 1,
-                        textAlign: "center",
-                    }}
-                >
+            {/* Time string box */}
+            <CustomBox
+                className={`${sharedClasses} px-[6px] py-[6px] text-center`}
+            >
+                <span className="text-white text-[0.8rem] font-body">
                     {preparationTime.replace("PT", "").toLowerCase()}
-                </Typography>
-            </Box>
-        </Box>
+                </span>
+            </CustomBox>
+        </CustomBox>
     );
 };
 

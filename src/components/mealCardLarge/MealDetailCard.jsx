@@ -22,7 +22,7 @@ import ExpandableTitle from "../expandableTitle/ExpandableTitle.jsx";
 import PreparationTimeIcon from "../preparationTimeIcon/PreparationTimeIcon.jsx";
 import MealCardMacrosSection from "../MealCardMacrosSection/MeaCardlMacrosSection.jsx";
 import { buildMacrosObject } from "../../utils/helpers/buildMacrosObject.js";
-import CustomCard from "../customCard/CustomCard.jsx";
+import CustomCard from "../layout/CustomCard.jsx";
 import CustomBox from "../layout/CustomBox.jsx";
 import clsx from "clsx";
 import CustomImage from "../layout/CustomImage.jsx";

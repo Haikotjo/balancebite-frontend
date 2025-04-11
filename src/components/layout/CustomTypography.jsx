@@ -12,6 +12,8 @@ const VARIANT_STYLES = {
     small: "text-xs sm:text-sm md:text-sm text-lightText dark:text-darkText",
     bold: "font-bold",
     italic: "italic",
+    xsmallCard: "text-[0.7rem] leading-tight text-lightText dark:text-darkText",
+    paragraphCard: "text-sm sm:text-base md:text-sm",
 };
 
 const FONT_MAP = {
@@ -35,10 +37,10 @@ const CustomTypography = ({
 
     const combinedClass = clsx(
         FONT_MAP[font],
-        VARIANT_STYLES[variant],
         bold && VARIANT_STYLES.bold,
         italic && VARIANT_STYLES.italic,
         color,
+        VARIANT_STYLES[variant],
         className
     );
 

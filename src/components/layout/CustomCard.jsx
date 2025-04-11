@@ -5,7 +5,7 @@ const CustomCard = ({ children, className = "" }) => {
         <div
             className={`
         flex flex-col w-full rounded-xl overflow-hidden 
-        shadow-2xl border border-blue-950 dark:border-gray-700
+     shadow-2xl border border-borderLight dark:border-borderDark
         bg-cardLight dark:bg-cardDark
         ${className}
     `}
