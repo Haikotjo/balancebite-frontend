@@ -1,72 +1,87 @@
+// src/components/meal/MealCardActionButtons.jsx
+
 import PropTypes from "prop-types";
-import { Box } from "@mui/material";
 import { useContext } from "react";
 import { RecommendedNutritionContext } from "../../context/RecommendedNutritionContext.jsx";
-import EatButton from "../eatButton/EatButton.jsx";
-import FavoriteButton from "../favoriteButton/FavoriteButton.jsx";
-import OpenMealButton from "../openMealButton/OpenMealButton.jsx";
-import UpdateMealButton from "../updateMealButton/UpdateMealButton.jsx";
-import PreparationTimeIcon from "../preparationTimeIcon/PreparationTimeIcon.jsx";
+import EatButton from "../buttonEat/EatButton.jsx";
+import FavoriteButton from "../buttonFavorite/FavoriteButton.jsx";
+import ButtonOpenMeal from "../buttonOpenMeal/ButtonOpenMeal.jsx";
+import CustomBox from "../layout/CustomBox.jsx";
+import clsx from "clsx";
+import ButtonUpdateMeal from "../buttonUpdateMeal/ButtonUpdateMeal.jsx";
 
+/**
+ * Displays a vertical or horizontal group of meal-related action buttons.
+ * Styled consistently for visual clarity and ready for React Native adaptation.
+ *
+ * @component
+ * @param {Object} props
+ * @param {Object} props.meal - The meal object for which actions apply.
+ * @param {number} [props.iconSize=35] - Diameter of each button container.
+ * @param {boolean} [props.showOpenMealButton=true] - Whether to show the open button.
+ * @param {boolean} [props.showUpdateButton=true] - Whether to show the update button.
+ * @param {"horizontal"|"vertical"} [props.layout="column"] - Layout direction of buttons.
+ * @param {Function} [props.onOpenAsModal] - Optional callback for opening meal in a modal.
+ * @returns {JSX.Element}
+ */
 const MealCardActionButtons = ({
                                    meal,
                                    iconSize = 35,
                                    showOpenMealButton = true,
                                    showUpdateButton = true,
-                                   layout = "column",
+                                   variant = "overlay",
                                    onOpenAsModal,
+                                   isModal,
                                }) => {
     const { refetchRecommendedNutrition } = useContext(RecommendedNutritionContext);
 
-    const commonBoxStyle = {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        borderRadius: "40%",
-        boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.5)",
-        width: `${iconSize}px`,
-        height: `${iconSize}px`,
-        transition: "transform 0.2s ease-in-out",
-        "&:hover": {
-            transform: "scale(1.2)",
-        },
-    };
+    const sharedClasses = `
+        bg-[rgba(0,0,0,0.5)] rounded-[40%]
+        shadow-md flex items-center justify-center text-white
+        transition-transform duration-200 ease-in-out hover:scale-[1.2]
+    `;
 
     return (
-        <Box
-            sx={{
-                position: "absolute",
-                top: 15,
-                right: 10,
-                display: "flex",
-                flexDirection: layout === "horizontal" ? "row" : "column",
-                alignItems: "center",
-                gap: 1,
-            }}
+        <CustomBox
+            className={clsx(
+                variant === "overlay" && "absolute top-[15px] right-[10px]",
+                "flex",
+                variant === "inline" ? "flex-row" : "flex-col",
+                "items-center gap-2"
+            )}
         >
-            <Box sx={commonBoxStyle}>
+        <CustomBox
+                className={`${sharedClasses}`}
+                style={{ width: iconSize, height: iconSize }}
+            >
                 <FavoriteButton meal={meal} />
-            </Box>
+            </CustomBox>
 
-            <Box sx={commonBoxStyle}>
+            <CustomBox
+                className={`${sharedClasses}`}
+                style={{ width: iconSize, height: iconSize }}
+            >
                 <EatButton meal={meal} refetchRecommendedNutrition={refetchRecommendedNutrition} />
-            </Box>
+            </CustomBox>
 
-            {showOpenMealButton && (
-                <Box sx={commonBoxStyle}>
-                    <OpenMealButton mealId={meal.id} onClick={onOpenAsModal} />
-                </Box>
+            {showOpenMealButton && !isModal && (
+                <CustomBox
+                    className={`${sharedClasses} hidden sm:flex`}
+                    style={{ width: iconSize, height: iconSize }}
+                >
+                    <ButtonOpenMeal mealId={meal.id} onClick={onOpenAsModal} />
+                </CustomBox>
             )}
 
             {showUpdateButton && (
-                <Box sx={commonBoxStyle}>
-                    <UpdateMealButton mealId={meal.id} />
-                </Box>
+                <CustomBox
+                    className={`${sharedClasses}`}
+                    style={{ width: iconSize, height: iconSize }}
+                >
+                    <ButtonUpdateMeal mealId={meal.id} />
+                </CustomBox>
             )}
-
-
-        </Box>
+        </CustomBox>
     );
 };
 
@@ -75,7 +90,8 @@ MealCardActionButtons.propTypes = {
     iconSize: PropTypes.number,
     showOpenMealButton: PropTypes.bool,
     showUpdateButton: PropTypes.bool,
-    layout: PropTypes.oneOf(["horizontal", "vertical"]),
+    variant: PropTypes.oneOf(["overlay", "inline"]),
+    isModal: PropTypes.bool,
     onOpenAsModal: PropTypes.func,
 };
 

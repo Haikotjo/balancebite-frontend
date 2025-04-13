@@ -1,55 +1,42 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { Box, useTheme } from "@mui/material";
 import LoginForm from "./loginForm/LoginForm.jsx";
 import RegisterForm from "./registerForm/RegisterForm.jsx";
+import CustomModal from "../../layout/CustomModal.jsx"; // Zorg ervoor dat CustomModal geïmporteerd wordt
 
+/**
+ * Displays a modal with either the login or register form.
+ * Allows switching between the two and handles closing.
+ *
+ * @component
+ * @param {Object} props
+ * @param {Function} props.onLogin - Called after successful login
+ * @param {Function} props.onRegister - Called after successful registration
+ * @param {string} [props.errorMessage] - Optional error message to show
+ * @param {Function} props.onClose - Function to close the modal
+ */
 const LoginRegisterForm = ({ onLogin, onRegister, errorMessage, onClose }) => {
-    const theme = useTheme();
-    const [isRegistering, setIsRegistering] = useState(false);
+    const [isRegistering, setIsRegistering] = useState(false); // Toggle between login/register form
 
     return (
-        <Box
-            sx={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100vw",
-                height: "100vh",
-                backgroundColor: theme.palette.action.disabledBackground,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                zIndex: 1400,
-            }}
-        >
-            <Box
-                sx={{
-                    backgroundColor: theme.palette.background.paper,
-                    color: theme.palette.text.primary,
-                    padding: 3,
-                    borderRadius: 2,
-                    boxShadow: 3,
-                    width: "90%",
-                    maxWidth: 400,
-                }}
-            >
+        <CustomModal isOpen={true} onClose={onClose}>
+            <div className="bg-white dark:bg-darkBackground text-black dark:text-white p-6 rounded-lg shadow-lg w-[90%] max-w-[400px]">
                 {isRegistering ? (
                     <RegisterForm
                         onClose={onClose}
                         onRegister={onRegister}
-                        onSwitchToLogin={() => setIsRegistering(false)}
+                        onSwitchToLogin={() => setIsRegistering(false)} // Switch to login form
                     />
                 ) : (
                     <LoginForm
                         onClose={onClose}
                         onSubmit={onLogin}
                         errorMessage={errorMessage}
-                        onSwitchToRegister={() => setIsRegistering(true)}
+                        onSwitchToRegister={() => setIsRegistering(true)} // Switch to register form
                     />
                 )}
-            </Box>
-        </Box>
+            </div>
+        </CustomModal>
     );
 };
 

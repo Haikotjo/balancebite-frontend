@@ -15,7 +15,7 @@ import CustomBox from "../layout/CustomBox.jsx";
  * @param {number} [props.iconSize=30] - Diameter of the icon in pixels.
  * @returns {JSX.Element|null} Rendered component or null if no preparationTime is provided.
  */
-const PreparationTimeIcon = ({ preparationTime, iconSize = 30 }) => {
+const PreparationTimeIcon = ({ preparationTime, iconSize = 30, layout = "overlay" }) => {
     if (!preparationTime) return null;
 
     // Shared style for both icon and time label
@@ -24,22 +24,24 @@ const PreparationTimeIcon = ({ preparationTime, iconSize = 30 }) => {
         shadow-md text-white flex items-center justify-center
     `;
 
+    const isInline = layout === "inline";
+
     return (
-        <CustomBox className="flex flex-col items-center gap-[2px]">
+        <CustomBox className={isInline ? "flex flex-row items-center gap-[6px]" : "flex flex-col items-center gap-[2px]"}>
             {/* Timer icon box */}
             <CustomBox
-                className={`${sharedClasses} w-[40px] h-[40px] p-[6px]`}
+                className={`${sharedClasses} w-[35px] h-[35px] p-[4px]`}
             >
                 <Timer size={iconSize + 2} color="white" />
             </CustomBox>
 
             {/* Time string box */}
             <CustomBox
-                className={`${sharedClasses} px-[6px] py-[6px] text-center`}
+                className={`${sharedClasses} w-[35px] h-[35px] p-[4px] text-center`}
             >
-                <span className="text-white text-[0.8rem] font-body">
-                    {preparationTime.replace("PT", "").toLowerCase()}
-                </span>
+  <span className="text-white text-[0.8rem] font-body">
+    {preparationTime.replace("PT", "").toLowerCase()}
+  </span>
             </CustomBox>
         </CustomBox>
     );
@@ -48,6 +50,7 @@ const PreparationTimeIcon = ({ preparationTime, iconSize = 30 }) => {
 PreparationTimeIcon.propTypes = {
     preparationTime: PropTypes.string,
     iconSize: PropTypes.number,
+    layout: PropTypes.oneOf(["overlay", "inline"]),
 };
 
 export default PreparationTimeIcon;

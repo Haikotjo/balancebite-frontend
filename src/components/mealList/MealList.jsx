@@ -8,7 +8,7 @@ import { useLocation } from "react-router-dom";
 import MealDetailCard from "../mealCardLarge/MealDetailCard.jsx";
 import CustomGrid from "../layout/CustomGrid.jsx";
 
-function MealList({ filters, sortBy, onFiltersChange }) {
+function MealList({ filters, sortBy }) {
     const { meals, loading, error, userMeals, setFilters, setSortBy } = useContext(UserMealsContext);
 
     const [selectedMeal, setSelectedMeal] = useState(null);
@@ -22,23 +22,6 @@ function MealList({ filters, sortBy, onFiltersChange }) {
     const handleTitleClick = (meal) => {
         setSelectedMeal(meal);
         setModalOpen(true);
-    };
-
-
-    // ✅ Filters opslaan in de context
-    const handleFilter = (category, value) => {
-        const updated = {
-            ...filters,
-            [category]: value,
-        };
-
-        setFilters(updated);
-        onFiltersChange?.(updated);
-    };
-
-    // ✅ Sorting opslaan in de context
-    const handleSort = (sortKey, sortOrder) => {
-        setSortBy({ sortKey, sortOrder });
     };
 
 

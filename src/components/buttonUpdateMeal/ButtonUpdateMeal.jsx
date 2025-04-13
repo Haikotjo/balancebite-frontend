@@ -1,0 +1,38 @@
+import PropTypes from "prop-types";
+import { Pencil } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import CustomIconButton from "../layout/CustomIconButton.jsx";
+
+/**
+ * A small, animated icon button that navigates to the meal update page.
+ *
+ * Uses a custom animated button component for styling and interaction.
+ * Designed to be portable and React Native friendly.
+ *
+ * @component
+ * @param {Object} props
+ * @param {string|number} props.mealId - ID of the meal to update.
+ * @returns {JSX.Element}
+ */
+const ButtonUpdateMeal = ({ mealId }) => {
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate(`/update-meal/${mealId}`);
+    };
+
+    return (
+        <CustomIconButton
+            onClick={handleClick}
+            icon={<Pencil size={20} color="white" />}
+            bgColor="bg-cardDark"
+            size={35}
+        />
+    );
+};
+
+ButtonUpdateMeal.propTypes = {
+    mealId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+};
+
+export default ButtonUpdateMeal;

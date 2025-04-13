@@ -12,7 +12,7 @@ const VARIANT_STYLES = {
     small: "text-xs sm:text-sm md:text-sm text-lightText dark:text-darkText",
     bold: "font-bold",
     italic: "italic",
-    xsmallCard: "text-[0.7rem] leading-tight text-lightText dark:text-darkText",
+    xsmallCard: "text-[0.7rem] leading-tight",
     paragraphCard: "text-sm sm:text-base md:text-sm",
 };
 
