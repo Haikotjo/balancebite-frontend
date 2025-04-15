@@ -24,7 +24,7 @@ const FONT_MAP = {
 
 const CustomTypography = ({
                               children,
-                              variant = "paragraph",
+                              variant,
                               color = "",
                               bold = false,
                               italic = false,
@@ -40,7 +40,7 @@ const CustomTypography = ({
         bold && VARIANT_STYLES.bold,
         italic && VARIANT_STYLES.italic,
         color,
-        VARIANT_STYLES[variant],
+        variant ? VARIANT_STYLES[variant] : "",
         className
     );
 

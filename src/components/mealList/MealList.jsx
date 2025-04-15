@@ -3,15 +3,12 @@ import {useContext, useEffect, useState} from "react";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { UserMealsContext } from "../../context/UserMealsContext.jsx";
 import PropTypes from "prop-types";
-import MealModal from "../mealModal/MealModal.jsx";
 import { useLocation } from "react-router-dom";
 import MealDetailCard from "../mealCardLarge/MealDetailCard.jsx";
 import CustomGrid from "../layout/CustomGrid.jsx";
 
 function MealList({ filters, sortBy }) {
-    const { meals, loading, error, userMeals, setFilters, setSortBy, page } = useContext(UserMealsContext);
-
-    const [selectedMeal, setSelectedMeal] = useState(null);
+    const { meals, loading, error, userMeals, setFilters, setSortBy } = useContext(UserMealsContext);
 
     const location = useLocation();
 
