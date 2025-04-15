@@ -5,9 +5,9 @@ import clsx from "clsx";
 import CustomBox from "../layout/CustomBox.jsx";
 import CustomImage from "../layout/CustomImage.jsx";
 import MealCardActionButtons from "../mealCardActionButtons/MealCardActionButtons.jsx";
-import PreparationTimeIcon from "../preparationTimeIcon/PreparationTimeIcon.jsx";
-import MealInfoOverlay from "../mealInfoOverlay/MealInfoOverlay.jsx";
 import {getImageSrc} from "../../utils/helpers/getImageSrc.js";
+import MealInfoOverlay from "../mealCardInfoOverlay/MealInfoOverlay.jsx";
+import PreparationTimeIcon from "../mealCardPreparationTimeIcon/PreparationTimeIcon.jsx";
 
 /**
  * Displays the meal image with overlay or inline layout.
@@ -17,29 +17,27 @@ import {getImageSrc} from "../../utils/helpers/getImageSrc.js";
  * @component
  * @param {Object} props
  * @param {Object} props.meal - The meal object to display.
- * @param {boolean} [props.isListItem=false] - Controls responsiveness.
  * @param {boolean} [props.showUpdateButton=true] - Whether to show the update meal button.
- * @param {Function} [props.onOpenAsModal] - Callback for modal opening.
  * @param {"overlay"|"inline"} [props.variant="overlay"] - Layout style.
  * @returns {JSX.Element}
  */
 const MealCardImageSection = ({
                                   meal,
-                                  isListItem = false,
+                                  viewMode = "page",
                                   showUpdateButton = true,
-                                  onOpenAsModal,
                                   variant = "overlay",
-                                  isModal,
                               }) => {
     const imageSrc = getImageSrc(meal);
 
     const isInline = variant === "inline";
+    const isListItem = viewMode === "list";
+    const isPage = viewMode === "page";
+    const isMobile = viewMode === "mobile";
 
     return (
         <CustomBox
             className={clsx(
                 "w-full flex flex-col justify-start shrink-0 gap-2",
-                !isListItem && "md:w-1/2"
             )}
         >
             <CustomBox className="relative aspect-[4/3] w-full shadow-[8px_8px_12px_rgba(0,0,0,0.8)] overflow-hidden rounded-md">
@@ -61,10 +59,7 @@ const MealCardImageSection = ({
 
                         <MealCardActionButtons
                             meal={meal}
-                            showOpenMealButton={isListItem}
-                            showUpdateButton={showUpdateButton}
-                            onOpenAsModal={onOpenAsModal}
-                            isModal={isModal}
+                            viewMode={viewMode}
                         />
                     </>
                 )}
@@ -83,10 +78,7 @@ const MealCardImageSection = ({
                         <MealCardActionButtons
                             meal={meal}
                             variant="inline"
-                            showOpenMealButton={isListItem}
                             showUpdateButton={showUpdateButton}
-                            onOpenAsModal={onOpenAsModal}
-                            isModal={isModal}
                         />
                     </CustomBox>
                 </>
@@ -98,10 +90,8 @@ const MealCardImageSection = ({
 
 MealCardImageSection.propTypes = {
     meal: PropTypes.object.isRequired,
-    isListItem: PropTypes.bool,
     showUpdateButton: PropTypes.bool,
-    onOpenAsModal: PropTypes.func,
-    isModal: PropTypes.bool,
+    viewMode: PropTypes.oneOf(["page", "list", "mobile"]),
     variant: PropTypes.oneOf(["overlay", "inline"]),
 };
 

@@ -68,21 +68,21 @@ export const removeMealFromFavoritesApi = async (mealId, token) => {
 
 export const fetchMeals = async (endpoint) => {
     try {
-        const token = localStorage.getItem("accessToken"); // Haal token op
+        const token = localStorage.getItem("accessToken");
 
         const headers = token
             ? { Authorization: `Bearer ${token}` }
             : {};
 
         const response = await Interceptor.get(endpoint, { headers });
-        // logResponse(response);
 
-        return response.data?.content ?? [];
+        return response.data; // ✅ volledige paginated object
     } catch (error) {
         logError(error);
-        return [];
+        return { content: [], totalPages: 1 }; // fallback voor veiligheid
     }
 };
+
 
 
 export const fetchUserMeals = async (token) => {

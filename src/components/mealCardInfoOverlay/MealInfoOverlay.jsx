@@ -15,7 +15,7 @@ import { Users, UserPen } from "lucide-react";
  * @param {string} [props.fontSize="0.6rem"] - Font size for text elements.
  * @returns {JSX.Element}
  */
-const MealInfoOverlay = ({ meal, fontSize = "0.6rem" }) => {
+const MealInfoOverlay = ({ meal, fontSize = "0.7rem" }) => {
     return (
         <CustomBox
             className="

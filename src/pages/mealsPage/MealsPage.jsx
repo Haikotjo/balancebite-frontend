@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef} from "react";
+import {useState, useEffect, useRef, useContext} from "react";
 import { Box, IconButton } from "@mui/material";
 import SearchBar from "../../components/searchBar/SearchBar.jsx";
 import SubMenu from "../../components/submenu/SubMenu.jsx";
@@ -10,10 +10,13 @@ import FilterSidebar from "../../components/filterSidebar/FilterSidebar.jsx";
 import { getAllMealNames } from "../../services/apiService.js";
 import {useLocation, useSearchParams} from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
+import {UserMealsContext} from "../../context/UserMealsContext.jsx";
+import CustomPagination from "../../components/customPagination/CustomPagination.jsx";
 
 function MealPage() {
     const [sortBy, setSortBy] = useState(null);
     const [filters, setFilters] = useState({});
+    const { page, setPage, totalPages } = useContext(UserMealsContext);
     const [searchParams] = useSearchParams();
     const location = useLocation();
     const searchRef = useRef(null);
@@ -57,11 +60,6 @@ function MealPage() {
     return (
         <Box display="flex" flexDirection="column" alignItems="center" padding={2}>
 
-            {/*/!* Page Title *!/*/}
-            {/*<Typography variant="h3" sx={{ fontWeight: "bold", textAlign: "center", marginBottom: 4 }}>*/}
-            {/*    {}*/}
-            {/*</Typography>*/}
-
             {/* Search Bar Toggle */}
             {!isSearchVisible ? (
                 <IconButton onClick={toggleSearch} sx={{ marginBottom: 2 }}>
@@ -92,6 +90,12 @@ function MealPage() {
                 sortBy={sortBy}
                 filters={filters}
                 onFiltersChange={handleFiltersChange}
+            />
+
+            <CustomPagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={(newPage) => setPage(newPage)}
             />
 
             {/* Back to Top */}

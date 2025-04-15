@@ -9,21 +9,9 @@ import MealDetailCard from "../mealCardLarge/MealDetailCard.jsx";
 import CustomGrid from "../layout/CustomGrid.jsx";
 
 function MealList({ filters, sortBy }) {
-    const { meals, loading, error, userMeals, setFilters, setSortBy } = useContext(UserMealsContext);
+    const { meals, loading, error, userMeals, setFilters, setSortBy, page } = useContext(UserMealsContext);
 
     const [selectedMeal, setSelectedMeal] = useState(null);
-    const [modalOpen, setModalOpen] = useState(false);
-
-    const handleOpenAsModal = (meal) => {
-        setSelectedMeal(meal);
-        setModalOpen(true);
-    };
-
-    const handleTitleClick = (meal) => {
-        setSelectedMeal(meal);
-        setModalOpen(true);
-    };
-
 
     const location = useLocation();
 
@@ -70,23 +58,12 @@ function MealList({ filters, sortBy }) {
                         <div key={mealToRender.id} className="mb-4 break-inside-avoid">
                             <MealDetailCard
                                 meal={mealToRender}
-                                onClick={() => handleTitleClick(mealToRender)}
-                                isModal={false}
-                                isListItem={true}
-                                onOpenAsModal={() => handleOpenAsModal(mealToRender)}
+                                viewMode="list"
                             />
                         </div>
                     );
                 })}
             </CustomGrid>
-
-            {selectedMeal && (
-                <MealModal
-                    open={modalOpen}
-                    onClose={() => setModalOpen(false)}
-                    meal={selectedMeal}
-                />
-            )}
         </>
     );
 }

@@ -6,6 +6,8 @@ import { fetchMeals, fetchUserMeals } from "../services/apiService";
 export const UserMealsContext = createContext();
 
 export const UserMealsProvider = ({ children }) => {
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
     const { user } = useContext(AuthContext);
     const [meals, setMeals] = useState([]);
     const [userMeals, setUserMeals] = useState([]);
@@ -15,6 +17,7 @@ export const UserMealsProvider = ({ children }) => {
     const [sortBy, setSortBy] = useState(null);
     const [activeOption, setActiveOption] = useState("All Meals");
     const [currentListEndpoint, setCurrentListEndpoint] = useState("");
+
 
     /** 🔹 **Haalt user meals op zodra de gebruiker inlogt of verandert** */
     const fetchUserMealsData = async () => {
@@ -47,10 +50,10 @@ export const UserMealsProvider = ({ children }) => {
     useEffect(() => {
         let baseUrl =
             activeOption === "My Meals"
-                ? `${import.meta.env.VITE_BASE_URL}/users/meals?page=0&size=10`
+                ? `${import.meta.env.VITE_BASE_URL}/users/meals?page=${page - 1}&size=6`
                 : activeOption === "Created Meals"
-                    ? `${import.meta.env.VITE_BASE_URL}/users/created-meals?page=0&size=10`
-                    : `${import.meta.env.VITE_BASE_URL}/meals?page=0&size=10`;
+                    ? `${import.meta.env.VITE_BASE_URL}/users/created-meals?page=${page - 1}&size=6`
+                    : `${import.meta.env.VITE_BASE_URL}/meals?page=${page - 1}&size=6`;
 
         // **Filters toevoegen**
         Object.entries(filters).forEach(([key, value]) => {
@@ -66,7 +69,7 @@ export const UserMealsProvider = ({ children }) => {
         if (baseUrl !== currentListEndpoint) {
             setCurrentListEndpoint(baseUrl);
         }
-    }, [activeOption, filters, sortBy]);
+    }, [activeOption, filters, sortBy, page]);
 
     /** 🔹 **Haalt maaltijden op wanneer `currentListEndpoint` verandert** */
     const fetchMealsData = useCallback(async () => {
@@ -76,7 +79,9 @@ export const UserMealsProvider = ({ children }) => {
         try {
             console.log("Fetching from endpoint:", currentListEndpoint);
             const mealsData = await fetchMeals(currentListEndpoint);
-            setMeals(mealsData);
+            console.log("✅ Received mealsData:", mealsData);
+            setMeals(mealsData.content || []);
+            setTotalPages(mealsData.totalPages || 1);
             setError(null);
         } catch (err) {
             console.error("❌ Error fetching meals:", err);
@@ -113,6 +118,8 @@ export const UserMealsProvider = ({ children }) => {
         setMeals((prevMeals) => prevMeals.filter((meal) => meal.id !== mealId));
     };
 
+
+
     useEffect(() => {
         if (activeOption === "My Meals" && user) {
             fetchUserMealsData(); // Zorgt voor actuele data zodra je naar My Meals gaat
@@ -139,6 +146,9 @@ export const UserMealsProvider = ({ children }) => {
                 addMealToUserMeals,
                 removeMealFromMeals,
                 replaceMealInMeals,
+                page,
+                setPage,
+                totalPages,
             }}
         >
             {children}

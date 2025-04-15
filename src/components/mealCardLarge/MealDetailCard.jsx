@@ -3,7 +3,6 @@ import { calculateMacrosPer100g } from "../../utils/helpers/calculateMacrosPer10
 import { useNavigate } from "react-router-dom";
 import {useContext, useState} from "react";
 import { UserMealsContext } from "../../context/UserMealsContext.jsx";
-import ExpandableTitle from "../expandableTitle/ExpandableTitle.jsx";
 import { buildMacrosObject } from "../../utils/helpers/buildMacrosObject.js";
 import CustomCard from "../layout/CustomCard.jsx";
 import CustomBox from "../layout/CustomBox.jsx";
@@ -14,15 +13,20 @@ import MealCardNutritionToggle from "../mealCardNutritionToggle/MealCardNutritio
 import MealCardExpandableDescription from "../mealCardExpandableDescription/ExpandableDescription.jsx";
 import MealCardIngredients from "../mealCardIngredients/MealCardIngredients.jsx";
 import MealCardMealTags from "../mealCardMealTags/MealCardMealTags.jsx";
+import ExpandableTitle from "../mealCardexpandableTitle/ExpandableTitle.jsx";
+import MealInfoOverlay from "../mealCardInfoOverlay/MealInfoOverlay.jsx";
+import MealCardMacrosCompact from "../mealCardMacrosCompact/MealCardMacrosCompact.jsx";
 
-const MealDetailCard = ({ meal, isModal = false, onClose, isListItem = false, onOpenAsModal }) => {
+const MealDetailCard = ({ meal, viewMode = "page" }) => {
     const { userMeals } = useContext(UserMealsContext);
     const userMealMatch = userMeals.find(m => String(m.originalMealId) === String(meal.id));
     const mealToRender = userMealMatch || meal;
     const showUpdateButton = userMeals.some((m) => m.id === meal.id);
-    const [showMacros, setShowMacros] = useState(!isListItem);
-
     const navigate = useNavigate();
+
+    const isModal = viewMode === "page";
+    const isListItem = viewMode === "list";
+    const isMobile = viewMode === "mobile";
 
     const categoryMap = {
         mealTypes: "mealTypes",
@@ -30,10 +34,9 @@ const MealDetailCard = ({ meal, isModal = false, onClose, isListItem = false, on
         cuisines: "cuisines",
     };
 
+    const shouldHideContent = isListItem;
+
     const handleFilterRedirect = (category, value) => {
-        if (isModal && onClose) {
-            onClose();
-        }
 
         const mapped = categoryMap[category] || category;
         navigate(`/meals?${mapped}=${value}`);
@@ -46,88 +49,95 @@ const MealDetailCard = ({ meal, isModal = false, onClose, isListItem = false, on
         <CustomCard
             className={clsx(
                 "flex w-full box-border min-w-[300px]",
-                isListItem ? "flex-col" : "flex-row",
-                isModal ? "max-w-full h-full m-0 mt-0" : "max-w-[1000px] h-auto mx-auto mt-4"
             )}
         >
 
-        {/* Image Section */}
+            {/* Image Section */}
             <CustomBox className={clsx(
-                "relative w-full flex flex-col justify-start shrink-0",
-                !isListItem && "md:w-1/2"
+                "relative w-full flex flex-col justify-start shrink-0"
             )}>
                 <MealCardImageSection
                     meal={mealToRender}
-                    isListItem={isListItem}
                     showUpdateButton={showUpdateButton}
-                    onOpenAsModal={onOpenAsModal}
                     variant="inline" // "inline" / "overlay"
+                    viewMode={viewMode}
                 />
+                <MealInfoOverlay meal={meal} />
             </CustomBox>
-
             {/* Details Section */}
-            <CustomBox className="flex flex-col flex-1 p-2">
-                <CustomBox className="p-4">
 
-                    {/* Title Section */}
-                    <ExpandableTitle title={mealToRender.name} />
-                <CustomDivider className="my-6" />
+            <CustomBox className="p-4">
 
-                    {/* Description Section */}
-                <CustomBox className="mb-6">
-                    <MealCardExpandableDescription
-                        description={mealToRender.mealDescription}
-                        isModal={isModal}
-                    />
-                    <CustomDivider className="my-6" />
-                </CustomBox>
-
+                {/* Title Section */}
+                <ExpandableTitle
+                    title={mealToRender.name}
+                    viewMode={viewMode}
+                />
+                {isListItem && (
+                    <>
+                        <CustomDivider className="my-2" />
+                    <CustomBox className="my-1 px-7">
+                        <MealCardMacrosCompact macros={macros} />
+                    </CustomBox>
 
 
-                    {/* Ingredients Section */}
-                    <MealCardIngredients ingredients={mealToRender.mealIngredients} />
-                    <CustomDivider className="my-6" />
-
-                    {/* MealTags Section*/}
-                    <CustomBox className="hidden md:flex px-2 py-1 mt-2">
                         <MealCardMealTags
                             cuisines={mealToRender.cuisines}
                             diets={mealToRender.diets}
                             mealTypes={mealToRender.mealTypes}
                             onFilter={handleFilterRedirect}
-                            forceExpand
+                            viewMode={viewMode}
                         />
-                    </CustomBox>
-                    <CustomBox className="flex md:hidden">
-                        <MealCardMealTags
-                            cuisines={mealToRender.cuisines}
-                            diets={mealToRender.diets}
-                            mealTypes={mealToRender.mealTypes}
-                            onFilter={handleFilterRedirect}
-                        />
-                    </CustomBox>
-                    <CustomDivider className="my-6" />
+                        <CustomDivider className="my-4" />
+                    </>
+                )}
 
-                    {/* Nutrition Section */}
+                {/* Description Section */}
+                            <MealCardExpandableDescription
+                                description={mealToRender.mealDescription}
+                                viewMode={viewMode}
+                            />
+
+
+                {!shouldHideContent && (
+                    <>
+                            <CustomDivider/>
+
+                        {/* Ingredients Section */}
+                        <MealCardIngredients ingredients={mealToRender.mealIngredients} />
+                        <CustomDivider className="my-6" />
+
+                        {/* MealTags Section*/}
+                        <CustomBox className="hidden md:flex px-2 py-1 mt-2">
+                            <MealCardMealTags
+                                cuisines={mealToRender.cuisines}
+                                diets={mealToRender.diets}
+                                mealTypes={mealToRender.mealTypes}
+                                onFilter={handleFilterRedirect}
+                                forceExpand
+                                viewMode={viewMode}
+                            />
+                        </CustomBox>
+                        <CustomDivider />
+
+                        {/* Nutrition Section */}
                         <MealCardNutritionToggle
                             macros={macros}
-                            show={showMacros}
-                            onToggle={() => setShowMacros((prev) => !prev)}
-                            isModal={isModal}
+                            viewMode={viewMode}
                         />
-                </CustomBox>
 
+                    </>
+                )}
             </CustomBox>
+
         </CustomCard>
+
     );
 };
 
 MealDetailCard.propTypes = {
     meal: PropTypes.object.isRequired,
-    isModal: PropTypes.bool,
-    onClose: PropTypes.func,
-    isListItem: PropTypes.bool,
-    onOpenAsModal: PropTypes.func,
+    viewMode: PropTypes.oneOf(["page", "list", "mobile"]),
 };
 
 export default MealDetailCard;
