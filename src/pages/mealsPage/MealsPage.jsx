@@ -56,6 +56,12 @@ function MealPage() {
         }
     }, [searchParams]);
 
+    useEffect(() => {
+        // Zodra filters of sortBy wijzigt, reset page naar 1
+        setPage(1);
+    }, [filters, sortBy, setPage]);
+
+
 
     return (
         <Box display="flex" flexDirection="column" alignItems="center" padding={2}>
@@ -92,11 +98,14 @@ function MealPage() {
                 onFiltersChange={handleFiltersChange}
             />
 
-            <CustomPagination
-                currentPage={page}
-                totalPages={totalPages}
-                onPageChange={(newPage) => setPage(newPage)}
-            />
+            {totalPages > 1 && (
+                <CustomPagination
+                    currentPage={page}
+                    totalPages={totalPages}
+                    onPageChange={(newPage) => setPage(newPage)}
+                />
+            )}
+
 
             {/* Back to Top */}
             <ScrollToTopButton />

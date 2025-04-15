@@ -71,6 +71,7 @@ export const UserMealsProvider = ({ children }) => {
         }
     }, [activeOption, filters, sortBy, page]);
 
+
     /** 🔹 **Haalt maaltijden op wanneer `currentListEndpoint` verandert** */
     const fetchMealsData = useCallback(async () => {
         if (!currentListEndpoint) return;
@@ -98,8 +99,30 @@ export const UserMealsProvider = ({ children }) => {
     }, [user]); // 🔹 Deze afhankelijkheid zorgt dat het enkel wordt uitgevoerd bij login/logout
 
     useEffect(() => {
-        fetchMealsData();  // 🔹 Voert ALLEEN de meal-fetch uit bij verandering van lijst (All Meals / My Meals)
-    }, [currentListEndpoint]);
+        const loadMeals = async () => {
+            const mealsData = await fetchMeals(currentListEndpoint);
+            console.log("✅ Received mealsData:", mealsData);
+
+            // ⬇️ Zet de pagina terug als hij buiten bereik is
+            if (mealsData.totalPages && page > mealsData.totalPages) {
+                setPage(1);
+                return; // ⬅️ STOP hier, geen oude data zetten
+            }
+
+            // ⬇️ Pas daarna de “echte” data instellen
+            setMeals(mealsData.content || []);
+            setTotalPages(mealsData.totalPages || 1);
+            setError(null);
+        };
+
+        loadMeals().catch((err) => {
+            console.error("❌ Error loading meals:", err);
+            setError(err.message);
+        });
+    }, [currentListEndpoint, page]);
+// ⬅️ Voeg ook 'page' toe als dependency, want we roepen 'setPage' hier aan.
+
+
 
     /** 🔹 **Verwijdert een maaltijd uit de gebruikerslijst** */
     const removeMealFromUserMeals = (mealId) => {
