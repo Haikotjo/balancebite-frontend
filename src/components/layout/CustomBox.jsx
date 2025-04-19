@@ -1,27 +1,25 @@
 // src/components/layout/CustomBox.jsx
-
 import PropTypes from "prop-types";
 import clsx from "clsx";
+import React from "react";
 
 /**
- * A flexible box container with default Tailwind styling.
- * Automatically applies `box-border`, but accepts any additional props and classNames.
- *
- * @component
+ * Flexible container met box-border en optionele tag/ref.
  * @param {object} props
- * @param {React.ReactNode} props.children - Elements to render inside the box.
- * @param {string} [props.className] - Additional Tailwind CSS classes.
- * @returns {JSX.Element}
+ * @param {React.ElementType} [as] – Het HTML‑element (div, section, View, …).
+ * @param {string} [className]
+ * @param {React.Ref} ref
  */
-const CustomBox = ({ children, className = "", ...props }) => {
-    return (
-        <div className={clsx("box-border", className)} {...props}>
-            {children}
-        </div>
-    );
-};
+const CustomBox = React.forwardRef(({ as: Component = "div", className = "", children, ...props }, ref) => (
+    <Component ref={ref} className={clsx("box-border", className)} {...props}>
+        {children}
+    </Component>
+));
+
+CustomBox.displayName = "CustomBox";
 
 CustomBox.propTypes = {
+    as: PropTypes.elementType,
     children: PropTypes.node,
     className: PropTypes.string,
 };

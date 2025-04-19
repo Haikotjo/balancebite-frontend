@@ -10,7 +10,7 @@ import ProfileMenu from "../profileMenu/ProfileMenu.jsx";
 import LoginLogoutMenuItem from "../loginLogoutMenuItem/LoginLogoutMenuItem.jsx";
 import MealsMenu from "../mealsMenu/MealsMenu.jsx";
 
-const HamburgerMenu = ({ user, onLogout, onLoginClick, iconColor = "text.primary" }) => {
+const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick, iconColor = "text.primary" }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [mealsMenuAnchorEl, setMealsMenuAnchorEl] = useState(null);
     const [isIconLoaded, setIsIconLoaded] = useState(false);
@@ -79,6 +79,7 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick, iconColor = "text.primary
                         user={user}
                         onLogout={onLogout}
                         onLoginClick={onLoginClick}
+                        onRegisterClick={onRegisterClick}
                         iconColor={null}
                         onClose={handleMenuClose}
                         text="Profile"
@@ -127,6 +128,7 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick, iconColor = "text.primary
                     <LoginLogoutMenuItem
                         user={user}
                         onLoginClick={onLoginClick}
+                        onRegisterClick={onRegisterClick}
                         onLogout={onLogout}
                         onClose={handleMenuClose}
                     />
@@ -134,6 +136,7 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick, iconColor = "text.primary
                     <LoginLogoutMenuItem
                         user={user}
                         onLoginClick={onLoginClick}
+                        onRegisterClick={onRegisterClick}
                         onLogout={onLogout}
                         onClose={handleMenuClose}
                     />
@@ -152,6 +155,7 @@ HamburgerMenu.propTypes = {
     }),
     onLogout: PropTypes.func.isRequired,
     onLoginClick: PropTypes.func.isRequired,
+    onRegisterClick: PropTypes.func.isRequired,
     iconColor: PropTypes.string,
 };
 

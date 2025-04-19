@@ -96,3 +96,8 @@ body {
 .dark .react-select__menu-list {
     scrollbar-color: #ffffff transparent;
 }
+
+.MuiBox-root {
+    outline: 2px solid red !important;
+}
+

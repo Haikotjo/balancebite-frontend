@@ -20,22 +20,20 @@ const LoginRegisterForm = ({ onLogin, onRegister, errorMessage, onClose }) => {
 
     return (
         <CustomModal isOpen={true} onClose={onClose}>
-            <div className="bg-white dark:bg-darkBackground text-black dark:text-white p-6 rounded-lg shadow-lg w-[90%] max-w-[400px]">
-                {isRegistering ? (
-                    <RegisterForm
-                        onClose={onClose}
-                        onRegister={onRegister}
-                        onSwitchToLogin={() => setIsRegistering(false)} // Switch to login form
-                    />
-                ) : (
-                    <LoginForm
-                        onClose={onClose}
-                        onSubmit={onLogin}
-                        errorMessage={errorMessage}
-                        onSwitchToRegister={() => setIsRegistering(true)} // Switch to register form
-                    />
-                )}
-            </div>
+            {isRegistering ? (
+                <RegisterForm
+                    onClose={onClose}
+                    onRegister={onRegister}
+                    onSwitchToLogin={() => setIsRegistering(false)}
+                />
+            ) : (
+                <LoginForm
+                    onClose={onClose}
+                    onSubmit={onLogin}
+                    errorMessage={errorMessage}
+                    onSwitchToRegister={() => setIsRegistering(true)}
+                />
+            )}
         </CustomModal>
     );
 };

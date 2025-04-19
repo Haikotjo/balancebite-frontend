@@ -4,30 +4,19 @@ import CustomBox from "../layout/CustomBox.jsx";
 import CustomTypography from "../layout/CustomTypography.jsx";
 
 /**
- * ExpandableDescription component that truncates text after 100 characters and
- * allows users to expand or collapse the full content. In modal view, full text is shown directly.
+ * ExpandableDescription component that truncates text after 100 characters
+ * unless viewMode is "page", in which case full text is shown without interaction.
  *
  * @component
- * @param {Object} props - Component properties.
+ * @param {Object} props
  * @param {string} props.description - The text content to display.
- * @param {boolean} [props.isModal=false] - If true, show full text without truncation.
+ * @param {"page"|"list"|"mobile"} props.viewMode - Controls rendering behavior.
  * @returns {JSX.Element}
  */
-const MealCardExpandableDescription = ({ description, isModal = false }) => {
+const MealCardExpandableDescription = ({ description, viewMode }) => {
     const [expanded, setExpanded] = useState(false);
     const isLongText = description.length > 100;
-
-    if (isModal) {
-        return (
-            <CustomTypography
-                variant="paragraph"
-                italic
-                className="text-lightText dark:text-darkText text-[0.9rem]"
-            >
-                {description}
-            </CustomTypography>
-        );
-    }
+    const showAll = viewMode === "page";
 
     return (
         <CustomBox>
@@ -38,13 +27,13 @@ const MealCardExpandableDescription = ({ description, isModal = false }) => {
                     text-lightText dark:text-darkText
                     overflow-hidden
                     transition-all duration-300
-                    ${expanded ? "block" : "line-clamp-3"}
+                    ${showAll || expanded ? "block" : "line-clamp-3"}
                 `}
             >
-                {expanded || !isLongText ? (
+                {showAll || expanded || !isLongText ? (
                     <>
-                        {description}{" "}
-                        {isLongText && (
+                        {description}
+                        {isLongText && !showAll && (
                             <span
                                 onClick={() => setExpanded(false)}
                                 className="text-primary cursor-pointer not-italic"
@@ -71,7 +60,7 @@ const MealCardExpandableDescription = ({ description, isModal = false }) => {
 
 MealCardExpandableDescription.propTypes = {
     description: PropTypes.string.isRequired,
-    isModal: PropTypes.bool,
+    viewMode: PropTypes.oneOf(["page", "list", "mobile"]).isRequired,
 };
 
 export default MealCardExpandableDescription;

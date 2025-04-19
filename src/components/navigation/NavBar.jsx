@@ -1,7 +1,5 @@
-import {useContext, useState} from "react";
-import { AppBar, Toolbar, Box, MenuItem } from "@mui/material";
-import { useTheme, useMediaQuery } from "@mui/material";
-import LoginRegisterForm from "./loginRegisterForm/LoginRegisterForm";
+import { useContext } from "react";
+import {useTheme, useMediaQuery, MenuItem} from "@mui/material";
 import HamburgerMenu from "./hamburgerMenu/HamburgerMenu";
 import DesktopMenu from "./desktopMenu/DesktopMenu";
 import ErrorAlert from "../errorAlert/ErrorAlert";
@@ -16,6 +14,9 @@ import PropTypes from "prop-types";
 import DarkModeSwitch from "./darkModeSwitch/DarkModeSwitch.jsx";
 import { useThemeMode } from "../../themes/ThemeProvider.jsx";
 import VerticalDivider from "../verticalDivider/VerticalDivider.jsx";
+import CustomAppBar from "../layout/CustomAppBar.jsx";
+import CustomBox from "../layout/CustomBox.jsx";
+import CustomButton from "../layout/CustomButton.jsx"; // Import the CustomAppBar
 
 const NavBar = () => {
     const { user } = useContext(AuthContext);
@@ -24,142 +25,84 @@ const NavBar = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const handleLogout = useLogout();
     const { handleLogin, errorMessage } = useLogin();
-    const [showLoginForm, setShowLoginForm] = useState(false);
-    useNavigate();
-
-    const handleRegister = (data) => {
-        console.log("Register data:", data);
-    };
+    const navigate = useNavigate();
 
     return (
-        <AppBar
-            sx={{
-                mb: 2,
-                backgroundColor: mode === "dark" ? "#2E7A97" : theme.palette.text.primary,
-                position: "sticky",
-            }}
+        <CustomAppBar
+            position="sticky"
+            bgColor="bg-primary"
         >
-            <Toolbar
-                sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                }}
-            >
-                <Box
-                    sx={{
-                        flexShrink: 0,
-                        padding: 1,
-                    }}
-                >
+            <CustomBox className="w-full flex justify-between items-center px-4 py-1">
+                {/* Logo */}
+                <CustomBox className="flex-shrink-0 p-2">
                     <Logo size={40} color={theme.palette.text.light} to="/" />
-                </Box>
+                </CustomBox>
 
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                        {!isMobile && (
-                            <MenuItem
-                                onClick={(e) => e.currentTarget.nextSibling.click()}
-                                sx={{
-                                    color: theme.palette.text.light,
-                                    cursor: "pointer",
-                                }}
-                            >
-                                Meals
-                            </MenuItem>
-                        )}
-                        <MealsMenu
-                            user={user}
-                            iconColor={theme.palette.text.light}
-                        />
-                    </Box>
+                {/* Menu */}
+                <CustomBox className="flex items-center">
+                    {/* Meals Menu */}
+                    <CustomBox className="flex items-center">
+                        <CustomButton
+                            onClick={(e) => e.currentTarget.nextSibling.click()}
+                            className="cursor-pointer hover:bg-white/20 dark:hover:bg-white/20 transition-all hidden sm:block"
+                        >
+                            Meals
+                        </CustomButton>
+                        <MealsMenu user={user} />
+                    </CustomBox>
 
-                    <VerticalDivider marginLeft={1} marginRight={0} hiddenOnMobile />
 
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                        {!isMobile && (
-                            <MenuItem
-                                onClick={(e) => e.currentTarget.nextSibling.click()}
-                                sx={{
-                                    color: theme.palette.text.light,
-                                    cursor: "pointer",
-                                }}
-                            >
-                                Profile
-                            </MenuItem>
-                        )}
+
+                    {/* Profile Menu */}
+                    <CustomBox className="flex items-center">
+                        <CustomButton
+                            onClick={(e) => e.currentTarget.nextSibling.click()}
+                            className="cursor-pointer hover:bg-white/20 dark:hover:bg-white/20 transition-all hidden sm:block"
+                        >
+                            Profile
+                        </CustomButton>
                         <ProfileMenu
                             user={user}
                             onLogout={handleLogout}
-                            onLoginClick={() => setShowLoginForm(true)}
+                            onLoginClick={() => navigate("/login")}
+                            onRegisterClick={() => navigate("/register")}
                             iconColor={theme.palette.text.light}
                             onClose={() => {}}
                         />
-                    </Box>
-                    <VerticalDivider marginLeft={1} marginRight={0} hiddenOnMobile />
+                    </CustomBox>
 
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                        {isMobile ? (
-                            <HamburgerMenu
-                                user={user}
-                                onLogout={handleLogout}
-                                onLoginClick={() => setShowLoginForm(true)}
-                                iconColor="text.light"
-                            />
-                        ) : (
-                            <DesktopMenu
-                                user={user}
-                                onLogout={handleLogout}
-                                onLoginClick={() => setShowLoginForm(true)}
-                            />
-                        )}
-                    </Box>
-                </Box>
 
-                <DarkModeSwitch />
-            </Toolbar>
 
-            {showLoginForm && (
-                <Box
-                    sx={{
-                        position: "fixed",
-                        top: 0,
-                        left: 0,
-                        width: "100vw",
-                        height: "100vh",
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        zIndex: 1300,
-                    }}
-                >
-                    <Box
-                        sx={{
-                            backgroundColor: "white",
-                            padding: 3,
-                            borderRadius: 2,
-                            boxShadow: 3,
-                            width: "90%",
-                            maxWidth: 400,
-                        }}
-                    >
-                        <LoginRegisterForm
-                            onLogin={handleLogin}
-                            onRegister={handleRegister}
-                            errorMessage={errorMessage}
-                            onClose={() => setShowLoginForm(false)}
+                    {/* Hamburger and Desktop Menu */}
+                    {isMobile ? (
+                        <HamburgerMenu
+                            user={user}
+                            onLogout={handleLogout}
+                            onLoginClick={() => navigate("/login")}
+                            onRegisterClick={() => navigate("/register")}
+                            iconColor="text.light"
                         />
-                    </Box>
-                </Box>
-            )}
+                    ) : (
+                        <DesktopMenu
+                            user={user}
+                            onLogout={handleLogout}
+                            onLoginClick={() => navigate("/login")}
+                            onRegisterClick={() => navigate("/register")}
+                        />
+                    )}
+                </CustomBox>
 
+                {/* Dark Mode Switch */}
+                <DarkModeSwitch />
+            </CustomBox >
+
+            {/* Error Alert */}
             <ErrorAlert message={errorMessage} />
-        </AppBar>
+        </CustomAppBar>
     );
 };
 
-ProfileMenu.propTypes = {
+NavBar.propTypes = {
     onClose: PropTypes.func,
 };
 

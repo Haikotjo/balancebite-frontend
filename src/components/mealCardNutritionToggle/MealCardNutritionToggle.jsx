@@ -1,4 +1,3 @@
-// src/components/mealCardNutritionToggle/MealCardNutritionToggle.jsx
 import PropTypes from "prop-types";
 import CustomBox from "../layout/CustomBox.jsx";
 import { ChevronDown, ChevronUp } from "lucide-react";
@@ -13,19 +12,32 @@ import clsx from "clsx";
  * @param {Object} props.macros - Nutrition macros to display.
  * @param {boolean} props.show - Whether the section is expanded.
  * @param {Function} props.onToggle - Callback to toggle expanded state.
+ * @param {"page"|"list"|"mobile"} props.viewMode - View mode to control layout behavior.
  * @returns {JSX.Element}
  */
-const MealCardNutritionToggle = ({ macros, show, onToggle }) => {
+const MealCardNutritionToggle = ({ macros, show, onToggle, viewMode }) => {
+    const isAlwaysOpen = viewMode === "page";
+
     return (
         <CustomBox
-            onClick={onToggle}
+            onClick={!isAlwaysOpen ? onToggle : undefined}
             className={clsx(
-                "my-4 rounded-md p-3 cursor-pointer transition-all duration-300",
+                "my-4 rounded-md p-3 transition-all duration-300",
+                !isAlwaysOpen && "cursor-pointer",
                 "bg-lightBackground dark:bg-darkBackground",
                 "shadow-md border border-borderLight dark:border-borderDark"
             )}
         >
-            {!show ? (
+            {isAlwaysOpen || show ? (
+                <>
+                    <MealCardMacrosSection macros={macros} />
+                    {!isAlwaysOpen && (
+                        <div className="flex justify-center mt-4">
+                            <ChevronUp size={18} />
+                        </div>
+                    )}
+                </>
+            ) : (
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-1">
                         {Object.entries(macroIcons).map(([key, Icon]) => (
@@ -35,13 +47,6 @@ const MealCardNutritionToggle = ({ macros, show, onToggle }) => {
                     </div>
                     <ChevronDown size={18} />
                 </div>
-            ) : (
-                <>
-                    <MealCardMacrosSection macros={macros} />
-                    <div className="flex justify-center mt-4">
-                        <ChevronUp size={18} />
-                    </div>
-                </>
             )}
         </CustomBox>
     );
@@ -49,8 +54,9 @@ const MealCardNutritionToggle = ({ macros, show, onToggle }) => {
 
 MealCardNutritionToggle.propTypes = {
     macros: PropTypes.object.isRequired,
-    show: PropTypes.bool.isRequired,
-    onToggle: PropTypes.func.isRequired,
+    show: PropTypes.bool,
+    onToggle: PropTypes.func,
+    viewMode: PropTypes.oneOf(["page", "list", "mobile"]).isRequired,
 };
 
 export default MealCardNutritionToggle;

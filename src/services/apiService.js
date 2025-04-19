@@ -1,6 +1,5 @@
 import { Interceptor } from "./authInterceptor";
 import { roundNutrientValues } from "../utils/helpers/roundNutrientValues";
-import axios from "axios";
 
 // Logging helpers
 const logResponse = (response) => {
@@ -19,27 +18,31 @@ const logError = (error) => {
 
 // API functies
 export const registerUserApi = async (data) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_AUTH_REGISTER_ENDPOINT}`;
+    const endpoint = import.meta.env.VITE_AUTH_REGISTER_ENDPOINT;
     try {
-        const response = await fetch(endpoint, {
-            method: "POST",
+        const response = await Interceptor.post(endpoint, data, {
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
         });
-
-        if (!response.ok) {
-            throw new Error("Registration failed.");
-        }
-
-        return await response.json();
+        return response.data;
     } catch (error) {
-        console.error("[API Error]:", error);
-        throw error;
+        logError(error);
+        let msg = "Something went wrong, please try again later.";
+        if (error.response) {
+            const data = error.response.data;
+            if (typeof data === "string") {
+                msg = data;
+            } else if (data.message) {
+                msg = data.message;
+            } else if (data.error) {
+                msg = data.error;
+            }
+        }
+        throw new Error(msg);
     }
 };
 
 export const addMealToFavoritesApi = async (mealId, token) => {
-    const endpoint = `${import.meta.env.VITE_ADD_MEAL_ENDPOINT}/${mealId}`;
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_ADD_MEAL_ENDPOINT}/${mealId}`;
     try {
         const response = await Interceptor.patch(endpoint, null, {
             headers: { Authorization: `Bearer ${token}` },
@@ -53,7 +56,7 @@ export const addMealToFavoritesApi = async (mealId, token) => {
 };
 
 export const removeMealFromFavoritesApi = async (mealId, token) => {
-    const endpoint = `${import.meta.env.VITE_REMOVE_MEAL_ENDPOINT}/${mealId}`;
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_REMOVE_MEAL_ENDPOINT}/${mealId}`;
     try {
         const response = await Interceptor.delete(endpoint, {
             headers: { Authorization: `Bearer ${token}` },
@@ -66,7 +69,8 @@ export const removeMealFromFavoritesApi = async (mealId, token) => {
     }
 };
 
-export const fetchMeals = async (endpoint) => {
+export const fetchMeals = async (path) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${path}`;
     try {
         const token = localStorage.getItem("accessToken");
 
@@ -76,17 +80,16 @@ export const fetchMeals = async (endpoint) => {
 
         const response = await Interceptor.get(endpoint, { headers });
 
-        return response.data; // ✅ volledige paginated object
+        return response.data;
     } catch (error) {
         logError(error);
-        return { content: [], totalPages: 1 }; // fallback voor veiligheid
+        return { content: [], totalPages: 1 };
     }
 };
 
 
-
 export const fetchUserMeals = async (token) => {
-    const endpoint = import.meta.env.VITE_USER_MEALS_ENDPOINT || "/users/meals";
+    const endpoint = import.meta.env.VITE_USER_MEALS_ENDPOINT;
     try {
         const response = await Interceptor.get(endpoint, {
             headers: { Authorization: `Bearer ${token}` },
@@ -100,7 +103,7 @@ export const fetchUserMeals = async (token) => {
 };
 
 export const fetchMealById = async (mealId) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_MEAL_BY_ID_ENDPOINT}/${mealId}`;
+    const endpoint = `${import.meta.env.VITE_MEAL_BY_ID_ENDPOINT}/${mealId}`;
     try {
         const response = await Interceptor.get(endpoint);
         return response.data;
@@ -111,7 +114,8 @@ export const fetchMealById = async (mealId) => {
 };
 
 export const fetchMealNutrientsById = async (mealId) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_MEAL_NUTRIENTS_ENDPOINT}/${mealId}`;
+    const endpoint = `${import.meta.env.VITE_MEAL_NUTRIENTS_ENDPOINT}/${mealId}`;
+
     try {
         const response = await Interceptor.get(endpoint);
         return response.data;
@@ -122,7 +126,7 @@ export const fetchMealNutrientsById = async (mealId) => {
 };
 
 export const createMealApi = async (formData) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_CREATE_MEAL_ENDPOINT}`;
+    const endpoint = import.meta.env.VITE_CREATE_MEAL_ENDPOINT;
     const token = localStorage.getItem("accessToken");
 
     if (!token) {
@@ -144,25 +148,24 @@ export const createMealApi = async (formData) => {
 };
 
 export const getAllFoodItems = async () => {
-    const response = await Interceptor.get(`${import.meta.env.VITE_BASE_URL}/fooditems`);
+    const response = await Interceptor.get("/fooditems");
     return response.data;
 };
 
 export const getAllFoodItemNames = async () => {
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_FOODITEM_NAMES_ENDPOINT}`);
-    if (!response.ok) throw new Error("Failed to fetch food item names");
-    return await response.json();
-};
-
-export const searchFoodItemsByName = async (prefix) => {
-    const response = await Interceptor.get(`${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_SEARCH_FOODITEMS_ENDPOINT}?prefix=${prefix}`);
+    const endpoint = import.meta.env.VITE_FOODITEM_NAMES_ENDPOINT;
+    const response = await Interceptor.get(endpoint);
     return response.data;
 };
 
+export const searchFoodItemsByName = async (prefix) => {
+    const endpoint = `${import.meta.env.VITE_SEARCH_FOODITEMS_ENDPOINT}?prefix=${prefix}`;
+    const response = await Interceptor.get(endpoint);
+    return response.data;
+};
 
-//  FetchUserProfile API-functie
 export const fetchUserProfile = async (token) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}/users/profile`;
+    const endpoint = import.meta.env.VITE_USER_PROFILE_ENDPOINT; // bijvoorbeeld: "/users/profile"
 
     try {
         const response = await Interceptor.get(endpoint, {
@@ -170,7 +173,6 @@ export const fetchUserProfile = async (token) => {
                 Authorization: `Bearer ${token}`,
             },
         });
-        // logResponse(response);
 
         const data = response.data;
 
@@ -186,8 +188,9 @@ export const fetchUserProfile = async (token) => {
     }
 };
 
+
 export const updateUserDetails = async (data) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}/users/details`;
+    const endpoint = import.meta.env.VITE_UPDATE_USER_DETAILS_ENDPOINT;
     try {
         const response = await Interceptor.put(endpoint, data, {
             headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
@@ -200,7 +203,7 @@ export const updateUserDetails = async (data) => {
 };
 
 export const fetchRecommendedNutritionApi = async (token) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_DAILY_RDI_ENDPOINT}`;
+    const endpoint = import.meta.env.VITE_DAILY_RDI_ENDPOINT;
 
     try {
         const response = await Interceptor.get(endpoint, {
@@ -222,18 +225,13 @@ export const fetchRecommendedNutritionApi = async (token) => {
     }
 };
 
-export const fetchBaseNutritionApi = async (token) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_BASE_RDI_ENDPOINT}`;
+export const fetchBaseNutritionApi = async () => {
+    const endpoint = import.meta.env.VITE_BASE_RDI_ENDPOINT;
 
     try {
-        const response = await Interceptor.get(endpoint, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        // logResponse(response);
+        const response = await Interceptor.get(endpoint);
 
-        if (response && response.data) {
+        if (response?.data) {
             return roundNutrientValues(response.data);
         } else {
             console.warn("No data received for BaseRDI.");
@@ -245,16 +243,10 @@ export const fetchBaseNutritionApi = async (token) => {
     }
 };
 
-
-export const consumeMealApi = async (mealId, token) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_CONSUME_MEAL_ENDPOINT}/${mealId}`;
+export const consumeMealApi = async (mealId) => {
+    const endpoint = `${import.meta.env.VITE_CONSUME_MEAL_ENDPOINT}/${mealId}`;
     try {
-        const response = await Interceptor.post(endpoint, null, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        // logResponse(response);
+        const response = await Interceptor.post(endpoint);
         return response.data;
     } catch (error) {
         logError(error);
@@ -263,13 +255,10 @@ export const consumeMealApi = async (mealId, token) => {
 };
 
 export const updateUserInfoApi = async (data) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_UPDATE_USER_INFO_ENDPOINT}`;
+    const endpoint = import.meta.env.VITE_UPDATE_USER_INFO_ENDPOINT;
 
     try {
         const response = await Interceptor.patch(endpoint, data);
-
-        await refreshAccessToken();
-
         return response.data;
     } catch (error) {
         logError(error);
@@ -277,26 +266,8 @@ export const updateUserInfoApi = async (data) => {
     }
 };
 
-
-const refreshAccessToken = async () => {
-    const refreshToken = localStorage.getItem("refreshToken");
-    if (!refreshToken) {
-        console.error("[DEBUG] No refresh token found.");
-        return;
-    }
-
-    try {
-        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/auth/refresh`, { refreshToken });
-        // console.log("[DEBUG] New access token received:", response.data.accessToken);
-
-        localStorage.setItem("accessToken", response.data.accessToken);
-    } catch (error) {
-        // console.error("[DEBUG] Failed to refresh access token:", error);
-    }
-};
-
 export const fetchMealEnums = async () => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_MEAL_ENUMS_ENDPOINT}`;
+    const endpoint = import.meta.env.VITE_MEAL_ENUMS_ENDPOINT;
     try {
         const response = await Interceptor.get(endpoint);
         return response.data;
@@ -307,7 +278,7 @@ export const fetchMealEnums = async () => {
 };
 
 export const getAllMealNames = async () => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_MEAL_NAMES_ENDPOINT}`;
+    const endpoint = import.meta.env.VITE_MEAL_NAMES_ENDPOINT;
     try {
         const response = await Interceptor.get(endpoint);
         return response.data;
@@ -317,10 +288,8 @@ export const getAllMealNames = async () => {
     }
 };
 
-
-
 export const fetchSortedMeals = async (sortField, sortOrder = "desc") => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_SORT_MEALS_ENDPOINT}?sortField=${sortField}&sortOrder=${sortOrder}`;
+    const endpoint = `${import.meta.env.VITE_SORT_MEALS_ENDPOINT}?sortField=${sortField}&sortOrder=${sortOrder}`;
 
     try {
         const response = await Interceptor.get(endpoint);
@@ -333,7 +302,7 @@ export const fetchSortedMeals = async (sortField, sortOrder = "desc") => {
 };
 
 export const updateMealApi = async (mealId, formData) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_UPDATE_MEAL_ENDPOINT}/${mealId}`;
+    const endpoint = `${import.meta.env.VITE_UPDATE_MEAL_ENDPOINT}/${mealId}`;
     const token = localStorage.getItem("accessToken");
 
     if (!token) {
@@ -354,7 +323,7 @@ export const updateMealApi = async (mealId, formData) => {
 };
 
 export const createFoodItemApi = async (data) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_CREATE_FOODITEM_ENDPOINT}`;
+    const endpoint = import.meta.env.VITE_CREATE_FOODITEM_ENDPOINT;
     const token = localStorage.getItem("accessToken");
 
     if (!token) {
@@ -376,7 +345,7 @@ export const createFoodItemApi = async (data) => {
 };
 
 export const deleteFoodItemApi = async (id, token) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_DELETE_FOODITEM_ENDPOINT}/${id}`;
+    const endpoint = `${import.meta.env.VITE_DELETE_FOODITEM_ENDPOINT}/${id}`;
     try {
         const response = await Interceptor.delete(endpoint, {
             headers: { Authorization: `Bearer ${token}` },
@@ -390,7 +359,7 @@ export const deleteFoodItemApi = async (id, token) => {
 
 // Fetch single food item by FDC ID
 export const fetchFoodItemByFdcIdApi = async (fdcId, token) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_FETCH_FOODITEM_BY_ID_ENDPOINT}/${fdcId}`;
+    const endpoint = `${import.meta.env.VITE_FETCH_FOODITEM_BY_ID_ENDPOINT}/${fdcId}`;
     const response = await Interceptor.get(endpoint, {
         headers: { Authorization: `Bearer ${token}` },
     });
@@ -399,7 +368,7 @@ export const fetchFoodItemByFdcIdApi = async (fdcId, token) => {
 
 // Bulk fetch multiple food items by FDC IDs
 export const fetchFoodItemsBulkApi = async (fdcIds) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_FETCH_FOODITEMS_BULK_ENDPOINT}`;
+    const endpoint = import.meta.env.VITE_FETCH_FOODITEMS_BULK_ENDPOINT;
     const response = await Interceptor.post(endpoint, fdcIds, {
         headers: {
             "Content-Type": "application/json",
@@ -408,8 +377,9 @@ export const fetchFoodItemsBulkApi = async (fdcIds) => {
     return response.data;
 };
 
+
 export const getAllUsersApi = async (token) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_GET_ALL_USERS_ENDPOINT}`;
+    const endpoint = import.meta.env.VITE_GET_ALL_USERS_ENDPOINT;
     try {
         const response = await Interceptor.get(endpoint, {
             headers: {
@@ -423,9 +393,8 @@ export const getAllUsersApi = async (token) => {
     }
 };
 
-
 export const promoteUserApi = async (data, token) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_PROMOTE_USER_ENDPOINT}`;
+    const endpoint = import.meta.env.VITE_PROMOTE_USER_ENDPOINT;
     try {
         const response = await Interceptor.patch(endpoint, data, {
             headers: {
@@ -441,7 +410,7 @@ export const promoteUserApi = async (data, token) => {
 };
 
 export const deleteUserApi = async (data, token) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_DELETE_USER_ENDPOINT}`;
+    const endpoint = import.meta.env.VITE_DELETE_USER_ENDPOINT;
     try {
         const response = await Interceptor.delete(endpoint, {
             headers: {
@@ -457,9 +426,8 @@ export const deleteUserApi = async (data, token) => {
     }
 };
 
-
 export const createUserAsAdminApi = async (data, token) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_ADMIN_CREATE_USER_ENDPOINT}`;
+    const endpoint = import.meta.env.VITE_ADMIN_CREATE_USER_ENDPOINT;
     try {
         const response = await Interceptor.post(endpoint, data, {
             headers: {
@@ -475,7 +443,7 @@ export const createUserAsAdminApi = async (data, token) => {
 };
 
 export const getAllMealsApi = async (token) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_GET_ALL_MEALS_ENDPOINT}`;
+    const endpoint = import.meta.env.VITE_GET_ALL_MEALS_ENDPOINT;
     try {
         const response = await Interceptor.get(endpoint, {
             headers: {
@@ -490,7 +458,7 @@ export const getAllMealsApi = async (token) => {
 };
 
 export const deleteMealApi = async (mealId, token) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_DELETE_MEAL_ENDPOINT}/${mealId}`;
+    const endpoint = `${import.meta.env.VITE_DELETE_MEAL_ENDPOINT}/${mealId}`;
     try {
         const response = await Interceptor.delete(endpoint, {
             headers: {
@@ -505,25 +473,16 @@ export const deleteMealApi = async (mealId, token) => {
 };
 
 export const getFoodSourcesApi = async () => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_FOOD_SOURCES_ENDPOINT}`;
+    const endpoint = import.meta.env.VITE_FOOD_SOURCES_ENDPOINT;
     try {
-        const response = await fetch(endpoint, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error("Failed to fetch food sources");
-        }
-
-        return await response.json();
+        const response = await Interceptor.get(endpoint);
+        return response.data;
     } catch (error) {
         console.error("[API Error] Failed to fetch food sources:", error);
         throw error;
     }
 };
+
 
 
 

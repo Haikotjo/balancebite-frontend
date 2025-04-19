@@ -1,5 +1,7 @@
+// src/services/authService.js
 import { Interceptor } from "./authInterceptor";
 
+// LOGIN
 export const loginApi = async (email, password) => {
     const endpoint = import.meta.env.VITE_AUTH_LOGIN_ENDPOINT || "/auth/login";
     try {
@@ -7,11 +9,13 @@ export const loginApi = async (email, password) => {
         console.log("[DEBUG] Login succesvol:", response.data);
         return response.data;
     } catch (error) {
-        console.error("[DEBUG] Fout bij inloggen:", error.response?.data?.error || error.message);
-        throw error;
+        const msg = error.response?.data?.error || error.message;
+        console.error("[DEBUG] Fout bij inloggen:", msg);
+        throw new Error(msg);
     }
 };
 
+// LOGOUT
 export const logoutApi = async (token) => {
     const endpoint = import.meta.env.VITE_AUTH_LOGOUT_ENDPOINT || "/auth/logout";
     try {
@@ -26,11 +30,13 @@ export const logoutApi = async (token) => {
         console.log("[DEBUG] Logout succesvol:", response.data);
         return response.data;
     } catch (error) {
-        console.error("[DEBUG] Fout bij uitloggen:", error.response?.data?.error || error.message);
-        throw error;
+        const msg = error.response?.data?.error || error.message;
+        console.error("[DEBUG] Fout bij uitloggen:", msg);
+        throw new Error(msg);
     }
 };
 
+// REGISTER
 export const registerUserApi = async (formData) => {
     const endpoint = import.meta.env.VITE_AUTH_REGISTER_ENDPOINT || "/auth/register";
     try {
@@ -38,7 +44,8 @@ export const registerUserApi = async (formData) => {
         console.log("[API] Registration successful:", response.data);
         return response.data;
     } catch (error) {
-        console.error("[API Error] Registration failed:", error.response?.data?.error || error.message);
-        throw error;
+        const msg = error.response?.data?.error || error.message;
+        console.error("[API Error] Registration failed:", msg);
+        throw new Error(msg);
     }
 };

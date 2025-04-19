@@ -1,12 +1,13 @@
-import { CircularProgress } from "@mui/material";
+
 import { useParams } from "react-router-dom";
 
-import MealCardLarge from "../../components/mealCardLarge/MealDetailCard.jsx";
+import MealDetailCard from "../../components/mealCardLarge/MealDetailCard.jsx";
 import SubMenu from "../../components/submenu/SubMenu.jsx";
 import CustomBox from "../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../components/layout/CustomTypography.jsx";
 import useMealById from "../../hooks/useMealById.js";
-import Spinner from "../../components/layout/spinner.js";
+import Spinner from "../../components/layout/spinner.jsx";
+import MealCard from "../../components/mealCard/MealCard.jsx";
 
 const MealDetailsPage = () => {
     const { mealId } = useParams();
@@ -39,13 +40,26 @@ const MealDetailsPage = () => {
     return (
         <CustomBox className="max-w-screen-xl mx-auto mt-4 px-4">
             <CustomBox className="my-10">
-                <SubMenu isDetailPage />
+                <SubMenu isDetailPage/>
             </CustomBox>
-            <MealCardLarge
-                meal={meal}
-                viewMode="page"
-            />
+
+            {/* Alleen tonen op small screens */}
+            <CustomBox className="block md:hidden flex justify-center">
+                <MealDetailCard
+                    meal={meal}
+                    viewMode="page"
+                />
+            </CustomBox>
+
+            {/* Alleen tonen op medium en groter */}
+            <CustomBox className="hidden md:flex justify-center">
+                <MealCard
+                    meal={meal}
+                />
+            </CustomBox>
+
         </CustomBox>
+
     );
 };
 

@@ -1,21 +1,15 @@
-import PropTypes from 'prop-types';
-import { useTheme } from '@mui/material/styles';
+import PropTypes from "prop-types";
 
-function EatIcon({ size = 24, color, onClick }) {
-    const theme = useTheme();
-    const fillColor = color || theme.palette.primary.main;
-
+function EatIcon({ size = 24, className = "fill-[var(--user-primary)]", onClick }) {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 300 300"
             width={size}
             height={size}
-            fill={fillColor}
+            className={`${className} cursor-pointer`}
             preserveAspectRatio="xMidYMid meet"
-            style={{
-                cursor: onClick ? "pointer" : "default",
-            }}
+            style={{ cursor: onClick ? "pointer" : "default" }}
             onClick={onClick}
         >
             <g

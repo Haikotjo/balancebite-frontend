@@ -1,96 +1,113 @@
-// import PropTypes from "prop-types";
-// import {
-//     Card,
-//     CardContent,
-//     CardMedia,
-//     Box,
-// } from "@mui/material";
-// import { getImageSrc } from "../../utils/helpers/getImageSrc.js";
-// import MealCardActionButtons from "../mealCardActionButtons/MealCardActionButtons.jsx";
-// import MealCardDetailsWithIcons from "../mealCardDetailsWithIcons/MealCardDetailsWithIcons.jsx";
-// import ExpandableDescription from "../expandableDescription/ExpandableDescription.jsx";
-// import TruncatedTitle from "../truncatedTitle/TruncatedTitle.jsx";
-// import MealInfoOverlay from "../mealInfoOverlay/MealInfoOverlay.jsx";
-// import MealTags from "../mealTags/MealTags.jsx";
-// import MealCardFooter from "../mealCardFooter/MealCardFooter.jsx";
-// import { UserMealsContext } from "../../context/UserMealsContext";
-// import {useContext} from "react";
-//
-// function MealCard({ meal, onFilter, onTitleClick  }) {
-//     const imageSrc = getImageSrc(meal);
-//     const { userMeals } = useContext(UserMealsContext);
-//
-//     const handleFilter = (category, value) => {
-//
-//         if (onFilter) {
-//             onFilter(category, value);
-//         } else {
-//             console.warn("⚠️ onFilter function is undefined in MealCard!");
-//         }
-//     };
-//
-//     const showUpdateButton = userMeals.some((m) => m.id === meal.id);
-//
-//     return (
-//         <Card sx={{ minWidth: 300, maxWidth: 345, position: "relative", display: "flex", flexDirection: "column", height: "100%", border: "1px solid rgba(0, 0, 0, 0.05)",
-//             boxShadow: "0px 0px 8px 2px rgba(0, 0, 0, 0.1)"
-//             , }}>
-//
-//             <Box sx={{ position: "relative" }}>
-//                 <CardMedia component="img" image={imageSrc} alt={meal.name} sx={{ width: "100%", aspectRatio: "16/9" }} />
-//                 <MealInfoOverlay meal={meal} />
-//                 <MealCardActionButtons
-//                     meal={meal}
-//                     showUpdateButton={showUpdateButton}
-//                     layout="horizontal"
-//                 />
-//             </Box>
-//
-//             <MealCardDetailsWithIcons
-//                 diets={meal.diets}
-//                 mealTypes={meal.mealTypes}
-//                 cuisines={meal.cuisines}
-//                 meal={meal}
-//                 onFilter={handleFilter}
-//             />
-//
-//             <CardContent sx={{ flexGrow: 1, paddingBottom: "10px !important" }}>
-//                 {/* Title */}
-//                 <Box
-//                     onClick={() => onTitleClick?.(meal)}
-//                     sx={{ cursor: "pointer", "&:hover": { textDecoration: "underline" } }}
-//                 >
-//                     <TruncatedTitle title={meal.name} mealId={meal.id}  onClick={() => onTitleClick?.(meal)}/>
-//                 </Box>
-//
-//                 {/* Description */}
-//                 <Box sx={{ mb: 2 }}>
-//                     <ExpandableDescription description={meal.mealDescription} />
-//                 </Box>
-//
-//                 {/* Meal Tags */}
-//                 <MealTags
-//                     cuisines={meal.cuisines}
-//                     diets={meal.diets}
-//                     mealTypes={meal.mealTypes}
-//                     size="small"
-//                     onFilter={onFilter}
-//                     onExpandRequest={() => onTitleClick?.(meal)}
-//                 />
-//
-//             </CardContent>
-//
-//             <MealCardFooter onClick={() => onTitleClick?.(meal)} />
-//
-//         </Card>
-//     );
-// }
-//
-//
-// MealCard.propTypes = {
-//     meal: PropTypes.object.isRequired,
-//     onFilter: PropTypes.func.isRequired,
-//     onTitleClick: PropTypes.func,
-// };
-//
-// export default MealCard;
+import PropTypes from "prop-types";
+import CustomBox from "../layout/CustomBox.jsx";
+import CustomImage from "../layout/CustomImage.jsx";
+import CustomTypography from "../layout/CustomTypography.jsx";
+import { getImageSrc } from "../../utils/helpers/getImageSrc.js";
+import CustomDivider from "../layout/CustomDivider.jsx";
+import MealCardIngredients from "../mealCardIngredients/MealCardIngredients.jsx";
+import MealCardMealTags from "../mealCardMealTags/MealCardMealTags.jsx";
+import {calculateMacrosPer100g} from "../../utils/helpers/calculateMacrosPer100g.js";
+import {buildMacrosObject} from "../../utils/helpers/buildMacrosObject.js";
+import MealCardMacrosSection from "../MealCardMacrosSection/MeaCardlMacrosSection.jsx";
+import MealCardActionButtons from "../mealCardActionButtons/MealCardActionButtons.jsx";
+import PreparationTimeIcon from "../mealCardPreparationTimeIcon/PreparationTimeIcon.jsx";
+import MealInfoOverlay from "../mealCardInfoOverlay/MealInfoOverlay.jsx";
+import {useNavigate} from "react-router-dom";
+
+const MealCard = ({ meal, viewMode = "page"  }) => {
+    const imageSrc = getImageSrc(meal);
+    const navigate = useNavigate();
+
+    const categoryMap = {
+        mealTypes: "mealTypes",
+        diets: "diets",
+        cuisines: "cuisines",
+    };
+
+    const handleFilterRedirect = (category, value) => {
+
+        const mapped = categoryMap[category] || category;
+        navigate(`/meals?${mapped}=${value}`);
+    };
+
+    const calculatedMacros = calculateMacrosPer100g(meal);
+    const macros = buildMacrosObject(meal, calculatedMacros);
+
+
+    return (
+        <CustomBox className="max-w-4xl w-full lg:flex bg-cardLight dark:bg-cardDark rounded-xl shadow-md overflow-hidden border border-border">
+            {/* Image section */}
+            <CustomBox className="h-48 lg:h-auto lg:w-[50%] flex-none relative">
+                {/* Afbeelding */}
+                <CustomImage
+                    src={imageSrc}
+                    alt={meal.name}
+                    className="w-full h-full object-cover"
+                />
+
+                {/* Overlay boven */}
+                <CustomBox
+                    className="absolute top-0 left-0 w-full flex items-center justify-between px-2 py-1 z-10 pointer-events-auto cursor-default"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <CustomBox className="absolute inset-0 bg-[rgba(255,255,255,0.4)] rounded-md z-0" />
+                    <CustomBox className="flex items-center justify-between w-full z-10">
+                        {meal.preparationTime && (
+                            <PreparationTimeIcon preparationTime={meal.preparationTime} layout="inline" />
+                        )}
+                        <MealCardActionButtons
+                            meal={meal}
+                            showUpdateButton={true}
+                            viewMode={viewMode}
+                        />
+                    </CustomBox>
+                </CustomBox>
+
+                {/* Overlay onder */}
+                <CustomBox
+                    className="absolute bottom-0 left-0 w-full z-10 pointer-events-auto cursor-default"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <MealInfoOverlay meal={meal} fontSize="0.8rem" />
+                </CustomBox>
+            </CustomBox>
+
+
+
+            {/* Content section */}
+            <CustomBox className="p-4 flex flex-col justify-between leading-normal">
+                <CustomBox className="mb-4">
+                    <CustomTypography className="text-4xl font-bold text-primary mb-2">
+                        {meal.name}
+                    </CustomTypography>
+                    <CustomDivider className="my-6" />
+                    <CustomTypography className="text-base text-muted italic">
+                        {meal.mealDescription}
+                    </CustomTypography>
+                    <CustomDivider className="my-6" />
+                    <MealCardIngredients ingredients={meal.mealIngredients} />
+                    <CustomDivider className="my-6" />
+                    <MealCardMacrosSection macros={macros} />
+                    <CustomDivider className="my-6" />
+                    <CustomBox className="hidden md:flex px-2 py-1 mt-2">
+                    <MealCardMealTags
+                        cuisines={meal.cuisines}
+                        diets={meal.diets}
+                        mealTypes={meal.mealTypes}
+                        onFilter={handleFilterRedirect}
+                        forceExpand
+                    />
+                </CustomBox>
+                </CustomBox>
+
+            </CustomBox>
+        </CustomBox>
+    );
+};
+
+MealCard.propTypes = {
+    meal: PropTypes.object.isRequired,
+    viewMode: PropTypes.oneOf(["page", "list", "modal"]),
+};
+
+export default MealCard;

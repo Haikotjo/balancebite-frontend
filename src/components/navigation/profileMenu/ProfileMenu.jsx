@@ -1,12 +1,12 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { Menu, Divider } from "@mui/material";
+import { Menu } from "@mui/material";
 import AccountBoxRoundedIcon from "@mui/icons-material/AccountBoxRounded";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ProfileMenuItem from "../ProfileMenuItem/ProfileMenuItem.jsx";
 import LoginLogoutMenuItem from "../loginLogoutMenuItem/LoginLogoutMenuItem.jsx";
 
-const ProfileMenu = ({ user, onLogout, onLoginClick, iconColor, onClose, text }) => {
+const ProfileMenu = ({ user, onLogout, onLoginClick, onRegisterClick, iconColor, onClose, text }) => {
     const [anchorEl, setAnchorEl] = useState(null);
 
     const handleMenuOpen = (event) => {
@@ -25,6 +25,12 @@ const ProfileMenu = ({ user, onLogout, onLoginClick, iconColor, onClose, text })
 
     const handleLogout = () => {
         onLogout();
+        handleMenuClose();
+        onClose();
+    };
+
+    const handleRegister = () => {
+        onRegisterClick();
         handleMenuClose();
         onClose();
     };
@@ -57,11 +63,11 @@ const ProfileMenu = ({ user, onLogout, onLoginClick, iconColor, onClose, text })
                         onClose();
                     }}
                 />
-                <Divider sx={{ height: "1px", margin: 0 }} />
 
                 <LoginLogoutMenuItem
                     user={user}
                     onLoginClick={handleLogin}
+                    onRegisterClick={onRegisterClick}
                     onLogout={handleLogout}
                     onClose={handleMenuClose}
                 />

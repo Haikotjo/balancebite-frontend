@@ -1,16 +1,18 @@
-import { useContext } from "react";
+// src/components/forms/LoginForm.jsx
+import { useState, useContext } from "react";
 import PropTypes from "prop-types";
-import { Box, TextField, Button, Alert, useTheme, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useLogin from "../../../../hooks/useLogin.js";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import loginSchema from "./LoginForm.js";
-
+import CustomBox from "../../../layout/CustomBox.jsx";
+import CustomButton from "../../../layout/CustomButton.jsx";
+import ErrorDialog from "../../../layout/ErrorDialog.jsx";
 
 const LoginForm = ({ onClose, onSwitchToRegister }) => {
-    const theme = useTheme();
-    const { handleLogin, errorMessage } = useLogin();
+    const [errorMessage, setErrorMessage] = useState("");
+    const { handleLogin } = useLogin();
     const { fetchUserMealsData } = useContext(UserMealsContext);
 
     const {
@@ -24,112 +26,89 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
     });
 
     const onSubmit = async (data) => {
-        localStorage.clear();
-        sessionStorage.clear();
-        await handleLogin(data.email, data.password, async () => {
-            await fetchUserMealsData();
-            if (onClose) onClose();
-        });
+        setErrorMessage("");
+        try {
+            localStorage.clear();
+            sessionStorage.clear();
+            await handleLogin(data.email, data.password, async () => {
+                await fetchUserMealsData();
+                if (onClose) onClose();
+            });
+        } catch (err) {
+            console.error("Login failed:", err);
+            setErrorMessage(err.message);
+        }
     };
 
     return (
-        <Box
-            sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "100%",
-                ...(onClose && {
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100vw",
-                    height: "100vh",
-                    backgroundColor: theme.palette.action.disabledBackground,
-                    zIndex: 1300,
-                }),
-            }}
-        >
-            <Box
-                component="form"
-                onSubmit={handleSubmit(onSubmit)}
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 1.5,
-                    backgroundColor: theme.palette.background.paper,
-                    color: theme.palette.text.primary,
-                    padding: 3,
-                    borderRadius: 2,
-                    boxShadow: 3,
-                    width: "90%",
-                    maxWidth: 400,
-                }}
-            >
-                <Typography
-                    variant="h4"
-                    sx={{
-                        textAlign: "center",
-                        marginBottom: 1,
-                        fontWeight: 700,
-                    }}
-                >
-                    Login
-                </Typography>
+        <>
+            <ErrorDialog
+                open={!!errorMessage}
+                onClose={() => setErrorMessage("")}
+                message={errorMessage}
+            />
 
-                {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+            <CustomBox className="w-full max-w-md p-6 bg-white dark:bg-darkBackground rounded-lg shadow-md text-black dark:text-white">
+                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+                    <h2 className="text-2xl font-bold text-center">Login</h2>
 
-                <TextField
-                    label="Email"
-                    type="email"
-                    size="small"
-                    {...register("email")}
-                    error={!!errors.email}
-                    helperText={errors.email?.message}
-                    required
-                />
+                    <CustomBox>
+                        <label htmlFor="email" className="block mb-1 font-medium">
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            id="email"
+                            {...register("email")}
+                            className="w-full border rounded px-3 py-2 text-sm dark:bg-gray-800"
+                        />
+                        {errors.email && (
+                            <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+                        )}
+                    </CustomBox>
 
-                <TextField
-                    label="Password"
-                    type="password"
-                    size="small"
-                    {...register("password")}
-                    error={!!errors.password}
-                    helperText={errors.password?.message}
-                    required
-                />
+                    <CustomBox>
+                        <label htmlFor="password" className="block mb-1 font-medium">
+                            Password
+                        </label>
+                        <input
+                            type="password"
+                            id="password"
+                            {...register("password")}
+                            className="w-full border rounded px-3 py-2 text-sm dark:bg-gray-800"
+                        />
+                        {errors.password && (
+                            <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
+                        )}
+                    </CustomBox>
 
-                <Button
-                    type="submit"
-                    variant="contained"
-                    size="small"
-                    sx={{
-                        color: theme.palette.text.light,
-                    }}
-                >
-                    Login
-                </Button>
-
-                <Button
-                    variant="text"
-                    size="small"
-                    onClick={onSwitchToRegister}
-                    sx={{ alignSelf: "flex-start" }}
-                >
-                    Don&#39;t have an account? Register
-                </Button>
-                {onClose && (
-                    <Button
-                        variant="text"
-                        size="small"
-                        onClick={onClose}
-                        sx={{ alignSelf: "flex-end" }}
+                    <CustomButton
+                        type="submit"
+                        className="bg-primary hover:bg-primary-dark text-white px-4 py-2 self-stretch"
                     >
-                        Close
-                    </Button>
-                )}
-            </Box>
-        </Box>
+                        Login
+                    </CustomButton>
+
+                    <CustomButton
+                        type="button"
+                        onClick={onSwitchToRegister}
+                        className="text-primary hover:underline bg-transparent px-0 py-0 self-start"
+                    >
+                        Don't have an account? Register
+                    </CustomButton>
+
+                    {onClose && (
+                        <CustomButton
+                            type="button"
+                            onClick={onClose}
+                            className="text-gray-600 hover:underline bg-transparent px-0 py-0 self-end"
+                        >
+                            Close
+                        </CustomButton>
+                    )}
+                </form>
+            </CustomBox>
+        </>
     );
 };
 

@@ -1,21 +1,16 @@
-import { Box, TextField, Button, Alert, Typography, useTheme } from "@mui/material";
+// src/components/forms/RegisterForm.jsx
+import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import PropTypes from "prop-types";
-import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import useLogin from "../../../../hooks/useLogin.js";
-import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
-import { registerUserApi } from "../../../../services/apiService.js";
 import registerSchema from "../../../../utils/helpers/registerSchema.js";
-
+import CustomBox from "../../../layout/CustomBox.jsx";
+import CustomButton from "../../../layout/CustomButton.jsx";
+import ErrorDialog from "../../../layout/ErrorDialog.jsx";
+import useRegister from "../../../../hooks/useRegister.js";
 
 const RegisterForm = ({ onClose, onSwitchToLogin }) => {
-    const theme = useTheme();
-    const [successMessage, setSuccessMessage] = useState("");
-    const navigate = useNavigate();
-    const { handleLogin } = useLogin();
-    const { fetchUserMealsData } = useContext(UserMealsContext);
+    const { handleRegistration, errorMessage, successMessage, setErrorMessage } = useRegister();
+
 
     const {
         register,
@@ -26,143 +21,113 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
         mode: "onBlur",
     });
 
-    const handleRegistration = async (data) => {
-        try {
-            localStorage.clear();
-            sessionStorage.clear();
-
-            const responseData = await registerUserApi(data);
-            const { accessToken, refreshToken } = responseData;
-
-            if (!accessToken || !refreshToken) {
-                setSuccessMessage("Invalid response from server.");
-                return;
-            }
-
-            localStorage.setItem("accessToken", accessToken);
-            localStorage.setItem("refreshToken", refreshToken);
-
-            await handleLogin(data.email, data.password, async () => {
-                await fetchUserMealsData();
-                if (onClose) onClose();
-                navigate("/profile");
-            });
-        } catch (error) {
-            console.error("Registration failed:", error);
-            setSuccessMessage("Registration failed. Please try again.");
-        }
-    };
-
     return (
-        <Box
-            sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "100%",
-                minHeight: onClose ? "auto" : "100vh",
-                ...(onClose && {
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100vw",
-                    height: "100vh",
-                    backgroundColor: theme.palette.action.disabledBackground,
-                    zIndex: 1300,
-                }),
-            }}
-        >
-            <Box
-                component="form"
-                onSubmit={handleSubmit(handleRegistration)}
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 1.5,
-                    backgroundColor: theme.palette.background.paper,
-                    color: theme.palette.text.primary,
-                    padding: 3,
-                    borderRadius: 2,
-                    boxShadow: 3,
-                    width: "90%",
-                    maxWidth: 400,
-                }}
-            >
-                <Typography variant="h5" component="h2" align="center">
-                    Register
-                </Typography>
+        <>
+            <ErrorDialog
+                open={!!errorMessage}
+                onClose={() => setErrorMessage("")}
+                message={errorMessage}
+            />
 
-                {successMessage && (
-                    <Alert severity={successMessage.includes("failed") ? "error" : "success"}>
-                        {successMessage}
-                    </Alert>
-                )}
+            <CustomBox
+                className="w-full max-w-md p-6 bg-white dark:bg-darkBackground rounded-lg shadow-md text-black dark:text-white">
+                <form onSubmit={handleSubmit((data) => handleRegistration(data, onClose))} className="flex flex-col
+                    gap-4">
+                    <h2 className="text-2xl font-bold text-center">Register</h2>
 
-                <TextField
-                    label="Username"
-                    type="text"
-                    {...register("userName")}
-                    error={!!errors.userName}
-                    helperText={errors.userName?.message}
-                    required
-                />
+                    {successMessage && (
+                        <CustomBox className="text-sm p-2 rounded text-green-700 bg-green-100">
+                            {successMessage}
+                        </CustomBox>
+                    )}
 
-                <TextField
-                    label="Email"
-                    type="email"
-                    {...register("email")}
-                    error={!!errors.email}
-                    helperText={errors.email?.message}
-                    required
-                />
+                    <CustomBox>
+                        <label htmlFor="userName" className="block mb-1 font-medium">
+                            Username
+                        </label>
+                        <input
+                            type="text"
+                            id="userName"
+                            {...register("userName")}
+                            className="w-full border rounded px-3 py-2 text-sm dark:bg-gray-800"
+                        />
+                        {errors.userName && (
+                            <p className="text-red-500 text-xs mt-1">{errors.userName.message}</p>
+                        )}
+                    </CustomBox>
 
-                <TextField
-                    label="Password"
-                    type="password"
-                    {...register("password")}
-                    error={!!errors.password}
-                    helperText={errors.password?.message}
-                    required
-                />
+                    <CustomBox>
+                        <label htmlFor="email" className="block mb-1 font-medium">
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            id="email"
+                            {...register("email")}
+                            className="w-full border rounded px-3 py-2 text-sm dark:bg-gray-800"
+                        />
+                        {errors.email && (
+                            <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+                        )}
+                    </CustomBox>
 
-                <TextField
-                    label="Confirm Password"
-                    type="password"
-                    {...register("confirmPassword")}
-                    error={!!errors.confirmPassword}
-                    helperText={errors.confirmPassword?.message}
-                    required
-                />
+                    <CustomBox>
+                        <label htmlFor="password" className="block mb-1 font-medium">
+                            Password
+                        </label>
+                        <input
+                            type="password"
+                            id="password"
+                            {...register("password")}
+                            className="w-full border rounded px-3 py-2 text-sm dark:bg-gray-800"
+                        />
+                        {errors.password && (
+                            <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
+                        )}
+                    </CustomBox>
 
-                <Button type="submit" variant="contained" size="small"
-                        sx={{
-                            color: theme.palette.text.light,
-                        }}
-                >
-                    Register
-                </Button>
+                    <CustomBox>
+                        <label htmlFor="confirmPassword" className="block mb-1 font-medium">
+                            Confirm Password
+                        </label>
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            {...register("confirmPassword")}
+                            className="w-full border rounded px-3 py-2 text-sm dark:bg-gray-800"
+                        />
+                        {errors.confirmPassword && (
+                            <p className="text-red-500 text-xs mt-1">
+                                {errors.confirmPassword.message}
+                            </p>
+                        )}
+                    </CustomBox>
 
-                <Button
-                    variant="text"
-                    size="small"
-                    onClick={onSwitchToLogin}
-                    sx={{ display: "block", margin: "10px auto" }}
-                >
-                    Already have an account? Login
-                </Button>
-
-                {onClose && (
-                    <Button
-                        variant="text"
-                        size="small"
-                        onClick={onClose}
-                        sx={{ alignSelf: "flex-end" }}
+                    <CustomButton
+                        type="submit"
+                        className="bg-primary hover:bg-primary-dark text-white px-4 py-2 self-stretch"
                     >
-                        Close
-                    </Button>
-                )}
-            </Box>
-        </Box>
+                        Register
+                    </CustomButton>
+
+                    <CustomButton
+                        onClick={onSwitchToLogin}
+                        className="text-primary hover:underline self-start bg-transparent px-0 py-0"
+                    >
+                        Already have an account? Login
+                    </CustomButton>
+
+                    {onClose && (
+                        <CustomButton
+                            onClick={onClose}
+                            className="text-gray-600 hover:underline self-end bg-transparent px-0 py-0"
+                        >
+                            Close
+                        </CustomButton>
+                    )}
+                </form>
+            </CustomBox>
+        </>
     );
 };
 

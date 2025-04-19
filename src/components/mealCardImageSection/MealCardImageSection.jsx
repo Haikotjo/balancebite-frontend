@@ -1,92 +1,73 @@
-// src/components/meal/MealImageSection.jsx
-
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import CustomBox from "../layout/CustomBox.jsx";
 import CustomImage from "../layout/CustomImage.jsx";
 import MealCardActionButtons from "../mealCardActionButtons/MealCardActionButtons.jsx";
-import {getImageSrc} from "../../utils/helpers/getImageSrc.js";
+import { getImageSrc } from "../../utils/helpers/getImageSrc.js";
 import MealInfoOverlay from "../mealCardInfoOverlay/MealInfoOverlay.jsx";
 import PreparationTimeIcon from "../mealCardPreparationTimeIcon/PreparationTimeIcon.jsx";
+import {useNavigate} from "react-router-dom";
 
-/**
- * Displays the meal image with overlay or inline layout.
- * Overlay includes creator info and action buttons on the image.
- * Inline places icons in a row below the image.
- *
- * @component
- * @param {Object} props
- * @param {Object} props.meal - The meal object to display.
- * @param {boolean} [props.showUpdateButton=true] - Whether to show the update meal button.
- * @param {"overlay"|"inline"} [props.variant="overlay"] - Layout style.
- * @returns {JSX.Element}
- */
 const MealCardImageSection = ({
                                   meal,
                                   viewMode = "page",
                                   showUpdateButton = true,
-                                  variant = "overlay",
                               }) => {
     const imageSrc = getImageSrc(meal);
-
-    const isInline = variant === "inline";
-    const isListItem = viewMode === "list";
-    const isPage = viewMode === "page";
-    const isMobile = viewMode === "mobile";
+    const navigate = useNavigate();
 
     return (
-        <CustomBox
-            className={clsx(
-                "w-full flex flex-col justify-start shrink-0 gap-2",
-            )}
-        >
-            <CustomBox className="relative aspect-[4/3] w-full shadow-[8px_8px_12px_rgba(0,0,0,0.8)] overflow-hidden rounded-md">
+        <CustomBox className="w-full flex flex-col justify-start shrink-0 gap-2">
+            <CustomBox
+                className={clsx(
+                    "relative aspect-[4/3] w-full shadow-[8px_8px_12px_rgba(0,0,0,0.8)] overflow-hidden rounded-md",
+                    viewMode === "list" && "cursor-pointer"
+                )}
+                onClick={viewMode === "list" ? () => {
+                    console.log("container clicked", meal.id);
+                    navigate(`/meal/${meal.id}`);
+                } : undefined}
+            >
+                {/* IMAGE */}
                 <CustomImage
                     src={imageSrc}
                     alt={meal.name}
-                    className="rounded-md"
+                    className="w-full h-full object-cover rounded-md"
                 />
 
-                {!isInline && (
-                    <>
-                        <MealInfoOverlay meal={meal} fontSize="0.8rem" />
-
-                        {meal.preparationTime && (
-                            <CustomBox className="absolute top-[15px] left-[10px]">
-                                <PreparationTimeIcon preparationTime={meal.preparationTime} />
-                            </CustomBox>
-                        )}
-
-                        <MealCardActionButtons
-                            meal={meal}
-                            viewMode={viewMode}
-                        />
-                    </>
-                )}
-            </CustomBox>
-
-            {isInline && (
-                <>
-                    {/* Background bar behind timer + actions */}
-                    <CustomBox className="absolute top-[0px] left-0 w-full h-[55px] bg-[rgba(255,255,255,0.4)] rounded-md z-0" />
-
-                    {/* Foreground with timer and actions */}
-                    <CustomBox className="absolute top-[10px] left-[10px] w-full flex flex-row items-center justify-between px-3 z-10">
+                {/* OVERLAY TOP */}
+                <CustomBox
+                    className="absolute top-0 left-0 w-full flex items-center justify-between px-2 py-1 z-10 pointer-events-auto cursor-default"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <CustomBox className="absolute inset-0 bg-[rgba(255,255,255,0.4)] rounded-md z-0" />
+                    <CustomBox className="flex items-center justify-between w-full z-10">
                         {meal.preparationTime && (
                             <PreparationTimeIcon preparationTime={meal.preparationTime} layout="inline" />
                         )}
                         <MealCardActionButtons
                             meal={meal}
-                            variant="inline"
                             showUpdateButton={showUpdateButton}
+                            viewMode="list"
                         />
                     </CustomBox>
-                </>
-            )}
+                </CustomBox>
 
+
+                {/* OVERLAY BOTTOM */}
+                <CustomBox
+                    className="absolute bottom-0 left-0 w-full z-10 pointer-events-auto cursor-default"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <MealInfoOverlay meal={meal} fontSize="0.8rem" />
+                </CustomBox>
+
+            </CustomBox>
         </CustomBox>
+
     );
 };
+
 
 MealCardImageSection.propTypes = {
     meal: PropTypes.object.isRequired,

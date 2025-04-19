@@ -50,10 +50,10 @@ export const UserMealsProvider = ({ children }) => {
     useEffect(() => {
         let baseUrl =
             activeOption === "My Meals"
-                ? `${import.meta.env.VITE_BASE_URL}/users/meals?page=${page - 1}&size=6`
+                ? `/users/meals?page=${page - 1}&size=6`
                 : activeOption === "Created Meals"
-                    ? `${import.meta.env.VITE_BASE_URL}/users/created-meals?page=${page - 1}&size=6`
-                    : `${import.meta.env.VITE_BASE_URL}/meals?page=${page - 1}&size=6`;
+                    ? `/users/created-meals?page=${page - 1}&size=6`
+                    : `/meals?page=${page - 1}&size=6`;
 
         // **Filters toevoegen**
         Object.entries(filters).forEach(([key, value]) => {
@@ -93,10 +93,13 @@ export const UserMealsProvider = ({ children }) => {
     }, [currentListEndpoint]);
 
     useEffect(() => {
-        if (user) {
-            fetchUserMealsData();  // 🔹 Alleen bij login, NIET elke keer als je van lijst wisselt
+        fetchMealsData(); // 👉 altijd meals ophalen, login maakt niet uit
+
+        if (activeOption === "My Meals" && user) {
+            fetchUserMealsData(); // 👉 alleen userMeals als ingelogd en My Meals actief
         }
-    }, [user]); // 🔹 Deze afhankelijkheid zorgt dat het enkel wordt uitgevoerd bij login/logout
+    }, [activeOption, user, fetchMealsData]);
+
 
     useEffect(() => {
         const loadMeals = async () => {
@@ -144,10 +147,11 @@ export const UserMealsProvider = ({ children }) => {
 
 
     useEffect(() => {
-        if (activeOption === "My Meals" && user) {
-            fetchUserMealsData(); // Zorgt voor actuele data zodra je naar My Meals gaat
+        if (user) {
+            fetchUserMealsData(); // altijd ophalen zodra user ingelogd is
         }
-    }, [activeOption, user]);
+    }, [user]);
+
 
 
     return (

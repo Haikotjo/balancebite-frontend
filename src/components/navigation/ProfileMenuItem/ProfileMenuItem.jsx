@@ -13,7 +13,7 @@ const ProfileMenuItem = ({ user, onClose }) => {
     const handleProfileClick = () => {
         if (user) {
             navigate("/profile");
-            if (onClose) onClose(); // Sluit het bovenliggende menu
+            if (onClose) onClose();
         } else {
             setShowAlert(true);
         }
@@ -22,6 +22,7 @@ const ProfileMenuItem = ({ user, onClose }) => {
     const handleAlertClose = () => {
         setShowAlert(false);
     };
+
 
     return (
         <>

@@ -1,8 +1,9 @@
+// src/context/AuthContext.jsx
 import { createContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { jwtDecode } from "jwt-decode";
 import { loginApi, logoutApi } from "../services/authService.js";
-import { Box, CircularProgress } from "@mui/material";
+import Spinner from "../components/layout/spinner.jsx";
 
 export const AuthContext = createContext();
 
@@ -18,17 +19,30 @@ export const AuthProvider = ({ children }) => {
 
             try {
                 if (storedToken) {
-
                     const userData = jwtDecode(storedToken);
-                    setUser({ id: userData.sub, roles: userData.roles, type: userData.type });
-                    setRole(userData.roles);
+
+                    // Check of token verlopen is (optioneel)
+                    if (userData.exp && Date.now() >= userData.exp * 1000) {
+                        throw new Error("Access token is expired.");
+                    }
+
+                    // Check op geldige structuur
+                    if (!userData.sub || !userData.roles) {
+                        throw new Error("Invalid token payload.");
+                    }
+
+                    // Normaliseer rollen indien nodig
+                    const roles = Array.isArray(userData.roles)
+                        ? userData.roles
+                        : [userData.roles];
+
+                    setUser({ id: userData.sub, roles, type: userData.type });
+                    setRole(roles);
                     setToken(storedToken);
-                } else {
-                    console.warn("No access token found. User not logged in.");
                 }
             } catch (error) {
                 console.error("Error during authentication initialization:", error.message);
-                logout();
+                await logout();
             } finally {
                 setLoading(false);
             }
@@ -39,19 +53,23 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            const response = await loginApi(email, password);
-            const { accessToken, refreshToken } = response;
-
+            const { accessToken, refreshToken } = await loginApi(email, password);
             localStorage.setItem("accessToken", accessToken);
             localStorage.setItem("refreshToken", refreshToken);
 
             const userData = jwtDecode(accessToken);
-            setUser({ id: userData.sub, roles: userData.roles, type: userData.type });
-            setRole(userData.roles);
+
+            const roles = Array.isArray(userData.roles)
+                ? userData.roles
+                : [userData.roles];
+
+            setUser({ id: userData.sub, roles, type: userData.type });
+            setRole(roles);
             setToken(accessToken);
         } catch (err) {
-            console.error("Login failed:", err.response?.data?.error || err.message);
-            throw new Error(err.response?.data?.error || "Login failed");
+            const msg = err.response?.data?.error || err.message || "Login failed";
+            console.error("Login failed:", msg);
+            throw new Error(msg);
         }
     };
 
@@ -61,8 +79,8 @@ export const AuthProvider = ({ children }) => {
         if (currentToken) {
             try {
                 await logoutApi(currentToken);
-            } catch (error) {
-                console.error("Error during logout request:", error.response?.data?.error || error.message);
+            } catch (err) {
+                console.error("Error during logout request:", err.response?.data?.error || err.message);
             }
         }
 
@@ -76,16 +94,9 @@ export const AuthProvider = ({ children }) => {
 
     if (loading) {
         return (
-            <Box
-                sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "100vh",
-                }}
-            >
-                <CircularProgress />
-            </Box>
+            <div className="flex items-center justify-center h-screen">
+                <Spinner />
+            </div>
         );
     }
 

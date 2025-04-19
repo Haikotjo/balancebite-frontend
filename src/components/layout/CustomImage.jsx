@@ -1,13 +1,14 @@
 import PropTypes from "prop-types";
 
 /**
- * A responsive image with consistent styling.
+ * A barebones image component with only loading optimizations.
+ * All styling must be applied via the `className` prop.
  *
  * @component
  * @param {Object} props
  * @param {string} props.src - Image source URL.
- * @param {string} [props.alt] - Alternative text for accessibility.
- * @param {string} [props.className] - Optional Tailwind classes to override defaults.
+ * @param {string} [props.alt] - Alternative text.
+ * @param {string} [props.className] - Tailwind or custom classes.
  * @returns {JSX.Element}
  */
 const CustomImage = ({ src, alt = "", className = "" }) => {
@@ -17,7 +18,7 @@ const CustomImage = ({ src, alt = "", className = "" }) => {
             alt={alt}
             loading="lazy"
             decoding="async"
-            className={`w-full h-full object-cover rounded ${className}`}
+            className={className}
         />
     );
 };

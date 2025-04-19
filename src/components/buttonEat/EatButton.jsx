@@ -4,7 +4,7 @@ import RecommendedNutritionDisplay from "../recommendedNutritionDisplay/Recommen
 import ErrorDialog from "../layout/ErrorDialog.jsx";
 import { useConsumeMeal } from "../../hooks/useConsumeMeal.js";
 import CustomIconButton from "../layout/CustomIconButton.jsx";
-import CustomModal from "../layout/CustomModal.jsx"; // Zorg ervoor dat CustomModal geïmporteerd wordt
+import CustomModal from "../layout/CustomModal.jsx";
 import { useState } from "react";
 import LoginRegisterForm from "../navigation/loginRegisterForm/LoginRegisterForm.jsx";
 import CustomButton from "../layout/CustomButton.jsx";

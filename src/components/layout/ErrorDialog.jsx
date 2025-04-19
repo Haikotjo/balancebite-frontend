@@ -1,70 +1,80 @@
-'use client'
+// src/components/forms/ErrorDialog.jsx
+import React from "react";
+import PropTypes from "prop-types";
+import { CircleAlert } from "lucide-react";
+import CustomBox from "./CustomBox.jsx";
+import CustomButton from "./CustomButton.jsx";
+import { Dialog, DialogPanel, DialogTitle } from "../Dialog/Dialog.jsx";
 
-import PropTypes from "prop-types"
-import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react"
-import { CircleAlert } from "lucide-react"
 
-/**
- * A minimal and stable error dialog using Headless UI.
- * Fully Tailwind-based and safe across all browsers and platforms.
- *
- * @component
- */
 
-const ErrorDialog = ({ open, onClose, message, actionLink, actionLabel, onAction }) => {
-    return (
-        <Dialog open={open} onClose={onClose} className="relative z-[1000]">
-            <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
-            <div className="fixed inset-0 flex items-center justify-center px-4">
-                <DialogPanel className="w-full max-w-md rounded-md bg-white dark:bg-darkBackground text-black dark:text-white p-6 shadow-lg">
-                    <div className="flex items-center gap-2 mb-4">
-                        <CircleAlert className="text-error shrink-0" size={24} />
+const ErrorDialog = React.forwardRef(
+    ({ open, onClose, message, actionLink, actionLabel, onAction }, ref) => (
+        <Dialog open={open} onClose={onClose} ref={ref} className="relative z-[1000]">
+            {/* backdrop */}
+            <CustomBox
+                as="div"
+                className="fixed inset-0 bg-black/50"
+                aria-hidden="true"
+            />
+
+            {/* panel container */}
+            <CustomBox as="div" className="fixed inset-0 flex items-center justify-center px-4">
+                <DialogPanel as={CustomBox} className="block mb-4 text-sm underline text-primary hover:text-primary/80 dark:hover:bg-gray-700 rounded px-2 -mx-2">
+
+                    {/* header */}
+                    <CustomBox className="flex items-center gap-2 mb-4">
+                        <CircleAlert size={24} className="text-error shrink-0" />
                         <DialogTitle as="h2" className="text-lg font-semibold">
                             Action Required
                         </DialogTitle>
-                    </div>
+                    </CustomBox>
 
-                    <p className="text-sm mb-4">{message}</p>
+                    {/* message */}
+                    <CustomBox className="text-sm mb-4">{message}</CustomBox>
 
-                    {actionLink && actionLabel && (
-                        <a
-                            href={actionLink}
-                            target="_self"
-                            rel="noopener noreferrer"
-                            className="text-sm text-primary underline hover:text-primary/80 transition block mb-4"
-                        >
-                            {actionLabel}
-                        </a>
+                    {/* actie-link of knop */}
+                    {actionLabel && (
+                        actionLink ? (
+                            <CustomButton
+                                as="a"
+                                href={actionLink}
+                                className="block mb-4 text-sm underline text-primary hover:text-primary/80"
+                            >
+                                {actionLabel}
+                            </CustomButton>
+                        ) : (
+                            <CustomButton
+                                onClick={onAction}
+                                className="block mb-4 text-sm underline text-primary hover:text-primary/80"
+                            >
+                                {actionLabel}
+                            </CustomButton>
+                        )
                     )}
 
-                    {!actionLink && actionLabel && (
-                        <button
-                            onClick={onAction}
-                            className="text-sm text-primary underline hover:text-primary/80 transition block mb-4"
-                        >
-                            {actionLabel}
-                        </button>
-                    )}
-
-                    <button
+                    {/* sluitknop */}
+                    <CustomButton
                         onClick={onClose}
-                        className="w-full bg-error text-white py-2 rounded-md text-sm hover:bg-error/90 transition"
+                        className="w-full py-2 rounded-md text-sm bg-error text-white hover:bg-error/90 transition"
                     >
                         Close
-                    </button>
-                </DialogPanel>
-            </div>
-        </Dialog>
-    );
-};
+                    </CustomButton>
 
+                </DialogPanel>
+            </CustomBox>
+        </Dialog>
+    )
+);
+
+ErrorDialog.displayName = "ErrorDialog";
 ErrorDialog.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     message: PropTypes.string.isRequired,
     actionLink: PropTypes.string,
     actionLabel: PropTypes.string,
-    onAction: PropTypes.func, // ✅ nieuwe prop
+    onAction: PropTypes.func,
 };
 
 export default ErrorDialog;
