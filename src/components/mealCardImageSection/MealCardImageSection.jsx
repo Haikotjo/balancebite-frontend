@@ -37,7 +37,7 @@ const MealCardImageSection = ({
 
                 {/* OVERLAY TOP */}
                 <CustomBox
-                    className="absolute top-0 left-0 w-full flex items-center justify-between px-2 py-1 z-10 pointer-events-auto cursor-default"
+                    className="absolute top-0 left-0 w-full flex items-center justify-between px-2 py-1 z-0 pointer-events-auto cursor-default"
                     onClick={(e) => e.stopPropagation()}
                 >
                     <CustomBox className="absolute inset-0 bg-[rgba(255,255,255,0.4)] rounded-md z-0" />
@@ -56,7 +56,7 @@ const MealCardImageSection = ({
 
                 {/* OVERLAY BOTTOM */}
                 <CustomBox
-                    className="absolute bottom-0 left-0 w-full z-10 pointer-events-auto cursor-default"
+                    className="absolute bottom-0 left-0 w-full z-0 pointer-events-auto cursor-default"
                     onClick={(e) => e.stopPropagation()}
                 >
                     <MealInfoOverlay meal={meal} fontSize="0.8rem" />

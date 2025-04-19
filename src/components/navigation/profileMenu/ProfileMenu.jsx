@@ -31,7 +31,7 @@ const ProfileMenu = ({
         <CustomDropdownWeb
             open={open}
             onOpenChange={setOpen}
-            className="mt-2 right-0 sm:w-56"
+            className="mt-2 left-0 sm:left-auto sm:right-0 min-w-[10rem] max-w-[90vw]"
             /* ── trigger element ─────────────────────────────────────────── */
             trigger={
                 <CustomBox

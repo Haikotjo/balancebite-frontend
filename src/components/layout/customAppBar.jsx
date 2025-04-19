@@ -11,7 +11,13 @@ const CustomAppBar = React.forwardRef(({ children, className, position = "sticky
         ref={ref}
         className={clsx(
             bgColor, // Use the dynamic background color here
-            position === "sticky" ? "sticky top-0" : "",
+            position === "sticky"
+                ? "sticky top-0"
+                : position === "fixed"
+                    ? "fixed bottom-0 top-auto"
+                    : position === "relative"
+                        ? "relative"
+                        : "",
             "w-full z-10",
             "shadow-md",
             className

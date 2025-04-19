@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import CustomBox from "../layout/CustomBox";
 import { useDropdown } from "../../hooks/useDropdown.js";
+import CustomDivider from "./CustomDivider.jsx";
 
 /**
  * A dropdown menu component that displays a trigger element and
@@ -32,32 +33,35 @@ export default function CustomDropdownWeb({
             {/* Dropdown panel */}
             {open && (
                 <CustomBox
-                    className={`absolute z-50 w-56 rounded-xl bg-white shadow-lg dark:bg-gray-800 ${className}`}
+                    className={`absolute z-[9999] w-56 rounded-xl bg-white shadow-lg dark:bg-gray-800 bottom-full mb-2 sm:bottom-auto sm:top-full sm:mt-2 ${className}`}
                 >
                     {items.map(({ label, onClick, icon: Icon, disabled }, index) => (
-                        // Each menu item row
-                        <CustomBox
-                            key={index}
-                            onClick={
-                                !disabled
-                                    ? () => {
-                                        onClick();
-                                        close(); // close menu after action
-                                    }
-                                    : undefined
-                            }
-                            className={`flex items-center px-4 py-2 text-sm gap-2 ${
-                                disabled
-                                    ? "text-gray-400 cursor-not-allowed"
-                                    : "text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-                            }`}
-                        >
-                            {/* Optional icon rendered before label */}
-                            {Icon && <Icon className="w-4 h-4" />}
-                            {/* Menu item text */}
-                            {label}
+                        <CustomBox key={index}>
+                            <CustomBox
+                                onClick={
+                                    !disabled
+                                        ? () => {
+                                            onClick();
+                                            close();
+                                        }
+                                        : undefined
+                                }
+                                className={`w-full flex items-center justify-start gap-6 px-4 py-4 text-sm ${
+                                    disabled
+                                        ? "text-gray-400 cursor-not-allowed"
+                                        : "text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                                }`}
+                            >
+                                {Icon && <Icon className="w-4 h-4" />}
+                                <span>{label}</span>
+                            </CustomBox>
+
+                            {index < items.length - 1 && (
+                                <CustomDivider className="mx-4 bg-gray-200 dark:bg-gray-600" />
+                            )}
                         </CustomBox>
                     ))}
+
                 </CustomBox>
             )}
         </CustomBox>

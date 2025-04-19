@@ -1,149 +1,96 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import { Menu, MenuItem, IconButton, ListItemText, ListItemIcon, Divider } from "@mui/material";
-import { useTheme } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import { useNavigate, useLocation } from "react-router-dom";
-import ProfileMenu from "../profileMenu/ProfileMenu.jsx";
-import LoginLogoutMenuItem from "../loginLogoutMenuItem/LoginLogoutMenuItem.jsx";
-import MealsMenu from "../../mealsMenu/MealsMenu.jsx";
+import { MenuIcon, Home, Info, LogIn, LogOut, UserPlus } from "lucide-react";
+import CustomBox from "../../layout/CustomBox.jsx";
+import CustomButton from "../../layout/CustomButton.jsx";
+import CustomTypography from "../../layout/CustomTypography.jsx";
+import CustomDivider from "../../layout/CustomDivider.jsx";
 
-const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick, iconColor = "text.primary" }) => {
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [mealsMenuAnchorEl, setMealsMenuAnchorEl] = useState(null);
+/**
+ * A responsive hamburger menu for small screens.
+ * Displays a toggle button and a dropdown menu with navigation or auth actions.
+ *
+ * @component
+ * @param {Object} props
+ * @param {Object|null} props.user - The current logged-in user, or null if not authenticated.
+ * @param {Function} props.onLogout - Callback to handle logout.
+ * @param {Function} props.onLoginClick - Callback to navigate to login.
+ * @param {Function} props.onRegisterClick - Callback to navigate to registration.
+ */
+const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
+    const [open, setOpen] = useState(false);
     const [isIconLoaded, setIsIconLoaded] = useState(false);
+    const menuRef = useRef(null);
     const navigate = useNavigate();
     const location = useLocation();
-    const theme = useTheme();
 
-    const isMenuOpen = Boolean(anchorEl);
-    Boolean(mealsMenuAnchorEl);
-    const handleMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
+    const isActive = (path) => location.pathname === path;
 
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-        setMealsMenuAnchorEl(null);
-    };
+    // Rotate icon on mount for simple animation effect
     useEffect(() => {
         setTimeout(() => setIsIconLoaded(true), 100);
     }, []);
 
-    const isActive = (path) => location.pathname === path;
+    // Close menu when clicking outside of it
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setOpen(false);
+            }
+        };
+        if (open) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [open]);
 
-    const menuItemStyle = (path) => ({
-        backgroundColor: isActive(path)
-            ? theme.palette.mode === "dark"
-                ? "rgba(255, 255, 255, 0.2)" // Lichte modus: semi-transparant wit
-                : theme.palette.primary.main // Donkere modus: primary.main
-            : "inherit",
-    });
-
+    // Menu item configuration
+    const menuItems = [
+        { label: "Home", icon: Home, path: "/" },
+        { label: "About", icon: Info, path: "/about" },
+        !user && { label: "Login", icon: LogIn, action: onLoginClick },
+        !user && { label: "Register", icon: UserPlus, action: onRegisterClick },
+        user && { label: "Logout", icon: LogOut, action: onLogout },
+    ].filter(Boolean);
 
     return (
-        <>
-            <IconButton
-                edge="end"
-                onClick={handleMenuOpen}
-                sx={{
-                    color: theme.palette[iconColor] || iconColor,
-                    transition: "transform 0.75s ease-in-out, opacity 0.5s",
-                    transform: `${isIconLoaded ? "rotate(360deg)" : "rotate(0deg)"} ${
-                        isMenuOpen ? "rotate(360deg)" : ""
-                    }`,
-                    opacity: isIconLoaded ? 1 : 0,
-                    transformOrigin: "center",
-                }}
+        <CustomBox ref={menuRef} className="relative">
+            {/* Toggle button */}
+            <CustomButton
+                onClick={() => setOpen(!open)}
+                className={`text-white transition-transform duration-700 ease-in-out ${
+                    isIconLoaded ? "rotate-[360deg]" : "rotate-0"
+                }`}
             >
-                <MenuIcon />
-            </IconButton>
+                <MenuIcon className="w-6 h-6" />
+            </CustomButton>
 
-            <Menu anchorEl={anchorEl} open={isMenuOpen} onClose={handleMenuClose}>
-                {/* MealsMenu */}
-                <MenuItem disableRipple style={{ display: "flex", justifyContent: "space-between" }}>
-                    <MealsMenu
-                        user={user}
-                        iconColor={null}
-                        text="Meals"
-                        onClose={handleMenuClose}
-                    />
-                </MenuItem>
-                <Divider sx={{ height: "1px", margin: 0 }} />
+            {/* Dropdown menu */}
+            {open && (
+                <CustomBox className="absolute bottom-full mb-2 sm:bottom-auto sm:top-full sm:mt-2 mt-2 left-0 sm:left-auto sm:right-0 min-w-[10rem] max-w-[90vw] rounded-xl bg-white dark:bg-gray-800 shadow-lg z-[999]">
+                    {menuItems.map(({ label, icon: Icon, path, action }, index) => (
+                        <CustomBox key={label}>
+                            <CustomButton
+                                onClick={() => {
+                                    if (path && !isActive(path)) navigate(path);
+                                    if (action) action();
+                                    setOpen(false);
+                                }}
+                                className="w-full flex items-center justify-start gap-6 px-4 py-4 text-sm text-userText hover:bg-gray-100 dark:hover:bg-gray-700"
+                            >
+                                <Icon className="w-4 h-4" />
+                                <CustomTypography as="span">{label}</CustomTypography>
+                            </CustomButton>
 
-                {/* ProfileMenu */}
-                <MenuItem disableRipple style={{ display: "flex", justifyContent: "space-between" }}>
-                    <ProfileMenu
-                        user={user}
-                        onLogout={onLogout}
-                        onLoginClick={onLoginClick}
-                        onRegisterClick={onRegisterClick}
-                        iconColor={null}
-                        onClose={handleMenuClose}
-                        text="Profile"
-                    />
-                </MenuItem>
-                <Divider sx={{ height: "1px", margin: 0 }} />
-
-                {/* Home */}
-                <MenuItem
-                    onClick={() => {
-                        if (!isActive("/")) {
-                            navigate("/");
-                            handleMenuClose();
-                        }
-                    }}
-                    disabled={isActive("/")}
-                    sx={menuItemStyle("/")}
-                >
-                    <ListItemIcon>
-                        <HomeRoundedIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Home" />
-                </MenuItem>
-                <Divider sx={{ height: "1px", margin: 0 }} />
-
-                {/* About */}
-                <MenuItem
-                    onClick={() => {
-                        if (!isActive("/about")) {
-                            navigate("/about");
-                            handleMenuClose();
-                        }
-                    }}
-                    disabled={isActive("/about")}
-                    sx={menuItemStyle("/about")}
-                >
-                    <ListItemIcon>
-                        <InfoRoundedIcon sx={null} />
-                    </ListItemIcon>
-                    <ListItemText primary="About" />
-                </MenuItem>
-                <Divider sx={{ height: "1px", margin: 0 }} />
-
-                {/* LoginLogoutMenuItem */}
-                {user ? (
-                    <LoginLogoutMenuItem
-                        user={user}
-                        onLoginClick={onLoginClick}
-                        onRegisterClick={onRegisterClick}
-                        onLogout={onLogout}
-                        onClose={handleMenuClose}
-                    />
-                ) : (
-                    <LoginLogoutMenuItem
-                        user={user}
-                        onLoginClick={onLoginClick}
-                        onRegisterClick={onRegisterClick}
-                        onLogout={onLogout}
-                        onClose={handleMenuClose}
-                    />
-                )}
-            </Menu>
-
-        </>
+                            {index < menuItems.length - 1 && (
+                                <CustomDivider className="mx-4 bg-gray-200 dark:bg-gray-600" />
+                            )}
+                        </CustomBox>
+                    ))}
+                </CustomBox>
+            )}
+        </CustomBox>
     );
 };
 
@@ -156,7 +103,6 @@ HamburgerMenu.propTypes = {
     onLogout: PropTypes.func.isRequired,
     onLoginClick: PropTypes.func.isRequired,
     onRegisterClick: PropTypes.func.isRequired,
-    iconColor: PropTypes.string,
 };
 
 export default HamburgerMenu;

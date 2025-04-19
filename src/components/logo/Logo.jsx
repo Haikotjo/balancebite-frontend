@@ -1,20 +1,22 @@
-import PropTypes from 'prop-types';
-import { useTheme } from '@mui/material/styles';
-import { Link as RouterLink } from 'react-router-dom';
+import PropTypes from "prop-types";
+import { Link as RouterLink } from "react-router-dom";
 
-function Logo({ size = 100, color, to }) {
-    const theme = useTheme();
-    const fillColor = color || theme.palette.primary.main;
-
+/**
+ * Logo component that renders an SVG logo with optional size, color, and routing.
+ * Uses Tailwind CSS for styling to allow better compatibility with React Native.
+ */
+const Logo = ({ size = 100, className = "", to }) => {
     const aspectRatio = 1460 / 937;
+    const width = size * aspectRatio;
+    const height = size;
 
     const LogoContent = (
         <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 1460 937"
-            width={size * aspectRatio}
-            height={size}
-            fill={fillColor}
+            width={width}
+            height={height}
+            className={`fill-current ${className}`}
         >
             <path
                 d="M125.792 1.75041c-2.133 2.13333-2.266 434.93359-.266 458.39959.8 8.4 2.666 21.334 4.133 28.667 1.6 7.333 3.2 15.467 3.733 18.133.534 2.534 1.467 5.6 2.134 6.534.666.933 1.6 4 2.133 6.533 3.067 15.067 19.2 50.533 33.6 73.867 15.6 25.2 44.533 57.733 66 74 9.067 6.933 32.667 22.933 41.733 28.133 12.667 7.467 47.2 22.8 51.334 22.8.933 0 3.733.8 6.133 1.867 2.4 1.066 8.133 2.8 12.8 4 4.533 1.2 11.733 3.066 16 4.133 4.133 1.067 10.667 2.133 14.267 2.533 3.733.267 10.933 1.334 16 2.267 10.933 1.733 58.666.933 73.333-1.467 28.267-4.4 63.733-15.333 89.867-27.6 14.666-6.8 30.666-16.266 32.133-19.066.8-1.6 1.333-72.667 1.333-198.534 0-107.866.134-196.266.4-196.4.134-.133 22.4-.666 49.6-1.066 42.4-.534 49.334-.934 49.734-2.667.266-1.733-2.4-6.533-13.467-24.667-.933-1.466-5.2-7.333-9.6-13.333-26.133-35.067-54.267-60.4-90.667-81.6-37.866-22.133-62.4-31.067-103.733-37.867-14.667-2.533-23.2-3.066-50.933-3.066l-33.334-.134-.4 123.2c-.133 79.067.134 123.734 1.067 124.667.667.667 7.867 1.067 16.267.933 28.666-.533 43.733 4 56.4 17.334 4.133 4.266 9.066 11.2 11.066 15.466 3.067 6.8 3.6 9.467 3.6 21.067 0 12.4-.266 14-4.4 22.267-10.266 20.933-34.133 33.6-55.2 29.2-17.733-3.6-31.066-14.134-38.8-30.534l-4.266-8.933-.667-218.667c-.4-120.266-1.2-219.46626-1.733-220.39959-1.6-2.266671-244.934-2.400005-247.334 0ZM792.592 267.75c-2.266.8-2.533 335.067-.266 356.4 4.666 44.4 19.333 79.867 44.533 107.734 17.333 19.066 48.133 37.733 75.333 45.466 30 8.667 39.6 9.467 116.268 9.467 38 0 69.73-.267 70.4-.667.8-.533 1.33-32.8 1.33-85.333 0-75.733-.26-84.4-2.13-85.2-1.2-.4-28.27-.8-60.4-.8h-58.401l-2.8-3.067c-2.933-3.066-2.933-3.733-2.667-35.733l.4-32.533 62.668-.667 62.67-.667.4-84.533c.26-66.8 0-84.8-1.34-85.733-.93-.534-29.46-1.067-63.33-1.067h-61.734v-50.4c0-37.467-.4-50.8-1.6-52-1.2-1.2-22.8-1.6-89.734-1.467-48.4 0-88.8.4-89.6.8Z"
@@ -27,19 +29,22 @@ function Logo({ size = 100, color, to }) {
 
     if (to) {
         return (
-            <RouterLink to={to} style={{ display: 'inline-block', textDecoration: 'none' }}>
+            <RouterLink
+                to={to}
+                className="inline-block no-underline"
+            >
                 {LogoContent}
             </RouterLink>
         );
     }
 
     return LogoContent;
-}
+};
 
 Logo.propTypes = {
-    size: PropTypes.number, // Size of the logo
-    color: PropTypes.string, // Custom color for the logo
-    to: PropTypes.string, // Optional link URL
+    size: PropTypes.number,
+    className: PropTypes.string,
+    to: PropTypes.string,
 };
 
 export default Logo;
