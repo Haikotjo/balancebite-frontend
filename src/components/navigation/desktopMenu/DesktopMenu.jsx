@@ -4,48 +4,77 @@ import CustomTypography from "../../layout/CustomTypography.jsx";
 import CustomButton from "../../layout/CustomButton.jsx";
 import CustomBox from "../../layout/CustomBox.jsx";
 
+/**
+ * Array of navigation links shown in the top-level desktop menu.
+ * Each item includes a display label and the corresponding route path.
+ */
 const navItems = [
     { label: "Home", path: "/" },
     { label: "About", path: "/about" },
     { label: "View Meals", path: "/meals" },
 ];
 
+/**
+ * DesktopMenu renders navigation buttons and login/logout/register options.
+ * Navigation buttons highlight the active route.
+ *
+ * @component
+ * @param {object} props - Component props
+ * @param {object|null} props.user - Current user object or null if not logged in
+ * @param {Function} props.onLogout - Callback to handle logout
+ * @param {Function} props.onLoginClick - Callback to open login flow
+ * @param {Function} props.onRegisterClick - Callback to open registration flow
+ * @returns {JSX.Element}
+ */
 const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    /**
+     * Returns true if the current route matches the given path.
+     * For root ("/"), it requires exact match.
+     */
     const isActive = (path) =>
         path === "/"
             ? location.pathname === "/"
             : location.pathname.startsWith(path);
 
-
     return (
         <CustomBox className="flex gap-3 items-center">
+            {/* Render main navigation links */}
             {navItems.map((item) => (
                 <CustomButton
                     key={item.path}
                     onClick={() => navigate(item.path)}
                     className={`px-3 py-1 rounded-md text-sm transition-all
-    ${isActive(item.path)
+                        ${isActive(item.path)
                         ? "bg-userPrimary text-white"
                         : "text-userText"} hover:bg-white/30`}
-
                 >
                     <CustomTypography className="text-sm">{item.label}</CustomTypography>
                 </CustomButton>
             ))}
 
+            {/* Render authentication options */}
             {user ? (
-                <CustomButton onClick={onLogout} className="text-userText hover:bg-white/30 px-3 py-1 rounded-md">
+                <CustomButton
+                    onClick={onLogout}
+                    className="text-userText hover:bg-white/30 px-3 py-1 rounded-md"
+                >
                     <CustomTypography className="text-sm">Logout</CustomTypography>
                 </CustomButton>
             ) : (
                 <>
-                    <CustomButton onClick={onLoginClick} className="text-userText hover:bg-white/30 px-3 py-1 rounded-md">
+                    <CustomButton
+                        onClick={onLoginClick}
+                        className="text-userText hover:bg-white/30 px-3 py-1 rounded-md"
+                    >
                         <CustomTypography className="text-sm">Login</CustomTypography>
                     </CustomButton>
-                    <CustomButton onClick={onRegisterClick} className="text-userText hover:bg-white/30 px-3 py-1 rounded-md">
+                    <CustomButton
+                        onClick={onRegisterClick}
+                        className="text-userText hover:bg-white/30 px-3 py-1 rounded-md"
+                    >
                         <CustomTypography className="text-sm">Register</CustomTypography>
                     </CustomButton>
                 </>
