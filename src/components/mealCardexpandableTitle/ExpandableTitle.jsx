@@ -1,71 +1,73 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { Typography, Box } from "@mui/material";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import CustomBox from "../layout/CustomBox.jsx";
+import CustomTypography from "../layout/CustomTypography.jsx";
+import { useNavigate } from "react-router-dom";
 
-const ExpandableTitle = ({ title }) => {
-    // State to track whether the text is expanded or collapsed
+/**
+ * ExpandableTitle shows a short or full version of a title with a toggle.
+ * The title itself is clickable and navigates to the meal detail page.
+ *
+ * @component
+ * @param {object} props
+ * @param {string} props.title - The title text to display.
+ * @param {string} props.mealId - The ID of the meal to link to.
+ * @returns {JSX.Element}
+ */
+const ExpandableTitle = ({ title, mealId }) => {
     const [expanded, setExpanded] = useState(false);
-
-    // Check if text is longer than 160 characters
     const isLongText = title.length > 50;
+    const navigate = useNavigate();
+
+    const handleNavigate = () => {
+        navigate(`/meal/${mealId}`);
+    };
 
     return (
-        <Box sx={{ display: "flex", alignItems: "center", maxWidth: "100%", marginBottom: 1 }}>
-            <Typography
-                variant="h4"
-                sx={{
-                    fontSize: { xs: "1.5rem", md: "2rem" },
-                    fontWeight: 600,
-                    color: "text.primary",
-                    overflow: "hidden",
-                    display: expanded ? "block" : "-webkit-box",
-                    transition: "max-height 0.3s ease-in-out",
-                }}
+        <CustomBox className="flex items-start max-w-full mb-2">
+            <CustomTypography
+                onClick={handleNavigate}
+                className="text-xl sm:text-2xl md:text-3xl font-semibold leading-snug cursor-pointer hover:underline"
             >
                 {expanded || !isLongText ? (
                     <>
                         {title}{" "}
                         {isLongText && (
-                            <Typography
-                                component="span"
-                                onClick={() => setExpanded(false)}
-                                sx={{
-                                    fontSize: { xs: "0.8rem", md: "1rem" },
-                                    fontStyle: "normal", // Prevents the "Read less" link from being italic
-                                    color: "primary.main", // Uses primary color from MUI theme
-                                    cursor: "pointer", // Makes it clickable
+                            <CustomTypography
+                                as="span"
+                                className="ml-1 text-sm text-userPrimary cursor-pointer"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setExpanded(false);
                                 }}
                             >
                                 Read less
-                            </Typography>
+                            </CustomTypography>
                         )}
                     </>
                 ) : (
                     <>
-                        {/* Displays only the first 160 characters in collapsed state */}
                         {title.substring(0, 50)}{" "}
-                        <Typography
-                            component="span"
-                            onClick={() => setExpanded(true)}
-                            sx={{
-                                fontSize: { xs: "0.8rem", md: "1rem" },
-                                fontStyle: "normal", // Prevents the "Read more" link from being italic
-                                color: "primary.main",
-                                cursor: "pointer",
+                        <CustomTypography
+                            as="span"
+                            className="text-sm text-userPrimary cursor-pointer"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setExpanded(true);
                             }}
                         >
                             ...Read more
-                        </Typography>
+                        </CustomTypography>
                     </>
                 )}
-            </Typography>
-        </Box>
+            </CustomTypography>
+        </CustomBox>
     );
 };
 
 ExpandableTitle.propTypes = {
     title: PropTypes.string.isRequired,
+    mealId: PropTypes.string.isRequired,
 };
 
 export default ExpandableTitle;

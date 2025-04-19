@@ -10,9 +10,9 @@ import CustomTypography from "./CustomTypography.jsx";
 const BulletText = ({ children }) => {
     return (
         <CustomBox className="flex items-center gap-2">
-            <CustomTypography className="text-primary text-[1rem]">•</CustomTypography>
-            <CustomTypography className="text-[0.8rem] md:text-base italic">
-            {children}
+            <CustomTypography as="span" className="text-primary text-[1rem]">•</CustomTypography>
+            <CustomTypography as="span" className="text-[0.8rem] md:text-base italic">
+                {children}
             </CustomTypography>
         </CustomBox>
     );

@@ -66,6 +66,7 @@ const MealDetailCard = ({ meal, viewMode = "page" }) => {
                 {/* Title Section */}
                 <ExpandableTitle
                     title={mealToRender.name}
+                    mealId={String(mealToRender.id)}
                     viewMode={viewMode}
                 />
 
