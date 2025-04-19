@@ -8,7 +8,7 @@ import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import { useNavigate, useLocation } from "react-router-dom";
 import ProfileMenu from "../profileMenu/ProfileMenu.jsx";
 import LoginLogoutMenuItem from "../loginLogoutMenuItem/LoginLogoutMenuItem.jsx";
-import MealsMenu from "../mealsMenu/MealsMenu.jsx";
+import MealsMenu from "../../mealsMenu/MealsMenu.jsx";
 
 const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick, iconColor = "text.primary" }) => {
     const [anchorEl, setAnchorEl] = useState(null);

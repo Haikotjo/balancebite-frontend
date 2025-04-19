@@ -1,5 +1,5 @@
-import { useContext } from "react";
-import {useTheme, useMediaQuery, MenuItem} from "@mui/material";
+import {useContext} from "react";
+import {useTheme, useMediaQuery} from "@mui/material";
 import HamburgerMenu from "./hamburgerMenu/HamburgerMenu";
 import DesktopMenu from "./desktopMenu/DesktopMenu";
 import ErrorAlert from "../errorAlert/ErrorAlert";
@@ -9,22 +9,18 @@ import { AuthContext } from "../../context/AuthContext.jsx";
 import Logo from "../logo/Logo.jsx";
 import { useNavigate } from "react-router-dom";
 import ProfileMenu from "./profileMenu/ProfileMenu.jsx";
-import MealsMenu from "./mealsMenu/MealsMenu.jsx";
+import MealsMenu from "../mealsMenu/MealsMenu.jsx";
 import PropTypes from "prop-types";
 import DarkModeSwitch from "./darkModeSwitch/DarkModeSwitch.jsx";
-import { useThemeMode } from "../../themes/ThemeProvider.jsx";
-import VerticalDivider from "../verticalDivider/VerticalDivider.jsx";
 import CustomAppBar from "../layout/CustomAppBar.jsx";
 import CustomBox from "../layout/CustomBox.jsx";
-import CustomButton from "../layout/CustomButton.jsx"; // Import the CustomAppBar
 
 const NavBar = () => {
     const { user } = useContext(AuthContext);
     const theme = useTheme();
-    const { mode } = useThemeMode();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const handleLogout = useLogout();
-    const { handleLogin, errorMessage } = useLogin();
+    const { errorMessage } = useLogin();
     const navigate = useNavigate();
 
     return (
@@ -42,35 +38,21 @@ const NavBar = () => {
                 <CustomBox className="flex items-center">
                     {/* Meals Menu */}
                     <CustomBox className="flex items-center">
-                        <CustomButton
-                            onClick={(e) => e.currentTarget.nextSibling.click()}
-                            className="cursor-pointer hover:bg-white/20 dark:hover:bg-white/20 transition-all hidden sm:block"
-                        >
-                            Meals
-                        </CustomButton>
-                        <MealsMenu user={user} />
+                        <CustomBox className="flex items-center">
+                            <MealsMenu buttonClass="ml-2" />   {/* alleen nog dit */}
+                        </CustomBox>
                     </CustomBox>
 
-
-
-                    {/* Profile Menu */}
-                    <CustomBox className="flex items-center">
-                        <CustomButton
-                            onClick={(e) => e.currentTarget.nextSibling.click()}
-                            className="cursor-pointer hover:bg-white/20 dark:hover:bg-white/20 transition-all hidden sm:block"
-                        >
-                            Profile
-                        </CustomButton>
+                    {/* Profile menu */}
+                    <CustomBox className="flex items-center ml-4">
                         <ProfileMenu
                             user={user}
                             onLogout={handleLogout}
                             onLoginClick={() => navigate("/login")}
                             onRegisterClick={() => navigate("/register")}
-                            iconColor={theme.palette.text.light}
-                            onClose={() => {}}
+                            text="Profile"
                         />
                     </CustomBox>
-
 
 
                     {/* Hamburger and Desktop Menu */}

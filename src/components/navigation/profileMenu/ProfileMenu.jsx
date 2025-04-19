@@ -1,78 +1,89 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { Menu } from "@mui/material";
-import AccountBoxRoundedIcon from "@mui/icons-material/AccountBoxRounded";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import ProfileMenuItem from "../ProfileMenuItem/ProfileMenuItem.jsx";
-import LoginLogoutMenuItem from "../loginLogoutMenuItem/LoginLogoutMenuItem.jsx";
+import CustomBox from "../../layout/CustomBox.jsx";
+import CustomDropdownWeb from "../../layout/CustomDropdownWeb.jsx";
+import {UserCog, LogIn, LogOut, UserPlus, UserCircle, ChevronDown} from "lucide-react";
+import CustomTypography from "../../layout/CustomTypography.jsx";
 
-const ProfileMenu = ({ user, onLogout, onLoginClick, onRegisterClick, iconColor, onClose, text }) => {
-    const [anchorEl, setAnchorEl] = useState(null);
-
-    const handleMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-    };
-
-    const handleLogin = () => {
-        onLoginClick();
-        handleMenuClose();
-        onClose();
-    };
-
-    const handleLogout = () => {
-        onLogout();
-        handleMenuClose();
-        onClose();
-    };
-
-    const handleRegister = () => {
-        onRegisterClick();
-        handleMenuClose();
-        onClose();
-    };
+/**
+ * ProfileMenu shows a dropdown with “Profile”, “Login / Register” or “Logout”
+ * options, depending on authentication state.
+ *
+ * @component
+ * @param {object} props
+ * @param {?object} props.user          Current user object (null if not logged in)
+ * @param {function} props.onLogout     Callback when user chooses “Logout”
+ * @param {function} props.onLoginClick Callback to show login page/modal
+ * @param {function} props.onRegisterClick Callback to show register page/modal
+ * @param {string} [props.iconColor]    Tailwind text‑color for trigger icon
+ * @param {string} [props.text]         Optional text shown next to the icon
+ * @returns {JSX.Element}
+ */
+const ProfileMenu = ({
+                         user,
+                         onLogout,
+                         onLoginClick,
+                         onRegisterClick,
+                     }) => {
+    const [open, setOpen] = useState(false);
 
     return (
-        <>
-            <div
-                onClick={handleMenuOpen}
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    cursor: "pointer",
-                    color: iconColor,
-                }}
-            >
-                <AccountBoxRoundedIcon />
-                <KeyboardArrowDownIcon sx={{ fontSize: "16px", ml: 0.05 }} />
-                {text && <span style={{ marginLeft: "8px" }}>{text}</span>}
-            </div>
-
-            <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
-            >
-                <ProfileMenuItem
-                    user={user}
-                    onClose={() => {
-                        handleMenuClose();
-                        onClose();
-                    }}
-                />
-
-                <LoginLogoutMenuItem
-                    user={user}
-                    onLoginClick={handleLogin}
-                    onRegisterClick={onRegisterClick}
-                    onLogout={handleLogout}
-                    onClose={handleMenuClose}
-                />
-            </Menu>
-        </>
+        <CustomDropdownWeb
+            open={open}
+            onOpenChange={setOpen}
+            className="mt-2 right-0 sm:w-56"
+            /* ── trigger element ─────────────────────────────────────────── */
+            trigger={
+                <CustomBox
+                    onClick={() => setOpen(!open)}
+                    className="flex items-center cursor-pointer text-white"
+                >
+                    <CustomTypography className="hidden sm:inline mr-2">
+                        Meals
+                    </CustomTypography>
+                    {/* Always-visible user icon */}
+                    <UserCog className="text-white"/>
+                    {/* little chevron indicator */}
+                    <ChevronDown className="text-white mr-2"/>
+                </CustomBox>
+            }
+            /* ── dropdown items ──────────────────────────────────────────── */
+            items={[
+                user && {
+                    label: "Profile",
+                    icon: UserCircle,
+                    onClick: () => {
+                        setOpen(false);
+                        // route to profile page; adapt if needed
+                        window.location.href = "/profile";
+                    },
+                },
+                !user && {
+                    label: "Login",
+                    icon: LogIn,
+                    onClick: () => {
+                        setOpen(false);
+                        onLoginClick();
+                    },
+                },
+                !user && {
+                    label: "Register",
+                    icon: UserPlus,
+                    onClick: () => {
+                        setOpen(false);
+                        onRegisterClick();
+                    },
+                },
+                user && {
+                    label: "Logout",
+                    icon: LogOut,
+                    onClick: () => {
+                        setOpen(false);
+                        onLogout();
+                    },
+                },
+            ].filter(Boolean)} // remove null entries
+        />
     );
 };
 
@@ -80,8 +91,8 @@ ProfileMenu.propTypes = {
     user: PropTypes.object,
     onLogout: PropTypes.func.isRequired,
     onLoginClick: PropTypes.func.isRequired,
+    onRegisterClick: PropTypes.func.isRequired,
     iconColor: PropTypes.string,
-    onClose: PropTypes.func.isRequired,
     text: PropTypes.string,
 };
 
