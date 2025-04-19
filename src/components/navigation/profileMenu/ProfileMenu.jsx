@@ -38,8 +38,8 @@ const ProfileMenu = ({
                     onClick={() => setOpen(!open)}
                     className="flex items-center cursor-pointer text-white"
                 >
-                    <CustomTypography className="hidden sm:inline mr-2">
-                        Meals
+                    <CustomTypography className="hidden text-sm sm:inline mr-2">
+                        Profile
                     </CustomTypography>
                     {/* Always-visible user icon */}
                     <UserCog className="text-white"/>

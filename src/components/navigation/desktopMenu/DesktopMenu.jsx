@@ -1,91 +1,56 @@
 import PropTypes from "prop-types";
-import { Box, Button, Menu, MenuItem, useTheme } from "@mui/material";
-import { Link } from "react-router-dom";
-import { useState } from "react";
-import VerticalDivider from "../../verticalDivider/VerticalDivider.jsx";
+import { useLocation, useNavigate } from "react-router-dom";
+import CustomTypography from "../../layout/CustomTypography.jsx";
+import CustomButton from "../../layout/CustomButton.jsx";
+import CustomBox from "../../layout/CustomBox.jsx";
 
-const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
-    const theme = useTheme(); // Toegang tot het huidige thema
-    const [anchorEl, setAnchorEl] = useState(null);
-    const handleMealsMenuClose = () => {
-        setAnchorEl(null);
-    };
+const navItems = [
+    { label: "Home", path: "/" },
+    { label: "About", path: "/about" },
+    { label: "View Meals", path: "/meals" },
+];
+
+const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const isActive = (path) =>
+        path === "/"
+            ? location.pathname === "/"
+            : location.pathname.startsWith(path);
+
 
     return (
-        <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-            <Button
-                color="inherit"
-                component={Link}
-                to="/"
-                sx={{ color: theme.palette.text.light }}
-            >
-                Home
-            </Button>
-            <VerticalDivider marginLeft={0} marginRight={0} />
+        <CustomBox className="flex gap-3 items-center">
+            {navItems.map((item) => (
+                <CustomButton
+                    key={item.path}
+                    onClick={() => navigate(item.path)}
+                    className={`px-3 py-1 rounded-md text-sm transition-all
+    ${isActive(item.path)
+                        ? "bg-userPrimary text-white"
+                        : "text-userText"} hover:bg-white/30`}
 
-            <Button
-                color="inherit"
-                component={Link}
-                to="/about"
-                sx={{ color: theme.palette.text.light }}
-            >
-                About
-            </Button>
-            <VerticalDivider marginLeft={0} marginRight={0} />
-
-            <Box
-                sx={{
-
-                    width: "1px",
-                    backgroundColor: theme.palette.dividerLight,
-                }}
-            />
-            <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleMealsMenuClose}
-                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                transformOrigin={{ vertical: "top", horizontal: "left" }}
-            >
-
-                <MenuItem
-                    onClick={handleMealsMenuClose}
-                    component={Link}
-                    to="/meals"
-                    sx={{ color: theme.palette.text.primary }}
                 >
-                    View Meals
-                </MenuItem>
-                {user && (
-                    <MenuItem
-                        onClick={handleMealsMenuClose}
-                        component={Link}
-                        to="/create-meal"
-                        sx={{ color: theme.palette.text.primary }}
-                    >
-                        Create Meal
-                    </MenuItem>
-                )}
-            </Menu>
+                    <CustomTypography className="text-sm">{item.label}</CustomTypography>
+                </CustomButton>
+            ))}
 
             {user ? (
-                <Button
-                    color="inherit"
-                    onClick={onLogout}
-                    sx={{ color: theme.palette.text.light }}
-                >
-                    Logout
-                </Button>
+                <CustomButton onClick={onLogout} className="text-userText hover:bg-white/30 px-3 py-1 rounded-md">
+                    <CustomTypography className="text-sm">Logout</CustomTypography>
+                </CustomButton>
             ) : (
-                <Button
-                    color="inherit"
-                    onClick={onLoginClick}
-                    sx={{ color: theme.palette.text.light }}
-                >
-                    Login
-                </Button>
+                <>
+                    <CustomButton onClick={onLoginClick} className="text-userText hover:bg-white/30 px-3 py-1 rounded-md">
+                        <CustomTypography className="text-sm">Login</CustomTypography>
+                    </CustomButton>
+                    <CustomButton onClick={onRegisterClick} className="text-userText hover:bg-white/30 px-3 py-1 rounded-md">
+                        <CustomTypography className="text-sm">Register</CustomTypography>
+                    </CustomButton>
+                </>
             )}
-        </Box>
+        </CustomBox>
     );
 };
 
@@ -97,6 +62,7 @@ DesktopMenu.propTypes = {
     }),
     onLogout: PropTypes.func.isRequired,
     onLoginClick: PropTypes.func.isRequired,
+    onRegisterClick: PropTypes.func.isRequired,
 };
 
 export default DesktopMenu;
