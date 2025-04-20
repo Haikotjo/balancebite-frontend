@@ -8,7 +8,7 @@ import MealList from "../../components/mealList/MealList.jsx";
 import ScrollToTopButton from "../../components/scrollToTopButton/ScrollToTopButton.jsx";
 import FilterSidebar from "../../components/filterSidebar/FilterSidebar.jsx";
 import { getAllMealNames } from "../../services/apiService.js";
-import {useLocation, useSearchParams} from "react-router-dom";
+import {useSearchParams} from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import {UserMealsContext} from "../../context/UserMealsContext.jsx";
 import CustomPagination from "../../components/customPagination/CustomPagination.jsx";
@@ -18,7 +18,6 @@ function MealPage() {
     const [filters, setFilters] = useState({});
     const { page, setPage, totalPages } = useContext(UserMealsContext);
     const [searchParams] = useSearchParams();
-    const location = useLocation();
     const searchRef = useRef(null);
     const [isSearchVisible, setIsSearchVisible] = useState(false);
 
@@ -57,7 +56,6 @@ function MealPage() {
     }, [searchParams]);
 
     useEffect(() => {
-        // Zodra filters of sortBy wijzigt, reset page naar 1
         setPage(1);
     }, [filters, sortBy, setPage]);
 

@@ -8,7 +8,7 @@ import CustomTypography from "../../layout/CustomTypography.jsx";
 import PropTypes from "prop-types";
 
 /**
- * Theme toggle button using `lucide-react` icons.
+ * Theme toggle button using `lucid-react` icons.
  * Automatically syncs with `localStorage` to persist the user's preference.
  *
  * Can render as:

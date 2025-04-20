@@ -6,8 +6,6 @@ import CustomBox from "../../layout/CustomBox.jsx";
 import CustomButton from "../../layout/CustomButton.jsx";
 import CustomTypography from "../../layout/CustomTypography.jsx";
 import CustomDivider from "../../layout/CustomDivider.jsx";
-import { Sun, Moon } from "lucide-react";
-import {useThemeMode} from "../../../themes/ThemeProvider.jsx";
 import DarkModeSwitch from "../darkModeSwitch/DarkModeSwitch.jsx";
 
 /**
@@ -18,7 +16,7 @@ import DarkModeSwitch from "../darkModeSwitch/DarkModeSwitch.jsx";
  * @param {Object} props
  * @param {Object|null} props.user - The current logged-in user, or null if not authenticated.
  * @param {Function} props.onLogout - Callback to handle logout.
- * @param {Function} props.onLoginClick - Callback to navigate to login.
+ * @param {Function} props.onLoginClick - Callback to navigate to log in.
  * @param {Function} props.onRegisterClick - Callback to navigate to registration.
  */
 const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
@@ -47,15 +45,6 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
         }
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [open]);
-
-    const { mode, toggleTheme } = useThemeMode();
-
-    useEffect(() => {
-        const savedMode = localStorage.getItem("theme-mode");
-        if (savedMode && savedMode !== mode) {
-            toggleTheme();
-        }
-    }, []);
 
     // Menu item configuration
     const menuItems = [
