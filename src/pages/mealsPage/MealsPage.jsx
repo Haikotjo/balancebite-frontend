@@ -1,8 +1,8 @@
 import {useState, useEffect, useRef, useContext} from "react";
-import { Box, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import SearchBar from "../../components/searchBar/SearchBar.jsx";
 import SubMenu from "../../components/submenu/SubMenu.jsx";
-import NutrientSortOptionsHorizontal from "../../components/mealList/nutrientSortOptions/NutrientSortOptionsHorizontal.jsx";
+import NutrientSortOptionsHorizontal from "../../components/nutrientSortOptions/NutrientSortOptionsHorizontal.jsx";
 import ActiveFilters from "../../components/mealList/activeFilters/ActiveFilters.jsx";
 import MealList from "../../components/mealList/MealList.jsx";
 import ScrollToTopButton from "../../components/scrollToTopButton/ScrollToTopButton.jsx";
@@ -12,6 +12,7 @@ import {useSearchParams} from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import {UserMealsContext} from "../../context/UserMealsContext.jsx";
 import CustomPagination from "../../components/customPagination/CustomPagination.jsx";
+import CustomBox from "../../components/layout/CustomBox.jsx";
 
 function MealPage() {
     const [sortBy, setSortBy] = useState(null);
@@ -62,9 +63,9 @@ function MealPage() {
 
 
     return (
-        <Box display="flex" flexDirection="column" alignItems="center" padding={2}>
+        <CustomBox className="flex flex-col items-center p-4">
 
-            {/* Search Bar Toggle */}
+        {/* Search Bar Toggle */}
             {!isSearchVisible ? (
                 <IconButton onClick={toggleSearch} sx={{ marginBottom: 2 }}>
                     <SearchIcon sx={{ fontSize: 30 }} />
@@ -107,7 +108,7 @@ function MealPage() {
 
             {/* Back to Top */}
             <ScrollToTopButton />
-        </Box>
+        </CustomBox>
     );
 }
 

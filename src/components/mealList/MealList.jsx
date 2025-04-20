@@ -6,6 +6,8 @@ import PropTypes from "prop-types";
 import { useLocation } from "react-router-dom";
 import MealDetailCard from "../mealCardLarge/MealDetailCard.jsx";
 import CustomGrid from "../layout/CustomGrid.jsx";
+import CustomBox from "../layout/CustomBox.jsx";
+import Spinner from "../layout/spinner.jsx";
 
 function MealList({ filters, sortBy }) {
     const { meals, loading, error, userMeals, setFilters, setSortBy } = useContext(UserMealsContext);
@@ -25,23 +27,24 @@ function MealList({ filters, sortBy }) {
 
     if (loading)
         return (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
-                <CircularProgress />
-            </Box>
+            <CustomBox className="flex justify-center items-center min-h-[50vh]">
+                <Spinner />
+            </CustomBox>
         );
 
     if (error)
         return (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
-                <Typography color="error">Error: {error}</Typography>
-            </Box>
+            <CustomBox className="flex justify-center items-center min-h-[50vh]">
+            <Typography color="error">Error: {error}</Typography>
+            </CustomBox>
         );
 
     if (meals.length === 0)
         return (
-            <Box marginTop={3} display="flex" flexDirection="column" alignItems="center" minHeight="50vh" gap={1}>
+            <CustomBox className="flex justify-center items-center min-h-[50vh]">
+                gap={1}>
                 <Typography variant="h6" gutterBottom>No meals found.</Typography>
-            </Box>
+            </CustomBox>
         );
 
     return (
