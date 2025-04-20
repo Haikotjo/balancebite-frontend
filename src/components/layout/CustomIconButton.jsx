@@ -9,6 +9,7 @@ import CustomBox from "../layout/CustomBox.jsx";
  * @param {Function} onClick - Callback when the button is clicked.
  * @param {string} [bgColor="bg-[rgba(0,0,0,0.5)]"] - Tailwind class for background color.
  * @param {number} [size=35] - Diameter of the button.
+ * @param {string} [className] - Optional extra classes for outer styling.
  * @returns {JSX.Element}
  */
 const CustomIconButton = ({
@@ -16,6 +17,7 @@ const CustomIconButton = ({
                               onClick,
                               bgColor = "bg-[rgba(0,0,0,0.5)]",
                               size = 35,
+                              className = "",
                           }) => {
     return (
         <motion.div
@@ -25,7 +27,7 @@ const CustomIconButton = ({
         >
             <CustomBox
                 onClick={onClick}
-                className={`cursor-pointer ${bgColor} rounded-[40%] shadow-md flex items-center justify-center text-white`}
+                className={`cursor-pointer ${bgColor} rounded-[40%] shadow-md flex items-center justify-center text-white ${className}`}
                 style={{ width: size, height: size }}
             >
                 {icon}
@@ -39,6 +41,7 @@ CustomIconButton.propTypes = {
     onClick: PropTypes.func.isRequired,
     bgColor: PropTypes.string,
     size: PropTypes.number,
+    className: PropTypes.string, // ✅ toegevoegd
 };
 
 export default CustomIconButton;

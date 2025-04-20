@@ -1,6 +1,6 @@
 import {useContext, useEffect} from "react";
 
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { UserMealsContext } from "../../context/UserMealsContext.jsx";
 import PropTypes from "prop-types";
 import { useLocation } from "react-router-dom";
@@ -9,10 +9,18 @@ import CustomGrid from "../layout/CustomGrid.jsx";
 import CustomBox from "../layout/CustomBox.jsx";
 import Spinner from "../layout/spinner.jsx";
 
-function MealList({ filters, sortBy }) {
+function MealList({ filters, sortBy, selectedMeal, onFiltersChange }) {
     const { meals, loading, error, userMeals, setFilters, setSortBy } = useContext(UserMealsContext);
-
     const location = useLocation();
+    const filteredMeals = selectedMeal
+        ? [selectedMeal]
+        : meals.filter((m) => {
+            if (filters.name) {
+                return m.name.toLowerCase().includes(filters.name.toLowerCase());
+            }
+            return true;
+        });
+
 
     useEffect(() => {
         const stateFilters = location.state?.filtersFromRedirect;
@@ -24,7 +32,6 @@ function MealList({ filters, sortBy }) {
         setSortBy(sortBy);
     }, [filters, sortBy, setFilters, setSortBy, location.state]);
 
-
     if (loading)
         return (
             <CustomBox className="flex justify-center items-center min-h-[50vh]">
@@ -35,46 +42,47 @@ function MealList({ filters, sortBy }) {
     if (error)
         return (
             <CustomBox className="flex justify-center items-center min-h-[50vh]">
-            <Typography color="error">Error: {error}</Typography>
+                <Typography color="error">Error: {error}</Typography>
             </CustomBox>
         );
 
     if (meals.length === 0)
         return (
             <CustomBox className="flex justify-center items-center min-h-[50vh]">
-                gap={1}>
                 <Typography variant="h6" gutterBottom>No meals found.</Typography>
             </CustomBox>
         );
 
     return (
-        <>
-            <CustomGrid>
-                {meals.map((meal) => {
-                    const userMealMatch = userMeals.find(userMeal => String(userMeal.originalMealId) === String(meal.id));
-                    const mealToRender = userMealMatch || meal;
+        <CustomGrid>
+            {filteredMeals.map((meal) => {
+                const userMealMatch = userMeals.find(userMeal =>
+                    String(userMeal.originalMealId) === String(meal.id)
+                );
+                const mealToRender = userMealMatch || meal;
 
-                    return (
-                        <div key={mealToRender.id} className="mb-4 break-inside-avoid">
-                            <MealDetailCard
-                                meal={mealToRender}
-                                viewMode="list"
-                            />
-                        </div>
-                    );
-                })}
-            </CustomGrid>
-        </>
+                return (
+                    <div key={mealToRender.id} className="mb-4 break-inside-avoid">
+                        <MealDetailCard
+                            meal={mealToRender}
+                            viewMode="list"
+                        />
+                    </div>
+                );
+            })}
+        </CustomGrid>
     );
 }
 
-    MealList.propTypes = {
+MealList.propTypes = {
     filters: PropTypes.object.isRequired,
     sortBy: PropTypes.shape({
         sortKey: PropTypes.string,
         sortOrder: PropTypes.string
     }),
-        onFiltersChange: PropTypes.func,
+    selectedMeal: PropTypes.object,
+    onFiltersChange: PropTypes.func,
 };
 
 export default MealList;
+

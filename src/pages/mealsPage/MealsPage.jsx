@@ -1,5 +1,4 @@
 import {useState, useEffect, useRef, useContext} from "react";
-import { IconButton } from "@mui/material";
 import SearchBar from "../../components/searchBar/SearchBar.jsx";
 import SubMenu from "../../components/submenu/SubMenu.jsx";
 import NutrientSortOptionsHorizontal from "../../components/nutrientSortOptions/NutrientSortOptionsHorizontal.jsx";
@@ -7,12 +6,13 @@ import ActiveFilters from "../../components/mealList/activeFilters/ActiveFilters
 import MealList from "../../components/mealList/MealList.jsx";
 import ScrollToTopButton from "../../components/scrollToTopButton/ScrollToTopButton.jsx";
 import FilterSidebar from "../../components/filterSidebar/FilterSidebar.jsx";
-import { getAllMealNames } from "../../services/apiService.js";
+import { getAllMealNames, fetchMealById } from "../../services/apiService.js";
 import {useSearchParams} from "react-router-dom";
-import SearchIcon from "@mui/icons-material/Search";
+import { Search } from "lucide-react";
 import {UserMealsContext} from "../../context/UserMealsContext.jsx";
 import CustomPagination from "../../components/customPagination/CustomPagination.jsx";
 import CustomBox from "../../components/layout/CustomBox.jsx";
+import CustomIconButton from "../../components/layout/CustomIconButton.jsx";
 
 function MealPage() {
     const [sortBy, setSortBy] = useState(null);
@@ -21,6 +21,7 @@ function MealPage() {
     const [searchParams] = useSearchParams();
     const searchRef = useRef(null);
     const [isSearchVisible, setIsSearchVisible] = useState(false);
+    const [selectedMeal, setSelectedMeal] = useState(null);
 
 
     const toggleSearch = () => {
@@ -63,17 +64,27 @@ function MealPage() {
 
 
     return (
-        <CustomBox className="flex flex-col items-center p-4">
+        <CustomBox className="flex flex-col items-center pt-4 gap-4">
 
-        {/* Search Bar Toggle */}
+            {/* Search Bar Toggle */}
             {!isSearchVisible ? (
-                <IconButton onClick={toggleSearch} sx={{ marginBottom: 2 }}>
-                    <SearchIcon sx={{ fontSize: 30 }} />
-                </IconButton>
+                <CustomIconButton
+                    onClick={toggleSearch}
+                    icon={<Search size={30} className="text-primary" />}
+                    bgColor="bg-transparent"
+                    className="mb-4"
+                />
             ) : (
-                <div ref={searchRef}>
-                    <SearchBar onSearch={getAllMealNames} placeholder="Search for a meal..." />
-                </div>
+                <CustomBox ref={searchRef}>
+                    <SearchBar
+                        onSearch={getAllMealNames}
+                        onQuerySubmit={(query) => {
+                            setSelectedMeal(null);
+                            setFilters({ name: query });
+                        }}
+                        placeholder="Search for a meal..."
+                    />
+                </CustomBox>
             )}
 
             {/* Filter Sidebar */}
@@ -94,6 +105,7 @@ function MealPage() {
             <MealList
                 sortBy={sortBy}
                 filters={filters}
+                selectedMeal={selectedMeal}
                 onFiltersChange={handleFiltersChange}
             />
 

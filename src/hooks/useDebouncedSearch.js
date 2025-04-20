@@ -12,7 +12,7 @@ const useDebouncedSearch = (onSearch, delay = 500) => {
     const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
-        if (searchQuery.length < 3) {
+        if (searchQuery.length < 1) {
             setOptions([]);
             return;
         }
