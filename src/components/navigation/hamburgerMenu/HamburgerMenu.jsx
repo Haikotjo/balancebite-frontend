@@ -6,6 +6,9 @@ import CustomBox from "../../layout/CustomBox.jsx";
 import CustomButton from "../../layout/CustomButton.jsx";
 import CustomTypography from "../../layout/CustomTypography.jsx";
 import CustomDivider from "../../layout/CustomDivider.jsx";
+import { Sun, Moon } from "lucide-react";
+import {useThemeMode} from "../../../themes/ThemeProvider.jsx";
+import DarkModeSwitch from "../darkModeSwitch/DarkModeSwitch.jsx";
 
 /**
  * A responsive hamburger menu for small screens.
@@ -45,6 +48,15 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [open]);
 
+    const { mode, toggleTheme } = useThemeMode();
+
+    useEffect(() => {
+        const savedMode = localStorage.getItem("theme-mode");
+        if (savedMode && savedMode !== mode) {
+            toggleTheme();
+        }
+    }, []);
+
     // Menu item configuration
     const menuItems = [
         { label: "Home", icon: Home, path: "/" },
@@ -68,8 +80,8 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
 
             {/* Dropdown menu */}
             {open && (
-                <CustomBox className="absolute bottom-full mb-2 sm:bottom-auto sm:top-full sm:mt-2 mt-2 left-0 sm:left-auto sm:right-0 min-w-[10rem] max-w-[90vw] rounded-xl bg-white dark:bg-gray-800 shadow-lg z-[999]">
-                    {menuItems.map(({ label, icon: Icon, path, action }, index) => (
+                <CustomBox className="absolute bottom-full mb-1 sm:bottom-auto sm:top-full sm:mt-2 mt-2 left-0 sm:left-auto sm:right-0 min-w-[10rem] max-w-[90vw] rounded-xl bg-white dark:bg-gray-800 shadow-lg z-[999] px-4">
+                {menuItems.map(({ label, icon: Icon, path, action }, index) => (
                         <CustomBox key={label}>
                             <CustomButton
                                 onClick={() => {
@@ -84,10 +96,15 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                             </CustomButton>
 
                             {index < menuItems.length - 1 && (
-                                <CustomDivider className="mx-4 bg-gray-200 dark:bg-gray-600" />
+                                <CustomDivider className="bg-gray-200 dark:bg-gray-600" />
                             )}
                         </CustomBox>
                     ))}
+                    {/* Divider before the theme toggle */}
+                    <CustomDivider className="bg-gray-200 dark:bg-gray-600" />
+
+                    <DarkModeSwitch withLabel />
+
                 </CustomBox>
             )}
         </CustomBox>
