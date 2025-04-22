@@ -1,13 +1,14 @@
-import { Box, Drawer, IconButton, useMediaQuery, CircularProgress } from "@mui/material";
-import { FilterList } from "@mui/icons-material";
+import { SlidersHorizontal } from "lucide-react";
 import PropTypes from "prop-types";
-import { useTheme } from "@mui/material/styles";
-import "./FilterSidebar.css";
 import useSidebarState from "../../hooks/useSidebarState.js";
 import useFetchMealEnums from "../../hooks/useFetchMealEnums.js";
 import FilterSection from "./filterSection/FilterSection.jsx";
 import useFilterSelection from "../../hooks/useFilterSelection.js";
 import SidebarHeader from "./sidebarHeader/SidebarHeader.jsx";
+import CustomIconButton from "../layout/CustomIconButton.jsx";
+import CustomDrawer from "../layout/CustomDrawer.jsx";
+import CustomBox from "../layout/CustomBox.jsx";
+import Spinner from "../layout/spinner.jsx";
 
 /**
  * FilterSidebar component - Displays a sidebar with filtering options for meals.
@@ -22,8 +23,6 @@ import SidebarHeader from "./sidebarHeader/SidebarHeader.jsx";
  * @param {Object} props.filters - The currently applied filters.
  */
 const FilterSidebar = ({ isOpen, onFilter, filters }) => {
-    const theme = useTheme();
-    const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
     // Manage sidebar state (open/close)
     const { open, toggleSidebar } = useSidebarState(isOpen);
@@ -38,43 +37,24 @@ const FilterSidebar = ({ isOpen, onFilter, filters }) => {
         <>
             {/* Floating filter button to open the sidebar */}
             {!open && (
-                <IconButton
+                <CustomIconButton
                     onClick={toggleSidebar}
-                    sx={{
-                        position: "fixed",
-                        top: "30%",
-                        right: 0,
-                        zIndex: 1500,
-                        backgroundColor: theme.palette.primary.main,
-                        color: "white",
-                        borderTopRightRadius: "4px",
-                        borderBottomRightRadius: "4px",
-                        padding: isSmallScreen ? "6px" : "10px",
-                        boxShadow: "0px 2px 6px rgba(0,0,0,0.2)",
-                        "&:hover": {
-                            backgroundColor: theme.palette.primary.dark,
-                        },
-                    }}
-                >
-                    <FilterList sx={{ fontSize: { xs: 25, sm: 30 }, mr: "4px", ml: "2px" }} />
-                </IconButton>
+                    icon={<SlidersHorizontal size={28} />}
+                    disableScale={true}
+                    size={40}
+                    bgColor="bg-primary hover:bg-primary-dark"
+                    className="fixed top-[30%] right-0 z-[1500] text-white rounded-r-none rounded-tl-md rounded-bl-md shadow-md origin-center"
+                />
             )}
 
             {/* Sidebar Drawer - Contains filter options */}
-            <Drawer anchor="right" open={open} onClose={toggleSidebar}>
-                <Box
-                    sx={{
-                        width: { xs: 220, sm: 300, md: 400, lg: 520 },
-                        height: "100vh",
-                        padding: { xs: 1, sm: 2, md: 3, lg: 4 },
-                        backgroundColor: theme.palette.background.default,
-                        display: "flex",
-                        flexDirection: "column",
-                        zIndex: 1500,
-                        overflowY: "auto",
-                        "WebkitOverflowScrolling": "touch",
-                        paddingBottom: "20px",
-                    }}
+            <CustomDrawer
+                open={open}
+                onClose={toggleSidebar}
+                width="w-[220px] sm:w-[300px] md:w-[400px] lg:w-[520px]"
+            >
+                <CustomBox
+                    className="w-full h-screen p-1 sm:p-2 md:p-3 lg:p-4 flex flex-col overflow-y-auto pb-5"
                 >
 
                     {/* Sidebar Header with Close Button */}
@@ -82,7 +62,7 @@ const FilterSidebar = ({ isOpen, onFilter, filters }) => {
 
                     {/* Loading Indicator */}
                     {loading ? (
-                        <CircularProgress sx={{ alignSelf: "center", marginY: 2 }} />
+                        <Spinner className="self-center my-2" />
                     ) : (
                         <>
                             {/* Filter Sections */}
@@ -111,8 +91,8 @@ const FilterSidebar = ({ isOpen, onFilter, filters }) => {
                             />
                         </>
                     )}
-                </Box>
-            </Drawer>
+                </CustomBox>
+            </CustomDrawer>
         </>
     );
 };

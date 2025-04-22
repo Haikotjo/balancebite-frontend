@@ -96,7 +96,7 @@ function MealPage() {
             />
 
             {totalPages > 1 && (
-                <CustomBox className="mt-2 mb-20 md:mb-8 lg:mb-8">
+                <CustomBox className="mt-2 mb-20 sm:mb-8">
                     <CustomPagination
                         currentPage={page}
                         totalPages={totalPages}

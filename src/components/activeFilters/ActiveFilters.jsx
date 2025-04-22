@@ -6,10 +6,10 @@ import CustomTypography from "../layout/CustomTypography.jsx";
 import { formatEnum } from "../../utils/helpers/formatEnum.js";
 
 /**
- * ActiveFilters component - toont actieve filters als “chips” met een close-icon.
+ * ActiveFilters component – displays active filters as chips with a close icon.
  *
- * @param {Object} filters - { categorie: waarde, … }
- * @param {Function} onFilterClick - callback bij verwijderen per categorie
+ * @param {Object} filters - an object mapping each filter category to its selected value(s)
+ * @param {Function} onFilterClick - callback invoked when a filter is removed; receives the category key
  */
 const ActiveFilters = ({ filters, onFilterClick }) => {
     return (

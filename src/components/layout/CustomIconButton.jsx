@@ -10,6 +10,7 @@ import CustomBox from "../layout/CustomBox.jsx";
  * @param {string} [bgColor="bg-[rgba(0,0,0,0.5)]"] - Tailwind class for background color.
  * @param {number} [size=35] - Diameter of the button.
  * @param {string} [className] - Optional extra classes for outer styling.
+ * @param disableScale
  * @returns {JSX.Element}
  */
 const CustomIconButton = ({
@@ -18,16 +19,20 @@ const CustomIconButton = ({
                               bgColor = "bg-[rgba(0,0,0,0.5)]",
                               size = 35,
                               className = "",
+                              disableScale = false,
                           }) => {
+    const wrapperProps = disableScale
+        ? {}
+        : {
+            whileTap: { scale: 0.9 },
+            whileHover: { scale: 1.15 },
+        };
+
     return (
-        <motion.div
-            whileTap={{ scale: 0.9 }}
-            whileHover={{ scale: 1.15 }}
-            className="transition-transform duration-200 ease-in-out"
-        >
+        <motion.div {...wrapperProps} className="transition-transform duration-200 ease-in-out">
             <CustomBox
                 onClick={onClick}
-                className={`cursor-pointer ${bgColor} rounded-[40%] shadow-md flex items-center justify-center text-white ${className}`}
+                className={`cursor-pointer ${bgColor} rounded-[40%] flex items-center justify-center ${className}`}
                 style={{ width: size, height: size }}
             >
                 {icon}
@@ -36,12 +41,14 @@ const CustomIconButton = ({
     );
 };
 
+
 CustomIconButton.propTypes = {
     icon: PropTypes.element.isRequired,
     onClick: PropTypes.func.isRequired,
     bgColor: PropTypes.string,
     size: PropTypes.number,
-    className: PropTypes.string, // ✅ toegevoegd
+    className: PropTypes.string,
+    disableScale: PropTypes.bool,
 };
 
 export default CustomIconButton;

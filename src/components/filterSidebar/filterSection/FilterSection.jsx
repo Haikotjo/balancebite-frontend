@@ -1,7 +1,10 @@
-import { Box, Typography, Divider, Chip } from "@mui/material";
 import PropTypes from "prop-types";
 import { formatEnum } from "../../../utils/helpers/formatEnum.js";
-import { useTheme } from "@mui/material/styles";
+import CustomBox from "../../layout/CustomBox.jsx";
+import CustomTypography from "../../layout/CustomTypography.jsx";
+import CustomDivider from "../../layout/CustomDivider.jsx";
+import CustomCardChip from "../../layout/customCardChip.jsx";
+import clsx from "clsx";
 
 /**
  * FilterSection component - Renders a section of filter options with selectable chips.
@@ -15,62 +18,47 @@ import { useTheme } from "@mui/material/styles";
  * @param {Function} props.onFilterClick - Callback function to handle filter selection
  */
 const FilterSection = ({ title, items, selectedFilters, category, onFilterClick }) => {
-    const theme = useTheme();
 
     // If there are no items, do not render the section
     if (!items.length) return null;
 
     return (
-        <Box>
-            <Typography
-                variant="subtitle1"
-                sx={{
-                    fontWeight: "bold",
-                    marginTop: 1,
-                    fontSize:{ xs: "0.9rem", sm: "1rem", md: "1.1rem", lg: "1.2rem" }
-            }}
+        <CustomBox>
+            <CustomTypography
+                as="h3"
+                variant="h4"
+                className="mt-4"
             >
                 {title}
-            </Typography>
+            </CustomTypography>
+
 
             {/* Divider with dynamic color based on theme mode */}
-            <Divider sx={{ marginY: 1,
-                borderColor: theme.palette.mode === "dark" ? "#FFFFFF" : "#2d2f39",
-                marginBottom: "15px",
-            }}
-            />
+            <CustomDivider className="my-2 mb-[15px] bg-gray-300 dark:bg-gray-500" />
 
             {/* Render filter options as selectable Chips */}
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 1 }}>
-                {items.map(item => {
+            <CustomBox className="flex flex-wrap gap-1 mb-1">
+            {items.map(item => {
                     const isSelected = selectedFilters[category] === item;
                     return (
-                        <Chip
+                        <CustomCardChip
                             key={item}
-                            label={formatEnum(item)}
-                            clickable
-                            variant="outlined"
                             onClick={() => onFilterClick(category, item)}
-                            sx={{
-                                fontSize: { xs: "0.7rem", sm: "0.8rem", md: "0.9rem" },
-                                padding: "4px",
-                                height: "auto",
-                                borderColor: theme.palette.primary.main,
-                                color: isSelected ? theme.palette.text.light : theme.palette.primary.main,
-                                backgroundColor: isSelected ? theme.palette.primary.main : "transparent",
-                                "&:hover": {
-                                    backgroundColor: isSelected ? theme.palette.primary.dark : "rgba(0, 0, 0, 0.04)", // Hover effect
-                                },
-                                "& .MuiChip-label": {
-                                    paddingLeft: { xs: "4px", sm: "8px"},
-                                    paddingRight: { xs: "4px", sm: "8px" },
-                                },
-                            }}
-                        />
+                            className={clsx(
+                                "border px-2 py-[4px] text-[0.7rem] sm:text-[0.8rem] md:text-[0.9rem]",
+                                isSelected
+                                    ? "bg-primary border-primary text-white hover:bg-primary/90"
+                                    : "border-primary text-primary hover:bg-gray-100 dark:hover:bg-gray-700"
+                            )}
+                            textClassName="px-[4px] sm:px-[8px]"
+                        >
+                            {formatEnum(item)}
+                        </CustomCardChip>
+
                     );
                 })}
-            </Box>
-        </Box>
+            </CustomBox>
+        </CustomBox>
     );
 };
 
