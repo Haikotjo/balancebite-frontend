@@ -1,21 +1,10 @@
 // src/components/form/CustomAutocomplete.jsx
 import PropTypes from "prop-types";
 import { useState, useEffect, useRef } from "react";
-import CustomBox from "../layout/CustomBox.jsx";
-import CustomTypography from "../layout/CustomTypography.jsx";
+import CustomBox from "./CustomBox.jsx";
 
 /**
- * CustomAutocomplete — Tailwind-based autocomplete with keyboard navigation.
- * Works with objects or strings, arrow keys, Enter, Escape.
- *
- * @param {Array}  options           — lijst van opties.
- * @param {*}      value             — huidig value (object of string).
- * @param {Function} onInputChange   — callback bij elke wijziging in het inputveld.
- * @param {Function} onChange        — callback bij selectie (klik of Enter).
- * @param {Function} getOptionLabel  — haalt label uit een optie.
- * @param {boolean} freeSolo         — allow free text entry.
- * @param {Function} renderOption    — optionele custom renderer voor dropdown.
- * @param {string}  placeholder      — placeholder text.
+ * CustomAutocomplete — logische autocomplete met keyboard support.
  */
 const CustomAutocomplete = ({
                                 options = [],
@@ -26,6 +15,7 @@ const CustomAutocomplete = ({
                                 freeSolo = false,
                                 renderOption = null,
                                 placeholder = '',
+                                classNames = {},
                             }) => {
     const [inputValue, setInputValue] = useState(
         value != null
@@ -37,7 +27,6 @@ const CustomAutocomplete = ({
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
     const containerRef = useRef(null);
 
-    // Sync external value
     useEffect(() => {
         if (value != null) {
             const label = typeof value === 'string' ? value : getOptionLabel(value);
@@ -45,9 +34,8 @@ const CustomAutocomplete = ({
         }
     }, [value, getOptionLabel]);
 
-    // Click outside sluit dropdown
     useEffect(() => {
-        const onClickOutside = e => {
+        const onClickOutside = (e) => {
             if (containerRef.current && !containerRef.current.contains(e.target)) {
                 setIsOpen(false);
                 setHighlightedIndex(-1);
@@ -57,24 +45,23 @@ const CustomAutocomplete = ({
         return () => document.removeEventListener('mousedown', onClickOutside);
     }, []);
 
-    // Filter opties
     useEffect(() => {
         const lower = inputValue.toLowerCase();
-        const matches = options.filter(opt =>
+        const matches = options.filter((opt) =>
             getOptionLabel(opt).toLowerCase().includes(lower)
         );
         setFilteredOptions(matches);
         setHighlightedIndex(-1);
     }, [inputValue, options, getOptionLabel]);
 
-    const handleInput = e => {
+    const handleInput = (e) => {
         const val = e.target.value;
         setInputValue(val);
         onInputChange(val);
         setIsOpen(true);
     };
 
-    const handleSelect = opt => {
+    const handleSelect = (opt) => {
         const label = getOptionLabel(opt);
         setInputValue(label);
         setIsOpen(false);
@@ -82,19 +69,19 @@ const CustomAutocomplete = ({
         onChange(opt);
     };
 
-    const handleKeyDown = e => {
-        if (!isOpen && ['ArrowDown','ArrowUp'].includes(e.key)) {
+    const handleKeyDown = (e) => {
+        if (!isOpen && ['ArrowDown', 'ArrowUp'].includes(e.key)) {
             setIsOpen(true);
             return;
         }
         switch (e.key) {
             case 'ArrowDown':
                 e.preventDefault();
-                setHighlightedIndex(i => Math.min(i+1, filteredOptions.length-1));
+                setHighlightedIndex((i) => Math.min(i + 1, filteredOptions.length - 1));
                 break;
             case 'ArrowUp':
                 e.preventDefault();
-                setHighlightedIndex(i => Math.max(i-1, 0));
+                setHighlightedIndex((i) => Math.max(i - 1, 0));
                 break;
             case 'Enter':
                 e.preventDefault();
@@ -116,32 +103,31 @@ const CustomAutocomplete = ({
     };
 
     return (
-        <CustomBox ref={containerRef} className="relative w-full max-w-[550px]">
-            <CustomBox className="flex items-center border-2 border-primary rounded-md px-3 py-2 bg-white dark:bg-gray-800">
+        <CustomBox ref={containerRef} className={classNames.container}>
+            <CustomBox className={classNames.inputWrapper}>
                 <input
                     type="text"
                     value={inputValue}
                     onChange={handleInput}
                     onKeyDown={handleKeyDown}
                     placeholder={placeholder}
-                    className="w-full bg-transparent outline-none text-sm text-gray-900 dark:text-white"
+                    className={classNames.input}
                 />
             </CustomBox>
 
             {isOpen && filteredOptions.length > 0 && (
-                <CustomBox className="absolute left-0 right-0 bg-white dark:bg-gray-800 border-x-2 border-b-2 border-primary rounded-b-md mt-1 z-50 max-h-60 overflow-y-auto">
+                <CustomBox className={classNames.dropdown}>
                     {filteredOptions.map((opt, idx) => (
                         <CustomBox
                             key={idx}
                             onClick={() => handleSelect(opt)}
-                            className={`px-4 py-2 cursor-pointer transition-colors duration-100 ${
-                                idx === highlightedIndex ? 'bg-gray-200 dark:bg-gray-700' : ''
+                            className={`${classNames.option} ${
+                                idx === highlightedIndex ? classNames.highlight : ''
                             }`}
                         >
                             {renderOption
                                 ? renderOption(opt)
-                                : <CustomTypography as="span">{getOptionLabel(opt)}</CustomTypography>
-                            }
+                                : getOptionLabel(opt)}
                         </CustomBox>
                     ))}
                 </CustomBox>
@@ -159,6 +145,7 @@ CustomAutocomplete.propTypes = {
     freeSolo: PropTypes.bool,
     renderOption: PropTypes.func,
     placeholder: PropTypes.string,
+    classNames: PropTypes.object,
 };
 
 export default CustomAutocomplete;
