@@ -1,49 +1,32 @@
+// src/components/scrollToTopButton/ScrollToTopButton.jsx
 import { useState, useEffect } from "react";
-import { IconButton } from "@mui/material";
-import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import { useTheme } from "@mui/material/styles";
+import { ChevronsUp } from "lucide-react";
+import CustomIconButton from "../layout/CustomIconButton.jsx";
 
 const ScrollToTopButton = () => {
-    const theme = useTheme();
-    const [showScrollButton, setShowScrollButton] = useState(false);
+    const [visible, setVisible] = useState(false);
 
-    // 🔥 Check scroll positie
+    // Show when scrolled down 200px
     useEffect(() => {
-        const handleScroll = () => {
-            setShowScrollButton(window.scrollY > 200);
-        };
-
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
+        const onScroll = () => setVisible(window.scrollY > 200);
+        window.addEventListener("scroll", onScroll);
+        return () => window.removeEventListener("scroll", onScroll);
     }, []);
 
-    // 🔥 Scroll naar boven functie
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
+    if (!visible) return null;
+
     return (
-        showScrollButton && (
-            <IconButton
-                onClick={scrollToTop}
-                sx={{
-                    position: "fixed",
-                    bottom: "20px",
-                    right: "20px",
-                    backgroundColor: theme.palette.primary.main,
-                    color: "white",
-                    "&:hover": {
-                        backgroundColor: theme.palette.primary.dark,
-                    },
-                    width: "35px",
-                    height: "35px",
-                    borderRadius: "50%",
-                    boxShadow: "0px 4px 6px rgba(0,0,0,0.2)",
-                }}
-            >
-                <ArrowDropUpIcon sx={{ fontSize: 45 }} />
-            </IconButton>
-        )
+        <CustomIconButton
+            onClick={scrollToTop}
+            icon={<ChevronsUp size={20} />}
+            bgColor="bg-primary"
+            className="fixed bottom-20 right-5 z-50"
+            size={30}
+        />
     );
 };
 

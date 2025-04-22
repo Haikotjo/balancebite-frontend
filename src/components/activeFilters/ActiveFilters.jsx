@@ -13,7 +13,7 @@ import { formatEnum } from "../../utils/helpers/formatEnum.js";
  */
 const ActiveFilters = ({ filters, onFilterClick }) => {
     return (
-        <CustomBox className="flex justify-center items-center flex-wrap gap-2 mt-2 p-2">
+        <CustomBox className="flex justify-center items-center flex-wrap gap-2">
             {Object.entries(filters).map(([key, value]) => (
                 <CustomBox
                     key={key}

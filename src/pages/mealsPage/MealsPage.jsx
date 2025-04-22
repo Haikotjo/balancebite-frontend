@@ -96,13 +96,14 @@ function MealPage() {
             />
 
             {totalPages > 1 && (
-                <CustomPagination
-                    currentPage={page}
-                    totalPages={totalPages}
-                    onPageChange={(newPage) => setPage(newPage)}
-                />
+                <CustomBox className="mt-2 mb-20 md:mb-8 lg:mb-8">
+                    <CustomPagination
+                        currentPage={page}
+                        totalPages={totalPages}
+                        onPageChange={(newPage) => setPage(newPage)}
+                    />
+                </CustomBox>
             )}
-
 
             {/* Back to Top */}
             <ScrollToTopButton />
