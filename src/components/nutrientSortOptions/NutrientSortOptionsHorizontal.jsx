@@ -9,7 +9,7 @@ import {
     ArrowDownNarrowWide,
 } from "lucide-react";
 import PropTypes from "prop-types";
-import CustomChip from "../layout/customChip/CustomChip.jsx";
+import CustomChip from "../layout/CustomChip.jsx";
 import CustomBox from "../layout/CustomBox.jsx";
 
 /**

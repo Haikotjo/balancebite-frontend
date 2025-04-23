@@ -9,6 +9,7 @@ import loginSchema from "./LoginForm.js";
 import CustomBox from "../../../layout/CustomBox.jsx";
 import CustomButton from "../../../layout/CustomButton.jsx";
 import ErrorDialog from "../../../layout/ErrorDialog.jsx";
+import CustomTextField from "../../../layout/CustomTextField.jsx";
 
 const LoginForm = ({ onClose, onSwitchToRegister }) => {
     const [errorMessage, setErrorMessage] = useState("");
@@ -48,43 +49,28 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                 message={errorMessage}
             />
 
-            <CustomBox className="w-full max-w-md p-6 bg-white dark:bg-darkBackground rounded-lg shadow-md text-black dark:text-white">
+            <CustomBox    className="w-full max-w-md p-6 mt-4 rounded-lg shadow-md border border-primary">
                 <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
                     <h2 className="text-2xl font-bold text-center">Login</h2>
 
-                    <CustomBox>
-                        <label htmlFor="email" className="block mb-1 font-medium">
-                            Email
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            {...register("email")}
-                            className="w-full border rounded px-3 py-2 text-sm dark:bg-gray-800"
-                        />
-                        {errors.email && (
-                            <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
-                        )}
-                    </CustomBox>
+                    <CustomTextField
+                        label="Email"
+                        name="email"
+                        register={register}
+                        error={errors.email}
+                    />
 
-                    <CustomBox>
-                        <label htmlFor="password" className="block mb-1 font-medium">
-                            Password
-                        </label>
-                        <input
-                            type="password"
-                            id="password"
-                            {...register("password")}
-                            className="w-full border rounded px-3 py-2 text-sm dark:bg-gray-800"
-                        />
-                        {errors.password && (
-                            <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
-                        )}
-                    </CustomBox>
+                    <CustomTextField
+                        label="Password"
+                        name="password"
+                        type="password"
+                        register={register}
+                        error={errors.password}
+                    />
 
                     <CustomButton
                         type="submit"
-                        className="bg-primary hover:bg-primary-dark text-white px-4 py-2 self-stretch"
+                        className="bg-primary hover:bg-primary-dark text-white py-2 mt-2  self-stretch"
                     >
                         Login
                     </CustomButton>
@@ -92,7 +78,7 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                     <CustomButton
                         type="button"
                         onClick={onSwitchToRegister}
-                        className="text-primary hover:underline bg-transparent px-0 py-0 self-start"
+                        className="text-primary hover:underline bg-transparent self-start"
                     >
                         Don't have an account? Register
                     </CustomButton>
@@ -101,7 +87,7 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                         <CustomButton
                             type="button"
                             onClick={onClose}
-                            className="text-gray-600 hover:underline bg-transparent px-0 py-0 self-end"
+                            className="text-gray-600 hover:underline bg-transparent mt-2 self-end"
                         >
                             Close
                         </CustomButton>

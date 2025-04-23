@@ -20,7 +20,7 @@ const PreparationTimeIcon = ({ preparationTime, iconSize = 30, layout = "overlay
 
     // Shared style for both icon and time label
     const sharedClasses = `
-        bg-[rgba(0,0,0,0.5)] rounded-[40%]
+        bg-cardDark rounded-[40%]
         shadow-md text-white flex items-center justify-center
     `;
 

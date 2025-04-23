@@ -1,17 +1,28 @@
-import {useContext, useEffect} from "react";
-
-import { Typography } from "@mui/material";
-import { UserMealsContext } from "../../context/UserMealsContext.jsx";
-import PropTypes from "prop-types";
+import { useContext, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import PropTypes from "prop-types";
+import { UserMealsContext } from "../../context/UserMealsContext.jsx";
 import MealDetailCard from "../mealCardLarge/MealDetailCard.jsx";
 import CustomGrid from "../layout/CustomGrid.jsx";
 import CustomBox from "../layout/CustomBox.jsx";
 import Spinner from "../layout/spinner.jsx";
+import CustomTypography from "../layout/CustomTypography.jsx";
 
-function MealList({ filters, sortBy, selectedMeal, onFiltersChange }) {
+/**
+ * MealList component — renders a responsive grid of meals with support for filtering,
+ * sorting, loading and error states. Pulls userMeals and state from context.
+ *
+ * @param {Object} props
+ * @param {Object} props.filters - Currently applied filter criteria.
+ * @param {{sortKey?: string, sortOrder?: string}} [props.sortBy] - Sorting preferences.
+ * @param {Object} [props.selectedMeal] - If present, only this meal is shown.
+ * @returns {JSX.Element}
+ */
+function MealList({ filters, sortBy, selectedMeal }) {
     const { meals, loading, error, userMeals, setFilters, setSortBy } = useContext(UserMealsContext);
     const location = useLocation();
+
+    // Apply name filter or selected meal override
     const filteredMeals = selectedMeal
         ? [selectedMeal]
         : meals.filter((m) => {
@@ -21,7 +32,7 @@ function MealList({ filters, sortBy, selectedMeal, onFiltersChange }) {
             return true;
         });
 
-
+    // Update filters/sortBy from props or redirect state
     useEffect(() => {
         const stateFilters = location.state?.filtersFromRedirect;
         if (stateFilters) {
@@ -32,6 +43,7 @@ function MealList({ filters, sortBy, selectedMeal, onFiltersChange }) {
         setSortBy(sortBy);
     }, [filters, sortBy, setFilters, setSortBy, location.state]);
 
+    // Show loading spinner
     if (loading)
         return (
             <CustomBox className="flex justify-center items-center min-h-[50vh]">
@@ -39,20 +51,35 @@ function MealList({ filters, sortBy, selectedMeal, onFiltersChange }) {
             </CustomBox>
         );
 
+    // Show error message
     if (error)
         return (
             <CustomBox className="flex justify-center items-center min-h-[50vh]">
-                <Typography color="error">Error: {error}</Typography>
+                <CustomTypography
+                    as="p"
+                    variant="paragraph"
+                    className="text-red-600"
+                >
+                    Error: {error}
+                </CustomTypography>
             </CustomBox>
         );
 
+    // Show empty state
     if (meals.length === 0)
         return (
             <CustomBox className="flex justify-center items-center min-h-[50vh]">
-                <Typography variant="h6" gutterBottom>No meals found.</Typography>
+                <CustomTypography
+                    as="h6"
+                    variant="h5"
+                    className="mb-4"
+                >
+                    No meals found.
+                </CustomTypography>
             </CustomBox>
         );
 
+    // Render filtered meals in a grid
     return (
         <CustomGrid>
             {filteredMeals.map((meal) => {
@@ -62,12 +89,12 @@ function MealList({ filters, sortBy, selectedMeal, onFiltersChange }) {
                 const mealToRender = userMealMatch || meal;
 
                 return (
-                    <div key={mealToRender.id} className="mb-4 break-inside-avoid">
+                    <CustomBox key={mealToRender.id} className="mb-4 break-inside-avoid">
                         <MealDetailCard
                             meal={mealToRender}
                             viewMode="list"
                         />
-                    </div>
+                    </CustomBox>
                 );
             })}
         </CustomGrid>
@@ -80,9 +107,7 @@ MealList.propTypes = {
         sortKey: PropTypes.string,
         sortOrder: PropTypes.string
     }),
-    selectedMeal: PropTypes.object,
-    onFiltersChange: PropTypes.func,
+    selectedMeal: PropTypes.object
 };
 
 export default MealList;
-

@@ -10,7 +10,7 @@ import Logo from "../../components/logo/Logo.jsx";
 import IconWrapper from "../../components/home/iconWrapper/IconWrapper.jsx";
 import AnimatedBox from "../../components/home/animatedBox/AnimatedBox.jsx";
 import PageWrapper from "../../components/pageWrapper/PageWrapper.jsx";
-import FeatureSection from "../../components/home/featureSection/FeatureSection.jsx";
+import FeatureSection from "../../featureSection/FeatureSection.jsx";
 import FeatureList from "../../components/home/featureList/FeatureList.jsx";
 
 /**

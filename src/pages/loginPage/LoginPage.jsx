@@ -12,7 +12,7 @@ function LoginPage() {
                 flexDirection: "column",
                 alignItems: "center",
                 minHeight: "100vh",
-                paddingTop: 4,
+                padding: 2,
             }}
         >
             <LoginForm onSwitchToRegister={() => navigate("/register")} />

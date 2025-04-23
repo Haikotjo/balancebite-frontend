@@ -8,7 +8,7 @@
 /* ===================== */
 :root {
     --bg-light: #ffffff;
-    --bg-dark: #121212;
+    --bg-dark: #e40f0f;
     --text-light: #4D5061;
     --text-dark: #ffffff;
 
@@ -69,6 +69,7 @@
 body {
     margin: 0;
     font-family: 'Nunito', sans-serif;
+    @apply text-lightText dark:text-darkText;
 }
 
 /* ========== MUI-ONLY STYLING ========== */
@@ -88,6 +89,29 @@ body {
     background-color: #ffffff;
 }
 
+@keyframes fadeSlide-right {
+    0% {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeSlide-left {
+    0% {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+
 /* Firefox Scrollbar */
 .react-select__menu-list {
     scrollbar-width: thin;
@@ -98,6 +122,6 @@ body {
 }
 
 .MuiBox-root {
-    outline: 2px solid red !important;
+    outline: 5px solid red !important;
 }
 

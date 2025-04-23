@@ -1,7 +1,8 @@
-import { alpha, Card, CardContent, Typography } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from "prop-types";
+import { Link as RouterLink } from 'react-router-dom';
+import CustomCard from "../../layout/CustomCard.jsx";
+import CustomBox from "../../layout/CustomBox.jsx";
+import CustomTypography from "../../layout/CustomTypography.jsx";
 
 /**
  * FeatureCard Component
@@ -11,65 +12,49 @@ import PropTypes from "prop-types";
  * Props:
  * - `title`: The title displayed on the card.
  * - `description`: A brief description displayed below the title.
- * - `colorKey`: Key for theming the card's color (e.g., 'primary', 'secondary').
+ * - `colorClass`: Tailwind class for color (e.g., 'border-primary', 'text-primary').
  * - `to`: Navigation path for the card.
  */
-function FeatureCard({ title, description, colorKey, to }) {
-    const theme = useTheme();
-
-    // Determine the color based on the theme palette and the provided colorKey.
-    const color = theme.palette[colorKey]?.main || theme.palette.text.primary;
-
+function FeatureCard({ title, description, colorClass = "", to }) {
     return (
         <RouterLink to={to} style={{ textDecoration: 'none', display: 'block' }}>
-            <Card
-                sx={{
-                    maxWidth: 300, // Maximum width of the card
-                    borderRadius: 8, // Rounded corners
-                    boxShadow: 3, // Initial shadow effect
-                    border: `3px solid ${theme.palette[colorKey]?.main || theme.palette.grey[200]}`, // Themed border color
-                    backgroundColor: theme.palette.background.paper, // Background color
-                    transition: 'transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease', // Smooth hover transition
-                    '&:hover': {
-                        transform: 'scale(1.1)', // Slight enlargement on hover
-                        boxShadow: 6, // Enhanced shadow on hover
-                    },
-                }}
+            <CustomCard
+                className={`
+                    max-w-[300px] border-2 
+                    ${colorClass}
+                    hover:scale-105 transition-transform duration-300 ease-in-out
+                    hover:shadow-xl
+                `}
             >
-                <CardContent>
-                    {/* Display the card title */}
-                    <Typography
-                        variant="h6"
-                        component="h3"
-                        gutterBottom
-                        sx={{
-                            fontFamily: "'Pacifico', cursive", // Custom font styling
-                            color: color, // Themed color for the title
-                        }}
+                <CustomBox className="p-4">
+                    <CustomTypography
+                        as="h3"
+                        variant="h3"
+                        font="display"
+                        className={`mb-2 ${colorClass}`}
+                        style={{ fontFamily: "'Pacifico', cursive" }}
                     >
                         {title}
-                    </Typography>
+                    </CustomTypography>
 
-                    {/* Display the card description */}
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            fontStyle: 'italic', // Italicized description text
-                        }}
+                    <CustomTypography
+                        as="p"
+                        variant="paragraph"
+                        italic
                     >
                         {description}
-                    </Typography>
-                </CardContent>
-            </Card>
+                    </CustomTypography>
+                </CustomBox>
+            </CustomCard>
         </RouterLink>
     );
 }
 
 FeatureCard.propTypes = {
-    title: PropTypes.string.isRequired, // The title displayed on the card
-    description: PropTypes.string.isRequired, // The description displayed on the card
-    colorKey: PropTypes.string, // The key used to fetch colors from the theme palette
-    to: PropTypes.string.isRequired, // The navigation link for the card
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    colorClass: PropTypes.string, // Tailwind color class (e.g. "text-primary")
+    to: PropTypes.string.isRequired,
 };
 
 export default FeatureCard;

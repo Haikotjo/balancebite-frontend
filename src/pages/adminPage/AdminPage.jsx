@@ -1,6 +1,6 @@
 import { useMediaQuery, useTheme, Box, Stack, Tooltip, Typography, MenuItem, Select } from "@mui/material";
 import { useState } from "react";
-import CustomChip from "../../components/layout/customChip/CustomChip.jsx";
+import CustomChip from "../../components/layout/CustomChip.jsx";
 import CreateMealForm from "../../components/createMealForm/CreateMealForm.jsx";
 import CreateFoodItemForm from "../../components/createFoodItemForm/CreateFoodItemForm.jsx";
 import DeleteFoodItemForm from "../../components/deleteFoodItemForm/DeleteFoodItemForm.jsx";

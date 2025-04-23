@@ -16,6 +16,9 @@ import TextFieldCreateMeal from "../textFieldCreateMeal/TextFieldCreateMeal.jsx"
 import MealIngredients from "../createMealForm/mealIngredients/MealIngredients.jsx";
 import MealImageUploader from "../createMealForm/mealImageUploader/MealImageUploader.jsx";
 import CreateMealDropdowns from "../createMealDropdowns/MealDropdowns.jsx";
+import CustomBox from "../layout/CustomBox.jsx";
+import CustomTypography from "../layout/CustomTypography.jsx";
+import ErrorDialog from "../layout/ErrorDialog.jsx";
 
 /**
  * Form component for updating an existing meal.
@@ -59,7 +62,9 @@ const UpdateMealForm = () => {
 
             setSuccessMessage(`Meal updated: ${responseData.name || "Unknown meal"}`);
             await refreshMealsList(fetchUserMealsData);
-            navigate(`/meal/${responseData.id}`);
+            setTimeout(() => {
+                navigate(`/meal/${responseData.id}`);
+            }, 1500);
         } catch (error) {
             handleApiError(error);
         }
@@ -70,22 +75,23 @@ const UpdateMealForm = () => {
     }
 
     return (
-        <Box
-            sx={{
-                width: "100%",
-                padding: 2,
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-            }}
-            component="form"
+        <CustomBox
+            as="form"
             onSubmit={handleSubmit(onSubmit)}
+            className="w-full p-2 flex flex-col gap-2 my-4"
         >
-            <Typography variant="h4" align="left">
-                Update Your Meal
-            </Typography>
+            <CustomTypography as="h2" variant="h1" className="text-left">
+            Update Your Meal
+            </CustomTypography>
 
-            {successMessage && <Alert severity="success">{successMessage}</Alert>}
+            {successMessage && (
+                <ErrorDialog
+                    open={!!successMessage}
+                    onClose={() => setSuccessMessage("")}
+                    message={successMessage}
+                    type="success"
+                />
+            )}
 
             <TextFieldCreateMeal
                 label="Meal Name"
@@ -149,7 +155,7 @@ const UpdateMealForm = () => {
             >
                 Update Meal
             </Button>
-        </Box>
+        </CustomBox>
     );
 };
 

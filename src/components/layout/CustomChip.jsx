@@ -1,7 +1,7 @@
 // src/components/layout/customChip/CustomChip.jsx
 import PropTypes from "prop-types";
-import CustomBox from "../CustomBox.jsx";
-import CustomTypography from "../CustomTypography.jsx";
+import CustomBox from "./CustomBox.jsx";
+import CustomTypography from "./CustomTypography.jsx";
 import clsx from "clsx";
 
 /**

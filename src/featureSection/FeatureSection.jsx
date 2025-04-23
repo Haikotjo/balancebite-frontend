@@ -1,8 +1,11 @@
 import PropTypes from 'prop-types';
-import { Box, Typography } from '@mui/material';
-import AnimatedGrid from "../animatedGrid/AnimatedGrid.jsx";
-import FeatureCardWrapper from "../featureCard/FeatureCardWrapper.jsx";
-import IconLink from "../iconWrapper/iconLink/IconLink.jsx";
+import AnimatedGrid from "../components/home/animatedGrid/AnimatedGrid.jsx";
+import FeatureCardWrapper from "../components/home/featureCard/FeatureCardWrapper.jsx";
+import IconLink from "../components/home/iconWrapper/iconLink/IconLink.jsx";
+import CustomBox from "../components/layout/CustomBox.jsx";
+import CustomAnimatedBox from "../components/layout/CustomAnimatedBox.jsx";
+import CustomTypography from "../components/layout/CustomTypography.jsx";
+import CustomDivider from "../components/layout/CustomDivider.jsx";
 
 /**
  * FeatureSection Component
@@ -19,47 +22,22 @@ import IconLink from "../iconWrapper/iconLink/IconLink.jsx";
  */
 const FeatureSection = ({ title, features, animation = 'slideIn', direction = 'down', gridProps, boxProps }) => {
     return (
-        <Box
-            sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                flexDirection: 'column',
-                width: '100%',
-                maxWidth: 1200,
-                ...boxProps, // Spread additional styling if provided
-            }}
+        <CustomBox
+            className="flex flex-col justify-center items-center w-full max-w-[1200px]"
         >
             {/* Section Title */}
-            <AnimatedGrid
-                animation="slideIn"
-                direction="left"
-                sx={{
-                    marginBottom: 1,
-                }}
-            >
-                <Typography
-                    variant="h5"
-                    component="h2"
-                    sx={{
-                        fontFamily: "'Pacifico', cursive",
-                        position: 'relative',
-                        '&::after': {
-                            content: '""',
-                            position: 'absolute',
-                            left: '50%',
-                            bottom: '-6px',
-                            transform: 'translateX(-50%)',
-                            width: '100%',
-                            height: '1px',
-                            backgroundColor: 'text.primary',
-                            borderRadius: 2,
-                        },
-                    }}
+            <CustomAnimatedBox animation="slideInLeft" className="mb-2">
+                <CustomTypography
+                    as="h2"
+                    variant="h2"
+                    font="display"
+                    className="text-primary relative text-center pb-1"
+                    style={{ fontFamily: "'Pacifico', cursive" }}
                 >
                     {title}
-                </Typography>
-            </AnimatedGrid>
+                    <CustomDivider className="absolute left-1/2 bottom-0 translate-x-[-50%] w-full h-[1px]" />
+                </CustomTypography>
+            </CustomAnimatedBox>
 
             {/* Features List */}
             <AnimatedGrid
@@ -92,7 +70,7 @@ const FeatureSection = ({ title, features, animation = 'slideIn', direction = 'd
                     </FeatureCardWrapper>
                 ))}
             </AnimatedGrid>
-        </Box>
+        </CustomBox>
     );
 };
 

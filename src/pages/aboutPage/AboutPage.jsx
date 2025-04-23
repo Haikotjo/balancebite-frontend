@@ -1,14 +1,16 @@
-import { Box, Typography, Grid, Link } from '@mui/material';
+import { Link } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
-import PageWrapper from "../../components/pageWrapper/PageWrapper.jsx";
-import AnimatedBox from "../../components/home/animatedBox/AnimatedBox.jsx";
 import Logo from "../../components/logo/Logo.jsx";
-import FeatureSection from "../../components/home/featureSection/FeatureSection.jsx";
+import FeatureSection from "../../featureSection/FeatureSection.jsx";
 import FoodBankRoundedIcon from '@mui/icons-material/FoodBankRounded';
 import MonitorHeartRoundedIcon from '@mui/icons-material/MonitorHeartRounded';
 import BarChartRoundedIcon from '@mui/icons-material/BarChartRounded';
 import PropTypes from "prop-types";
 import FeatureCard from "../../components/home/featureCard/FeatureCard.jsx";
+import CustomTypography from "../../components/layout/CustomTypography.jsx";
+import CustomAnimatedBox from "../../components/layout/CustomAnimatedBox.jsx";
+import CustomBox from "../../components/layout/CustomBox.jsx"
+import { Flame, ChartColumnIncreasing, Dumbbell, Droplet, Soup } from "lucide-react";;
 
 /**
  * AboutPage Component
@@ -55,62 +57,46 @@ function AboutPage() {
     ];
 
     return (
-        <PageWrapper>
+        <CustomBox className="flex flex-col items-center justify-center min-h-screen w-full text-center px-2">
             {/* Header Section */}
-            <AnimatedBox animation="fadeIn" direction="down" padding={2} marginBottom={2}>
-                <Logo size={90} color={theme.palette.text.primary} />
-            </AnimatedBox>
+            <CustomAnimatedBox animation="slideInDown" className="p-2 my-2">
+                <Logo size={90} className="text-primary" />
+            </CustomAnimatedBox>
 
             {/* Introduction */}
-            <AnimatedBox animation="slideIn" direction="right">
-                <Typography
-                    variant="h5"
-                    component="h1"
-                    sx={{
-                        color: theme.palette.text.primary,
-                        textAlign: 'center',
-                        fontWeight: 'bold',
-                        marginBottom: 2,
-                    }}
+
+                <CustomTypography
+                    as="h1"
+                    variant="h2"
+                    bold
+                    className="text-center mb-2"
                 >
                     About BalanceBite
-                </Typography>
+                </CustomTypography>
 
-                <Typography
-                    variant="h6"
-                    component="p"
-                    sx={{
-                        color: theme.palette.text.primary,
-                        textAlign: 'center',
-                        lineHeight: 1.6,
-                        maxWidth: 700,
-                        margin: "auto",
-                        textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
-                    }}
+                <CustomTypography
+                    as="p"
+                    variant="h5"
+                    className="text-center leading-relaxed max-w-[700px] mx-4 sm:px-6 sm:mx-auto italic"
+                    style={{ textShadow: "1px 1px 2px rgba(0,0,0,0.1)" }}
                 >
                     BalanceBite is designed for anyone who wants to take control of their eating habits—whether you're trying to lose weight,
                     maintain a healthy lifestyle, or just enjoy creating meals. Our app provides insights into your daily intake and helps
                     you understand what your body needs based on your weight, activity level, and goals.
-                </Typography>
-            </AnimatedBox>
+                </CustomTypography>
+
 
             {/* Why I Created This App */}
-            <AnimatedBox animation="slideIn" direction="left" marginTop={4}>
-                <Typography
-                    variant="h6"
-                    component="p"
-                    sx={{
-                        color: theme.palette.text.primary,
-                        textAlign: 'center',
-                        fontStyle: 'italic',
-                        maxWidth: 700,
-                        margin: "auto",
-                    }}
+            <CustomAnimatedBox animation="slideInLeft" className="my-4">
+                <CustomTypography
+                    as="p"
+                    variant="h5"
+                    italic
+                    className="text-center max-w-[700px] sm:px-6 mx-4 sm:mx-auto"
                 >
-                    "I built BalanceBite out of personal interest. I wanted to eat healthier and lose weight, but I quickly realized that simply cutting calories
-                    wasn’t enough. I needed a tool that could help me balance my meals and get the right nutrients, and so BalanceBite was born."
-                </Typography>
-            </AnimatedBox>
+                    "I built BalanceBite out of personal interest. I wanted to eat healthier and lose weight, but I quickly realized that simply cutting calories wasn’t enough. I needed a tool that could help me balance my meals and get the right nutrients, and so BalanceBite was born."
+                </CustomTypography>
+            </CustomAnimatedBox>
 
             {/* Features Section */}
             <FeatureSection
@@ -130,25 +116,20 @@ function AboutPage() {
             />
 
             {/* Footer Links Section */}
-            <Box sx={{ marginTop: 4 }}>
-                <Grid container spacing={2} justifyContent="center">
-                    <Grid item>
-                        <Link href="/contact" underline="hover">
-                            Contact Us
-                        </Link>
-                    </Grid>
-                    <Grid item>
-                        <Link href="/meals" underline="hover">
-                            Explore Meals
-                        </Link>
-                    </Grid>
-                </Grid>
-            </Box>
-        </PageWrapper>
+            <CustomBox className="mt-4 pb-16 sm:pb-8 md:pb-6">
+                <CustomBox className="flex justify-center gap-4">
+                    <Link to="/contact" className="text-primary hover:underline text-center">
+                        Contact Us
+                    </Link>
+                    <Link to="/meals" className="text-primary hover:underline text-center">
+                        Explore Meals
+                    </Link>
+                </CustomBox>
+            </CustomBox>
+        </CustomBox>
     );
 }
 
-// ✅ PropTypes toegevoegd om fouten te voorkomen
 AboutPage.propTypes = {
     features: PropTypes.arrayOf(
         PropTypes.shape({

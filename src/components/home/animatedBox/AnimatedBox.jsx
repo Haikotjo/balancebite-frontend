@@ -1,79 +1,60 @@
-import PropTypes from 'prop-types';
-import { Box } from '@mui/material';
+// src/components/layout/AnimatedBox.jsx
+import PropTypes from "prop-types";
+import CustomBox from "../../layout/CustomBox.jsx";
+
 
 /**
- * AnimatedBox component: Provides a flexible container with animation effects.
- * It supports directional animations, padding, and margin customization.
+ * AnimatedBox component — provides basic entrance animations via transform/opacity.
+ * Useful for simple directional animations with Tailwind-compatible output.
+ *
+ * Props:
+ * - children: React content
+ * - animation: string (default: 'slideIn')
+ * - direction: 'left' | 'right' | 'up' | 'down'
+ * - className: additional Tailwind classes
+ * - duration: animation duration in ms (default: 600)
  */
-const AnimatedBox = ({ children, className = '', animation = 'slideIn', direction = 'right', padding = 2, marginBottom = 5 }) => {
-    /**
-     * Determines the starting transformation based on the animation direction.
-     * @returns {string} - CSS transform property value.
-     */
-    const getTransform = () => {
+const AnimatedBox = ({
+                         children,
+                         className = "",
+                         animation = "slideIn",
+                         direction = "right",
+                         duration = 600,
+                     }) => {
+    const getInitialTransform = () => {
         switch (direction) {
-            case 'left':
-                return 'translateX(-100%)';
-            case 'right':
-                return 'translateX(100%)';
-            case 'up':
-                return 'translateY(-100%)';
-            case 'down':
-                return 'translateY(100%)';
+            case "left":
+                return "translateX(-100%)";
+            case "right":
+                return "translateX(100%)";
+            case "up":
+                return "translateY(-100%)";
+            case "down":
+                return "translateY(100%)";
             default:
-                return 'translateX(0)'; // Default: no movement
+                return "translateX(0)";
         }
     };
 
-    // Generate a dynamic keyframe name based on the animation and direction
-    const keyframesName = `${animation}-${direction}`;
+    const animationStyle = {
+        opacity: 0,
+        transform: getInitialTransform(),
+        animation: `fadeSlide-${direction} ${duration}ms ease-in-out forwards`,
+    };
 
     return (
-        <Box
-            className={`animated-box ${className}`}
-            sx={{
-                maxWidth: 800, // Maximum width constraint
-                marginBottom, // Apply bottom margin
-                padding, // Apply padding
-                animation: `${keyframesName} 1.5s ease-in-out`, // Animation settings
-                [`@keyframes ${keyframesName}`]: {
-                    '0%': { transform: getTransform(), opacity: 0 }, // Start state
-                    '100%': { transform: 'translateX(0)', opacity: 1 }, // End state
-                },
-            }}
-        >
+        <CustomBox className={className} style={animationStyle}>
             {children}
-        </Box>
+        </CustomBox>
     );
 };
 
 AnimatedBox.propTypes = {
-    /**
-     * Content to be wrapped by the AnimatedBox.
-     */
     children: PropTypes.node.isRequired,
-
     className: PropTypes.string,
-
-    /**
-     * Name of the animation effect (default: "slideIn").
-     */
     animation: PropTypes.string,
-
-    /**
-     * Direction of the animation. Accepted values: 'left', 'right', 'up', 'down'.
-     */
-    direction: PropTypes.oneOf(['left', 'right', 'up', 'down']),
-
-    /**
-     * Padding applied to the container. Accepts numeric or string values.
-     */
-    padding: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-
-    /**
-     * Bottom margin applied to the container. Accepts numeric or string values.
-     */
-    marginBottom: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    direction: PropTypes.oneOf(["left", "right", "up", "down"]),
+    duration: PropTypes.number,
 };
 
 export default AnimatedBox;

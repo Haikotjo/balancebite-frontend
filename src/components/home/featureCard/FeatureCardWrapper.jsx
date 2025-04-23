@@ -1,35 +1,37 @@
-import { Grid, Tooltip, Box } from '@mui/material';
-import PropTypes from 'prop-types';
+// src/components/home/FeatureCardWrapper.jsx
+import PropTypes from "prop-types";
+import CustomBox from "../../layout/CustomBox.jsx";
 
-function FeatureCardWrapper({ tooltip, children }) {
+/**
+ * FeatureCardWrapper component — wraps feature cards in a responsive flex item.
+ * Replaces MUI Grid item and Tooltip.
+ *
+ * @param {object} props
+ * @param {React.ReactNode} props.children – the content inside
+ * @returns {JSX.Element}
+ */
+function FeatureCardWrapper({ children }) {
     return (
-        <Grid
-            item
-            xs={12}
-            sm={6}
-            md={6}
-            lg={6}
-            xl={6}
-            sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                margin: 'auto',
-                padding: '15px',
-            }}
+        <CustomBox
+            className="
+                w-full
+                sm:w-1/2
+                md:w-1/2
+                lg:w-1/2
+                xl:w-1/2
+                flex
+                justify-center
+                px-[15px]
+                mb-4
+            "
         >
-            <Tooltip title={tooltip} arrow>
-                {/* Wrap children in a Box to ensure a single React element */}
-                <Box>
-                    {children}
-                </Box>
-            </Tooltip>
-        </Grid>
+            {children}
+        </CustomBox>
     );
 }
 
 FeatureCardWrapper.propTypes = {
-    tooltip: PropTypes.string.isRequired, // Tooltip text
-    children: PropTypes.node.isRequired, // Content inside the wrapper
+    children: PropTypes.node.isRequired,
 };
 
 export default FeatureCardWrapper;
