@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Box, Button, Alert } from "@mui/material";
-import FloatingLabelSelect from "../floatingLabelSelect/FloatingLabelSelectIngredient.jsx";
+import FloatingLabelSelect from "../layout/CustomFloatingSelect.jsx";
 import { getAccessToken } from "../../utils/helpers/getAccessToken.js";
 import { handleApiError } from "../../utils/helpers/handleApiError.js";
 import { getAllMealsApi, deleteMealApi } from "../../services/apiService.js";

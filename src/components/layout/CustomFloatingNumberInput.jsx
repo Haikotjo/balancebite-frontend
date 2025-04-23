@@ -1,11 +1,11 @@
 import PropTypes from "prop-types";
-import CustomBox from "../layout/CustomBox.jsx";
+import CustomBox from "./CustomBox.jsx";
 
 /**
  * A controlled floating-label input field for quantities (e.g. in grams).
  * No dependency on MUI. Works well in dark mode.
  */
-const FloatingLabelQuantityField = ({
+const CustomFloatingNumberInput = ({
                                         label,
                                         value,
                                         onChange,
@@ -35,7 +35,7 @@ const FloatingLabelQuantityField = ({
 };
 
 
-FloatingLabelQuantityField.propTypes = {
+CustomFloatingNumberInput.propTypes = {
     label: PropTypes.string.isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     onChange: PropTypes.func.isRequired,
@@ -43,4 +43,4 @@ FloatingLabelQuantityField.propTypes = {
     className: PropTypes.string,
 };
 
-export default FloatingLabelQuantityField;
+export default CustomFloatingNumberInput;

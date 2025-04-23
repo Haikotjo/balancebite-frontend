@@ -2,8 +2,8 @@ import { useMediaQuery, useTheme } from "@mui/material";
 import PropTypes from "prop-types";
 import useFoodItems from "../../hooks/useFoodItems.js";
 
-import CustomFloatingSelect from "../floatingLabelSelect/FloatingLabelSelectIngredient.jsx";
-import FloatingLabelQuantityField from "../floatingLabelQuantityField/FloatingLabelQuantityField.jsx";
+import CustomFloatingSelect from "../layout/CustomFloatingSelect.jsx";
+import CustomFloatingNumberInput from "../layout/CustomFloatingNumberInput.jsx";
 import CustomBox from "../layout/CustomBox.jsx";
 import CustomTypography from "../layout/CustomTypography.jsx";
 import { PlusCircle } from "lucide-react";
@@ -72,7 +72,7 @@ const CreateMealMealIngredients = ({ value, onChange }) => {
 
                     {/* Quantity input */}
                     <CustomBox className="flex-1">
-                        <FloatingLabelQuantityField
+                        <CustomFloatingNumberInput
                             label="Quantity (g)"
                             value={
                                 ingredient.quantity === 0 ? "" : ingredient.quantity.toString()

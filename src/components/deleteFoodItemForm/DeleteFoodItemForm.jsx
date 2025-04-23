@@ -1,4 +1,4 @@
-import FloatingLabelSelectIngredient from "../floatingLabelSelect/FloatingLabelSelectIngredient.jsx";
+import FloatingLabelSelectIngredient from "../layout/CustomFloatingSelect.jsx";
 import {Alert, Button} from "@mui/material";
 import {handleApiError} from "../../utils/helpers/handleApiError.js";
 import {getAccessToken} from "../../utils/helpers/getAccessToken.js";

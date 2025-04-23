@@ -3,7 +3,7 @@ import { createContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { jwtDecode } from "jwt-decode";
 import { loginApi, logoutApi } from "../services/authService.js";
-import Spinner from "../components/layout/spinner.jsx";
+import Spinner from "../components/layout/Spinner.jsx";
 
 export const AuthContext = createContext();
 

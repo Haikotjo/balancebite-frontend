@@ -8,7 +8,7 @@ import SidebarHeader from "./sidebarHeader/SidebarHeader.jsx";
 import CustomIconButton from "../layout/CustomIconButton.jsx";
 import CustomDrawer from "../layout/CustomDrawer.jsx";
 import CustomBox from "../layout/CustomBox.jsx";
-import Spinner from "../layout/spinner.jsx";
+import Spinner from "../layout/Spinner.jsx";
 
 /**
  * FilterSidebar component - Displays a sidebar with filtering options for meals.

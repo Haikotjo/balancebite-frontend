@@ -6,7 +6,7 @@ import SubMenu from "../../components/submenu/SubMenu.jsx";
 import CustomBox from "../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../components/layout/CustomTypography.jsx";
 import useMealById from "../../hooks/useMealById.js";
-import Spinner from "../../components/layout/spinner.jsx";
+import Spinner from "../../components/layout/Spinner.jsx";
 import MealCard from "../../components/mealCard/MealCard.jsx";
 
 const MealDetailsPage = () => {

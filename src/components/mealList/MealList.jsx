@@ -5,7 +5,7 @@ import { UserMealsContext } from "../../context/UserMealsContext.jsx";
 import MealDetailCard from "../mealCardLarge/MealDetailCard.jsx";
 import CustomGrid from "../layout/CustomGrid.jsx";
 import CustomBox from "../layout/CustomBox.jsx";
-import Spinner from "../layout/spinner.jsx";
+import Spinner from "../layout/Spinner.jsx";
 import CustomTypography from "../layout/CustomTypography.jsx";
 
 /**

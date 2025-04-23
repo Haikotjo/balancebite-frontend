@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { Listbox } from "@headlessui/react";
 import { ChevronDown } from "lucide-react";
-import CustomBox from "../layout/CustomBox.jsx";
+import CustomBox from "./CustomBox.jsx";
 
 /**
  * CustomFloatingSelect using Headless UI and Tailwind.

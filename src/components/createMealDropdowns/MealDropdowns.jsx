@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 import { Controller } from "react-hook-form";
-import { cuisinesOptions, dietsOptions, mealTypesOptions } from "../createMealForm/dropdownOptionsMeals.js";
-import { preparationTimeOptions } from "../../utils/helpers/dropdownOptionsMeals.js";
-import CustomFloatingSelect from "../floatingLabelSelect/FloatingLabelSelectIngredient.jsx";
+import { cuisinesOptions, dietsOptions, mealTypesOptions } from "../../utils/helpers/dropdownOptionsMealsTypes.js";
+import { preparationTimeOptions } from "../../utils/helpers/dropdownOptionsMealsTime.js";
+import CustomFloatingSelect from "../layout/CustomFloatingSelect.jsx";
 
 import CustomGrid from "../layout/CustomGrid.jsx";
 import CustomBox from "../layout/CustomBox.jsx";

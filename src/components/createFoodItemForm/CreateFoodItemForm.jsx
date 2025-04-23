@@ -1,5 +1,5 @@
 import { Box, Button, Typography, Alert } from "@mui/material";
-import FloatingLabelSelect from "../floatingLabelSelect/FloatingLabelSelectIngredient.jsx";
+import FloatingLabelSelect from "../layout/CustomFloatingSelect.jsx";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {useEffect, useState} from "react";
