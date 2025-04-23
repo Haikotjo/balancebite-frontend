@@ -1,4 +1,3 @@
-import { Button } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState, useContext } from "react";
@@ -11,12 +10,13 @@ import { refreshMealsList } from "../../utils/helpers/refreshMealsList.js";
 import { UserMealsContext } from "../../context/UserMealsContext";
 import { useMealFormData } from "../../hooks/useMealFormData.js";
 import TextFieldCreateMeal from "../textFieldCreateMeal/TextFieldCreateMeal.jsx";
-import MealIngredients from "../createMealForm/mealIngredients/MealIngredients.jsx";
 import MealImageUploader from "../createMealForm/mealImageUploader/MealImageUploader.jsx";
 import CreateMealDropdowns from "../createMealDropdowns/MealDropdowns.jsx";
 import CustomBox from "../layout/CustomBox.jsx";
 import CustomTypography from "../layout/CustomTypography.jsx";
 import ErrorDialog from "../layout/ErrorDialog.jsx";
+import CreateMealMealIngredients from "../createMealMealIngredients/CreateMealMealIngredients.jsx";
+import CustomButton from "../layout/CustomButton.jsx";
 
 /**
  * Form component for updating an existing meal.
@@ -108,7 +108,7 @@ const UpdateMealForm = () => {
                 control={control}
                 defaultValue={[{ foodItemId: "", quantity: 0 }]}
                 render={({ field: { onChange, value } }) => (
-                    <MealIngredients
+                    <CreateMealMealIngredients
                         value={value}
                         onChange={onChange}
                         errors={errors.mealIngredients}
@@ -143,20 +143,12 @@ const UpdateMealForm = () => {
                 register={register}
             />
 
-            <Button
+            <CustomButton
                 type="submit"
-                variant="contained"
-                color="primary"
-                sx={{
-                    fontSize: "0.9rem",
-                    padding: "10px 16px",
-                    color: "text.light",
-                    fontWeight: "bold",
-                    marginBottom: "20px",
-                }}
+                className="bg-primary text-white font-bold px-4 py-2 mt-4 self-stretch"
             >
                 Update Meal
-            </Button>
+            </CustomButton>
         </CustomBox>
     );
 };

@@ -1,13 +1,14 @@
 import { useMediaQuery, useTheme } from "@mui/material";
 import PropTypes from "prop-types";
-import useFoodItems from "../../../hooks/useFoodItems.js";
-import RemoveFoodItemButton from "./removeFooditemButton/RemoveFoodItemButton.jsx";
-import CustomFloatingSelect from "../../floatingLabelSelect/FloatingLabelSelectIngredient.jsx";
-import FloatingLabelQuantityField from "../../floatingLabelQuantityField/FloatingLabelQuantityField.jsx";
-import CustomBox from "../../layout/CustomBox.jsx";
-import CustomTypography from "../../layout/CustomTypography.jsx";
+import useFoodItems from "../../hooks/useFoodItems.js";
+
+import CustomFloatingSelect from "../floatingLabelSelect/FloatingLabelSelectIngredient.jsx";
+import FloatingLabelQuantityField from "../floatingLabelQuantityField/FloatingLabelQuantityField.jsx";
+import CustomBox from "../layout/CustomBox.jsx";
+import CustomTypography from "../layout/CustomTypography.jsx";
 import { PlusCircle } from "lucide-react";
-import CustomIconButton from "../../layout/CustomIconButton.jsx";
+import CustomIconButton from "../layout/CustomIconButton.jsx";
+import ButtonRemoveFoodItem from "../buttonRemoveFooditem/ButtonRemoveFoodItem.jsx";
 
 /**
  * MealIngredients allows users to dynamically add, remove and update
@@ -23,7 +24,7 @@ import CustomIconButton from "../../layout/CustomIconButton.jsx";
  * @param {Function} onChange - Function to update the ingredients list
  * @param {Object[]} [errors] - Optional validation errors per ingredient
  */
-const MealIngredients = ({ value, onChange }) => {
+const CreateMealMealIngredients = ({ value, onChange }) => {
     const { options } = useFoodItems();
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -81,7 +82,7 @@ const MealIngredients = ({ value, onChange }) => {
                     </CustomBox>
 
                     {/* Remove button */}
-                    <RemoveFoodItemButton
+                    <ButtonRemoveFoodItem
                         value={value}
                         index={index}
                         onRemove={(i) => {
@@ -125,7 +126,7 @@ const MealIngredients = ({ value, onChange }) => {
     );
 };
 
-MealIngredients.propTypes = {
+CreateMealMealIngredients.propTypes = {
     value: PropTypes.arrayOf(
         PropTypes.shape({
             foodItemId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
@@ -143,4 +144,4 @@ MealIngredients.propTypes = {
     ),
 };
 
-export default MealIngredients;
+export default CreateMealMealIngredients;

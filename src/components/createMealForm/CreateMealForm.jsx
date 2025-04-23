@@ -1,4 +1,4 @@
-import {Box, Button, Typography, Alert, MenuItem, TextField} from "@mui/material";
+import {Box, Button, Typography, Alert} from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
@@ -13,9 +13,11 @@ import { refreshMealsList } from "../../utils/helpers/refreshMealsList.js";
 import { UserMealsContext } from "../../context/UserMealsContext";
 
 import MealImageUploader from "./mealImageUploader/MealImageUploader.jsx";
-import MealIngredients from "./mealIngredients/MealIngredients.jsx";
 import TextFieldCreateMeal from "../textFieldCreateMeal/TextFieldCreateMeal.jsx";
 import CreateMealDropdowns from "../createMealDropdowns/MealDropdowns.jsx";
+import CreateMealMealIngredients from "../createMealMealIngredients/CreateMealMealIngredients.jsx";
+import CustomBox from "../layout/CustomBox.jsx";
+
 
 /**
  * Component for creating a new meal.
@@ -67,17 +69,10 @@ const CreateMealForm = () => {
     };
 
     return (
-        <Box
-            sx={{
-                width: "100%",
-                margin: "auto",
-                padding: 2,
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-            }}
-            component="form"
+        <CustomBox
+            as="form"
             onSubmit={handleSubmit(onSubmit)}
+            className="w-full p-2 flex flex-col gap-2 my-4"
         >
             <Typography variant="h4" align="left">
                 Upload Your Meal
@@ -101,7 +96,7 @@ const CreateMealForm = () => {
                 control={control}
                 defaultValue={[{ foodItemId: "", quantity: 0 }]}
                 render={({ field: { onChange, value } }) => (
-                    <MealIngredients
+                    <CreateMealMealIngredients
                         value={value}
                         onChange={onChange}
                         errors={errors.mealIngredients}
@@ -149,7 +144,7 @@ const CreateMealForm = () => {
             >
                 Upload Meal
             </Button>
-        </Box>
+        </CustomBox>
     );
 };
 
