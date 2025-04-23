@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {useEffect, useState} from "react";
 import { foodItemSchema } from "../../utils/valadition/validationSchemas.js"
-import TextFieldCreateMeal from "../textFieldCreateMeal/TextFieldCreateMeal";
+import TextFieldCreateMeal from "../layout/CustomTextField.jsx";
 import {createFoodItemApi, getFoodSourcesApi} from "../../services/apiService";
 import { getAccessToken } from "../../utils/helpers/getAccessToken";
 import { handleApiError } from "../../utils/helpers/handleApiError";

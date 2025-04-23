@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { Tooltip, IconButton, Box } from "@mui/material";
 import LinkRoundedIcon from "@mui/icons-material/LinkRounded";
 import { useEffect, useState } from "react";
-import TextFieldCreateMeal from "../../../textFieldCreateMeal/TextFieldCreateMeal.jsx";
+import TextFieldCreateMeal from "../../../layout/CustomTextField.jsx";
 
 const AddImageUrlComponent = ({ disabled, onUrlChange, register, errors, onReset }) => {
     const [showInput, setShowInput] = useState(false);

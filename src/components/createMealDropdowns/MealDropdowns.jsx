@@ -19,11 +19,12 @@ const CreateMealDropdowns = ({ control, errors }) => {
         <Controller
             name={name}
             control={control}
-            defaultValue={""}
+            defaultValue=""
             render={({ field }) => {
                 const selected = options.find(opt => opt.value === field.value) || null;
                 return (
-                    <CustomBox>
+                    // each field wrapper fixed width of 160px
+                    <CustomBox className="w-[160px]">
                         <CustomFloatingSelect
                             label={label}
                             options={options}
@@ -35,7 +36,6 @@ const CreateMealDropdowns = ({ control, errors }) => {
                                 {error.message}
                             </CustomTypography>
                         )}
-
                     </CustomBox>
                 );
             }}
@@ -48,27 +48,32 @@ const CreateMealDropdowns = ({ control, errors }) => {
             control={control}
             defaultValue={[]}
             render={({ field }) => (
-                <CustomBox>
+                // each field wrapper fixed width of 160px
+                <CustomBox className="w-[160px]">
                     <CustomMultiSelect
                         label={label}
                         options={options}
                         value={field.value}
                         onChange={(newValue) => field.onChange(newValue)}
                     />
-                    {error && <p className="text-error text-xs mt-1">{error.message}</p>}
+                    {error && (
+                        <CustomTypography as="p" variant="small" className="text-error mt-1">
+                            {error.message}
+                        </CustomTypography>
+                    )}
                 </CustomBox>
             )}
         />
     );
 
     return (
-        <CustomGrid minItemWidth="250px" gap="1rem">
+        // grid layout, items have fixed width wrappers
+        <CustomGrid gap="1rem">
             {renderSingleSelect("preparationTime", "Preparation Time", preparationTimeOptions, errors?.preparationTime)}
             {renderMultiSelect("mealTypes", "Meal Types", mealTypesOptions, errors?.mealTypes)}
             {renderMultiSelect("cuisines", "Cuisines", cuisinesOptions, errors?.cuisines)}
             {renderMultiSelect("diets", "Diets", dietsOptions, errors?.diets)}
         </CustomGrid>
-
     );
 };
 

@@ -9,7 +9,7 @@ import { updateMealApi } from "../../services/apiService.js";
 import { refreshMealsList } from "../../utils/helpers/refreshMealsList.js";
 import { UserMealsContext } from "../../context/UserMealsContext";
 import { useMealFormData } from "../../hooks/useMealFormData.js";
-import TextFieldCreateMeal from "../textFieldCreateMeal/TextFieldCreateMeal.jsx";
+import CustomTextField from "../layout/CustomTextField.jsx";
 import MealImageUploader from "../createMealForm/mealImageUploader/MealImageUploader.jsx";
 import CreateMealDropdowns from "../createMealDropdowns/MealDropdowns.jsx";
 import CustomBox from "../layout/CustomBox.jsx";
@@ -95,7 +95,7 @@ const UpdateMealForm = () => {
                 />
             )}
 
-            <TextFieldCreateMeal
+            <CustomTextField
                 label="Meal Name"
                 name="name"
                 register={register}
@@ -116,14 +116,14 @@ const UpdateMealForm = () => {
                 )}
             />
 
-            <TextFieldCreateMeal
+            <CustomTextField
                 label="Meal Description"
-                register={register}
                 name="mealDescription"
+                register={register}
                 error={errors.mealDescription}
                 helperText={errors.mealDescription?.message}
                 multiline
-                rows={4}
+                rows={6}
             />
 
             <CreateMealDropdowns control={control} errors={errors} />
