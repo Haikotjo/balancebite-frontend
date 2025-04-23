@@ -10,6 +10,7 @@ import CustomBox from "../../../layout/CustomBox.jsx";
 import CustomButton from "../../../layout/CustomButton.jsx";
 import ErrorDialog from "../../../layout/ErrorDialog.jsx";
 import CustomTextField from "../../../layout/CustomTextField.jsx";
+import TextFieldCreateMeal from "../../../textFieldCreateMeal/TextFieldCreateMeal.jsx";
 
 const LoginForm = ({ onClose, onSwitchToRegister }) => {
     const [errorMessage, setErrorMessage] = useState("");
@@ -53,20 +54,23 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                 <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
                     <h2 className="text-2xl font-bold text-center">Login</h2>
 
-                    <CustomTextField
+                    <TextFieldCreateMeal
                         label="Email"
                         name="email"
                         register={register}
                         error={errors.email}
+                        helperText={errors.email?.message}
                     />
 
-                    <CustomTextField
+                    <TextFieldCreateMeal
                         label="Password"
                         name="password"
                         type="password"
                         register={register}
                         error={errors.password}
+                        helperText={errors.password?.message}
                     />
+
 
                     <CustomButton
                         type="submit"

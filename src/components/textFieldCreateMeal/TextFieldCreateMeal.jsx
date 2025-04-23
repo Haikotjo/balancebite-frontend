@@ -1,99 +1,46 @@
-import TextField from "@mui/material/TextField";
-import { useTheme } from "@mui/material/styles";
 import PropTypes from "prop-types";
-import React from "react";
 
-const TextFieldCreateMeal = React.forwardRef(({
-                                                  label,
-                                                  register,
-                                                  name,
-                                                  error,
-                                                  helperText,
-                                                  multiline = false,
-                                                  rows,
-                                                  type,
-                                                  value,
-                                                  onChange,
-                                                  slotProps,
-                                                  sx,
-                                                  fullWidth = true,
-                                                  ...rest
-                                              }, ref) => {
-    const theme = useTheme();
-    const isDarkMode = theme.palette.mode === "dark";
-
+/**
+ * A controlled floating-label text input field (e.g. for name, email, password).
+ * Matches styling with FloatingLabelQuantityField.
+ */
+const CustomTextField = ({
+                             label,
+                             name,
+                             register,
+                             error,
+                             type = "text",
+                             className = "",
+                             ...rest
+                         }) => {
     return (
-        <TextField
-            label={label}
-            variant="outlined"
-            inputRef={ref}
-            inputProps={{
-                ...rest,
-                ...(register ? register(name) : {}),
-            }}
-            error={!!error}
-            helperText={helperText}
-            multiline={multiline}
-            rows={rows}
-            type={type}
-            value={value}
-            onChange={onChange}
-            fullWidth={fullWidth}
-            slotProps={slotProps}
-            InputLabelProps={{
-                shrink: true,
-                sx: {
-                    fontSize: { xs: "0.8rem"},
-                    color: theme.palette.mode === "dark" ? "#ffffff" : "#7a7c8b",
-                    "&.Mui-focused": {
-                        color: theme.palette.mode === "dark" ? "#ffffff" : theme.palette.primary.main,
-                    },
-                },
-            }}
-            sx={{
-                "& .MuiOutlinedInput-root": {
-                    backgroundColor: isDarkMode ? "#2d2f39" : "#FFFFFF",
-                    "& fieldset": {
-                        borderColor: theme.palette.primary.main,
-                        borderWidth: "1px",
-                        borderStyle: "solid",
-                    },
-                    "&:hover fieldset": {
-                        borderColor: theme.palette.primary.dark,
-                    },
-                    "&.Mui-focused fieldset": {
-                        borderColor: theme.palette.primary.main,
-                        borderWidth: "1px",
-                    },
-                },
-                "& .MuiInputBase-input": {
-                    fontSize: "0.9rem",
-                    color: theme.palette.text.primary,
-                    padding: "10px 14px",
-                },
-                ...sx,
-            }}
-            {...rest}
-        />
+        <div className={`relative w-full mt-4 ${className}`}>
+            <input
+                id={name}
+                type={type}
+                placeholder=" "
+                {...register(name)}
+                {...rest}
+                className="peer w-full border border-primary rounded px-3 pt-5 pb-2 text-sm dark:bg-gray-800 bg-white text-black dark:text-white focus:outline-none focus:border-success"
+            />
+            <label
+                htmlFor={name}
+                className="absolute left-3 -top-2 bg-white dark:bg-gray-800 px-1 text-xs text-primary peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:-top-2 peer-focus:text-xs peer-focus:text-primary transition-all duration-200"
+            >
+                {label}
+            </label>
+            {error && <p className="text-error text-xs mt-1">{error.message}</p>}
+        </div>
     );
-});
-
-TextFieldCreateMeal.displayName = "TextFieldCreateMeal";
-
-TextFieldCreateMeal.propTypes = {
-    label: PropTypes.string.isRequired,
-    register: PropTypes.func,
-    name: PropTypes.string,
-    error: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
-    helperText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-    multiline: PropTypes.bool,
-    rows: PropTypes.number,
-    type: PropTypes.string,
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    onChange: PropTypes.func,
-    slotProps: PropTypes.object,
-    sx: PropTypes.object,
-    fullWidth: PropTypes.bool,
 };
 
-export default TextFieldCreateMeal;
+CustomTextField.propTypes = {
+    label: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    register: PropTypes.func.isRequired,
+    error: PropTypes.object,
+    type: PropTypes.string,
+    className: PropTypes.string,
+};
+
+export default CustomTextField;

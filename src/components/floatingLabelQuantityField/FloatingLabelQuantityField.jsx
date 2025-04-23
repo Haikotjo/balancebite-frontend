@@ -1,86 +1,46 @@
 import PropTypes from "prop-types";
-import { useTheme } from "@mui/material/styles";
-import TextField from "@mui/material/TextField";
+import CustomBox from "../layout/CustomBox.jsx";
 
 /**
- * A floating-label input field for quantity that emulates an outlined text field.
- *
- * @param {Object} props - The component props.
- * @param {string} props.label - The label displayed above the input.
- * @param {string|number} props.value - The current value of the input.
- * @param {Function} props.onChange - Callback fired when the input value changes.
- * @param {string} [props.placeholder=""] - Placeholder text when the input is empty.
- * @returns {JSX.Element} The floating-label quantity input field.
+ * A controlled floating-label input field for quantities (e.g. in grams).
+ * No dependency on MUI. Works well in dark mode.
  */
 const FloatingLabelQuantityField = ({
                                         label,
                                         value,
                                         onChange,
                                         placeholder = "",
+                                        className = "",
                                         ...rest
                                     }) => {
-    const theme = useTheme();
-    const isDarkMode = theme.palette.mode === "dark";
-
     return (
-        <div style={{ position: "relative", marginTop: "16px" }}>
+        <CustomBox className={`relative w-full mt-4 ${className}`}>
+            <input
+                id="quantity"
+                type="number"
+                value={value}
+                onChange={onChange}
+                placeholder={placeholder || " "}
+                className="peer w-full border border-primary rounded px-3 p-2 pb-2 text-sm dark:bg-gray-800 bg-white text-black dark:text-white focus:outline-none focus:border-success"
+                {...rest}
+            />
             <label
-                style={{
-                    position: "absolute",
-                    top: "-10px",
-                    left: "12px",
-                    background: isDarkMode ? "#2d2f39" : "#FFFFFF",
-                    padding: "0 4px",
-                    fontSize: "0.6rem",
-                    color: theme.palette.mode === "dark" ? "#ffffff" : "#7a7c8b",
-                    zIndex: 1,
-                }}
+                htmlFor="quantity"
+                className="absolute left-3 -top-2 bg-white dark:bg-gray-800 px-1 text-xs text-primary peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:-top-2 peer-focus:text-xs peer-focus:text-primary transition-all duration-200"
             >
                 {label}
             </label>
-            <TextField
-                variant="outlined"
-                value={value}
-                onChange={onChange}
-                placeholder={placeholder}
-                fullWidth
-                InputLabelProps={{ shrink: true }}
-                sx={{
-                    "& .MuiOutlinedInput-root": {
-                        backgroundColor: isDarkMode ? "#2d2f39" : "#FFFFFF",
-                        borderWidth: "1px",
-                        borderStyle: "solid",
-                        borderColor: theme.palette.primary.main,
-                        boxShadow: "none",
-                        "&:hover fieldset": {
-                            borderColor: theme.palette.primary.dark,
-                        },
-                        "&.Mui-focused fieldset": {
-                            borderColor: theme.palette.primary.main,
-                            borderWidth: "2px",
-                        },
-                    },
-                    "& .MuiInputBase-input": {
-                        fontSize: "0.9rem",
-                        color: theme.palette.text.primary,
-                        padding: "10px 14px",
-                    },
-                }}
-                {...rest}
-            />
-        </div>
+        </CustomBox>
     );
 };
 
+
 FloatingLabelQuantityField.propTypes = {
-    /** The label displayed above the input field. */
     label: PropTypes.string.isRequired,
-    /** The current value of the input field. */
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    /** Callback fired when the input value changes. */
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     onChange: PropTypes.func.isRequired,
-    /** Placeholder text shown when the input is empty. */
     placeholder: PropTypes.string,
+    className: PropTypes.string,
 };
 
 export default FloatingLabelQuantityField;

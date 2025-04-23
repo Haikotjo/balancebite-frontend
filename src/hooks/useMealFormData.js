@@ -22,6 +22,7 @@ export const useMealFormData = (mealId, reset) => {
                     mealTypes: data.mealTypes,
                     cuisines: data.cuisines,
                     diets: data.diets,
+                    preparationTime: data.preparationTime || "",
                 });
 
                 if (data.imageUrl) {

@@ -9,7 +9,7 @@ const VARIANT_STYLES = {
     h4: "text-base sm:text-lg md:text-xl font-semibold",
     h5: "text-sm sm:text-base md:text-lg font-medium",
     paragraph: "text-sm sm:text-base md:text-[1rem]",
-    small: "text-xs sm:text-sm md:text-sm text-lightText dark:text-darkText",
+    small: "text-xs sm:text-sm md:text-sm",
     bold: "font-bold",
     italic: "italic",
     xsmallCard: "text-[0.7rem] leading-tight",

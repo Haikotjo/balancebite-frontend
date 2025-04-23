@@ -8,6 +8,7 @@ import CustomButton from "../../../layout/CustomButton.jsx";
 import ErrorDialog from "../../../layout/ErrorDialog.jsx";
 import useRegister from "../../../../hooks/useRegister.js";
 import CustomTextField from "../../../layout/CustomTextField.jsx";
+import TextFieldCreateMeal from "../../../textFieldCreateMeal/TextFieldCreateMeal.jsx";
 
 const RegisterForm = ({ onClose, onSwitchToLogin }) => {
     const { handleRegistration, errorMessage, successMessage, setErrorMessage } = useRegister();
@@ -43,37 +44,40 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
                         </CustomBox>
                     )}
 
-                <CustomTextField
+                <TextFieldCreateMeal
                     label="Username"
                     name="userName"
                     register={register}
                     error={errors.userName}
+                    helperText={errors.userName?.message}
                 />
 
-                <CustomTextField
+                <TextFieldCreateMeal
                     label="Email"
                     name="email"
                     type="email"
                     register={register}
                     error={errors.email}
+                    helperText={errors.email?.message}
                 />
 
-                <CustomTextField
+                <TextFieldCreateMeal
                     label="Password"
                     name="password"
                     type="password"
                     register={register}
                     error={errors.password}
+                    helperText={errors.password?.message}
                 />
 
-                <CustomTextField
+                <TextFieldCreateMeal
                     label="Confirm Password"
                     name="confirmPassword"
                     type="password"
                     register={register}
                     error={errors.confirmPassword}
+                    helperText={errors.confirmPassword?.message}
                 />
-
 
                 <CustomButton
                         type="submit"

@@ -30,10 +30,10 @@ const SearchBar = ({ onSearch, onQuerySubmit, placeholder = "Search..." }) => {
                 placeholder={placeholder}
                 freeSolo={true}
                 renderOption={(option) => (
-                    <div className="flex items-center gap-2 px-2 py-1 text-sm">
-                        <Search className="w-4 h-4 text-primary"/>
+                    <CustomBox className="flex items-center gap-2 px-2 py-1 text-sm">
+                        <Search className="w-4 h-4 text-primary" />
                         <span>{option.name}</span>
-                    </div>
+                    </CustomBox>
                 )}
                 classNames={{
                     container: "relative w-full",

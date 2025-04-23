@@ -1,9 +1,8 @@
-import { Box, Button, Typography, Alert } from "@mui/material";
+import { Button } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
 import { createMealSchema } from "../../utils/valadition/validationSchemas.js";
 import { buildMealFormData } from "../../utils/helpers/buildMealFormData.js";
 import { handleApiError } from "../../utils/helpers/handleApiError.js";
@@ -11,7 +10,6 @@ import { updateMealApi } from "../../services/apiService.js";
 import { refreshMealsList } from "../../utils/helpers/refreshMealsList.js";
 import { UserMealsContext } from "../../context/UserMealsContext";
 import { useMealFormData } from "../../hooks/useMealFormData.js";
-
 import TextFieldCreateMeal from "../textFieldCreateMeal/TextFieldCreateMeal.jsx";
 import MealIngredients from "../createMealForm/mealIngredients/MealIngredients.jsx";
 import MealImageUploader from "../createMealForm/mealImageUploader/MealImageUploader.jsx";
@@ -71,7 +69,11 @@ const UpdateMealForm = () => {
     };
 
     if (loading) {
-        return <Typography align="center" sx={{ mt: 4 }}>Loading...</Typography>;
+        return (
+            <CustomTypography as="p" className="text-center mt-4">
+                Loading...
+            </CustomTypography>
+        );
     }
 
     return (
@@ -95,8 +97,8 @@ const UpdateMealForm = () => {
 
             <TextFieldCreateMeal
                 label="Meal Name"
-                register={register}
                 name="name"
+                register={register}
                 error={errors.name}
                 helperText={errors.name?.message}
             />

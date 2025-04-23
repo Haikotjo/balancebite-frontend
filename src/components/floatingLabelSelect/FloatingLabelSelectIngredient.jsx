@@ -1,84 +1,79 @@
 import PropTypes from "prop-types";
-import { useTheme, useMediaQuery } from "@mui/material";
-import Select from "react-select";
-import customSelectStyles from "../../styles/customSelectStyles.js";
+import { Listbox } from "@headlessui/react";
+import { ChevronDown } from "lucide-react";
+import CustomBox from "../layout/CustomBox.jsx";
 
-const FloatingLabelSelectIngredient = ({
-                                           label,
-                                           isMulti = false,
-                                           options,
-                                           value = null,
-                                           onChange,
-                                           placeholder = "",
-                                           containerStyle = {},
-                                           ...rest
-                                       }) => {
-    const theme = useTheme();
-    const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-    const fixedWidth = isSmallScreen ? "180px" : "390px";
-
+/**
+ * CustomFloatingSelect using Headless UI and Tailwind.
+ * Supports single or multi-select via external logic (not isMulti prop).
+ */
+const CustomFloatingSelect = ({
+                                  label,
+                                  options,
+                                  value,
+                                  onChange,
+                                  placeholder = "Select...",
+                                  containerClassName = "",
+                                  className = "",
+                              }) => {
     return (
-        <div
-            style={{
-                position: "relative",
-                marginTop: "16px",
-                width: fixedWidth,
-                ...containerStyle,
-            }}
-        >
-            <label
-                style={{
-                    position: "absolute",
-                    top: "-10px",
-                    left: "12px",
-                    background: theme.palette.mode === "dark" ? "#2d2f39" : "#FFFFFF",
-                    padding: "0 4px",
-                    fontSize: "0.6rem",
-                    color: theme.palette.mode === "dark" ? "#ffffff" : "#7a7c8b",
-                    zIndex: 1,
-                }}
-            >
-                {label}
-            </label>
-            <Select
-                isMulti={isMulti}
-                options={options}
-                value={value}
-                onChange={onChange}
-                placeholder={placeholder}
-                styles={customSelectStyles(theme)}
-                classNamePrefix="react-select"
-                {...rest}
-            />
-        </div>
+        <CustomBox className={`relative w-full mt-4 ${containerClassName}`}>
+            {label && (
+                <label className="absolute -top-2 left-3 bg-white dark:bg-gray-800 px-1 text-[0.6rem] text-primary z-10">
+                    {label}
+                </label>
+            )}
+
+            <Listbox value={value} onChange={onChange}>
+                <div className="relative">
+                    <Listbox.Button
+                        className={`w-full border rounded px-3 py-2 text-sm bg-white dark:bg-gray-800 border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${className}`}
+                    >
+                        <span>{value?.label || placeholder}</span>
+                        <ChevronDown className="absolute right-2 top-2.5 h-4 w-4 text-gray-500" />
+                    </Listbox.Button>
+
+                    <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded bg-white dark:bg-gray-800 shadow-lg border border-gray-300 z-20">
+                        {options.map((option) => (
+                            <Listbox.Option
+                                key={option.value}
+                                value={option}
+                                className={({ active, selected }) =>
+                                    `cursor-pointer select-none px-4 py-2 text-sm ${
+                                        active
+                                            ? "bg-blue-100 dark:bg-gray-700 text-primary"
+                                            : selected
+                                                ? "bg-blue-50 text-blue-700"
+                                                : "text-gray-900 dark:text-gray-100"
+                                    }`
+                                }
+                            >
+                                {option.label}
+                            </Listbox.Option>
+                        ))}
+                    </Listbox.Options>
+                </div>
+            </Listbox>
+        </CustomBox>
     );
 };
 
-
-FloatingLabelSelectIngredient.propTypes = {
-    containerStyle: PropTypes.object,
+CustomFloatingSelect.propTypes = {
     label: PropTypes.string.isRequired,
-    isMulti: PropTypes.bool,
     options: PropTypes.arrayOf(
         PropTypes.shape({
-            value: PropTypes.string.isRequired,
-            label: PropTypes.string.isRequired,
+            value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+            label: PropTypes.string,
         })
     ).isRequired,
-    value: PropTypes.oneOfType([
-        PropTypes.arrayOf(
-            PropTypes.shape({
-                value: PropTypes.string,
-                label: PropTypes.string,
-            })
-        ),
-        PropTypes.shape({
-            value: PropTypes.string,
-            label: PropTypes.string,
-        }),
-    ]),
+    value: PropTypes.shape({
+        value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        label: PropTypes.string,
+    }),
     onChange: PropTypes.func.isRequired,
     placeholder: PropTypes.string,
+    containerClassName: PropTypes.string,
+    className: PropTypes.string,
 };
 
-export default FloatingLabelSelectIngredient;
+export default CustomFloatingSelect;

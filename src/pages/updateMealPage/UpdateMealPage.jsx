@@ -1,17 +1,11 @@
-import PageWrapper from "../../components/pageWrapper/PageWrapper.jsx";
+import CustomBox from "../../components/layout/CustomBox.jsx";
 import UpdateMealForm from "../../components/updateMealForm/UpdateMealForm.jsx";
 
 const UpdateMealPage = () => {
     return (
-        <PageWrapper
-            sx={{
-                maxWidth: "600px",
-                margin: "auto",
-                paddingX: 2,
-            }}
-        >
+        <CustomBox className="max-w-[600px] mx-auto px-2">
             <UpdateMealForm />
-        </PageWrapper>
+        </CustomBox>
     );
 };
 
