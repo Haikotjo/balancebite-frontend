@@ -34,6 +34,7 @@ const UpdateMealForm = () => {
         control,
         handleSubmit,
         reset,
+        setValue,
         formState: { errors },
     } = useForm({
         resolver: yupResolver(createMealSchema),
@@ -133,14 +134,18 @@ const UpdateMealForm = () => {
                 onImageChange={(image, type) => {
                     if (type === "uploaded" || type === "captured") {
                         setFormImageFile(image);
-                        setImageUrl("");
+                        setValue("imageFile", image);
+                        setValue("imageUrl", "");
                     } else if (type === "url") {
                         setFormImageFile(null);
                         setImageUrl(image);
-                    }else {
-                        // reset na delete
+                        setValue("imageFile", "");
+                        setValue("imageUrl", image);
+                    } else if (type === "reset") {
                         setFormImageFile(null);
                         setImageUrl("");
+                        setValue("imageFile", "");
+                        setValue("imageUrl", "");
                     }
                 }}
                 errors={errors}

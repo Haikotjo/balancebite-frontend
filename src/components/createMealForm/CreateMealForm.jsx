@@ -38,6 +38,7 @@ const CreateMealForm = () => {
         register,
         control,
         handleSubmit,
+        setValue,
         formState: { errors },
     } = useForm({
         resolver: yupResolver(createMealSchema),
@@ -49,6 +50,8 @@ const CreateMealForm = () => {
             cuisines: [],
             diets: [],
             preparationTime: "",
+            imageFile: "",
+            imageUrl: ""
         },
     });
 
@@ -146,20 +149,27 @@ const CreateMealForm = () => {
                         setCapturedImage(image);
                         setUploadedImage(type === "uploaded" ? image : null);
                         setImageUrl("");
+                        setValue("imageFile", image);
+                        setValue("imageUrl", "");
                     } else if (type === "url") {
                         setCapturedImage(null);
                         setUploadedImage(null);
                         setImageUrl(image);
-                    }else {
+                        setValue("imageUrl", image);
+                        setValue("imageFile", "");
+                    } else if (type === "reset") {
                         // reset na delete
                         setCapturedImage(null);
                         setUploadedImage(null);
                         setImageUrl("");
+                        setValue("imageFile", "");
+                        setValue("imageUrl", "");
                     }
                 }}
                 errors={errors}
                 register={register}
             />
+
 
             <CustomButton
                 type="submit"

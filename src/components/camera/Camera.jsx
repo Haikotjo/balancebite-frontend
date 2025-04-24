@@ -1,18 +1,29 @@
 import { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import Webcam from "react-webcam";
-import { Button, Box, IconButton, Tooltip } from "@mui/material";
-import CameraAltRoundedIcon from "@mui/icons-material/CameraAltRounded";
-import SnackbarComponent from "../snackbarComponent/SnackbarComponent.jsx";
+import { Camera as CameraIcon, CameraOff } from "lucide-react";
 import ResetButton from "../createMealForm/mealImageUploader/resetButton/ResetButton.jsx";
+import CustomBox from "../layout/CustomBox.jsx";
+import CustomIconButton from "../layout/CustomIconButton.jsx";
+import ErrorDialog from "../layout/ErrorDialog.jsx";
+import CustomButton from "../layout/CustomButton.jsx";
 
+/**
+ * Camera component allows users to capture an image using their webcam.
+ * Shows a preview of the captured image and allows resetting it.
+ * Displays an error dialog if no camera is detected.
+ *
+ * @component
+ * @param {function} onCapture - Callback with captured image (Base64 format)
+ * @param {boolean} disabled - Disables camera toggle if true
+ */
 const Camera = ({ onCapture, disabled }) => {
-    const [showCamera, setShowCamera] = useState(false);
-    const [hasCamera, setHasCamera] = useState(true); // Controleer beschikbaarheid camera
-    const [capturedImage, setCapturedImage] = useState(null); // Opgeslagen foto
-    const webcamRef = useRef(null);
+    const [showCamera, setShowCamera] = useState(false); // Toggle camera interface
+    const [hasCamera, setHasCamera] = useState(true);    // Tracks if a camera is available
+    const [capturedImage, setCapturedImage] = useState(null); // Stores the captured image
+    const webcamRef = useRef(null); // Ref to access the webcam stream
 
-    // Controleer of er een camera beschikbaar is bij laden component
+    // Check for camera availability on component mount
     useEffect(() => {
         const checkCameraAvailability = async () => {
             try {
@@ -25,87 +36,82 @@ const Camera = ({ onCapture, disabled }) => {
         checkCameraAvailability();
     }, []);
 
+    // Captures a photo from the webcam
     const handleCapture = () => {
         const imageSrc = webcamRef.current.getScreenshot();
         setCapturedImage(imageSrc);
-        if (onCapture) {
-            onCapture(imageSrc);
-        }
+        if (onCapture) onCapture(imageSrc);
         setShowCamera(false);
     };
 
+    // Resets the captured image
     const handleReset = () => {
         setCapturedImage(null);
-        if (onCapture) {
-            onCapture(null);
-        }
+        if (onCapture) onCapture(null);
     };
 
     return (
-        <Box>
-            {/* Camera-knop */}
-            <Tooltip
-                title={
-                    !hasCamera
-                        ? "No camera available"
-                        : showCamera
-                            ? "Close Camera"
-                            : "Take a Photo"
+        <CustomBox className="flex flex-col items-center">
+            {/* Toggle camera or show error icon */}
+            <CustomIconButton
+                icon={
+                    hasCamera ? (
+                        <CameraIcon size={34} className="text-primary" />
+                    ) : (
+                        <CameraOff size={34} className="text-error" />
+                    )
                 }
-                arrow
-            >
-                <span>
-                    <IconButton
-                        color="primary"
-                        disabled={disabled || !hasCamera}
-                        onClick={() => setShowCamera((prev) => !prev)}
-                        sx={{
-                            width: 56,
-                            height: 56,
-                            opacity: disabled || !hasCamera ? 0.5 : 1,
-                        }}
-                    >
-                        <CameraAltRoundedIcon fontSize="large" />
-                    </IconButton>
-                </span>
-            </Tooltip>
+                onClick={() => setShowCamera((prev) => !prev)}
+                bgColor="bg-transparent"
+                size={56}
+                disableScale
+                className={disabled || !hasCamera ? "opacity-50 pointer-events-none" : ""}
+            />
 
-            {/* Camera-interface */}
+            {/* Camera live view + capture button */}
             {showCamera && hasCamera && !capturedImage && (
-                <Box>
+                <CustomBox>
                     <Webcam
                         audio={false}
                         ref={webcamRef}
                         screenshotFormat="image/jpeg"
                         width={400}
                         height={300}
-                        style={{ marginBottom: "10px" }}
+                        className="mb-2"
                     />
-                    <Button variant="contained" onClick={handleCapture}>
+                    <CustomButton
+                        onClick={handleCapture}
+                        className="bg-primary text-white font-semibold px-3 py-1 mt-2"
+                    >
                         Capture Photo
-                    </Button>
-                </Box>
+                    </CustomButton>
+                </CustomBox>
             )}
 
-            {/* Preview gemaakte foto */}
+            {/* Show preview of captured image */}
             {capturedImage && (
-                <Box display="flex" gap={2} alignItems="center" mt={2}>
+                <CustomBox className="flex gap-2 items-center mt-2">
                     <img
                         src={capturedImage}
                         alt="Captured"
-                        style={{ width: "100px", height: "auto", borderRadius: "4px" }}
+                        style={{
+                            width: "100px",
+                            height: "auto",
+                            borderRadius: "4px",
+                        }}
                     />
                     <ResetButton onReset={handleReset} />
-                </Box>
+                </CustomBox>
             )}
 
-            <SnackbarComponent
+            {/* Show error dialog if no camera is found */}
+            <ErrorDialog
                 open={!hasCamera && showCamera}
                 onClose={() => setShowCamera(false)}
                 message="No camera detected. Please check your device."
-                severity="error"
+                type="error"
             />
-        </Box>
+        </CustomBox>
     );
 };
 

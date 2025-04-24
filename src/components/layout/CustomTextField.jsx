@@ -24,7 +24,7 @@ const CustomTextField = ({
                 type={multiline ? undefined : type}
                 placeholder=" "
                 rows={multiline ? rows : undefined}
-                {...register(name)}
+                {...(register ? register(name) : {})}
                 {...rest}
                 className={`peer w-full border border-primary rounded px-3 pt-5 pb-2 text-sm dark:bg-gray-800 bg-white text-black dark:text-white focus:outline-none focus:border-success resize-none`}
             />
@@ -43,7 +43,7 @@ const CustomTextField = ({
 CustomTextField.propTypes = {
     label: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    register: PropTypes.func.isRequired,
+    register: PropTypes.func,
     error: PropTypes.object,
     type: PropTypes.string,
     className: PropTypes.string,

@@ -30,7 +30,7 @@ const UploadImageComponent = ({ disabled, onUpload, errors }) => {
 
             reader.onload = (event) => {
                 const base64String = event.target.result;
-                onUpload(base64String);
+                onUpload(base64String, "uploaded");
                 setFileName(file.name);
             };
 
@@ -44,9 +44,10 @@ const UploadImageComponent = ({ disabled, onUpload, errors }) => {
             {/* Label ties the hidden input to the button */}
             <label htmlFor="file-upload">
                 <CustomIconButton
-                    icon={<ImagePlus size={28} className="text-primary" />}
+                    icon={<ImagePlus size={34} className="text-primary" />}
                     bgColor="bg-transparent"
                     className={disabled ? "opacity-50 pointer-events-none" : ""}
+                    size={56}
                     onClick={() => {}}
                     disableScale
                 />
@@ -80,6 +81,7 @@ UploadImageComponent.propTypes = {
     disabled: PropTypes.bool.isRequired,
     onUpload: PropTypes.func.isRequired,
     errors: PropTypes.object.isRequired,
+
 };
 
 export default UploadImageComponent;

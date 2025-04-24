@@ -35,15 +35,16 @@ const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialI
         setImageUrl("");
         setResetTrigger(prev => !prev);
         onImageChange("", "");
+        onImageChange(null, "reset");
     };
 
     return (
         <CustomBox className="flex flex-col items-center gap-2">
             <CustomTypography
-                variant="paragraph"
+                variant="small"
                 className="text-gray-500 font-normal italic"
             >
-                Upload Image
+                Add an Image
             </CustomTypography>
 
             {/* Buttons for capture, upload, or URL entry */}
@@ -78,7 +79,7 @@ const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialI
                         setUploadedImage(null);
                         onImageChange(newUrl, "url");
                     }}
-                    register={register}
+                    value={imageUrl}
                     errors={errors}
                     onReset={resetTrigger}
                 />

@@ -1,65 +1,74 @@
 import PropTypes from "prop-types";
-import { Tooltip, IconButton, Box } from "@mui/material";
-import LinkRoundedIcon from "@mui/icons-material/LinkRounded";
+import { Link } from "lucide-react";
 import { useEffect, useState } from "react";
-import TextFieldCreateMeal from "../../../layout/CustomTextField.jsx";
+import CustomTextField from "../../../layout/CustomTextField.jsx";
+import CustomBox from "../../../layout/CustomBox.jsx";
+import CustomIconButton from "../../../layout/CustomIconButton.jsx";
 
-const AddImageUrlComponent = ({ disabled, onUrlChange, register, errors, onReset }) => {
+/**
+ * AddImageUrlComponent allows users to manually enter an image URL.
+ * It shows a toggleable input field when the link icon is clicked.
+ *
+ * @component
+ * @param {boolean} disabled - Whether the component is disabled
+ * @param {function} onUrlChange - Callback to handle URL value changes
+ * @param {string} value - Current value of the image URL
+ * @param {object} errors - Validation errors object
+ * @param {boolean} onReset - Trigger to externally reset the input field
+ */
+const AddImageUrlComponent = ({ disabled, onUrlChange, value, errors, onReset }) => {
     const [showInput, setShowInput] = useState(false);
-    const [urlValue, setUrlValue] = useState("");
 
+    // Handle input change and propagate it to the parent
     const handleChange = (e) => {
-        const value = e.target.value;
-        setUrlValue(value);
-        onUrlChange(value);
-        register("imageUrl").onChange(e);
+        const newValue = e.target.value;
+        onUrlChange(newValue);
     };
 
+    // Reset local state and notify parent
     const handleReset = () => {
-        setUrlValue("");
+        onUrlChange("");
         setShowInput(false);
     };
 
+    // Trigger reset when onReset prop changes to true
     useEffect(() => {
-        if (onReset) {
+        if (onReset === true) {
             handleReset();
         }
     }, [onReset]);
 
     return (
-        <Box display="flex" flexDirection="column" alignItems="center">
-            <Tooltip title="Add Image URL" arrow>
-                <span>
-                    <IconButton
-                        color="primary"
-                        disabled={disabled}
-                        onClick={() => setShowInput(!showInput)}
-                        sx={{ width: 56, height: 56 }}
-                    >
-                        <LinkRoundedIcon fontSize="large" />
-                    </IconButton>
-                </span>
-            </Tooltip>
+        <CustomBox className="flex flex-col items-center">
+            {/* Toggle button for showing input */}
+            <CustomIconButton
+                icon={<Link size={34} className="text-primary" />}
+                onClick={() => setShowInput(!showInput)}
+                size={56}
+                bgColor="bg-transparent"
+                className={disabled ? "opacity-50 pointer-events-none" : ""}
+            />
 
+            {/* URL input field */}
             {showInput && (
-                <TextFieldCreateMeal
+                <CustomTextField
+                    name="imageUrl"
                     label="Image URL"
-                    value={urlValue}
+                    value={value}
                     onChange={handleChange}
                     error={errors.imageUrl}
                     helperText={errors.imageUrl?.message}
-                    fullWidth
-                    sx={{ marginTop: 2 }}
+                    className="w-full mt-2"
                 />
             )}
-        </Box>
+        </CustomBox>
     );
 };
 
 AddImageUrlComponent.propTypes = {
     disabled: PropTypes.bool.isRequired,
     onUrlChange: PropTypes.func.isRequired,
-    register: PropTypes.func.isRequired,
+    value: PropTypes.string,
     errors: PropTypes.object.isRequired,
     onReset: PropTypes.any,
 };
