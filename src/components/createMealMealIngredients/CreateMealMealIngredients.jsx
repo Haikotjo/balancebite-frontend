@@ -79,7 +79,7 @@ const CreateMealMealIngredients = ({ value, onChange }) => {
                     </CustomBox>
 
                     {/* Quantity input */}
-                    <CustomBox className="flex-1">
+                    <CustomBox className="w-[90px] sm:flex-1">
                         <CustomFloatingNumberInput
                             label="Quantity (g)"
                             value={ingredient.quantity === 0 ? "" : ingredient.quantity.toString()}

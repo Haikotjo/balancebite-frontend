@@ -137,6 +137,10 @@ const UpdateMealForm = () => {
                     } else if (type === "url") {
                         setFormImageFile(null);
                         setImageUrl(image);
+                    }else {
+                        // reset na delete
+                        setFormImageFile(null);
+                        setImageUrl("");
                     }
                 }}
                 errors={errors}

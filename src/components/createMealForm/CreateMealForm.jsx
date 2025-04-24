@@ -150,6 +150,11 @@ const CreateMealForm = () => {
                         setCapturedImage(null);
                         setUploadedImage(null);
                         setImageUrl(image);
+                    }else {
+                        // reset na delete
+                        setCapturedImage(null);
+                        setUploadedImage(null);
+                        setImageUrl("");
                     }
                 }}
                 errors={errors}
