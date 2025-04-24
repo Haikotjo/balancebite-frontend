@@ -1,4 +1,3 @@
-import { useMediaQuery, useTheme } from "@mui/material";
 import PropTypes from "prop-types";
 import useFoodItems from "../../hooks/useFoodItems.js";
 
@@ -26,8 +25,9 @@ import ButtonRemoveFoodItem from "../buttonRemoveFooditem/ButtonRemoveFoodItem.j
  */
 const CreateMealMealIngredients = ({ value, onChange }) => {
     const { options } = useFoodItems();
-    const theme = useTheme();
-    const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+    const lastItem = value[value.length - 1];
+    const disableAdd = !lastItem || lastItem.foodItemId === "";
+
 
     // Convert food item options to react-select compatible format
     const ingredientOptions = options.map((item) => ({
@@ -49,6 +49,14 @@ const CreateMealMealIngredients = ({ value, onChange }) => {
         onChange(newIngredients);
     };
 
+    const selectedIds = value.map((item) => item.foodItemId).filter(Boolean);
+
+    const getAvailableOptions = (currentIndex) =>
+        ingredientOptions.filter((opt) => {
+            const currentId = value[currentIndex]?.foodItemId;
+            return !selectedIds.includes(opt.value) || opt.value === currentId;
+        });
+
     return (
         <CustomBox className="max-w-[600px]">
             {value.map((ingredient, index) => (
@@ -57,10 +65,10 @@ const CreateMealMealIngredients = ({ value, onChange }) => {
                     className="flex gap-1 items-center flex-nowrap mb-1"
                 >
                     {/* Ingredient select dropdown */}
-                    <CustomBox className={isSmallScreen ? "flex-[2]" : "flex-[3]"}>
+                    <CustomBox className="flex-[3] sm:flex-[2]">
                         <CustomFloatingSelect
                             label="Ingredient"
-                            options={ingredientOptions}
+                            options={getAvailableOptions(index)}
                             value={
                                 ingredientOptions.find(
                                     (opt) => opt.value === ingredient.foodItemId
@@ -74,36 +82,39 @@ const CreateMealMealIngredients = ({ value, onChange }) => {
                     <CustomBox className="flex-1">
                         <CustomFloatingNumberInput
                             label="Quantity (g)"
-                            value={
-                                ingredient.quantity === 0 ? "" : ingredient.quantity.toString()
-                            }
+                            value={ingredient.quantity === 0 ? "" : ingredient.quantity.toString()}
                             onChange={(e) => handleQuantityChange(e.target.value, index)}
                         />
+
                     </CustomBox>
 
                     {/* Remove button */}
-                    <ButtonRemoveFoodItem
-                        value={value}
-                        index={index}
-                        onRemove={(i) => {
-                            const newIngredients = value.filter((_, idx) => idx !== i);
-                            onChange(newIngredients);
-                        }}
-                    />
+                    {ingredient.foodItemId && (
+                        <ButtonRemoveFoodItem
+                            value={value}
+                            index={index}
+                            onRemove={(i) => {
+                                const newIngredients = value.filter((_, idx) => idx !== i);
+                                onChange(newIngredients);
+                            }}
+                        />
+                    )}
                 </CustomBox>
             ))}
 
             {/* Add new ingredient */}
-            <CustomBox className="flex flex-col items-center justify-center gap-[0.25rem] mt-1">
+            <CustomBox className="flex items-center justify-center gap-2 mt-1">
                 <CustomTypography
                     as="p"
                     variant="small"
-                    className="cursor-pointer"
+                    className={`cursor-pointer ${disableAdd ? "opacity-50" : ""}`}
                     onClick={() => {
-                        onChange([...value, { foodItemId: "", quantity: 0 }]);
+                        if (!disableAdd) {
+                            onChange([...value, { foodItemId: "", quantity: 0 }]);
+                        }
                     }}
                 >
-                    {value.filter((item) => item.foodItemId !== "").length < 1
+                    {value.length === 0 || value.every((item) => item.foodItemId === "")
                         ? "Add at least one ingredient"
                         : "Click to add more ingredients"}
                 </CustomTypography>
@@ -111,15 +122,13 @@ const CreateMealMealIngredients = ({ value, onChange }) => {
                 <CustomIconButton
                     icon={<PlusCircle size={20} className="text-primary" />}
                     onClick={() => {
-                        onChange([...value, { foodItemId: "", quantity: 0 }]);
+                        if (!disableAdd) {
+                            onChange([...value, { foodItemId: "", quantity: 0 }]);
+                        }
                     }}
                     bgColor="bg-transparent"
                     disableScale
-                    className={
-                        value.filter((item) => item.foodItemId !== "").length < 1
-                            ? "opacity-50 pointer-events-none"
-                            : ""
-                    }
+                    className={disableAdd ? "opacity-50 pointer-events-none" : ""}
                 />
             </CustomBox>
         </CustomBox>

@@ -1,18 +1,34 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { Box, Typography, IconButton } from "@mui/material";
 import Camera from "../../camera/Camera.jsx";
 import AddImageUrlComponent from "./addImageUrlComponent/AddImageUrlComponent.jsx";
 import UploadImageComponent from "./uploadImageComponent/UploadImageComponent.jsx";
-import DeleteForeverRoundedIcon from "@mui/icons-material/DeleteForeverRounded";
+import { Trash2 } from "lucide-react";
+import CustomBox from "../../layout/CustomBox.jsx";
+import CustomTypography from "../../layout/CustomTypography.jsx";
+import CustomIconButton from "../../layout/CustomIconButton.jsx";
 
+/**
+ * MealImageUploader allows users to upload a meal image by:
+ * - Taking a photo using the camera
+ * - Uploading a file
+ * - Providing a direct image URL
+ *
+ * Only one image type is active at a time. A preview is shown if any image is selected.
+ *
+ * @component
+ * @param {function} register - React Hook Form register function
+ * @param {object} errors - Validation errors
+ * @param {function} onImageChange - Callback with (image, type)
+ * @param {string} imageUrl - Optional initial image URL (for editing)
+ */
 const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialImageUrl }) => {
-
     const [capturedImage, setCapturedImage] = useState(null);
     const [uploadedImage, setUploadedImage] = useState(null);
     const [imageUrl, setImageUrl] = useState(initialImageUrl || "");
     const [resetTrigger, setResetTrigger] = useState(false);
 
+    // Clears all image sources and resets preview
     const handleReset = () => {
         setCapturedImage(null);
         setUploadedImage(null);
@@ -22,13 +38,16 @@ const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialI
     };
 
     return (
-        <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
-
-            <Typography sx={{ fontSize: "0.8rem", color: "text.secondary", fontWeight: "normal" }}>
+        <CustomBox className="flex flex-col items-center gap-2">
+            <CustomTypography
+                variant="paragraph"
+                className="text-gray-500 font-normal italic"
+            >
                 Upload Image
-            </Typography>
+            </CustomTypography>
 
-            <Box display="flex" justifyContent="center" alignItems="center" gap={2}>
+            {/* Buttons for capture, upload, or URL entry */}
+            <CustomBox className="flex justify-center items-center gap-2">
                 <Camera
                     disabled={!!capturedImage || !!uploadedImage || !!imageUrl}
                     onCapture={(image) => {
@@ -63,11 +82,18 @@ const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialI
                     errors={errors}
                     onReset={resetTrigger}
                 />
-            </Box>
+            </CustomBox>
 
-            {/* Preview afbeelding */}
+            {/* Image preview with delete button */}
             {(capturedImage || uploadedImage || imageUrl) && (
-                <Box sx={{ marginTop: 2, textAlign: "center" }}>
+                <CustomBox className="mt-2 flex flex-col items-center justify-center text-center">
+                    <CustomTypography
+                        variant="small"
+                        className="text-gray-500 italic mb-1"
+                    >
+                        Image Preview
+                    </CustomTypography>
+
                     <img
                         src={capturedImage || uploadedImage || imageUrl}
                         alt="Preview"
@@ -78,19 +104,22 @@ const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialI
                             objectFit: "cover",
                         }}
                     />
-                    <IconButton color="error" onClick={handleReset}>
-                        <DeleteForeverRoundedIcon fontSize="large" />
-                    </IconButton>
-                </Box>
+                    <CustomIconButton
+                        icon={<Trash2 size={24} className="text-error" />}
+                        onClick={handleReset}
+                        bgColor="bg-transparent"
+                        className="mt-2"
+                    />
+                </CustomBox>
             )}
 
-            {/* Errors tonen */}
+            {/* Error message */}
             {errors.image && (
-                <Typography color="error">
+                <CustomTypography className="text-error text-sm">
                     {errors.image.message}
-                </Typography>
+                </CustomTypography>
             )}
-        </Box>
+        </CustomBox>
     );
 };
 
