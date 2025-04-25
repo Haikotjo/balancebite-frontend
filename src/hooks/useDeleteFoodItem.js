@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { getAccessToken } from "../../utils/helpers/getAccessToken.js";
-import { deleteFoodItemApi } from "../../services/apiService.js";
-import { handleApiError } from "../../utils/helpers/handleApiError.js";
+import {getAccessToken} from "../utils/helpers/getAccessToken.js";
+import {deleteFoodItemApi} from "../services/apiService.js";
+import {handleApiError} from "../utils/helpers/handleApiError.js";
 
 /**
  * Custom hook to handle deleting a food item.
@@ -25,6 +25,7 @@ const useDeleteFoodItem = (refetch) => {
     return {
         successMessage,
         deleteFoodItem,
+        setSuccessMessage,
     };
 };
 
