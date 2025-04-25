@@ -1,11 +1,11 @@
-import FloatingLabelSelectIngredient from "../layout/CustomFloatingSelect.jsx";
+import CustomFloatingSelect from "../layout/CustomFloatingSelect.jsx";
 import {Alert, Button} from "@mui/material";
 import {handleApiError} from "../../utils/helpers/handleApiError.js";
 import {getAccessToken} from "../../utils/helpers/getAccessToken.js";
 import useFoodItems from "../../hooks/useFoodItems.js";
 import {useState} from "react";
 import {deleteFoodItemApi} from "../../services/apiService.js";
-import { Box } from "@mui/material";
+import CustomBox from "../layout/CustomBox.jsx";
 
 const DeleteFoodItemForm = () => {
     const { options, refetch } = useFoodItems();
@@ -27,8 +27,8 @@ const DeleteFoodItemForm = () => {
     };
 
     return (
-        <Box>
-            <FloatingLabelSelectIngredient
+        <CustomBox>
+            <CustomFloatingSelect
                 label="Select Food Item to Delete"
                 isMulti={false}
                 options={options.map(item => ({
@@ -50,7 +50,7 @@ const DeleteFoodItemForm = () => {
             </Button>
 
             {success && <Alert severity="success">{success}</Alert>}
-        </Box>
+        </CustomBox>
     );
 };
 

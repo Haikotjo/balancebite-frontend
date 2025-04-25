@@ -472,6 +472,18 @@ export const deleteMealApi = async (mealId, token) => {
     }
 };
 
+export const getMappedFoodSources = async () => {
+    const sources = await getFoodSourcesApi();
+    return sources.map(value => ({
+        value,
+        label: value
+            .replaceAll("_", " ")
+            .toLowerCase()
+            .replace(/^\w/, c => c.toUpperCase()),
+    }));
+};
+
+
 export const getFoodSourcesApi = async () => {
     const endpoint = import.meta.env.VITE_FOOD_SOURCES_ENDPOINT;
     try {

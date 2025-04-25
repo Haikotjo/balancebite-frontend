@@ -1,18 +1,17 @@
-import { Box, Button, Typography, Alert } from "@mui/material";
-import FloatingLabelSelect from "../layout/CustomFloatingSelect.jsx";
+import CustomFloatingSelect from "../layout/CustomFloatingSelect.jsx";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {useEffect, useState} from "react";
 import { foodItemSchema } from "../../utils/valadition/validationSchemas.js"
-import TextFieldCreateMeal from "../layout/CustomTextField.jsx";
-import {createFoodItemApi, getFoodSourcesApi} from "../../services/apiService";
-import { getAccessToken } from "../../utils/helpers/getAccessToken";
-import { handleApiError } from "../../utils/helpers/handleApiError";
+import CustomTextField from "../layout/CustomTextField.jsx";
+import { useCreateFoodItem } from "../../hooks/useCreateFoodItem.js";
+import CustomBox from "../layout/CustomBox.jsx";
+import CustomTypography from "../layout/CustomTypography.jsx";
+import CustomButton from "../layout/CustomButton.jsx";
+import ErrorDialog from "../layout/ErrorDialog.jsx";
 
 const CreateFoodItemForm = () => {
-    const [successMessage, setSuccessMessage] = useState("");
-    const [foodSourceOptions, setFoodSourceOptions] = useState([]);
 
+    // Initialize the form using react-hook-form with validation via yup
     const {
         register,
         handleSubmit,
@@ -21,101 +20,39 @@ const CreateFoodItemForm = () => {
         setValue,
         reset,
     } = useForm({
-        resolver: yupResolver(foodItemSchema),
+        resolver: yupResolver(foodItemSchema), // Validation schema
         defaultValues: {
             portionDescription: "Standard portion (100 gram)",
             gramWeight: 100,
             foodSource: "",
         },
-        shouldUnregister: true,
+        shouldUnregister: true, // Unregister fields when they are removed from the form
     });
 
-    const onSubmit = async (data) => {
-        try {
-            const token = getAccessToken();
-            const formattedFoodSource = data.foodSource
-                ? ` (${data.foodSource
-                    .replaceAll("_", " ")
-                    .toLowerCase()
-                    .split(" ")
-                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                    .join(" ")})`
-                : "";
-            const fullName = `${data.name}${formattedFoodSource}`;
-
-            const payload = {
-                name: fullName,
-                gramWeight: parseFloat(data.gramWeight),
-                portionDescription: data.portionDescription,
-                source: data.source,
-                foodSource: data.foodSource || null,
-                nutrients: [
-                    { nutrientName: "Energy", value: parseFloat(data.calories), unitName: "kcal", nutrientId: 1008 },
-                    { nutrientName: "Protein", value: parseFloat(data.protein), unitName: "g", nutrientId: 1003 },
-                    { nutrientName: "Carbohydrates", value: parseFloat(data.carbohydrates), unitName: "g", nutrientId: 1005 },
-                    { nutrientName: "Total lipid (fat)", value: parseFloat(data.fat), unitName: "g", nutrientId: 1004 },
-                ],
-            };
-
-            const response = await createFoodItemApi(payload, token);
-            setSuccessMessage(`Food item created: ${response.name || "Unknown"}`);
-            reset({
-                name: "",
-                source: "",
-                foodSource: "",
-                portionDescription: "Standard portion (100 gram)",
-                gramWeight: 100,
-                calories: "",
-                protein: "",
-                carbohydrates: "",
-                fat: "",
-            });
-        } catch (error) {
-            console.error("[FoodItem Creation Error]", error);
-            handleApiError(error);
-        }
-    };
-
-    useEffect(() => {
-        const fetchSources = async () => {
-            try {
-                const sources = await getFoodSourcesApi();
-                const mapped = sources.map(value => ({
-                    value,
-                    label: value
-                        .replaceAll("_", " ")
-                        .toLowerCase()
-                        .replace(/^\w/, c => c.toUpperCase())
-                }));
-                setFoodSourceOptions(mapped);
-            } catch (error) {
-                console.error("Failed to load food sources", error);
-            }
-        };
-
-        fetchSources();
-    }, []);
+    // Retrieve onSubmit handler, foodSourceOptions, successMessage and setSuccessMessage from the hook
+    const { onSubmit, foodSourceOptions, successMessage, setSuccessMessage } = useCreateFoodItem(reset);
 
     return (
-        <Box
-            sx={{
-                width: "100%",
-                margin: "auto",
-                padding: 2,
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-            }}
-            component="form"
+        <CustomBox
+            as="form"
+            className="w-full mx-auto p-2 flex flex-col gap-2 mt-4 mb-12 sm:mb-4 scroll-smooth"
             onSubmit={handleSubmit(onSubmit)}
         >
-            <Typography variant="h4" align="left">
+            {/* CustomTypography is used to display the heading */}
+            <CustomTypography as="h4" className="text-2xl font-bold text-left mt-6">
                 Create Food Item
-            </Typography>
+            </CustomTypography>
 
-            {successMessage && <Alert severity="success">{successMessage}</Alert>}
+            {/* ErrorDialog will show a success message when the form is submitted */}
+            <ErrorDialog
+                open={!!successMessage} // Shows the dialog if a success message exists
+                onClose={() => setSuccessMessage("")} // Close dialog and reset success message
+                message={successMessage}
+                type="success"
+            />
 
-            <TextFieldCreateMeal
+            {/* Custom input fields with validation errors */}
+            <CustomTextField
                 label="Name"
                 register={register}
                 name="name"
@@ -123,17 +60,17 @@ const CreateFoodItemForm = () => {
                 helperText={errors.name?.message}
             />
 
-            <TextFieldCreateMeal
+            <CustomTextField
                 label="Portion Description"
                 placeholder="e.g. One slice (35g)"
                 register={register}
                 name="portionDescription"
                 error={errors.portionDescription}
                 helperText={errors.portionDescription?.message}
-                onFocus={(e) => e.target.select()}
+                onFocus={(e) => e.target.select()} // Auto select the text when the input is focused
             />
 
-            <TextFieldCreateMeal
+            <CustomTextField
                 label="Portion Size (grams, used for '1 portion' in description)"
                 placeholder="e.g. 100"
                 register={register}
@@ -142,25 +79,22 @@ const CreateFoodItemForm = () => {
                 helperText={errors.gramWeight?.message}
                 type="text"
                 step="any"
-                onFocus={(e) => e.target.select()}
+                onFocus={(e) => e.target.select()} // Auto select the text when the input is focused
             />
 
-            <FloatingLabelSelect
+            {/* Custom select dropdown for predefined food sources */}
+            <CustomFloatingSelect
                 label="Select predefined food source (e.g. Albert Heijn)"
-                isMulti={false}
-                isSearchable={false}
-                isClearable={false}
-                options={foodSourceOptions}
+                options={foodSourceOptions} // Options for the dropdown
                 value={
-                    watch("foodSource")
+                    watch("foodSource") // Watch the form value for foodSource
                         ? foodSourceOptions.find(opt => opt.value === watch("foodSource"))
                         : null
                 }
-                onChange={(val) => setValue("foodSource", val?.value || "")}
-                containerStyle={{ marginTop: "4px", width: "100%", maxWidth: "none" }}
+                onChange={(val) => setValue("foodSource", val?.value || "")} // Set the value on change
             />
 
-            <TextFieldCreateMeal
+            <CustomTextField
                 label="Source URL (product page)"
                 register={register}
                 name="source"
@@ -168,7 +102,7 @@ const CreateFoodItemForm = () => {
                 helperText={errors.source?.message}
             />
 
-            <TextFieldCreateMeal
+            <CustomTextField
                 label="Calories (kcal)"
                 register={register}
                 name="calories"
@@ -178,7 +112,7 @@ const CreateFoodItemForm = () => {
                 step="any"
             />
 
-            <TextFieldCreateMeal
+            <CustomTextField
                 label="Protein (g)"
                 register={register}
                 name="protein"
@@ -188,7 +122,7 @@ const CreateFoodItemForm = () => {
                 step="any"
             />
 
-            <TextFieldCreateMeal
+            <CustomTextField
                 label="Carbohydrates (g)"
                 register={register}
                 name="carbohydrates"
@@ -198,7 +132,7 @@ const CreateFoodItemForm = () => {
                 step="any"
             />
 
-            <TextFieldCreateMeal
+            <CustomTextField
                 label="Fat (g)"
                 register={register}
                 name="fat"
@@ -208,22 +142,14 @@ const CreateFoodItemForm = () => {
                 step="any"
             />
 
-
-            <Button
+            {/* CustomButton used to submit the form */}
+            <CustomButton
                 type="submit"
-                variant="contained"
-                color="primary"
-                sx={{
-                    fontSize: "0.8rem",
-                    padding: "10px 16px",
-                    color: "text.light",
-                    fontWeight: "bold",
-                    marginBottom: "20px",
-                }}
+                className="text-sm px-4 py-2 text-white bg-primary rounded-md mb-5 hover:bg-primary/90"
             >
                 Create Food Item
-            </Button>
-        </Box>
+            </CustomButton>
+        </CustomBox>
     );
 };
 
