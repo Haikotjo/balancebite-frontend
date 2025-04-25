@@ -13,6 +13,8 @@ import CustomBox from "../../components/layout/CustomBox.jsx";
 import CustomCardChip from "../../components/layout/customCardChip.jsx";
 import clsx from "clsx";
 import CustomTypography from "../../components/layout/CustomTypography.jsx";
+import CustomMultiSelect from "../../components/layout/CustomMultiSelect.jsx";
+import CustomFloatingSelect from "../../components/layout/CustomFloatingSelect.jsx";
 
 const AdminPage = () => {
     const [activeOption, setActiveOption] = useState("Food Item");
@@ -34,15 +36,18 @@ const AdminPage = () => {
         if (activeOption === "Food Item") {
             return (
                 <CustomBox>
-                    <Select
-                        value={foodItemAction}
-                        onChange={(e) => setFoodItemAction(e.target.value)}
-                        sx={{ mb: 2, width: "100%" }}
-                    >
-                        <MenuItem value="Create">Create Food Item</MenuItem>
-                        <MenuItem value="Delete">Delete Food Item</MenuItem>
-                        <MenuItem value="Fetch">Fetch Food Item(s)</MenuItem>
-                    </Select>
+                    <CustomFloatingSelect
+                        label="Food Item Action"
+                        value={{ value: foodItemAction, label: `${foodItemAction} Food Item${foodItemAction === "Fetch" ? "(s)" : ""}` }}
+                        onChange={(opt) => setFoodItemAction(opt.value)}
+                        options={[
+                            { value: "Create", label: "Create Food Item" },
+                            { value: "Delete", label: "Delete Food Item" },
+                            { value: "Fetch", label: "Fetch Food Item(s)" },
+                        ]}
+                        className="py-3"
+                    />
+
                     {foodItemAction === "Create" && <CreateFoodItemForm />}
                     {foodItemAction === "Delete" && <DeleteFoodItemForm />}
                     {foodItemAction === "Fetch" && <FetchFoodItemForm />}
@@ -50,17 +55,21 @@ const AdminPage = () => {
             );
         }
 
+
         if (activeOption === "Meals") {
             return (
                 <CustomBox>
-                    <Select
-                        value={mealAction}
-                        onChange={(e) => setMealAction(e.target.value)}
-                        sx={{ mb: 2, width: "100%" }}
-                    >
-                        <MenuItem value="Create">Create Meal</MenuItem>
-                        <MenuItem value="Delete">Delete Meal</MenuItem>
-                    </Select>
+                    <CustomFloatingSelect
+                        label="Meal Action"
+                        value={{ value: mealAction, label: `${mealAction} Meal` }}
+                        onChange={(opt) => setMealAction(opt.value)}
+                        options={[
+                            { value: "Create", label: "Create Meal" },
+                            { value: "Delete", label: "Delete Meal" },
+                        ]}
+                        className="py-3"
+                    />
+
                     {mealAction === "Create" && <CreateMealForm />}
                     {mealAction === "Delete" && <DeleteMealForm />}
                 </CustomBox>
@@ -70,21 +79,25 @@ const AdminPage = () => {
         if (activeOption === "Users") {
             return (
                 <CustomBox>
-                    <Select
-                        value={userAction}
-                        onChange={(e) => setUserAction(e.target.value)}
-                        sx={{ mb: 2, width: "100%" }}
-                    >
-                        <MenuItem value="Promote">Promote User</MenuItem>
-                        <MenuItem value="Delete">Delete User</MenuItem>
-                        <MenuItem value="Create">Create User</MenuItem>
-                    </Select>
+                    <CustomFloatingSelect
+                        label="User Action"
+                        value={{ value: userAction, label: ` ${userAction} User` }}
+                        onChange={(opt) => setUserAction(opt.value)}
+                        options={[
+                            { value: "Promote", label: "Promote User" },
+                            { value: "Delete", label: "Delete User" },
+                            { value: "Create", label: "Create User" },
+                        ]}
+                        className="py-3"
+                    />
+
                     {userAction === "Promote" && <PromoteUserForm />}
                     {userAction === "Delete" && <DeleteUserForm />}
                     {userAction === "Create" && <CreateUserFormForAdmin />}
                 </CustomBox>
             );
         }
+
 
         switch (activeOption) {
             case "Create Meal":
