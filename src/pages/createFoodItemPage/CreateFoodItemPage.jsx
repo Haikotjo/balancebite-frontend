@@ -1,17 +1,11 @@
-import PageWrapper from "../../components/pageWrapper/PageWrapper.jsx";
 import CreateFoodItemForm from "../../components/createFoodItemForm/CreateFoodItemForm.jsx";
+import CustomBox from "../../components/layout/CustomBox.jsx";
 
 const CreateFoodItemPage = () => {
     return (
-        <PageWrapper
-            sx={{
-                maxWidth: "600px",
-                margin: "auto",
-                paddingX: 2,
-            }}
-        >
+        <CustomBox className="max-w-[600px] mx-auto px-2">
             <CreateFoodItemForm />
-        </PageWrapper>
+        </CustomBox>
     );
 };
 

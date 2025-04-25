@@ -3,7 +3,6 @@ import CustomBox from "./CustomBox.jsx";
 
 /**
  * A controlled floating-label input field for quantities (e.g. in grams).
- * No dependency on MUI. Works well in dark mode.
  */
 const CustomFloatingNumberInput = ({
                                         label,

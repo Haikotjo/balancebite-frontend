@@ -1,42 +1,39 @@
-import { useMediaQuery, useTheme, Box, Stack, Tooltip, Typography, MenuItem, Select } from "@mui/material";
+import { Box, MenuItem, Select } from "@mui/material";
 import { useState } from "react";
-import CustomChip from "../../components/layout/CustomChip.jsx";
 import CreateMealForm from "../../components/createMealForm/CreateMealForm.jsx";
 import CreateFoodItemForm from "../../components/createFoodItemForm/CreateFoodItemForm.jsx";
 import DeleteFoodItemForm from "../../components/deleteFoodItemForm/DeleteFoodItemForm.jsx";
 import FetchFoodItemForm from "../../components/fetchFoodItemForm/FetchFoodItemForm.jsx";
-import SettingsIcon from "@mui/icons-material/Settings";
-import RestaurantIcon from "@mui/icons-material/Restaurant";
-import AddBoxIcon from "@mui/icons-material/AddBox";
+import { PlusSquare, Utensils, Settings } from "lucide-react";
 import PromoteUserForm from "../../components/promoteUserForm/PromoteUserForm.jsx";
 import DeleteUserForm from "../../components/deleteUserForm/DeleteUserForm.jsx";
 import CreateUserFormForAdmin from "../../components/createUserFormForAdmin/CreateUserFormForAdmin.jsx";
 import DeleteMealForm from "../../components/deleteMealForm/DeleteMealForm.jsx";
+import CustomBox from "../../components/layout/CustomBox.jsx";
+import CustomCardChip from "../../components/layout/customCardChip.jsx";
+import clsx from "clsx";
+import CustomTypography from "../../components/layout/CustomTypography.jsx";
 
 const AdminPage = () => {
-    const [activeOption, setActiveOption] = useState("Create Meal");
+    const [activeOption, setActiveOption] = useState("Food Item");
     const [foodItemAction, setFoodItemAction] = useState("Create");
     const [userAction, setUserAction] = useState("Promote");
     const [mealAction, setMealAction] = useState("Create");
 
-    const theme = useTheme();
-    const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-    const iconSize = isSmallScreen ? 30 : 50;
-    const chipMargin = isSmallScreen ? 15 : 30;
-    const chipFontSize = isSmallScreen ? 30 : 40;
-    const labelFontSize = isSmallScreen ? "0.6rem" : "0.7rem";
+    const labelFontSize = "text-[0.6rem] sm:text-[0.7rem]";
+
 
     const options = [
-        { label: "Meals", icon: <RestaurantIcon sx={{ fontSize: chipFontSize }} /> },
-        { label: "Food Item", icon: <AddBoxIcon sx={{ fontSize: chipFontSize }} /> },
-        { label: "Users", icon: <SettingsIcon sx={{ fontSize: chipFontSize }} /> },
-        { label: "Settings", icon: <SettingsIcon sx={{ fontSize: chipFontSize }} /> },
+        { label: "Food Item", icon: <PlusSquare className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
+        { label: "Meals", icon: <Utensils className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
+        { label: "Users", icon: <Settings className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
+        { label: "Settings", icon: <Settings className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
     ];
 
     const renderActiveComponent = () => {
         if (activeOption === "Food Item") {
             return (
-                <Box>
+                <CustomBox>
                     <Select
                         value={foodItemAction}
                         onChange={(e) => setFoodItemAction(e.target.value)}
@@ -49,13 +46,30 @@ const AdminPage = () => {
                     {foodItemAction === "Create" && <CreateFoodItemForm />}
                     {foodItemAction === "Delete" && <DeleteFoodItemForm />}
                     {foodItemAction === "Fetch" && <FetchFoodItemForm />}
-                </Box>
+                </CustomBox>
+            );
+        }
+
+        if (activeOption === "Meals") {
+            return (
+                <CustomBox>
+                    <Select
+                        value={mealAction}
+                        onChange={(e) => setMealAction(e.target.value)}
+                        sx={{ mb: 2, width: "100%" }}
+                    >
+                        <MenuItem value="Create">Create Meal</MenuItem>
+                        <MenuItem value="Delete">Delete Meal</MenuItem>
+                    </Select>
+                    {mealAction === "Create" && <CreateMealForm />}
+                    {mealAction === "Delete" && <DeleteMealForm />}
+                </CustomBox>
             );
         }
 
         if (activeOption === "Users") {
             return (
-                <Box>
+                <CustomBox>
                     <Select
                         value={userAction}
                         onChange={(e) => setUserAction(e.target.value)}
@@ -68,76 +82,67 @@ const AdminPage = () => {
                     {userAction === "Promote" && <PromoteUserForm />}
                     {userAction === "Delete" && <DeleteUserForm />}
                     {userAction === "Create" && <CreateUserFormForAdmin />}
-                </Box>
-            );
-        }
-
-        if (activeOption === "Meals") {
-            return (
-                <Box>
-                    <Select
-                        value={mealAction}
-                        onChange={(e) => setMealAction(e.target.value)}
-                        sx={{ mb: 2, width: "100%" }}
-                    >
-                        <MenuItem value="Create">Create Meal</MenuItem>
-                        <MenuItem value="Delete">Delete Meal</MenuItem>
-                    </Select>
-                    {mealAction === "Create" && <CreateMealForm />}
-                    {mealAction === "Delete" && <DeleteMealForm />}
-                </Box>
+                </CustomBox>
             );
         }
 
         switch (activeOption) {
             case "Create Meal":
                 return <CreateMealForm />;
-            case "Users":
-                return <Typography>Manage users coming soon...</Typography>;
             case "Settings":
-                return <Typography>Admin settings coming soon...</Typography>;
+                return (
+                    <CustomTypography variant="paragraph" className="text-center text-gray-700 dark:text-gray-300">
+                        Admin settings coming soon...
+                    </CustomTypography>
+                );
             default:
                 return null;
         }
+
     };
 
     return (
-        <Box display="flex" flexDirection="column" alignItems="center" padding={2}>
-            <Typography variant="h4" sx={{ fontWeight: "bold", mb: 4 }}>
+        <CustomBox className="flex flex-col items-center p-2">
+            <CustomTypography
+                variant="h2"
+                bold
+                className="my-4"
+            >
                 Admin Dashboard
-            </Typography>
+            </CustomTypography>
 
-            <Box sx={{ marginBottom: 5, display: "flex", justifyContent: "center" }}>
-                <Stack direction="row" spacing={2} alignItems="center">
+            <CustomBox className="mb-5 flex justify-center">
+                <CustomBox className="flex flex-row items-center gap-4">
                     {options.map((option) => (
-                        <Box key={option.label} display="flex" flexDirection="column" alignItems="center">
-                            <Tooltip title={option.label} arrow>
-                                <span>
-                                    <CustomChip
-                                        icon={option.icon}
-                                        label={option.label}
-                                        selected={option.label === activeOption}
-                                        onClick={() => setActiveOption(option.label)}
-                                        iconMargin={chipMargin}
-                                        iconSize={iconSize}
-                                        labelPosition="top"
-                                        labelFontSize={labelFontSize}
-                                        sx={{
-                                            backgroundColor: option.label === activeOption ? "primary.main" : "default",
-                                            color: option.label === activeOption ? "white" : "black",
-                                        }}
-                                    />
-                                </span>
-                            </Tooltip>
-                        </Box>
+                        <CustomBox key={option.label} className="flex flex-col items-center">
+                            <CustomCardChip
+                                onClick={() => setActiveOption(option.label)}
+                                className={clsx(
+                                    "flex flex-col items-center justify-center border-2",
+                                    option.label === activeOption
+                                        ? "bg-primary border-primary text-white"
+                                        : "bg-white dark:bg-gray-800 border-primary text-primary",
+                                    "w-[56px] h-[32px] sm:w-[76px] sm:h-[46px]"
+                                )}
+                                textClassName="flex flex-col items-center"
+                            >
+                                {option.icon}
+                            </CustomCardChip>
+                            <CustomTypography
+                                as="span"
+                                className="text-[0.8rem] sm:text-[0.9rem] font-semibold mt-2"
+                            >
+                                {option.label}
+                            </CustomTypography>
+                        </CustomBox>
                     ))}
-                </Stack>
-            </Box>
+                </CustomBox>
+            </CustomBox>
 
             <Box sx={{ width: "100%", maxWidth: "600px" }}>
                 {renderActiveComponent()}
             </Box>
-        </Box>
+        </CustomBox>
     );
 };
 

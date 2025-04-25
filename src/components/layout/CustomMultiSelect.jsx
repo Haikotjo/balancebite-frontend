@@ -2,7 +2,23 @@ import { useRef, useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import CustomBox from "../layout/CustomBox.jsx";
 import PropTypes from "prop-types";
+import CustomButton from "./CustomButton.jsx";
+import clsx from "clsx";
+import CustomTypography from "./CustomTypography.jsx";
 
+/**
+ * CustomMultiSelect component – A reusable multiselect dropdown using only custom layout components.
+ * Designed to be fully compatible with both web and React Native structure.
+ *
+ * @param {Object} props
+ * @param {string} props.label – The label shown above the dropdown.
+ * @param {Array<{ value: string|number, label: string }>} props.options – All available options to select from.
+ * @param {Array<string|number>} [props.value=[]] – Currently selected values.
+ * @param {function} props.onChange – Callback when selection changes.
+ * @param {string} [props.placeholder="Select..."] – Placeholder text when nothing is selected.
+ * @param {string} [props.containerClassName] – Extra class for the container.
+ * @param {string} [props.className] – Extra class for the button.
+ */
 const CustomMultiSelect = ({
                                label,
                                options,
@@ -16,6 +32,7 @@ const CustomMultiSelect = ({
     const [selectedValues, setSelectedValues] = useState(value);
     const dropdownRef = useRef();
 
+    // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -26,10 +43,12 @@ const CustomMultiSelect = ({
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    // Update internal state if parent-controlled value changes
     useEffect(() => {
         setSelectedValues(value);
     }, [value]);
 
+    // Add or remove selected value
     const toggleOption = (optionValue) => {
         const newValue = selectedValues.includes(optionValue)
             ? selectedValues.filter((val) => val !== optionValue)
@@ -46,23 +65,28 @@ const CustomMultiSelect = ({
                 </label>
             )}
 
-            <button
-                type="button"
+            {/* Trigger button */}
+            <CustomButton
                 onClick={() => setIsOpen((prev) => !prev)}
-                className={`w-full border rounded px-3 py-2 text-sm bg-white dark:bg-gray-800 border-primary focus:outline-none flex justify-between items-center ${className}`}
+                className={clsx(
+                    "w-full border rounded px-3 py-2 text-sm bg-white dark:bg-gray-800 border-primary focus:outline-none flex justify-between items-center",
+                    className
+                )}
             >
-                <span className="truncate">
+                {/* Selected text preview */}
+                <CustomBox className="truncate">
                     {selectedValues.length > 0
                         ? options.filter(opt => selectedValues.includes(opt.value)).map(opt => opt.label).join(", ")
                         : placeholder}
-                </span>
+                </CustomBox>
                 <ChevronDown className="h-4 w-4 text-gray-500" />
-            </button>
+            </CustomButton>
 
+            {/* Dropdown panel */}
             {isOpen && (
-                <div className="absolute z-20 mt-1 w-full max-h-60 overflow-auto rounded bg-white dark:bg-gray-800 shadow-lg border border-gray-300">
+                <CustomBox className="absolute z-20 mt-1 w-full max-h-60 overflow-auto rounded bg-white dark:bg-gray-800 shadow-lg border border-gray-300">
                     {options.map((option) => (
-                        <div
+                        <CustomBox
                             key={option.value}
                             onClick={() => toggleOption(option.value)}
                             className="cursor-pointer flex items-center px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -73,10 +97,12 @@ const CustomMultiSelect = ({
                                 onChange={() => toggleOption(option.value)}
                                 className="mr-2"
                             />
-                            <span>{option.label}</span>
-                        </div>
+                            <CustomTypography as="span">
+                                {option.label}
+                            </CustomTypography>
+                        </CustomBox>
                     ))}
-                </div>
+                </CustomBox>
             )}
         </CustomBox>
     );
