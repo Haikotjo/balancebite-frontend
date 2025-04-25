@@ -58,6 +58,7 @@ const CreateFoodItemForm = () => {
                 name="name"
                 error={errors.name}
                 helperText={errors.name?.message}
+                placeholder="Enter the food item name"
             />
 
             <CustomTextField
@@ -84,7 +85,7 @@ const CreateFoodItemForm = () => {
 
             {/* Custom select dropdown for predefined food sources */}
             <CustomFloatingSelect
-                label="Select predefined food source (e.g. Albert Heijn)"
+                label="Select source"
                 options={foodSourceOptions} // Options for the dropdown
                 value={
                     watch("foodSource") // Watch the form value for foodSource
@@ -92,6 +93,7 @@ const CreateFoodItemForm = () => {
                         : null
                 }
                 onChange={(val) => setValue("foodSource", val?.value || "")} // Set the value on change
+                placeholder="Select predefined food source (e.g. Albert Heijn"
             />
 
             <CustomTextField
@@ -100,52 +102,57 @@ const CreateFoodItemForm = () => {
                 name="source"
                 error={errors.source}
                 helperText={errors.source?.message}
+                placeholder="https://www.example.com/product"
             />
 
             <CustomTextField
-                label="Calories (kcal)"
+                label="Calories (kcal per 100g)"
                 register={register}
                 name="calories"
                 error={errors.calories}
                 helperText={errors.calories?.message}
                 type="text"
                 step="any"
+                placeholder="e.g. 250 (per 100g)"
             />
 
             <CustomTextField
-                label="Protein (g)"
+                label="Protein (g per 100g)"
                 register={register}
                 name="protein"
                 error={errors.protein}
                 helperText={errors.protein?.message}
                 type="text"
                 step="any"
+                placeholder="e.g. 20 (per 100g)"
             />
 
             <CustomTextField
-                label="Carbohydrates (g)"
+                label="Carbohydrates (g per 100g)"
                 register={register}
                 name="carbohydrates"
                 error={errors.carbohydrates}
                 helperText={errors.carbohydrates?.message}
                 type="text"
                 step="any"
+                placeholder="e.g. 20 (per 100g)"
             />
 
             <CustomTextField
-                label="Fat (g)"
+                label="Fat (g per 100g)"
                 register={register}
                 name="fat"
                 error={errors.fat}
                 helperText={errors.fat?.message}
                 type="text"
                 step="any"
+                placeholder="e.g. 10 (per 100g)"
             />
 
             {/* CustomButton used to submit the form */}
             <CustomButton
                 type="submit"
-                className="text-sm px-4 py-2 text-white bg-primary rounded-md mb-5 hover:bg-primary/90"
+                className="text-sm px-4 py-2 text-white bg-primary rounded-md mb-5 mt-4 hover:bg-primary/90"
             >
                 Create Food Item
             </CustomButton>

@@ -1,52 +1,71 @@
-import { Box, Button, Typography, TextField, Alert, CircularProgress } from "@mui/material";
-import { useState, useRef } from "react";
-import { fetchFoodItemByFdcIdApi } from "../../services/apiService";
-import { handleApiError } from "../../utils/helpers/handleApiError";
+import CustomBox from "../layout/CustomBox.jsx";
+import CustomTypography from "../layout/CustomTypography.jsx";
+import CustomTextField from "../layout/CustomTextField.jsx";
+import useFetchFoodItem from "../../hooks/useFetchFoodItem.js";
+import Spinner from "../layout/Spinner.jsx";
+import CustomButton from "../layout/CustomButton.jsx";
+import ErrorDialog from "../layout/ErrorDialog.jsx";
+
 
 const FetchFoodItemForm = () => {
-    const [fdcId, setFdcId] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
-    const [loading, setLoading] = useState(false);
-    const isSubmittingRef = useRef(false);
+    const {
+        fdcId,
+        setFdcId,
+        errorMessage,
+        setErrorMessage,
+        successMessage,
+        setSuccessMessage,
+        loading,
+        handleSubmit,
+        register,
+        errors
+    } = useFetchFoodItem();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (loading || isSubmittingRef.current) return;
-        isSubmittingRef.current = true;
-        setSuccessMessage("");
-        setLoading(true);
-        console.log("Submit triggered");
-
-        try {
-            const result = await fetchFoodItemByFdcIdApi(fdcId);
-            setSuccessMessage(result.message);
-            setFdcId("");
-        } catch (error) {
-            handleApiError(error);
-        } finally {
-            setLoading(false);
-            isSubmittingRef.current = false;
-        }
-    };
 
     return (
-        <Box
-            component="form"
+        <CustomBox
+            as="form"
             onSubmit={handleSubmit}
-            sx={{ display: "flex", flexDirection: "column", gap: 2, width: "100%" }}
+            className="flex flex-col w-full"
         >
-            <Typography variant="h5">Fetch Food Item by FDC ID</Typography>
-            <TextField
+        <CustomTypography variant="h5"  className="mt-12" >
+                Fetch Food Item by FDC ID
+            </CustomTypography>
+
+            <CustomTextField
                 label="FDC ID"
+                name="fdcId"
                 value={fdcId}
                 onChange={(e) => setFdcId(e.target.value)}
-                fullWidth
+                className="w-full "  register={register}  // Pass register for validation
+                error={errors.fdcId}  // Pass errors for validation display
+                helperText={errors.fdcId?.message}
+                placeholder="Enter the FDC ID"
+                inputPaddingTop="pt-4"
             />
-            <Button variant="contained" type="submit" disabled={loading}  sx={{ color: "text.light" }}>
-                {loading ? <CircularProgress size={24} color="inherit" /> : "Fetch and Save"}
-            </Button>
-            {successMessage && <Alert severity="success">{successMessage}</Alert>}
-        </Box>
+            {/* Spinner outside the button */}
+            {loading && (
+                <CustomBox className="flex justify-center mt-4">
+                    <Spinner className="text-white" />
+                </CustomBox>
+            )}
+            <CustomButton
+                type="submit"
+                disabled={loading}
+                className="text-sm px-4 py-2 text-white bg-primary rounded-md mb-5 mt-8 hover:bg-primary/90"
+            >
+                 Fetch and Save
+            </CustomButton>
+            <ErrorDialog
+                open={!!successMessage || !!errorMessage}  // Open dialog if there's a success or error message
+                onClose={() => {
+                    setSuccessMessage("");
+                    setErrorMessage("");
+                }}  // Close dialog and reset messages
+                message={successMessage || errorMessage}  // Show the message (either success or error)
+                type={successMessage ? "success" : "error"}  // Dynamically set the type
+            />
+        </CustomBox>
     );
 };
 

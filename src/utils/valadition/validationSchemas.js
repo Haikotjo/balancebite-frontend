@@ -94,3 +94,11 @@ export const foodItemSchema = yup.object().shape({
         .required("Fat is required"),
 });
 
+export const fdcIdSchema = yup.object().shape({
+    fdcId: yup
+        .string()
+        .matches(/^\d+$/, "FDC ID must be a number")  // Ensure only digits are allowed
+        .required("FDC ID is required"),
+});
+
+

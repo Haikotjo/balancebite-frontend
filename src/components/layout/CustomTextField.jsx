@@ -1,4 +1,6 @@
 import PropTypes from "prop-types";
+import CustomBox from "./CustomBox.jsx";
+import CustomTypography from "./CustomTypography.jsx";
 
 /**
  * A controlled floating-label text input field (e.g. for name, email, password).
@@ -13,12 +15,13 @@ const CustomTextField = ({
                              className = "",
                              multiline = false,
                              rows = 4,
+                             inputPaddingTop = "pt-5",
                              ...rest
                          }) => {
     const InputComponent = multiline ? "textarea" : "input";
 
     return (
-        <div className={`relative w-full mt-4 ${className}`}>
+        <CustomBox className={`relative w-full mt-4 ${className}`}>
             <InputComponent
                 id={name}
                 type={multiline ? undefined : type}
@@ -26,7 +29,7 @@ const CustomTextField = ({
                 rows={multiline ? rows : undefined}
                 {...(register ? register(name) : {})}
                 {...rest}
-                className={`peer w-full border border-primary rounded px-3 pt-5 pb-2 text-sm dark:bg-gray-800 bg-white text-black dark:text-white focus:outline-none focus:border-success resize-none`}
+                className={`peer w-full border border-primary rounded px-3 ${inputPaddingTop} pb-2 text-sm dark:bg-gray-800 bg-white text-black dark:text-white focus:outline-none focus:border-success resize-none`}
             />
             <label
                 htmlFor={name}
@@ -34,8 +37,16 @@ const CustomTextField = ({
             >
                 {label}
             </label>
-            {error && <p className="text-error text-xs mt-1">{error.message}</p>}
-        </div>
+            {error && (
+                <CustomTypography
+                    variant="small"
+                    color="text-error"
+                    className="text-xs mt-1"
+                >
+                    {error.message}
+                </CustomTypography>
+            )}
+        </CustomBox>
     );
 };
 
@@ -49,6 +60,7 @@ CustomTextField.propTypes = {
     className: PropTypes.string,
     multiline: PropTypes.bool,
     rows: PropTypes.number,
+    inputPaddingTop: PropTypes.string,
 };
 
 export default CustomTextField;
