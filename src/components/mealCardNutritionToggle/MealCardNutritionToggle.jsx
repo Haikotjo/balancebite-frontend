@@ -32,9 +32,9 @@ const MealCardNutritionToggle = ({ macros, show, onToggle, viewMode }) => {
                 <>
                     <MealCardMacrosSection macros={macros} />
                     {!isAlwaysOpen && (
-                        <div className="flex justify-center mt-4">
+                        <CustomBox className="flex justify-center mt-4">
                             <ChevronUp size={18} />
-                        </div>
+                        </CustomBox>
                     )}
                 </>
             ) : (

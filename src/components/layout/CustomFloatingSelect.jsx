@@ -25,7 +25,7 @@ const CustomFloatingSelect = ({
             )}
 
             <Listbox value={value} onChange={onChange}>
-                <div className="relative">
+                <CustomBox className="relative">
                     <Listbox.Button
                         className={`w-full border rounded px-3 py-2 text-sm bg-white dark:bg-gray-800 border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${className}`}
                     >
@@ -52,7 +52,7 @@ const CustomFloatingSelect = ({
                             </Listbox.Option>
                         ))}
                     </Listbox.Options>
-                </div>
+                </CustomBox>
             </Listbox>
         </CustomBox>
     );

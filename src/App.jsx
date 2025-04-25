@@ -1,10 +1,11 @@
 import AppRoutes from "./routes/Routes.jsx";
+import CustomBox from "./components/layout/CustomBox.jsx";
 
 function App() {
     return (
-        <div className="min-h-screen bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText">
+        <CustomBox className="min-h-screen bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText">
             <AppRoutes />
-        </div>
+        </CustomBox>
     );
 }
 

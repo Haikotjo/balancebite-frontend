@@ -2,6 +2,7 @@
 
 import PropTypes from "prop-types";
 import clsx from "clsx";
+import CustomBox from "./CustomBox.jsx";
 
 /**
  * CustomCardChip — volledig flexibel.
@@ -15,18 +16,19 @@ const CustomCardChip = ({
                             textClassName = "",
                         }) => {
     return (
-        <div
+        <CustomBox
             onClick={onClick}
             className={clsx(
                 "rounded-full border cursor-pointer transition-colors duration-200",
                 className
             )}
         >
-            <div className={textClassName}>
+            <CustomBox className={textClassName}>
                 {children}
-            </div>
-        </div>
+            </CustomBox>
+        </CustomBox>
     );
+
 };
 
 CustomCardChip.propTypes = {

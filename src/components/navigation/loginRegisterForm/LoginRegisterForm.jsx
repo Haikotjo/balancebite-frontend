@@ -2,7 +2,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import LoginForm from "./loginForm/LoginForm.jsx";
 import RegisterForm from "./registerForm/RegisterForm.jsx";
-import CustomModal from "../../layout/CustomModal.jsx"; // Zorg ervoor dat CustomModal geïmporteerd wordt
+import CustomModal from "../../layout/CustomModal.jsx";
 
 /**
  * Displays a modal with either the login or register form.
