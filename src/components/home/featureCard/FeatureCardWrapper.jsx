@@ -4,7 +4,6 @@ import CustomBox from "../../layout/CustomBox.jsx";
 
 /**
  * FeatureCardWrapper component — wraps feature cards in a responsive flex item.
- * Replaces MUI Grid item and Tooltip.
  *
  * @param {object} props
  * @param {React.ReactNode} props.children – the content inside

@@ -15,8 +15,6 @@ import CustomTypography from "../layout/CustomTypography.jsx";
  * @param {function} props.onLogout     Callback when user chooses “Logout”
  * @param {function} props.onLoginClick Callback to show login page/modal
  * @param {function} props.onRegisterClick Callback to show register page/modal
- * @param {string} [props.iconColor]    Tailwind text‑color for trigger icon
- * @param {string} [props.text]         Optional text shown next to the icon
  * @returns {JSX.Element}
  */
 const ProfileMenu = ({

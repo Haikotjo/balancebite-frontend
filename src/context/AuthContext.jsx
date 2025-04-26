@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { jwtDecode } from "jwt-decode";
 import { loginApi, logoutApi } from "../services/authService.js";
 import Spinner from "../components/layout/Spinner.jsx";
+import CustomBox from "../components/layout/CustomBox.jsx";
 
 export const AuthContext = createContext();
 
@@ -94,9 +95,9 @@ export const AuthProvider = ({ children }) => {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-screen">
+            <CustomBox className="flex items-center justify-center h-screen">
                 <Spinner />
-            </div>
+            </CustomBox>
         );
     }
 

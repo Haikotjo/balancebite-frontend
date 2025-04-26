@@ -3,7 +3,7 @@ import React from "react";
 import clsx from "clsx";
 
 /**
- * A Custom AppBar component that functions similarly to MUI's AppBar
+ * Custom AppBar component.
  * with support for logo, menu items, and responsive behavior.
  */
 const CustomAppBar = React.forwardRef(({ children, className, position = "sticky", bgColor = "bg-primary", ...props }, ref) => (

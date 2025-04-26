@@ -30,11 +30,14 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
 
     // Rotate icon on mount for simple animation effect
     useEffect(() => {
-        setTimeout(() => setIsIconLoaded(true), 100);
+        const timer = setTimeout(() => setIsIconLoaded(true), 100);
+        return () => clearTimeout(timer);
     }, []);
+
 
     // Close menu when clicking outside of it
     useEffect(() => {
+        if (!open) return;
         const handleClickOutside = (event) => {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
                 setOpen(false);

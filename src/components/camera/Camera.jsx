@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import Webcam from "react-webcam";
 import { Camera as CameraIcon, CameraOff } from "lucide-react";
-import ResetButton from "../createMealForm/mealImageUploader/resetButton/ResetButton.jsx";
 import CustomBox from "../layout/CustomBox.jsx";
 import CustomIconButton from "../layout/CustomIconButton.jsx";
 import ErrorDialog from "../layout/ErrorDialog.jsx";
@@ -100,7 +99,12 @@ const Camera = ({ onCapture, disabled }) => {
                             borderRadius: "4px",
                         }}
                     />
-                    <ResetButton onReset={handleReset} />
+                    <CustomButton
+                        onClick={handleReset}
+                        className="bg-error text-white px-3 py-1"
+                    >
+                        Reset
+                    </CustomButton>
                 </CustomBox>
             )}
 
