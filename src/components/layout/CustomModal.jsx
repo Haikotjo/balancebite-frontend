@@ -45,7 +45,7 @@ const CustomModal = ({ isOpen, onClose, children }) => {
             onClick={handleOverlayClick} // Close modal when clicking on overlay
         >
             <CustomBox
-                className="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-sm w-full"
+                className="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-sm w-full mx-4"
                 onClick={(e) => e.stopPropagation()} // Prevent closing the modal when clicking inside the modal content
             >
                 <CustomButton
@@ -54,7 +54,7 @@ const CustomModal = ({ isOpen, onClose, children }) => {
                 >
                     ✕
                 </CustomButton>
-                <CustomBox>{children}</CustomBox> {/* Modal content passed as children */}
+                <CustomBox >{children}</CustomBox> {/* Modal content passed as children */}
             </CustomBox>
         </CustomBox>,
         document.body // Render the modal outside the normal DOM flow

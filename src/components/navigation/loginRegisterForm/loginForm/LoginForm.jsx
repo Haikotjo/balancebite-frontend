@@ -49,9 +49,9 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                 message={errorMessage}
             />
 
-            <CustomBox    className="w-full max-w-md p-6 mt-4 rounded-lg shadow-md border border-primary">
+            <CustomBox    className="w-full max-w-md p-6 rounded-lg shadow-md border border-primary">
                 <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-                    <h2 className="text-2xl font-bold text-center">Login</h2>
+                    <h2 className="text-2xl font-bold text-center text-lightText dark:text-darkText">Login</h2>
 
                     <CustomTextField
                         label="Email"
@@ -90,7 +90,7 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                         <CustomButton
                             type="button"
                             onClick={onClose}
-                            className="text-gray-600 hover:underline bg-transparent mt-2 self-end"
+                            className="hover:underline bg-transparent mt-2 self-end text-lightText dark:text-darkText"
                         >
                             Close
                         </CustomButton>

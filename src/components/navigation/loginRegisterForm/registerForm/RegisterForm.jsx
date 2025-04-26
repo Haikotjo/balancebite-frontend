@@ -31,11 +31,11 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
             />
 
             <CustomBox
-                className="w-full max-w-md p-6 mt-4 rounded-lg shadow-md border border-primary"
+                className="w-full max-w-md p-6 rounded-lg shadow-md border border-primary"
 >
             <form onSubmit={handleSubmit((data) => handleRegistration(data, onClose))} className="flex flex-col
                     gap-4">
-                    <h2 className="text-2xl font-bold text-center">Register</h2>
+                    <h2 className="text-2xl font-bold text-center text-lightText dark:text-darkText">Register</h2>
 
                     {successMessage && (
                         <CustomBox className="text-sm p-2 rounded text-green-700 bg-green-100">
