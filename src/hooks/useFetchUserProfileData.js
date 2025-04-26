@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-export const useFetchUserProfileData = (token, decodeToken, fetchUserProfile, reset) => {
-    const [userProfile, setUserProfile] = useState(null);
+export const useFetchUserProfileData = (token, decodeToken, fetchUserProfile) => {
+    const [userProfile, setUserProfile] = useState(undefined);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -26,7 +26,6 @@ export const useFetchUserProfileData = (token, decodeToken, fetchUserProfile, re
                     setUserProfile(null);
                 } else {
                     setUserProfile(data);
-                    reset(data);
                 }
             } catch (error) {
                 console.error("Error fetching user profile:", error);
@@ -35,7 +34,7 @@ export const useFetchUserProfileData = (token, decodeToken, fetchUserProfile, re
         };
 
         fetchData();
-    }, [token, decodeToken, fetchUserProfile, reset]);
+    }, [token, decodeToken, fetchUserProfile]);
 
     return userProfile;
 };

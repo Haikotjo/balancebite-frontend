@@ -1,61 +1,68 @@
-import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
 import UserDetailsForm from "../../components/userForm/userDetailsForm/UserDetailsForm.jsx";
 import PersonalInfoForm from "../../components/userForm/personalInfoSchema/PersonalInfoForm.jsx";
 import RecommendedNutritionDisplay from "../../components/recommendedNutritionDisplay/RecommendedNutritionDisplay.jsx";
+import CustomBox from "../../components/layout/CustomBox.jsx";
+import CustomTypography from "../../components/layout/CustomTypography.jsx";
 
+/**
+ * ProfilePage component
+ *
+ * Displays the user's personal information, user details, and recommended nutrition overview.
+ * Designed with Tailwind and custom components to allow easier future migration to React Native.
+ *
+ * @returns {JSX.Element} The rendered profile page.
+ */
 const ProfilePage = () => {
+    /**
+     * Handles submission of user details form.
+     *
+     * @param {Object} data - Submitted user details.
+     */
     const handleUserDetailsSubmit = (data) => {
         console.log("User Details Submitted:", data);
     };
 
+    /**
+     * Handles submission of personal information form.
+     *
+     * @param {Object} data - Submitted personal information.
+     */
     const handlePersonalInfoSubmit = (data) => {
         console.log("Personal Info Submitted:", data);
     };
 
     return (
-        <Box
-            sx={{
-                padding: "20px",
-                display: "flex",
-                flexDirection: "column",
-                gap: "20px",
-            }}
-        >
+        <CustomBox className="flex flex-col gap-5 p-5">
             {/* Personal Info & User Details Section */}
-            <Grid container spacing={2} sx={{ width: "100%" }}>
-                <Grid item xs={12} md={6}>
-                    <Card>
-                        <CardContent>
-                            <PersonalInfoForm onSubmit={handlePersonalInfoSubmit} />
-                        </CardContent>
-                    </Card>
-                </Grid>
+            <CustomBox className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                {/* Personal Information Form */}
+                <CustomBox className="bg-cardLight dark:bg-cardDark rounded shadow p-4">
+                    <PersonalInfoForm onSubmit={handlePersonalInfoSubmit} />
+                </CustomBox>
 
-                <Grid item xs={12} md={6}>
-                    <Card>
-                        <CardContent>
-                            <UserDetailsForm onSubmit={handleUserDetailsSubmit} />
-                        </CardContent>
-                    </Card>
-                </Grid>
-            </Grid>
+                {/* User Details Form */}
+                <CustomBox className="bg-cardLight dark:bg-cardDark rounded shadow p-4">
+                    <UserDetailsForm onSubmit={handleUserDetailsSubmit} />
+                </CustomBox>
+            </CustomBox>
 
-            <Box sx={{ flex: "1 1 auto", marginTop: 2 }}>
-                <Typography variant="h6" align="center" gutterBottom>
+            {/* Recommended Nutrition Section */}
+            <CustomBox className="flex flex-col flex-1 mt-2">
+                <CustomTypography variant="h3" className="text-center mb-4">
                     Daily Nutrition Overview
-                </Typography>
-                <Grid container spacing={2}>
-                    <Grid item xs={12} md={6}>
+                </CustomTypography>
 
+                {/* Displaying both user-specific and base recommended nutrition */}
+                <CustomBox className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <CustomBox>
                         <RecommendedNutritionDisplay />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-
+                    </CustomBox>
+                    <CustomBox>
                         <RecommendedNutritionDisplay useBaseRDI={true} />
-                    </Grid>
-                </Grid>
-            </Box>
-        </Box>
+                    </CustomBox>
+                </CustomBox>
+            </CustomBox>
+        </CustomBox>
     );
 };
 

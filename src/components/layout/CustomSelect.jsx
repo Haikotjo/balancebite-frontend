@@ -4,7 +4,7 @@ import CustomTypography from "./CustomTypography.jsx";
 
 /**
  * CustomSelect component.
- * Simple custom select input, styled like CustomTextField, with floating label.
+ * Single-value select input, styled like CustomMultiSelect.
  *
  * @param {object} props
  * @returns {JSX.Element}
@@ -38,7 +38,7 @@ const CustomSelect = ({
                 {...register(name)}
                 defaultValue={value}
                 disabled={disabled}
-                className={`w-full border rounded px-3 py-2 text-sm bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
+                className={`w-full border rounded px-3 py-2 text-sm bg-white dark:bg-gray-800 border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
                     error ? "border-red-500" : "border-primary"
                 } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""} ${className}`}
             >
