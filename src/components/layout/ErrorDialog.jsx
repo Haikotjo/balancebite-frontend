@@ -32,13 +32,16 @@ const ErrorDialog = React.forwardRef(
                         ) : (
                             <CircleAlert size={24} className="text-error shrink-0" />
                         )}
-                        <DialogTitle as="h2" className="text-lg font-semibold">
+                        <DialogTitle as="h2" className="text-lg font-semibold text-lightText dark:text-darkText">
                             {type === "success" ? "Success" : "Action Required"}
                         </DialogTitle>
                     </CustomBox>
 
                     {/* message */}
-                    <CustomBox className="text-sm mb-4">{message}</CustomBox>
+                    <CustomBox className="text-sm mb-4 text-lightText dark:text-darkText">
+                        {message}
+                    </CustomBox>
+
 
                     {/* actie-link of knop */}
                     {actionLabel &&
