@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router-dom";
-import { MenuIcon, Home, Info, LogIn, LogOut, UserPlus } from "lucide-react";
+import { MenuIcon, Home, Info, LogIn, LogOut, UserPlus, Settings, Soup  } from "lucide-react";
 import CustomBox from "../../layout/CustomBox.jsx";
 import CustomButton from "../../layout/CustomButton.jsx";
 import CustomTypography from "../../layout/CustomTypography.jsx";
 import CustomDivider from "../../layout/CustomDivider.jsx";
-import DarkModeSwitch from "../darkModeSwitch/DarkModeSwitch.jsx";
 
 /**
  * A responsive hamburger menu for small screens.
@@ -22,6 +21,7 @@ import DarkModeSwitch from "../darkModeSwitch/DarkModeSwitch.jsx";
 const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
     const [open, setOpen] = useState(false);
     const [isIconLoaded, setIsIconLoaded] = useState(false);
+    const isAdmin = user?.roles.includes("ADMIN");
     const menuRef = useRef(null);
     const navigate = useNavigate();
     const location = useLocation();
@@ -50,10 +50,13 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
     const menuItems = [
         { label: "Home", icon: Home, path: "/" },
         { label: "About", icon: Info, path: "/about" },
+        { label: "Meals", icon: Soup, path: "/meals" },
+        isAdmin && { label: "Admin", icon: Settings, path: "/admin" },
         !user && { label: "Login", icon: LogIn, action: onLoginClick },
         !user && { label: "Register", icon: UserPlus, action: onRegisterClick },
         user && { label: "Logout", icon: LogOut, action: onLogout },
     ].filter(Boolean);
+
 
     return (
         <CustomBox ref={menuRef} className="relative">
@@ -69,7 +72,7 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
 
             {/* Dropdown menu */}
             {open && (
-                <CustomBox className="absolute bottom-full mb-1 sm:bottom-auto sm:top-full sm:mt-2 mt-2 left-0 sm:left-auto sm:right-0 min-w-[10rem] max-w-[90vw] rounded-xl bg-white dark:bg-gray-800 shadow-lg z-[999] px-4">
+                <CustomBox className="absolute bottom-full mb-2 sm:bottom-auto sm:top-full sm:mt-2 mt-2 left-0 sm:left-auto sm:right-0 min-w-[10rem] max-w-[90vw] rounded-xl bg-white dark:bg-gray-800 shadow-lg z-[999] px-4">
                 {menuItems.map(({ label, icon: Icon, path, action }, index) => (
                         <CustomBox key={label}>
                             <CustomButton
@@ -91,8 +94,6 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     ))}
                     {/* Divider before the theme toggle */}
                     <CustomDivider className="bg-gray-200 dark:bg-gray-600" />
-
-                    <DarkModeSwitch withLabel />
 
                 </CustomBox>
             )}

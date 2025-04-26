@@ -1,9 +1,9 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import CustomBox from "../../layout/CustomBox.jsx";
-import CustomDropdownWeb from "../../layout/CustomDropdownWeb.jsx";
+import CustomBox from "../layout/CustomBox.jsx";
+import CustomDropdownWeb from "../layout/CustomDropdownWeb.jsx";
 import {UserCog, LogIn, LogOut, UserPlus, UserCircle, ChevronDown} from "lucide-react";
-import CustomTypography from "../../layout/CustomTypography.jsx";
+import CustomTypography from "../layout/CustomTypography.jsx";
 
 /**
  * ProfileMenu shows a dropdown with “Profile”, “Login / Register” or “Logout”
@@ -38,13 +38,13 @@ const ProfileMenu = ({
                     onClick={() => setOpen(!open)}
                     className="flex items-center cursor-pointer text-white"
                 >
-                    <CustomTypography className="hidden text-sm sm:inline mr-2">
+                    <CustomTypography className="hidden text-sm text-white sm:inline mr-2">
                         Profile
                     </CustomTypography>
                     {/* Always-visible user icon */}
-                    <UserCog className="text-white"/>
+                    <UserCog className="text-white w-5 h-5 sm:w-6 sm:h-6" />
                     {/* little chevron indicator */}
-                    <ChevronDown className="text-white mr-2"/>
+                    <ChevronDown className="text-white w-5 h-5 mr-2" />
                 </CustomBox>
             }
             /* ── dropdown items ──────────────────────────────────────────── */

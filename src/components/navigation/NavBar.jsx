@@ -7,7 +7,7 @@ import useLogin from "../../hooks/useLogin";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import Logo from "../logo/Logo.jsx";
 import { useNavigate } from "react-router-dom";
-import ProfileMenu from "./profileMenu/ProfileMenu.jsx";
+import ProfileMenu from "../profileMenu/ProfileMenu.jsx";
 import MealsMenu from "../mealsMenu/MealsMenu.jsx";
 import PropTypes from "prop-types";
 import DarkModeSwitch from "./darkModeSwitch/DarkModeSwitch.jsx";
@@ -31,12 +31,12 @@ const NavBar = () => {
         <CustomAppBar
             position={isMobile ? "fixed" : "sticky"}
             className={isMobile ? "bottom-0 top-auto" : "top-0"}
-            bgColor="bg-primary"
+            bgColor="bg-appBarColor"
         >
             <CustomBox className="w-full flex justify-between items-center px-4 py-1">
                 {/* Logo */}
                 {!isMobile && (
-                    <CustomBox className="flex-shrink-0 p-2">
+                    <CustomBox className="flex-shrink-0 p-1">
                         <Logo size={40} className="text-white" to="/" />
                     </CustomBox>
                 )}
@@ -46,11 +46,11 @@ const NavBar = () => {
                 <CustomBox className="flex items-center">
                     {/* Meals Menu */}
                     <CustomBox className="flex items-center">
-                        <MealsMenu buttonClass="ml-2" />
+                        <MealsMenu />
                     </CustomBox>
 
                     {/* Profile menu */}
-                    <CustomBox className="flex items-center ml-4">
+                    <CustomBox className="flex items-center mx-4">
                         <ProfileMenu
                             user={user}
                             onLogout={handleLogout}

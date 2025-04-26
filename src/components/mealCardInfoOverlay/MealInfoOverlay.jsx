@@ -25,19 +25,19 @@ const MealInfoOverlay = ({ meal, fontSize = "0.7rem" }) => {
             "
         >
             {/* Creator name and version date */}
-            <CustomTypography as="span" className="flex items-center gap-1" style={{ fontSize }}>
+            <CustomTypography as="span" className="flex items-center gap-1 text-white" style={{ fontSize }}>
                 {meal.createdBy?.userName}
                 <UserPen size={14} />
                 {meal.version && (
-                    <CustomTypography as="span" style={{ fontSize }}>
-                        {meal.version.slice(0, 10)}
+                    <CustomTypography as="span" className="text-sm">
+                    {meal.version.slice(0, 10)}
                     </CustomTypography>
                 )}
             </CustomTypography>
 
             {/* Template meal usage count */}
             {meal.isTemplate && (
-                <CustomTypography as="span" className="flex items-center gap-1" style={{ fontSize }}>
+                <CustomTypography as="span" className="flex items-center gap-1 text-white" style={{ fontSize }}>
                     <Users size={14} />
                     {meal.userCount}
                 </CustomTypography>

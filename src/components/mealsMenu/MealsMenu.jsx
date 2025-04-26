@@ -50,13 +50,13 @@ const MealsMenu = () => {
                         className="flex items-center cursor-pointer text-white"
                     >
                         {/* Button label shown on sm+ screens */}
-                        <CustomTypography className="hidden text-sm sm:inline mr-2">
+                        <CustomTypography className="hidden text-sm text-white sm:inline mr-2">
                             Meals
                         </CustomTypography>
                         {/* Always-visible soup icon */}
-                        <Soup fill="white" />
+                        <Soup fill="white" className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         {/* Chevron indicator */}
-                        <ChevronDown/>
+                        <ChevronDown className="text-white w-5 h-5 mr-2" />
                     </CustomBox>
                 }
                 items={[
