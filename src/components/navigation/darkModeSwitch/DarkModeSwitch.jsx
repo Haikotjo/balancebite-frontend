@@ -1,11 +1,12 @@
 import { useEffect } from "react";
 import { Sun, Moon } from "lucide-react";
-import { useThemeMode } from "../../../themes/ThemeProvider.jsx";
+
 import CustomIconButton from "../../layout/CustomIconButton.jsx";
 import CustomBox from "../../layout/CustomBox.jsx";
 import CustomButton from "../../layout/CustomButton.jsx";
 import CustomTypography from "../../layout/CustomTypography.jsx";
 import PropTypes from "prop-types";
+import {useThemeMode} from "../../../themes/useThemeMode.js";
 
 /**
  * Theme toggle button using `lucid-react` icons.

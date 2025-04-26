@@ -38,15 +38,15 @@ const MealCardNutritionToggle = ({ macros, show, onToggle, viewMode }) => {
                     )}
                 </>
             ) : (
-                <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-1">
+                <CustomBox className="flex justify-between items-center">
+                    <CustomBox className="flex items-center gap-1">
                         {Object.entries(macroIcons).map(([key, Icon]) => (
                             <Icon key={key} size={16} className={macroIconClasses[key]} />
                         ))}
                         <span className="text-sm">Nutrition</span>
-                    </div>
+                    </CustomBox>
                     <ChevronDown size={18} />
-                </div>
+                </CustomBox>
             )}
         </CustomBox>
     );
