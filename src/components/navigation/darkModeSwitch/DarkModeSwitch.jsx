@@ -1,26 +1,11 @@
 import { useEffect } from "react";
 import { Sun, Moon } from "lucide-react";
 
-import CustomIconButton from "../../layout/CustomIconButton.jsx";
 import CustomBox from "../../layout/CustomBox.jsx";
-import CustomButton from "../../layout/CustomButton.jsx";
 import CustomTypography from "../../layout/CustomTypography.jsx";
 import PropTypes from "prop-types";
-import {useThemeMode} from "../../../themes/useThemeMode.js";
+import { useThemeMode } from "../../../themes/useThemeMode.js";
 
-/**
- * Theme toggle button using `lucid-react` icons.
- * Automatically syncs with `localStorage` to persist the user's preference.
- *
- * Can render as:
- * - A compact icon-only button (`withLabel: false`)
- * - A full-width menu item with label and icon (e.g., for use inside a dropdown or hamburger menu) using `CustomButton` (`withLabel: true`)
- *
- * @component
- * @param {Object} props
- * @param {boolean} [props.withLabel=false] – Whether to display a label next to the icon.
- * @returns {JSX.Element}
- */
 const DarkModeSwitch = ({ withLabel = false }) => {
     const { mode, toggleTheme } = useThemeMode();
 
@@ -37,32 +22,33 @@ const DarkModeSwitch = ({ withLabel = false }) => {
         localStorage.setItem("theme-mode", mode);
     }, [mode]);
 
-    // Choose icon based on current mode
-    const icon = mode === "dark" ? <Sun size={18} /> : <Moon size={18} />;
-
-    // Render full-width dropdown-style button with icon and label
-    if (withLabel) {
-        return (
-            <CustomButton
-                onClick={toggleTheme}
-                className="w-full flex items-center justify-start gap-6 px-4 py-4 text-sm text-userText hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
-                {icon}
-                <CustomTypography as="span">
+    return (
+        <CustomBox className="flex items-center gap-1">
+            {withLabel && (
+                <CustomTypography as="span" className="text-sm text-userText">
                     {mode === "dark" ? "Light" : "Dark"}
                 </CustomTypography>
-            </CustomButton>
-        );
-    }
+            )}
 
-    // Default icon-only button for inline usage
-    return (
-        <CustomBox>
-            <CustomIconButton
+            <Sun size={18} className="text-white" />
+
+            <CustomBox
                 onClick={toggleTheme}
-                icon={icon}
-                bgColor="bg-primary/80"
-            />
+                className={`
+        relative w-10 h-4 rounded-full cursor-pointer transition-all duration-300 
+        ${mode === "dark" ? "bg-cardDark" : "bg-gray-200"}
+    `}
+            >
+                <CustomBox
+                    className={`
+            absolute top-1 left-1 w-2 h-2 rounded-full shadow-md transition-transform duration-300 
+            ${mode === "dark" ? "bg-white translate-x-6" : "bg-gray-500 translate-x-0"}
+        `}
+                />
+            </CustomBox>
+
+
+            <Moon size={18} className="text-gray-500" />
         </CustomBox>
     );
 };

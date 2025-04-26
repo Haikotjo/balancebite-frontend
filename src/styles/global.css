@@ -1,4 +1,6 @@
-/* Tailwind Base Utilities */
+/* src/styles/globals.css */
+
+/* Zorg ervoor dat Tailwind de juiste basisstijlen toepast */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,28 +8,22 @@
 /* ===================== */
 /* 🌗 Globale Custom Properties */
 /* ===================== */
-:root {
-    --bg-light: #ffffff;
-    --bg-dark: #e40f0f;
-    --text-light: #4D5061;
-    --text-dark: #ffffff;
 
-    /* 🎨 User-kleuren (aanpasbaar via color picker in toekomst) */
-    --user-primary: #46B1C9;
-    --user-secondary: #EDB6A3;
-    --user-background: #ffffff;
-    --user-text: #4D5061;
+/* Globale kleuren via CSS-variabelen */
+:root {
+    --bg-light: #ffffff; /* Lichte achtergrondkleur */
+    --bg-dark: #191e23; /* Donkere achtergrondkleur */
+    --text-light: #494d5f; /* Lichtgrijze tekstkleur */
+    --text-dark: #ffffff; /* Witte tekstkleur */
 }
 
 .dark {
-    --user-primary: #46B1C9;
-    --user-secondary: #EDB6A3;
-    --user-background: #121212;
-    --user-text: #ffffff;
+    --bg-light: #121212; /* Donkere achtergrondkleur in dark mode */
+    --text-light: #ffffff; /* Witte tekstkleur in dark mode */
 }
 
 /* ===================== */
-/* 🎨 Tailwind Utility-klassen voor kleuren */
+/* Tailwind Utility-klassen voor kleuren */
 /* ===================== */
 .bg-lightBackground {
     @apply bg-[var(--bg-light)];
@@ -42,86 +38,3 @@
 .dark .text-darkText {
     @apply text-[var(--text-dark)];
 }
-
-/* 👤 Optionele user-kleur utilities */
-.bg-userPrimary {
-    @apply bg-[var(--user-primary)];
-}
-.text-userPrimary {
-    @apply text-[var(--user-primary)];
-}
-.bg-userSecondary {
-    @apply bg-[var(--user-secondary)];
-}
-.text-userSecondary {
-    @apply text-[var(--user-secondary)];
-}
-.bg-userBackground {
-    @apply bg-[var(--user-background)];
-}
-.text-userText {
-    @apply text-[var(--user-text)];
-}
-
-/* ===================== */
-/* ✨ Extra basis Tailwind stijlen */
-/* ===================== */
-body {
-    margin: 0;
-    font-family: 'Nunito', sans-serif;
-    @apply text-lightText dark:text-darkText;
-}
-
-/* ========== MUI-ONLY STYLING ========== */
-/* Alleen gebruiken zolang MUI actief is — verwijderen bij overstap naar React Native */
-
-/* WebKit Scrollbar voor react-select */
-.react-select__menu-list::-webkit-scrollbar {
-    width: 8px;
-}
-.react-select__menu-list::-webkit-scrollbar-track {
-    background: transparent;
-}
-.react-select__menu-list::-webkit-scrollbar-thumb {
-    background-color: #7b809e;
-}
-.dark .react-select__menu-list::-webkit-scrollbar-thumb {
-    background-color: #ffffff;
-}
-
-@keyframes fadeSlide-right {
-    0% {
-        opacity: 0;
-        transform: translateX(100%);
-    }
-    100% {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-@keyframes fadeSlide-left {
-    0% {
-        opacity: 0;
-        transform: translateX(-100%);
-    }
-    100% {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-
-/* Firefox Scrollbar */
-.react-select__menu-list {
-    scrollbar-width: thin;
-    scrollbar-color: #7b809e transparent;
-}
-.dark .react-select__menu-list {
-    scrollbar-color: #ffffff transparent;
-}
-
-.MuiBox-root {
-    outline: 5px solid red !important;
-}
-
