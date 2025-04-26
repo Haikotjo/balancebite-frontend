@@ -33,7 +33,7 @@ CustomAppBar.displayName = "CustomAppBar";
 CustomAppBar.propTypes = {
     children: PropTypes.node.isRequired,
     className: PropTypes.string,
-    position: PropTypes.oneOf(["sticky", "relative"]),
+    position: PropTypes.oneOf(["sticky", "relative", "fixed"]),
     bgColor: PropTypes.string,
 };
 

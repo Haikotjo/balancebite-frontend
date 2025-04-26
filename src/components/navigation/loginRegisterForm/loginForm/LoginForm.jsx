@@ -10,6 +10,8 @@ import CustomBox from "../../../layout/CustomBox.jsx";
 import CustomButton from "../../../layout/CustomButton.jsx";
 import ErrorDialog from "../../../layout/ErrorDialog.jsx";
 import CustomTextField from "../../../layout/CustomTextField.jsx";
+import CustomTypography from "../../../layout/CustomTypography.jsx";
+import clsx from "clsx";
 
 const LoginForm = ({ onClose, onSwitchToRegister }) => {
     const [errorMessage, setErrorMessage] = useState("");
@@ -49,9 +51,21 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                 message={errorMessage}
             />
 
-            <CustomBox    className="w-full max-w-md p-6 rounded-lg shadow-md border border-primary">
-                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-                    <h2 className="text-2xl font-bold text-center text-lightText dark:text-darkText">Login</h2>
+            <CustomBox
+                className={clsx(
+                    "w-full max-w-md p-6 rounded-lg shadow-md border border-primary",
+                    !onClose && "mt-12"
+                )}
+            >
+
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+                    <CustomTypography
+                        as="h2"
+                        variant="h1"
+                        className="text-center"
+                    >
+                        Login
+                    </CustomTypography>
 
                     <CustomTextField
                         label="Email"

@@ -29,6 +29,7 @@ const navItems = [
 const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
     const navigate = useNavigate();
     const location = useLocation();
+    const isAdmin = user?.roles.includes("ADMIN");
 
     /**
      * Returns true if the current route matches the given path.
@@ -46,36 +47,46 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                 <CustomButton
                     key={item.path}
                     onClick={() => navigate(item.path)}
-                    className={`px-3 py-1 rounded-md text-sm transition-all
-                        ${isActive(item.path)
+                    className={`px-3 py-1 rounded-md text-sm transition-all border border-white/30
+            ${isActive(item.path)
                         ? "bg-userPrimary text-white"
                         : "text-userText"} hover:bg-white/30`}
                 >
-                    <CustomTypography className="text-sm">{item.label}</CustomTypography>
+                    <CustomTypography className="text-sm text-white">{item.label}</CustomTypography>
                 </CustomButton>
             ))}
+
+            {isAdmin && (
+                <CustomButton
+                    onClick={() => navigate("/admin")}
+                    className="px-3 py-1 rounded-md text-sm transition-all border border-white/30 text-userText hover:bg-white/30"
+                >
+                    <CustomTypography className="text-sm text-white">Admin</CustomTypography>
+                </CustomButton>
+            )}
+
 
             {/* Render authentication options */}
             {user ? (
                 <CustomButton
                     onClick={onLogout}
-                    className="text-userText hover:bg-white/30 px-3 py-1 rounded-md"
+                    className="text-userText hover:bg-white/30 px-3 py-1 rounded-md border border-white/30"
                 >
-                    <CustomTypography className="text-sm">Logout</CustomTypography>
+                    <CustomTypography className="text-sm text-white">Logout</CustomTypography>
                 </CustomButton>
             ) : (
                 <>
                     <CustomButton
                         onClick={onLoginClick}
-                        className="text-userText hover:bg-white/30 px-3 py-1 rounded-md"
+                        className="text-userText hover:bg-white/30 px-3 py-1 rounded-md border border-white/30"
                     >
-                        <CustomTypography className="text-sm">Login</CustomTypography>
+                        <CustomTypography className="text-sm text-white">Login</CustomTypography>
                     </CustomButton>
                     <CustomButton
                         onClick={onRegisterClick}
-                        className="text-userText hover:bg-white/30 px-3 py-1 rounded-md"
+                        className="text-userText hover:bg-white/30 px-3 py-1 rounded-md border border-white/30"
                     >
-                        <CustomTypography className="text-sm">Register</CustomTypography>
+                        <CustomTypography className="text-sm text-white">Register</CustomTypography>
                     </CustomButton>
                 </>
             )}

@@ -48,7 +48,7 @@ const DarkModeSwitch = ({ withLabel = false }) => {
             </CustomBox>
 
 
-            <Moon size={18} className="text-gray-500" />
+            <Moon size={18} className="text-gray-500 fill" />
         </CustomBox>
     );
 };

@@ -8,6 +8,8 @@ import CustomButton from "../../../layout/CustomButton.jsx";
 import ErrorDialog from "../../../layout/ErrorDialog.jsx";
 import useRegister from "../../../../hooks/useRegister.js";
 import CustomTextField from "../../../layout/CustomTextField.jsx";
+import CustomTypography from "../../../layout/CustomTypography.jsx";
+import clsx from "clsx";
 
 const RegisterForm = ({ onClose, onSwitchToLogin }) => {
     const { handleRegistration, errorMessage, successMessage, setErrorMessage } = useRegister();
@@ -31,13 +33,23 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
             />
 
             <CustomBox
-                className="w-full max-w-md p-6 rounded-lg shadow-md border border-primary"
->
+                className={clsx(
+                    "w-full max-w-md p-6 rounded-lg shadow-md border border-primary",
+                    !onClose && "mt-10"
+                )}
+            >
             <form onSubmit={handleSubmit((data) => handleRegistration(data, onClose))} className="flex flex-col
                     gap-4">
-                    <h2 className="text-2xl font-bold text-center text-lightText dark:text-darkText">Register</h2>
+                <CustomTypography
+                    as="h2"
+                    variant="h1"
+                    className="text-center"
+                >
+                    Register
+                </CustomTypography>
 
-                    {successMessage && (
+
+                {successMessage && (
                         <CustomBox className="text-sm p-2 rounded text-green-700 bg-green-100">
                             {successMessage}
                         </CustomBox>
@@ -95,7 +107,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
                     {onClose && (
                         <CustomButton
                             onClick={onClose}
-                            className="text-gray-600 hover:underline self-end bg-transparent px-0 py-0"
+                            className=" hover:underline self-end bg-transparent px-0 py-0text-lightText dark:text-darkText"
                         >
                             Close
                         </CustomButton>

@@ -36,6 +36,7 @@ const CustomTypography = ({
     const Tag = as;
 
     const combinedClass = clsx(
+        "text-lightText dark:text-darkText",
         FONT_MAP[font],
         bold && VARIANT_STYLES.bold,
         italic && VARIANT_STYLES.italic,
