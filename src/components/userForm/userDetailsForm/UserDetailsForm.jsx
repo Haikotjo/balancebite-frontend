@@ -1,28 +1,24 @@
-import { useContext, useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { userDetailsSchema } from "../../../utils/valadition/userDetailsSchema.js";
-
+import { useContext, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext.jsx";
 import { RecommendedNutritionContext } from "../../../context/RecommendedNutritionContext.jsx";
 import { fetchUserProfile, updateUserDetails } from "../../../services/apiService.js";
 import { decodeToken } from "./userDetailsHelpers.js";
 import { useFetchUserProfileData } from "../../../hooks/useFetchUserProfileData.js";
-
+import { useUserDetailsForm } from "../../../hooks/useUserDetailsForm.js";
+import { buildUserDetailsData } from "../../../utils/helpers/buildUserDetailsData.js";
 import CustomBox from "../../layout/CustomBox.jsx";
 import CustomTypography from "../../layout/CustomTypography.jsx";
 import CustomButton from "../../layout/CustomButton.jsx";
 import ErrorDialog from "../../layout/ErrorDialog.jsx";
-
-
 import UserDetailsFields from "./userDetailsFields/UserDetailsFields.jsx";
 import Spinner from "../../layout/Spinner.jsx";
 
 /**
- * Form for viewing and editing user body metrics like height, weight, etc.
- * Completely custom components, ready for React Native migration.
+ * Renders the user details form.
+ * Allows viewing and editing body metrics like height, weight, age, etc.
+ * Uses custom components and hooks for a clean structure.
  *
- * @returns {JSX.Element} Rendered user details form.
+ * @returns {JSX.Element} The rendered form component.
  */
 const UserDetailsForm = () => {
     const { token } = useContext(AuthContext);
@@ -32,65 +28,31 @@ const UserDetailsForm = () => {
     const [successMessage, setSuccessMessage] = useState("");
     const [initialValues, setInitialValues] = useState(null);
 
-    const defaultProfileValues = {
-        gender: "",
-        activityLevel: "",
-        goal: "",
-        height: "",
-        weight: "",
-        age: "",
-    };
-
-    const {
-        register,
-        handleSubmit,
-        reset,
-        watch,
-        formState: { errors },
-    } = useForm({
-        resolver: yupResolver(userDetailsSchema),
-        defaultValues: defaultProfileValues,
-        mode: "onBlur",
-    });
-
     const userProfile = useFetchUserProfileData(token, decodeToken, fetchUserProfile);
+    const { register, handleSubmit, reset, watch, errors } = useUserDetailsForm(userProfile);
 
-// Nieuw useEffect om te resetten!
-    useEffect(() => {
-        if (userProfile) {
-            reset(userProfile);
-            setInitialValues(userProfile);
-        } else if (userProfile === null) {
-            reset(defaultProfileValues);
-            setInitialValues(defaultProfileValues);
-        }
-    }, [userProfile, reset]);
-
-
+    /**
+     * Enables form fields for editing.
+     */
     const handleEdit = () => setIsEditable(true);
 
+    /**
+     * Resets the form to initial values and disables editing.
+     */
     const handleCancel = () => {
         reset(initialValues);
         setIsEditable(false);
     };
 
+    /**
+     * Handles form submission.
+     * Cleans data, updates user profile, and refreshes recommended nutrition.
+     *
+     * @param {object} data - The submitted form data.
+     */
     const onSubmit = async (data) => {
         try {
-            console.log("Originele data:", data);
-
-            // Kleine schoonmaak: leeg string ("") naar null
-            const cleanedData = {
-                ...data,
-                gender: data.gender || null,
-                activityLevel: data.activityLevel || null,
-                goal: data.goal || null,
-                height: data.height ? Number(data.height) : null,
-                weight: data.weight ? Number(data.weight) : null,
-                age: data.age ? Number(data.age) : null,
-            };
-
-            console.log("Opgeschoonde data verstuurd naar backend:", cleanedData);
-
+            const cleanedData = buildUserDetailsData(data);
             const response = await updateUserDetails(cleanedData, token);
             if (response) {
                 await fetchRecommendedNutrition();
@@ -103,26 +65,17 @@ const UserDetailsForm = () => {
         }
     };
 
-
+    // Show spinner while loading user profile
     if (userProfile === undefined) {
-        return (
-            <CustomBox className="flex justify-center items-center p-4">
-                <Spinner />
-            </CustomBox>
-        );
+        return <Spinner />;
     }
 
     return (
-        <CustomBox
-            as="form"
-            onSubmit={handleSubmit(onSubmit)}
-            className="w-full p-2 flex flex-col gap-4 my-4"
-        >
+        <CustomBox as="form" onSubmit={handleSubmit(onSubmit)} className="w-full p-2 flex flex-col gap-4 my-4">
             <CustomTypography as="h2" variant="h1" className="text-left">
                 Body Metrics
             </CustomTypography>
 
-            {/* Success message */}
             {successMessage && (
                 <ErrorDialog
                     open={!!successMessage}
@@ -132,7 +85,6 @@ const UserDetailsForm = () => {
                 />
             )}
 
-            {/* Input fields */}
             <UserDetailsFields
                 watchedFields={watch()}
                 register={register}
@@ -140,7 +92,6 @@ const UserDetailsForm = () => {
                 isEditable={isEditable}
             />
 
-            {/* Action buttons */}
             {isEditable ? (
                 <CustomBox className="flex gap-2">
                     <CustomButton type="button" onClick={handleCancel} className="bg-gray-400 text-white">
