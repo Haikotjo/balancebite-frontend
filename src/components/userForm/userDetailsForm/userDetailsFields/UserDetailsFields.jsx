@@ -15,12 +15,12 @@ import { genderOptions, activityLevelOptions, goalOptions } from "../dropdownOpt
 const UserDetailsFields = ({ watchedFields, register, errors, isEditable }) => {
     return (
         <>
-            {renderTextField("Gender", "gender", watchedFields, register, errors, isEditable, "text", true, genderOptions)}
-            {renderTextField("Activity Level", "activityLevel", watchedFields, register, errors, isEditable, "text", true, activityLevelOptions)}
-            {renderTextField("Goal", "goal", watchedFields, register, errors, isEditable, "text", true, goalOptions)}
             {renderTextField("Height (cm)", "height", watchedFields, register, errors, isEditable, "number")}
             {renderTextField("Weight (kg)", "weight", watchedFields, register, errors, isEditable, "number")}
             {renderTextField("Age", "age", watchedFields, register, errors, isEditable, "number")}
+            {renderTextField("Activity Level", "activityLevel", watchedFields, register, errors, isEditable, "text", true, activityLevelOptions)}
+            {renderTextField("Goal", "goal", watchedFields, register, errors, isEditable, "text", true, goalOptions)}
+            {renderTextField("Gender", "gender", watchedFields, register, errors, isEditable, "text", true, genderOptions)}
         </>
     );
 };
