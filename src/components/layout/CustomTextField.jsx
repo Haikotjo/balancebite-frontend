@@ -3,14 +3,14 @@ import CustomBox from "./CustomBox.jsx";
 import CustomTypography from "./CustomTypography.jsx";
 
 /**
- * A controlled floating-label text input field (e.g. for name, email, password).
- * Matches styling with FloatingLabelQuantityField.
+ * A controlled floating-label text input field.
  */
 const CustomTextField = ({
                              label,
                              name,
                              register,
                              error,
+                             helperText, // <-- nieuwe prop
                              type = "text",
                              className = "",
                              multiline = false,
@@ -29,7 +29,7 @@ const CustomTextField = ({
                 rows={multiline ? rows : undefined}
                 {...(register ? register(name) : {})}
                 {...rest}
-                className={`peer w-full border border-primary rounded px-3 ${inputPaddingTop} pb-2 text-sm dark:bg-gray-800 bg-white text-black dark:text-white focus:outline-none focus:border-success resize-none`}
+                className={`peer w-full border ${error ? "border-error" : "border-primary"} rounded px-3 ${inputPaddingTop} pb-2 text-sm dark:bg-gray-800 bg-white text-black dark:text-white focus:outline-none focus:border-success resize-none`}
             />
             <label
                 htmlFor={name}
@@ -37,25 +37,27 @@ const CustomTextField = ({
             >
                 {label}
             </label>
-            {error && (
+
+            {/* Helper/error text onder veld */}
+            {helperText && (
                 <CustomTypography
                     variant="small"
                     color="text-error"
                     className="text-xs mt-1"
                 >
-                    {error.message}
+                    {helperText}
                 </CustomTypography>
             )}
         </CustomBox>
     );
 };
 
-
 CustomTextField.propTypes = {
     label: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     register: PropTypes.func,
-    error: PropTypes.object,
+    error: PropTypes.bool,
+    helperText: PropTypes.string, // <-- toevoegen
     type: PropTypes.string,
     className: PropTypes.string,
     multiline: PropTypes.bool,

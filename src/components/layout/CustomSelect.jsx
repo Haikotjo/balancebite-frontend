@@ -3,11 +3,7 @@ import CustomBox from "./CustomBox.jsx";
 import CustomTypography from "./CustomTypography.jsx";
 
 /**
- * CustomSelect component.
- * Single-value select input, styled like CustomMultiSelect.
- *
- * @param {object} props
- * @returns {JSX.Element}
+ * A controlled floating-label select input.
  */
 const CustomSelect = ({
                           label,
@@ -16,33 +12,22 @@ const CustomSelect = ({
                           value,
                           error,
                           helperText,
-                          disabled = false,
+                          disabled,
                           options = [],
-                          className = ""
+                          className = "",
                       }) => {
     return (
-        <CustomBox className="relative w-full mt-4">
-            {/* Floating label */}
-            {label && (
-                <label
-                    htmlFor={name}
-                    className="absolute -top-2 left-3 bg-white dark:bg-gray-800 px-1 text-[0.6rem] text-primary z-10"
-                >
-                    {label}
-                </label>
-            )}
-
-            {/* Select input */}
+        <CustomBox className={`relative w-full mt-4 ${className}`}>
             <select
                 id={name}
-                {...register(name)}
-                defaultValue={value}
+                {...(register ? register(name) : {})}
+                value={value}
                 disabled={disabled}
-                className={`w-full border rounded px-3 py-2 text-sm bg-white dark:bg-gray-800 border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
-                    error ? "border-red-500" : "border-primary"
-                } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""} ${className}`}
+                className={`peer w-full border ${error ? "border-error" : "border-primary"} rounded px-3 pt-5 pb-1 text-sm dark:bg-gray-800 bg-white text-black dark:text-white focus:outline-none focus:border-success`}
             >
-                <option value="" disabled>Select {label}</option>
+                <option value="" disabled>
+                    -- Select --
+                </option>
                 {options.map((option) => (
                     <option key={option.value} value={option.value}>
                         {option.label}
@@ -50,9 +35,20 @@ const CustomSelect = ({
                 ))}
             </select>
 
-            {/* Helper text */}
+            <label
+                htmlFor={name}
+                className="absolute left-3 -top-2 bg-white dark:bg-gray-800 px-1 text-xs text-primary peer-focus:text-primary peer-focus:text-xs peer-focus:-top-2 transition-all duration-200"
+            >
+                {label}
+            </label>
+
+            {/* Helper/error text onder veld */}
             {helperText && (
-                <CustomTypography as="span" className="text-xs text-red-500 mt-1">
+                <CustomTypography
+                    variant="small"
+                    color="text-error"
+                    className="text-xs mt-1"
+                >
                     {helperText}
                 </CustomTypography>
             )}
@@ -63,18 +59,18 @@ const CustomSelect = ({
 CustomSelect.propTypes = {
     label: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    register: PropTypes.func.isRequired,
+    register: PropTypes.func,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    error: PropTypes.object,
+    error: PropTypes.bool,
     helperText: PropTypes.string,
     disabled: PropTypes.bool,
     options: PropTypes.arrayOf(
         PropTypes.shape({
+            label: PropTypes.string.isRequired,
             value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-            label: PropTypes.string.isRequired
         })
-    ).isRequired,
-    className: PropTypes.string
+    ),
+    className: PropTypes.string,
 };
 
 export default CustomSelect;

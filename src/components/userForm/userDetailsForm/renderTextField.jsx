@@ -6,17 +6,6 @@ import CustomTypography from "../../layout/CustomTypography.jsx";
 /**
  * Renders a single form field, either a text input or a select dropdown.
  * Displays a red error message underneath the field if validation fails.
- *
- * @param {string} label - The label text for the field.
- * @param {string} name - The name attribute of the field.
- * @param {object} watchedFields - Current form values from react-hook-form.
- * @param {function} register - react-hook-form register function.
- * @param {object} errors - Validation errors object.
- * @param {boolean} isEditable - Whether the field is editable.
- * @param {string} [type="text"] - Field type (e.g., "text", "number").
- * @param {boolean} [isSelect=false] - Whether the field is a select box.
- * @param {Array} [options=[]] - Options for select dropdowns.
- * @returns {JSX.Element} The rendered field.
  */
 export const renderTextField = (
     label,
@@ -29,7 +18,7 @@ export const renderTextField = (
     isSelect = false,
     options = []
 ) => {
-    const hasError = !!errors[name];
+    const fieldError = errors[name];
 
     return (
         <CustomBox className="flex flex-col gap-1">
@@ -39,7 +28,8 @@ export const renderTextField = (
                     name={name}
                     value={watchedFields[name] || ""}
                     register={register}
-                    error={hasError}
+                    error={!!fieldError}
+                    helperText={fieldError?.message}
                     disabled={!isEditable}
                     options={options}
                 />
@@ -49,15 +39,11 @@ export const renderTextField = (
                     name={name}
                     value={watchedFields[name]}
                     register={register}
+                    error={!!fieldError}
+                    helperText={fieldError?.message}
                     type={type}
                     disabled={!isEditable}
-                    error={hasError}
                 />
-            )}
-            {hasError && (
-                <CustomTypography as="span" className="text-red-500 text-sm">
-                    {errors[name]?.message}
-                </CustomTypography>
             )}
         </CustomBox>
     );

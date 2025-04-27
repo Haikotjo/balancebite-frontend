@@ -56,7 +56,7 @@ const PersonalInfoForm = () => {
     if (!initialValues) {
         return (
             <CustomBox className="flex justify-center items-center p-4">
-                <CustomTypography variant="body1">Loading...</CustomTypography>
+                <CustomTypography variant="paragraph">Loading...</CustomTypography>
             </CustomBox>
         );
     }
