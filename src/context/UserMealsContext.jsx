@@ -101,32 +101,6 @@ export const UserMealsProvider = ({ children }) => {
     }, [activeOption, user, fetchMealsData]);
 
 
-    useEffect(() => {
-        const loadMeals = async () => {
-            const mealsData = await fetchMeals(currentListEndpoint);
-            console.log("✅ Received mealsData:", mealsData);
-
-            // ⬇️ Zet de pagina terug als hij buiten bereik is
-            if (mealsData.totalPages && page > mealsData.totalPages) {
-                setPage(1);
-                return; // ⬅️ STOP hier, geen oude data zetten
-            }
-
-            // ⬇️ Pas daarna de “echte” data instellen
-            setMeals(mealsData.content || []);
-            setTotalPages(mealsData.totalPages || 1);
-            setError(null);
-        };
-
-        loadMeals().catch((err) => {
-            console.error("❌ Error loading meals:", err);
-            setError(err.message);
-        });
-    }, [currentListEndpoint, page]);
-// ⬅️ Voeg ook 'page' toe als dependency, want we roepen 'setPage' hier aan.
-
-
-
     /** 🔹 **Verwijdert een maaltijd uit de gebruikerslijst** */
     const removeMealFromUserMeals = (mealId) => {
         setUserMeals((prev) => {
