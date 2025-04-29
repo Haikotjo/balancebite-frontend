@@ -57,7 +57,7 @@ CustomTextField.propTypes = {
     name: PropTypes.string.isRequired,
     register: PropTypes.func,
     error: PropTypes.bool,
-    helperText: PropTypes.string, // <-- toevoegen
+    helperText: PropTypes.string,
     type: PropTypes.string,
     className: PropTypes.string,
     multiline: PropTypes.bool,

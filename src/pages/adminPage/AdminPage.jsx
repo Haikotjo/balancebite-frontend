@@ -19,8 +19,8 @@ import DeleteMealForm from "../../components/deleteMealForm/DeleteMealForm.jsx";
 import CustomBox from "../../components/layout/CustomBox.jsx";
 import CustomCardChip from "../../components/layout/customCardChip.jsx";
 import CustomTypography from "../../components/layout/CustomTypography.jsx";
-import CustomFloatingSelect from "../../components/layout/CustomFloatingSelect.jsx";
 import clsx from "clsx";
+import CustomSelect from "../../components/layout/CustomSelect.jsx";
 
 /**
  * AdminPage – Central admin dashboard to manage food items, meals, users and future settings.
@@ -47,20 +47,17 @@ const AdminPage = () => {
         if (activeOption === "Food Item") {
             return (
                 <CustomBox>
-                    <CustomFloatingSelect
+                    <CustomSelect
+                        name="foodItemAction"
                         label="Food Item Action"
-                        value={{
-                            value: foodItemAction,
-                            label: `${foodItemAction} Food Item${foodItemAction === "Fetch" ? "(s)" : ""}`
-                        }}
-                        onChange={(opt) => setFoodItemAction(opt.value)}
+                        value={foodItemAction}
+                        onChange={(e) => setFoodItemAction(e.target.value)}
                         options={[
                             { value: "Create", label: "Create Food Item" },
                             { value: "Delete", label: "Delete Food Item" },
-                            { value: "Fetch", label: "Fetch Food Item(s)" },
+                            { value: "Fetch",  label: "Fetch Food Item(s)" },
                         ]}
                         className="py-2 sm:py-3"
-
                     />
                     {foodItemAction === "Create" && <CreateFoodItemForm />}
                     {foodItemAction === "Delete" && <DeleteFoodItemForm />}
@@ -72,17 +69,18 @@ const AdminPage = () => {
         if (activeOption === "Meals") {
             return (
                 <CustomBox>
-                    <CustomFloatingSelect
+                    <CustomSelect
+                        name="mealAction"
                         label="Meal Action"
-                        value={{ value: mealAction, label: `${mealAction} Meal` }}
-                        onChange={(opt) => setMealAction(opt.value)}
+                        value={mealAction}
+                        onChange={(e) => setMealAction(e.target.value)}
                         options={[
                             { value: "Create", label: "Create Meal" },
                             { value: "Delete", label: "Delete Meal" },
                         ]}
                         className="py-2 sm:py-3"
-
                     />
+
                     {mealAction === "Create" && <CreateMealForm />}
                     {mealAction === "Delete" && <DeleteMealForm />}
                 </CustomBox>
@@ -92,18 +90,19 @@ const AdminPage = () => {
         if (activeOption === "Users") {
             return (
                 <CustomBox>
-                    <CustomFloatingSelect
+                    <CustomSelect
+                        name="userAction"
                         label="User Action"
-                        value={{ value: userAction, label: `${userAction} User` }}
-                        onChange={(opt) => setUserAction(opt.value)}
+                        value={userAction}
+                        onChange={(e) => setUserAction(e.target.value)}
                         options={[
                             { value: "Promote", label: "Promote User" },
-                            { value: "Delete", label: "Delete User" },
-                            { value: "Create", label: "Create User" },
+                            { value: "Delete",  label: "Delete User" },
+                            { value: "Create",  label: "Create User" },
                         ]}
                         className="py-2 sm:py-3"
-
                     />
+
                     {userAction === "Promote" && <PromoteUserForm />}
                     {userAction === "Delete" && <DeleteUserForm />}
                     {userAction === "Create" && <CreateUserFormForAdmin />}

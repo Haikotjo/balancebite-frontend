@@ -1,26 +1,28 @@
 import { useState, useEffect } from "react";
-import { Box, Button, Alert } from "@mui/material";
-import FloatingLabelSelect from "../layout/CustomFloatingSelect.jsx";
+import CustomFloatingSelect from "../layout/CustomFloatingSelect.jsx";
 import { getAccessToken } from "../../utils/helpers/getAccessToken.js";
 import { handleApiError } from "../../utils/helpers/handleApiError.js";
 import { getAllMealsApi, deleteMealApi } from "../../services/apiService.js";
+import CustomBox from "../layout/CustomBox.jsx";
+import CustomButton from "../layout/CustomButton.jsx";
+import ErrorDialog from "../layout/ErrorDialog.jsx";
 
 const DeleteMealForm = () => {
     const [meals, setMeals] = useState([]);
     const [selectedMeal, setSelectedMeal] = useState(null);
-    const [success, setSuccess] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
 
+    // Fetch meals
     useEffect(() => {
         const fetchMeals = async () => {
             try {
                 const token = getAccessToken();
                 const response = await getAllMealsApi(token);
-                const enriched = response.map(meal => ({
-                    value: meal.id,
-                    label: `${meal.name} (Created by: ${meal.createdBy?.email || 'unknown'}, Added by: ${meal.adjustedBy?.email || 'unknown'}) - ${meal.userCount ?? 0} users`,
-                    id: meal.id
+                const options = response.map(meal => ({
+                    value: meal.id.toString(),
+                    label: meal.name,
                 }));
-                setMeals(enriched);
+                setMeals(options);
             } catch (error) {
                 handleApiError(error);
             }
@@ -31,8 +33,8 @@ const DeleteMealForm = () => {
     const handleDelete = async () => {
         try {
             const token = getAccessToken();
-            await deleteMealApi(selectedMeal.id, token);
-            setSuccess(`Meal "${selectedMeal.label}" deleted.`);
+            await deleteMealApi(selectedMeal.value, token);
+            setSuccessMessage(`Meal "${selectedMeal.label}" deleted.`);
             setSelectedMeal(null);
         } catch (error) {
             handleApiError(error);
@@ -40,33 +42,31 @@ const DeleteMealForm = () => {
     };
 
     return (
-        <Box>
-            <FloatingLabelSelect
-                label="Select meal by name"
-                isMulti={false}
+        <CustomBox className="w-full mx-auto p-2 flex flex-col gap-2 mt-4 mb-12 sm:mb-4 scroll-smooth">
+            <CustomFloatingSelect
+                label="Select Meal to Delete"
+                placeholder="Select Meal to Delete"
                 options={meals}
                 value={selectedMeal}
-                onChange={(val) => setSelectedMeal(val)}
+                onChange={(selected) => setSelectedMeal(selected)}
             />
 
-            <Button
-                variant="contained"
-                color="error"
-                onClick={handleDelete}
+            <CustomButton
+                type="button"
                 disabled={!selectedMeal}
-                sx={{
-                    mt: 2,
-                    fontSize: "0.8rem",
-                    color: "text.light",
-                    fontWeight: "bold",
-                    marginBottom: "20px",
-                }}
+                onClick={handleDelete}
+                className="text-sm px-4 py-2 text-white bg-red-600 rounded-md mb-5 mt-2 hover:bg-red-700"
             >
                 Delete Meal
-            </Button>
+            </CustomButton>
 
-            {success && <Alert severity="success" sx={{ mt: 2 }}>{success}</Alert>}
-        </Box>
+            <ErrorDialog
+                open={!!successMessage}
+                onClose={() => setSuccessMessage("")}
+                message={successMessage}
+                type="success"
+            />
+        </CustomBox>
     );
 };
 

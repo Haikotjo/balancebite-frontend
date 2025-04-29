@@ -1,48 +1,56 @@
 import PropTypes from "prop-types";
 import CustomBox from "./CustomBox.jsx";
 import CustomTypography from "./CustomTypography.jsx";
+import { useState } from "react";
 
 /**
- * CustomSelect component.
- * Simple custom select input, styled like CustomTextField, with floating label.
- *
- * @param {object} props
- * @returns {JSX.Element}
+ * CustomFloatingSelect – A controlled floating-label select input field for { value, label } objects.
  */
-const CustomSelect = ({
-                          label,
-                          name,
-                          register,
-                          value,
-                          error,
-                          helperText,
-                          disabled = false,
-                          options = [],
-                          className = ""
-                      }) => {
-    return (
-        <CustomBox className="relative w-full mt-4">
-            {/* Floating label */}
-            {label && (
-                <label
-                    htmlFor={name}
-                    className="absolute -top-2 left-3 bg-white dark:bg-gray-800 px-1 text-[0.6rem] text-primary z-10"
-                >
-                    {label}
-                </label>
-            )}
+const CustomFloatingSelect = ({
+                                  label,
+                                  value,
+                                  onChange,
+                                  options = [],
+                                  disabled = false,
+                                  error,
+                                  helperText,
+                                  className = "",
+                              }) => {
+    const [inputValue, setInputValue] = useState("");
+    const [showDropdown, setShowDropdown] = useState(false);
 
-            {/* Select input */}
-            <select
-                id={name}
-                {...register(name)}
-                defaultValue={value}
+    const filteredOptions = options.filter(option =>
+        option.label.toLowerCase().includes(inputValue.toLowerCase())
+    );
+
+    return (
+        <CustomBox className={`relative w-full mt-4 ${className}`}>
+            <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => {
+                    setInputValue(e.target.value);
+                    setShowDropdown(true);
+                }}
+                onFocus={() => setShowDropdown(true)}
+                placeholder={`Type to search ${label}`}
                 disabled={disabled}
-                className={`w-full border rounded px-3 py-2 text-sm bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
-                    error ? "border-red-500" : "border-primary"
-                } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""} ${className}`}
+                className={`peer w-full border rounded px-3 pt-5 pb-1 text-sm dark:bg-gray-800 bg-white text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
+                    error ? "border-error" : "border-primary"
+                } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""}`}
+            />
+
+            {/* Verberg de originele select */}
+            <select
+                value={value ? value.value : ""}
+                onChange={(e) => {
+                    const selected = options.find(opt => opt.value === e.target.value);
+                    onChange(selected || null);
+                }}
+                disabled={disabled}
+                className="hidden"
             >
-                <option value="" disabled>Select {label}</option>
+                <option value="" disabled>-- Select {label} --</option>
                 {options.map((option) => (
                     <option key={option.value} value={option.value}>
                         {option.label}
@@ -50,9 +58,39 @@ const CustomSelect = ({
                 ))}
             </select>
 
-            {/* Helper text */}
+            {/* Resultaten dropdown */}
+            {showDropdown && filteredOptions.length > 0 && (
+                <div className="absolute bg-white dark:bg-gray-800 w-full z-10 mt-1 max-h-60 overflow-y-auto border rounded shadow">
+                    {filteredOptions.map((option) => (
+                        <div
+                            key={option.value}
+                            className="px-3 py-2 text-sm cursor-pointer hover:bg-primary hover:text-white"
+                            onClick={() => {
+                                onChange(option);
+                                setInputValue(option.label);
+                                setShowDropdown(false);
+                            }}
+                        >
+                            {option.label}
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {label && (
+                <label
+                    className="absolute left-3 -top-2 bg-white dark:bg-gray-800 px-1 text-xs text-primary peer-focus:text-primary peer-focus:text-xs peer-focus:-top-2 transition-all duration-200"
+                >
+                    {label}
+                </label>
+            )}
+
             {helperText && (
-                <CustomTypography as="span" className="text-xs text-red-500 mt-1">
+                <CustomTypography
+                    variant="small"
+                    color="text-error"
+                    className="text-xs mt-1"
+                >
                     {helperText}
                 </CustomTypography>
             )}
@@ -60,21 +98,23 @@ const CustomSelect = ({
     );
 };
 
-CustomSelect.propTypes = {
+CustomFloatingSelect.propTypes = {
     label: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    register: PropTypes.func.isRequired,
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    error: PropTypes.object,
-    helperText: PropTypes.string,
-    disabled: PropTypes.bool,
+    value: PropTypes.shape({
+        value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        label: PropTypes.string,
+    }),
+    onChange: PropTypes.func.isRequired,
     options: PropTypes.arrayOf(
         PropTypes.shape({
+            label: PropTypes.string.isRequired,
             value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-            label: PropTypes.string.isRequired
         })
     ).isRequired,
-    className: PropTypes.string
+    disabled: PropTypes.bool,
+    error: PropTypes.bool,
+    helperText: PropTypes.string,
+    className: PropTypes.string,
 };
 
-export default CustomSelect;
+export default CustomFloatingSelect;
