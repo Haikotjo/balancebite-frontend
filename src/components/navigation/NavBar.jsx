@@ -1,7 +1,6 @@
 import {useContext, useEffect, useState} from "react";
 import HamburgerMenu from "./hamburgerMenu/HamburgerMenu";
 import DesktopMenu from "./desktopMenu/DesktopMenu";
-import ErrorAlert from "../errorAlert/ErrorAlert";
 import useLogout from "../../hooks/useLogout.js";
 import useLogin from "../../hooks/useLogin";
 import { AuthContext } from "../../context/AuthContext.jsx";
@@ -13,6 +12,7 @@ import PropTypes from "prop-types";
 import DarkModeSwitch from "./darkModeSwitch/DarkModeSwitch.jsx";
 import CustomAppBar from "../layout/CustomAppBar.jsx";
 import CustomBox from "../layout/CustomBox.jsx";
+import ErrorDialog from "../layout/ErrorDialog.jsx";
 
 const NavBar = () => {
     const { user } = useContext(AuthContext);
@@ -20,12 +20,20 @@ const NavBar = () => {
     const { errorMessage } = useLogin();
     const navigate = useNavigate();
     const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
+    const [showError, setShowError] = useState(false);
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth < 640);
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
+
+    useEffect(() => {
+        if (errorMessage) {
+            setShowError(true);
+        }
+    }, [errorMessage]);
+
 
     return (
         <CustomAppBar
@@ -85,7 +93,12 @@ const NavBar = () => {
             </CustomBox >
 
             {/* Error Alert */}
-            <ErrorAlert message={errorMessage} />
+            <ErrorDialog
+                open={showError}
+                onClose={() => setShowError(false)}
+                message={errorMessage}
+                type="error"
+            />
         </CustomAppBar>
     );
 };
