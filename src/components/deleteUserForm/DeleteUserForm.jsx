@@ -1,21 +1,27 @@
 import { useState, useEffect } from "react";
-import { Box, Button, Alert } from "@mui/material";
-import FloatingLabelSelect from "../layout/CustomFloatingSelect.jsx";
+import CustomFloatingSelect from "../layout/CustomFloatingSelect.jsx";
 import { getAccessToken } from "../../utils/helpers/getAccessToken.js";
 import { handleApiError } from "../../utils/helpers/handleApiError.js";
 import { getAllUsersApi, deleteUserApi } from "../../services/apiService.js";
+import CustomBox from "../layout/CustomBox.jsx";
+import CustomButton from "../layout/CustomButton.jsx";
+import ErrorDialog from "../layout/ErrorDialog.jsx";
 
 const DeleteUserForm = () => {
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
-    const [success, setSuccess] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
                 const token = getAccessToken();
                 const response = await getAllUsersApi(token);
-                setUsers(response.data);
+                setUsers(response.data.map(u => ({
+                    value: u.email,
+                    label: u.email,
+                    id: u.id,
+                })));
             } catch (error) {
                 handleApiError(error);
             }
@@ -25,9 +31,10 @@ const DeleteUserForm = () => {
 
     const handleDelete = async () => {
         try {
+            if (!selectedUser) return;
             const token = getAccessToken();
             await deleteUserApi({ id: selectedUser.id }, token);
-            setSuccess(`User ${selectedUser.label} deleted.`);
+            setSuccessMessage(`User "${selectedUser.label}" deleted.`);
             setSelectedUser(null);
         } catch (error) {
             handleApiError(error);
@@ -35,37 +42,30 @@ const DeleteUserForm = () => {
     };
 
     return (
-        <Box>
-            <FloatingLabelSelect
-                label="Select user by email"
-                isMulti={false}
-                options={users.map(u => ({
-                    value: u.email,
-                    label: u.email,
-                    id: u.id
-                }))}
+        <CustomBox className="w-full mx-auto p-2 flex flex-col gap-4 mt-4 mb-12 sm:mb-4 scroll-smooth">
+            <CustomFloatingSelect
+                label="Select User by Email"
+                options={users}
                 value={selectedUser}
-                onChange={(val) => setSelectedUser(val)}
+                onChange={setSelectedUser}
             />
 
-            <Button
-                variant="contained"
-                color="error"
+            <CustomButton
+                type="button"
                 onClick={handleDelete}
                 disabled={!selectedUser}
-                sx={{
-                    mt: 2,
-                    fontSize: "0.8rem",
-                    color: "text.light",
-                    fontWeight: "bold",
-                    marginBottom: "20px",
-                }}
+                className="text-sm px-4 py-2 text-white bg-error rounded-md hover:bg-red-700 mt-2"
             >
                 Delete User
-            </Button>
+            </CustomButton>
 
-            {success && <Alert severity="success" sx={{ mt: 2 }}>{success}</Alert>}
-        </Box>
+            <ErrorDialog
+                open={!!successMessage}
+                onClose={() => setSuccessMessage("")}
+                message={successMessage}
+                type="success"
+            />
+        </CustomBox>
     );
 };
 
