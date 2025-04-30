@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
-import { renderTextField } from "../renderTextField.jsx";
-import { genderOptions, activityLevelOptions, goalOptions } from "../dropdownOptions.js";
+import { renderTextField } from "./renderTextField.jsx";
+import { genderOptions, activityLevelOptions, goalOptions } from "../../../constants/dropdownOptions.js";
 
 /**
  * Renders all user details input fields using custom components.

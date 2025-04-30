@@ -3,10 +3,9 @@ import { Utensils } from "lucide-react";
 import RecommendedNutritionDisplay from "../recommendedNutritionDisplay/RecommendedNutritionDisplay.jsx";
 import { useConsumeMeal } from "../../hooks/useConsumeMeal.js";
 import CustomIconButton from "../layout/CustomIconButton.jsx";
-import CustomModal from "../layout/CustomModal.jsx";
-import CustomButton from "../layout/CustomButton.jsx";
 import { useRequireAuthDialog } from "../../hooks/useRequireAuthDialog.js";
 import RequireAuthUI from "../layout/RequireAuthUI.jsx";
+import NutritionModal from "../recommendedNutritionDisplay/NutritionModal.jsx";
 
 const EatButton = ({ meal, refetchRecommendedNutrition }) => {
     const {
@@ -58,15 +57,9 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
             />
 
             {/* Success modal */}
-            <CustomModal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
+            <NutritionModal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
                 <RecommendedNutritionDisplay />
-                <CustomButton
-                    onClick={() => setModalOpen(false)}
-                    className="bg-primary text-white p-2 rounded mt-4"
-                >
-                    Close
-                </CustomButton>
-            </CustomModal>
+            </NutritionModal>
         </>
     );
 };

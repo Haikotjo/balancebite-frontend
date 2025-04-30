@@ -93,12 +93,14 @@ const NavBar = () => {
             </CustomBox >
 
             {/* Error Alert */}
-            <ErrorDialog
-                open={showError}
-                onClose={() => setShowError(false)}
-                message={errorMessage}
-                type="error"
-            />
+            {errorMessage && (
+                <ErrorDialog
+                    open={showError}
+                    onClose={() => setShowError(false)}
+                    message={errorMessage}
+                    type="error"
+                />
+            )}
         </CustomAppBar>
     );
 };

@@ -3,14 +3,14 @@ import { AuthContext } from "../../../context/AuthContext.jsx";
 import { RecommendedNutritionContext } from "../../../context/RecommendedNutritionContext.jsx";
 import { fetchUserProfile, updateUserDetails } from "../../../services/apiService.js";
 import { decodeToken } from "./userDetailsHelpers.js";
-import { useFetchUserProfileData } from "../../../hooks/useFetchUserProfileData.js";
-import { useUserDetailsForm } from "../../../hooks/useUserDetailsForm.js";
-import { buildUserDetailsData } from "../../../utils/helpers/buildUserDetailsData.js";
+import { useFetchUserProfileData } from "./useFetchUserProfileData.js";
+import { useUserDetailsForm } from "./useUserDetailsForm.js";
+import { buildUserDetailsData } from "./buildUserDetailsData.js";
 import CustomBox from "../../layout/CustomBox.jsx";
 import CustomTypography from "../../layout/CustomTypography.jsx";
 import CustomButton from "../../layout/CustomButton.jsx";
 import ErrorDialog from "../../layout/ErrorDialog.jsx";
-import UserDetailsFields from "./userDetailsFields/UserDetailsFields.jsx";
+import UserDetailsFields from "./UserDetailsFields.jsx";
 import Spinner from "../../layout/Spinner.jsx";
 
 /**

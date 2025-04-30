@@ -11,6 +11,8 @@ import {AuthContext} from "../context/AuthContext.jsx";
  *
  * @param {Object} meal - The meal object to toggle.
  * @param {Function} [onAuthRequired] - Optional callback when user is not authenticated.
+ * @param onError
+ * @param onSuccess
  * @returns {Object} Contains:
  *  - toggleFavorite: Function to call when toggling.
  *  - alreadyFavorited: Boolean indicating if the meal is currently favorited.

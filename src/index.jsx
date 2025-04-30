@@ -9,11 +9,9 @@ import { AuthProvider } from "./context/AuthContext";
 import { UserMealsProvider } from "./context/UserMealsContext";
 import { RecommendedNutritionProvider } from "./context/RecommendedNutritionContext";
 import "@fontsource/roboto";
-import {SnackbarProvider} from "./context/SnackbarContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
-        <SnackbarProvider>
                 <AuthProvider>
                     <UserMealsProvider>
                         <RecommendedNutritionProvider>
@@ -26,6 +24,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                         </RecommendedNutritionProvider>
                     </UserMealsProvider>
                 </AuthProvider>
-        </SnackbarProvider>
     </React.StrictMode>
 );
