@@ -1,20 +1,15 @@
 import PropTypes from "prop-types";
-import { Typography } from "@mui/material";
+import CustomTypography from "../../layout/CustomTypography.jsx";
 
 const NutritionDate = ({ createdAt }) => {
     return (
-        <Typography
-            variant="caption"
-            align="right"
-            display="block"
-            sx={{
-                marginTop: "10px",
-                color: "gray",
-                fontStyle: "italic",
-            }}
+        <CustomTypography
+            variant="small"
+            as="p"
+            className="text-gray-500 italic mt-2 text-right"
         >
             {createdAt || "N/A"}
-        </Typography>
+        </CustomTypography>
     );
 };
 
