@@ -3,6 +3,7 @@
 import { useState, useContext } from "react";
 import { UserMealsContext } from "../context/UserMealsContext.jsx";
 import useFavorites from "./useFavorites.jsx";
+import {AuthContext} from "../context/AuthContext.jsx";
 
 /**
  * Custom hook to toggle a meal as favorite or remove it from favorites.
@@ -15,22 +16,17 @@ import useFavorites from "./useFavorites.jsx";
  *  - alreadyFavorited: Boolean indicating if the meal is currently favorited.
  *  - isProcessing: Boolean indicating if the toggle is in progress.
  */
-export const useToggleFavorite = (meal, onAuthRequired) => {
+export const useToggleFavorite = (meal, onAuthRequired, onError, onSuccess) => {
     const { userMeals } = useContext(UserMealsContext);
+    const { user } = useContext(AuthContext);
     const { addMealToFavorites, removeMealFromFavorites } = useFavorites();
     const [isProcessing, setIsProcessing] = useState(false);
 
-    // Check if the meal is already in the user's favorites
     const alreadyFavorited = userMeals.some(userMeal => userMeal.id === meal.id);
 
-    /**
-     * Toggles the favorite status of the given meal.
-     * Calls onAuthRequired if user is not logged in.
-     */
     const toggleFavorite = async () => {
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-            onAuthRequired?.(); // Optional callback for login prompt
+        if (!user) {
+            onAuthRequired?.();
             return;
         }
 
@@ -38,20 +34,18 @@ export const useToggleFavorite = (meal, onAuthRequired) => {
         try {
             if (alreadyFavorited) {
                 await removeMealFromFavorites(meal);
+                onSuccess?.(`${meal.name} removed from favorites`);
             } else {
                 await addMealToFavorites(meal);
+                onSuccess?.(`${meal.name} added to favorites`);
             }
         } catch (e) {
-            // Forward error to caller if needed
-            throw e;
+            console.error("Favorite toggle failed:", e);
+            onError?.("Could not toggle favorite. Try again later.");
         } finally {
             setIsProcessing(false);
         }
     };
 
-    return {
-        toggleFavorite,
-        alreadyFavorited,
-        isProcessing,
-    };
+    return { toggleFavorite, alreadyFavorited, isProcessing };
 };

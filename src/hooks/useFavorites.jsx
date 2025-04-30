@@ -1,64 +1,32 @@
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { UserMealsContext } from "../context/UserMealsContext.jsx";
-import { SnackbarContext } from "../context/SnackbarContext.jsx";
 import { addMealToFavoritesApi, removeMealFromFavoritesApi } from "../services/apiService.js";
 
-const useFavorites = () => {
-    const { user, token } = useContext(AuthContext);
-    const { removeMealFromUserMeals, addMealToUserMeals, removeMealFromMeals, replaceMealInMeals  } = useContext(UserMealsContext);
-    const { showSnackbar } = useContext(SnackbarContext);
+export const useFavorites = () => {
+    const { token } = useContext(AuthContext);
+    const {
+        removeMealFromUserMeals,
+        addMealToUserMeals,
+        removeMealFromMeals,
+        replaceMealInMeals,
+    } = useContext(UserMealsContext);
 
     const addMealToFavorites = async (meal) => {
-        if (!user) {
-            showSnackbar("You need to login or register to add a meal.", "warning");
-            return false;
-        }
+        const response = await addMealToFavoritesApi(meal.id, token);
+        let newMeal = response.meals.find(m => String(m.originalMealId) === String(meal.id))
+            || response.meals.find(m => String(m.id) === String(meal.id));
 
-        try {
-            const response = await addMealToFavoritesApi(meal.id, token);
+        if (!newMeal) throw new Error("Meal not found in response.");
 
-            let newMeal = response.meals.find(m => String(m.originalMealId) === String(meal.id));
-
-            if (!newMeal) {
-                // ❗️Als geen nieuwe meal, gebruik de originele meal (zelfde id)
-                newMeal = response.meals.find(m => String(m.id) === String(meal.id));
-            }
-
-            if (newMeal) {
-                addMealToUserMeals(newMeal);
-                replaceMealInMeals(meal.id, newMeal);
-                showSnackbar(`${meal.name} added to favorites!`, "success");
-            } else {
-                throw new Error("Meal not found in response.");
-            }
-
-            return true;
-        } catch (error) {
-            console.error("Error adding meal to favorites:", error);
-            showSnackbar("Failed to add meal.", "error");
-            return false;
-        }
+        addMealToUserMeals(newMeal);
+        replaceMealInMeals(meal.id, newMeal);
     };
 
-
     const removeMealFromFavorites = async (meal) => {
-        if (!user) {
-            showSnackbar("You need to login or register to remove a meal.", "warning");
-            return false;
-        }
-
-        try {
-            await removeMealFromFavoritesApi(meal.id, token);
-            removeMealFromUserMeals(meal.id); // Update context
-            removeMealFromMeals(meal.id);
-            showSnackbar(`${meal.name} removed from favorites!`, "error");
-            return true;
-        } catch (error) {
-            console.error("Error removing meal from favorites:", error);
-            showSnackbar("Failed to remove meal.", "error");
-            return false;
-        }
+        await removeMealFromFavoritesApi(meal.id, token);
+        removeMealFromUserMeals(meal.id);
+        removeMealFromMeals(meal.id);
     };
 
     return { addMealToFavorites, removeMealFromFavorites };
