@@ -1,4 +1,3 @@
-// src/components/layout/CustomTypography.jsx
 import PropTypes from "prop-types";
 import clsx from "clsx";
 
@@ -35,13 +34,15 @@ const CustomTypography = ({
                           }) => {
     const Tag = as;
 
+    const hasCustomTextColor = /\btext-(white|black|lightText|darkText|error|success|[\[#])/.test(className) || !!color;
+
     const combinedClass = clsx(
-        "text-lightText dark:text-darkText",
+        !hasCustomTextColor && "text-lightText dark:text-darkText",
         FONT_MAP[font],
         bold && VARIANT_STYLES.bold,
         italic && VARIANT_STYLES.italic,
+        variant && VARIANT_STYLES[variant],
         color,
-        variant ? VARIANT_STYLES[variant] : "",
         className
     );
 

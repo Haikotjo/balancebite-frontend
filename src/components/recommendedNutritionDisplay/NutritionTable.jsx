@@ -11,15 +11,13 @@ const NutritionTable = ({ sortedNutrients, useBaseRDI }) => {
                     "Mono- and Polyunsaturated fats",
                 ].includes(nutrient.name);
 
-                let textColor;
-                if (!useBaseRDI && nutrient.value < 0) {
-                    textColor = "text-error";
-                } else if (!useBaseRDI) {
-                    textColor = "text-success";
-                } else {
-                    textColor = "";
-                }
+                const hasValue = typeof nutrient.value === "number";
+                const value = hasValue ? nutrient.value : "N/A";
 
+                let valueColor = "";
+                if (!useBaseRDI && hasValue) {
+                    valueColor = value < 0 ? "text-error" : "text-success";
+                }
 
                 return (
                     <CustomBox
@@ -35,9 +33,9 @@ const NutritionTable = ({ sortedNutrients, useBaseRDI }) => {
 
                         <CustomTypography
                             variant="small"
-                            className={`text-right ${textColor}`}
+                            className={`text-right ${valueColor}`}
                         >
-                            {nutrient.value ?? "N/A"}
+                            {value}
                         </CustomTypography>
                     </CustomBox>
                 );
