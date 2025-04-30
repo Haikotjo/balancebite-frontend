@@ -1,6 +1,6 @@
-import CustomBox from "../../layout/CustomBox.jsx";
-import CustomTypography from "../../layout/CustomTypography.jsx";
-import BulletDot from "../../layout/BulletDot.jsx";
+import CustomBox from "../layout/CustomBox.jsx";
+import CustomTypography from "../layout/CustomTypography.jsx";
+import BulletDot from "../layout/BulletDot.jsx";
 
 /**
  * FeatureList – eenvoudige bulletlist van kernfeatures

@@ -1,84 +1,79 @@
+import { useNavigate } from "react-router-dom";
+
 import CustomBox from "../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../components/layout/CustomTypography.jsx";
 import CustomDivider from "../../components/layout/CustomDivider.jsx";
-import CustomGrid from "../../components/layout/CustomGrid.jsx";
-import CustomButton from "../../components/layout/CustomButton.jsx";
 import CustomAnimatedBox from "../../components/layout/CustomAnimatedBox.jsx";
+import CustomIconButton from "../../components/layout/CustomIconButton.jsx";
 
-import FeatureCard from "../../components/home/featureCard/FeatureCard.jsx";
-import IconLink from "../../components/home/iconWrapper/iconLink/IconLink.jsx";
+import FeatureCard from "../../components/home/FeatureCard.jsx";
 import Logo from "../../components/logo/Logo.jsx";
-import IconWrapper from "../../components/home/iconWrapper/IconWrapper.jsx";
-import FeatureSection from "../../featureSection/FeatureSection.jsx";
-import FeatureList from "../../components/home/featureList/FeatureList.jsx";
+import FeatureSection from "../../components/home/FeatureSection.jsx";
+import FeatureList from "../../components/home/FeatureList.jsx";
 
 /**
- * HomePage – MUI-vrij en met eigen componenten
+ * HomePage
  */
 function HomePage() {
+    const navigate = useNavigate();
+
     const iconItems = [
         {
             to: "/meals",
-            IconComponent: () => <span className="text-primary">🍽</span>,
+            icon: "🍽",
             color: "text-primary",
-            hoverColor: "hover:text-primary-light",
             rotation: -10,
-            IconLinkComponent: IconLink,
         },
         {
             to: "/profile",
-            IconComponent: () => <span className="text-secondary">❤️</span>,
+            icon: "❤️",
             color: "text-secondary",
-            hoverColor: "hover:text-secondary-light",
             rotation: 5,
-            IconLinkComponent: IconLink,
         },
         {
             to: "/profile",
-            IconComponent: () => <span className="text-error">📊</span>,
+            icon: "📊",
             color: "text-error",
-            hoverColor: "hover:text-error-light",
             rotation: 15,
-            IconLinkComponent: IconLink,
         },
     ];
 
     const features = [
         {
-            to: '/profile',
-            tooltip: 'Go to your profile page',
+            to: "/profile",
+            tooltip: "Go to your profile page",
             IconComponent: () => <span className="text-error">📊</span>,
             CardComponent: FeatureCard,
             color: "text-error",
             hoverColor: "hover:text-error-light",
             rotation: 15,
-            title: 'Personalized Recommendations',
-            description: 'Get daily and weekly tailored suggestions based on your body type and health goals.',
-            colorKey: 'error',
+            title: "Personalized Recommendations",
+            description: "Get daily and weekly tailored suggestions based on your body type and health goals.",
+            colorKey: "error",
         },
         {
-            to: '/meals/:userId?',
-            tooltip: 'Go to meals page',
+            to: "/meals/:userId?",
+            tooltip: "Go to meals page",
             IconComponent: () => <span className="text-primary">🍽</span>,
             CardComponent: FeatureCard,
             color: "text-primary",
             hoverColor: "hover:text-primary-light",
             rotation: -10,
-            title: 'Meal Tracking Made Easy',
-            description: 'Add, save, and track your meals. See how each meal impacts your daily nutrition goals.',
-            colorKey: 'primary',
+            title: "Meal Tracking Made Easy",
+            description: "Add, save, and track your meals. See how each meal impacts your daily nutrition goals.",
+            colorKey: "primary",
         },
         {
-            to: '/profile',
-            tooltip: 'Go to your profile page',
+            to: "/profile",
+            tooltip: "Go to your profile page",
             IconComponent: () => <span className="text-secondary">❤️</span>,
             CardComponent: FeatureCard,
             color: "text-secondary",
             hoverColor: "hover:text-secondary-light",
             rotation: 5,
-            title: 'Vitamins & Minerals Insights',
-            description: 'Track your intake of essential vitamins and minerals (coming soon!).',
-            colorKey: 'secondary',
+            title: "Vitamins & Minerals Insights",
+            description: "Track your intake of essential vitamins and minerals (coming soon!).",
+            colorKey: "secondary",
         },
     ];
 
@@ -102,8 +97,25 @@ function HomePage() {
                 <Logo size={100} />
             </CustomAnimatedBox>
 
-            {/* Icon links */}
-            <IconWrapper items={iconItems} animation="slideIn" direction="up" />
+            {/* Icon buttons */}
+            <CustomAnimatedBox animation="slideInUp" className="flex gap-4 my-4">
+                {iconItems.map((item, index) => (
+                    <CustomIconButton
+                        key={index}
+                        icon={
+                            <span
+                                className={`${item.color} text-[2.5rem]`}
+                                style={{ transform: `rotate(${item.rotation}deg)` }}
+                            >
+                                {item.icon}
+                            </span>
+                        }
+                        onClick={() => navigate(item.to)}
+                        size={56}
+                        className="transition-transform duration-300"
+                    />
+                ))}
+            </CustomAnimatedBox>
 
             <CustomDivider className="my-6 border-primary" />
 
@@ -114,7 +126,10 @@ function HomePage() {
                         Your Personal Nutrition Tracker
                     </CustomTypography>
 
-                    <CustomTypography variant="paragraph" className="leading-relaxed mb-3 text-base sm:text-lg md:text-xl">
+                    <CustomTypography
+                        variant="paragraph"
+                        className="leading-relaxed mb-3 text-base sm:text-lg md:text-xl"
+                    >
                         Stay on top of your nutrition goals with our intuitive meal tracking app.
                         Whether you want to gain muscle, lose weight, or simply eat healthier,
                         our app makes it easy to <strong><em>track your meals, balance your macros, and stay in control</em></strong>.
@@ -142,8 +157,12 @@ function HomePage() {
             {/* Footer links */}
             <CustomBox className="mt-4 mb-4">
                 <CustomBox className="flex flex-col sm:flex-row gap-2 justify-center text-sm">
-                    <a href="/about" className="underline hover:text-primary">About BalanceBite</a>
-                    <a href="/contact" className="underline hover:text-primary">Contact Us</a>
+                    <a href="/about" className="underline hover:text-primary">
+                        About BalanceBite
+                    </a>
+                    <a href="/contact" className="underline hover:text-primary">
+                        Contact Us
+                    </a>
                 </CustomBox>
             </CustomBox>
         </CustomBox>

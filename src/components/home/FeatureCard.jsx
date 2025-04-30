@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 import { Link as RouterLink } from 'react-router-dom';
-import CustomCard from "../../layout/CustomCard.jsx";
-import CustomBox from "../../layout/CustomBox.jsx";
-import CustomTypography from "../../layout/CustomTypography.jsx";
+import CustomCard from "../layout/CustomCard.jsx";
+import CustomBox from "../layout/CustomBox.jsx";
+import CustomTypography from "../layout/CustomTypography.jsx";
 
 /**
  * FeatureCard Component

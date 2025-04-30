@@ -1,6 +1,6 @@
 // src/components/home/FeatureCardWrapper.jsx
 import PropTypes from "prop-types";
-import CustomBox from "../../layout/CustomBox.jsx";
+import CustomBox from "../layout/CustomBox.jsx";
 
 /**
  * FeatureCardWrapper component — wraps feature cards in a responsive flex item.
