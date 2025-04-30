@@ -1,16 +1,16 @@
 import { useContext, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { personalInfoSchema } from "../../../utils/valadition/personalInfoSchema.js";
-import { AuthContext } from "../../../context/AuthContext.jsx";
-import useUpdateUserInfo from "../../../hooks/useUpdateUserInfo.js";
-import useUserInitialValues from "../../../hooks/useUserInitialValues.js";
+import { personalInfoSchema } from "../../utils/valadition/personalInfoSchema.js";
+import { AuthContext } from "../../context/AuthContext.jsx";
+import useUpdateUserInfo from "../../hooks/useUpdateUserInfo.js";
+import useUserInitialValues from "../../hooks/useUserInitialValues.js";
 
-import CustomBox from "../../layout/CustomBox.jsx";
-import CustomTypography from "../../layout/CustomTypography.jsx";
-import CustomButton from "../../layout/CustomButton.jsx";
-import CustomTextField from "../../layout/CustomTextField.jsx";
-import ErrorDialog from "../../layout/ErrorDialog.jsx";
+import CustomBox from "../layout/CustomBox.jsx";
+import CustomTypography from "../layout/CustomTypography.jsx";
+import CustomButton from "../layout/CustomButton.jsx";
+import CustomTextField from "../layout/CustomTextField.jsx";
+import ErrorDialog from "../layout/ErrorDialog.jsx";
 
 /**
  * Form for viewing and editing personal information.

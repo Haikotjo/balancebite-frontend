@@ -1,5 +1,5 @@
 import UserDetailsForm from "../../components/forms/user/UserDetailsForm.jsx";
-import PersonalInfoForm from "../../components/userForm/personalInfoSchema/PersonalInfoForm.jsx";
+import PersonalInfoForm from "../../components/userForm/PersonalInfoForm.jsx";
 import RecommendedNutritionDisplay from "../../components/recommendedNutritionDisplay/RecommendedNutritionDisplay.jsx";
 import CustomBox from "../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../components/layout/CustomTypography.jsx";

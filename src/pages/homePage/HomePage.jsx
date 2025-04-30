@@ -1,62 +1,56 @@
-import { Box, Typography, Grid, Link } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import FeatureCard from '../../components/home/featureCard/FeatureCard.jsx';
-import { Divider } from '@mui/material';
-import FoodBankRoundedIcon from '@mui/icons-material/FoodBankRounded';
-import MonitorHeartRoundedIcon from '@mui/icons-material/MonitorHeartRounded';
-import BarChartRoundedIcon from '@mui/icons-material/BarChartRounded';
+import CustomBox from "../../components/layout/CustomBox.jsx";
+import CustomTypography from "../../components/layout/CustomTypography.jsx";
+import CustomDivider from "../../components/layout/CustomDivider.jsx";
+import CustomGrid from "../../components/layout/CustomGrid.jsx";
+import CustomButton from "../../components/layout/CustomButton.jsx";
+import CustomAnimatedBox from "../../components/layout/CustomAnimatedBox.jsx";
+
+import FeatureCard from "../../components/home/featureCard/FeatureCard.jsx";
 import IconLink from "../../components/home/iconWrapper/iconLink/IconLink.jsx";
 import Logo from "../../components/logo/Logo.jsx";
 import IconWrapper from "../../components/home/iconWrapper/IconWrapper.jsx";
-import AnimatedBox from "../../components/home/animatedBox/AnimatedBox.jsx";
-import PageWrapper from "../../components/pageWrapper/PageWrapper.jsx";
 import FeatureSection from "../../featureSection/FeatureSection.jsx";
 import FeatureList from "../../components/home/featureList/FeatureList.jsx";
 
 /**
- * HomePage Component
- * Renders the main landing page with various sections including a logo, icon links, informative text, and feature cards.
+ * HomePage – MUI-vrij en met eigen componenten
  */
 function HomePage() {
-    const theme = useTheme(); // Access the theme to dynamically style components
-
-    // Define the items to be displayed in the IconWrapper
     const iconItems = [
         {
             to: "/meals",
-            IconComponent: FoodBankRoundedIcon,
-            color: theme.palette.primary.main,
-            hoverColor: theme.palette.primary.light,
+            IconComponent: () => <span className="text-primary">🍽</span>,
+            color: "text-primary",
+            hoverColor: "hover:text-primary-light",
             rotation: -10,
             IconLinkComponent: IconLink,
         },
         {
             to: "/profile",
-            IconComponent: MonitorHeartRoundedIcon,
-            color: theme.palette.secondary.main,
-            hoverColor: theme.palette.secondary.light,
+            IconComponent: () => <span className="text-secondary">❤️</span>,
+            color: "text-secondary",
+            hoverColor: "hover:text-secondary-light",
             rotation: 5,
             IconLinkComponent: IconLink,
         },
         {
             to: "/profile",
-            IconComponent: BarChartRoundedIcon,
-            color: theme.palette.error.main,
-            hoverColor: theme.palette.error.light,
+            IconComponent: () => <span className="text-error">📊</span>,
+            color: "text-error",
+            hoverColor: "hover:text-error-light",
             rotation: 15,
             IconLinkComponent: IconLink,
         },
     ];
 
-    // Define the features to be displayed in the FeatureSection
     const features = [
         {
             to: '/profile',
             tooltip: 'Go to your profile page',
-            IconComponent: BarChartRoundedIcon,
+            IconComponent: () => <span className="text-error">📊</span>,
             CardComponent: FeatureCard,
-            color: theme.palette.error.main,
-            hoverColor: theme.palette.error.light,
+            color: "text-error",
+            hoverColor: "hover:text-error-light",
             rotation: 15,
             title: 'Personalized Recommendations',
             description: 'Get daily and weekly tailored suggestions based on your body type and health goals.',
@@ -65,10 +59,10 @@ function HomePage() {
         {
             to: '/meals/:userId?',
             tooltip: 'Go to meals page',
-            IconComponent: FoodBankRoundedIcon,
+            IconComponent: () => <span className="text-primary">🍽</span>,
             CardComponent: FeatureCard,
-            color: theme.palette.primary.main,
-            hoverColor: theme.palette.primary.light,
+            color: "text-primary",
+            hoverColor: "hover:text-primary-light",
             rotation: -10,
             title: 'Meal Tracking Made Easy',
             description: 'Add, save, and track your meals. See how each meal impacts your daily nutrition goals.',
@@ -77,10 +71,10 @@ function HomePage() {
         {
             to: '/profile',
             tooltip: 'Go to your profile page',
-            IconComponent: MonitorHeartRoundedIcon,
+            IconComponent: () => <span className="text-secondary">❤️</span>,
             CardComponent: FeatureCard,
-            color: theme.palette.secondary.main,
-            hoverColor: theme.palette.secondary.light,
+            color: "text-secondary",
+            hoverColor: "hover:text-secondary-light",
             rotation: 5,
             title: 'Vitamins & Minerals Insights',
             description: 'Track your intake of essential vitamins and minerals (coming soon!).',
@@ -89,119 +83,70 @@ function HomePage() {
     ];
 
     return (
-        <PageWrapper>
-            {/* Header Section */}
-            <AnimatedBox
-                className="animated-logo"
-                animation="fadeIn"
-                direction="down"
-                padding={2}
-                marginBottom={2}
-            >
-                <Logo
-                    size={100}
-                    color={theme.palette.text.primary}
-                />
-            </AnimatedBox>
+        <CustomBox
+            className="
+                flex
+                flex-col
+                items-center
+                justify-center
+                min-h-screen
+                w-full
+                max-w-full
+                mx-auto
+                px-2
+                text-center
+            "
+        >
+            {/* Header logo */}
+            <CustomAnimatedBox animation="fadeIn" className="animated-logo p-2 mb-2 mt-6">
+                <Logo size={100} />
+            </CustomAnimatedBox>
 
-            {/* Icon Links Section */}
-            <IconWrapper
-                items={iconItems}
-                animation="slideIn"
-                direction="up"
-            />
+            {/* Icon links */}
+            <IconWrapper items={iconItems} animation="slideIn" direction="up" />
 
-            <Divider sx={{ width: "100%", my: 6, borderColor: theme.palette.primary.main  }} />
+            <CustomDivider className="my-6 border-primary" />
 
-            {/* Informative Text Section */}
-            <AnimatedBox
-                className="app-info-section"
-                animation="slideIn"
-                direction="right"
-                marginBottom={0}
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    textAlign: "center",
-                    maxWidth: 800,
-                    marginX: "auto",
-                }}
-            >
-                <Typography
-                    variant="h4"
-                    component="h1"
-                    sx={{
-                        color: theme.palette.text.primary,
-                        fontWeight: "bold",
-                        marginBottom: 2,
-                    }}
-                >
-                    Your Personal Nutrition Tracker
-                </Typography>
+            {/* Info text */}
+            <CustomAnimatedBox animation="slideInRight" className="app-info-section">
+                <CustomBox className="flex flex-col items-center text-center max-w-[800px] mx-auto">
+                    <CustomTypography variant="h2" as="h1" className="mb-2">
+                        Your Personal Nutrition Tracker
+                    </CustomTypography>
 
-                <Typography
-                    variant="h6"
-                    component="p"
-                    sx={{
-                        color: theme.palette.text.primary,
-                        lineHeight: 1.6,
-                        textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
-                        maxWidth: 800,
-                        marginBottom: 3,
-                        fontSize: {
-                            xs: "0.9rem",
-                            sm: "1rem",
-                            md: "1.1rem",
-                            lg: "1.2rem",
-                        }
-                    }}
-                >
-                    Stay on top of your nutrition goals with our intuitive meal tracking app.
-                    Whether you want to gain muscle, lose weight, or simply eat healthier,
-                    our app makes it easy to <strong><em>track your meals, balance your macros, and stay in control</em></strong>.
-                    Enter your meals, monitor your <strong><em>Recommended Daily Intake (RDI)</em></strong>,
-                    and see how each meal affects your daily nutrition.
-                </Typography>
+                    <CustomTypography variant="paragraph" className="leading-relaxed mb-3 text-base sm:text-lg md:text-xl">
+                        Stay on top of your nutrition goals with our intuitive meal tracking app.
+                        Whether you want to gain muscle, lose weight, or simply eat healthier,
+                        our app makes it easy to <strong><em>track your meals, balance your macros, and stay in control</em></strong>.
+                        Enter your meals, monitor your <strong><em>Recommended Daily Intake (RDI)</em></strong>,
+                        and see how each meal affects your daily nutrition.
+                    </CustomTypography>
 
-                <FeatureList />
-            </AnimatedBox>
+                    <FeatureList />
+                </CustomBox>
+            </CustomAnimatedBox>
 
-            <Divider sx={{ width: "100%", my: 4, mb:6, borderColor: theme.palette.primary.main }} />
+            <CustomDivider className="my-6 border-primary" />
 
-            {/* Features Section */}
+            {/* Features */}
             <FeatureSection
                 title="Why Choose BalanceBite?"
                 features={features}
                 animation="slideIn"
                 direction="down"
                 gridProps={{
-                    sx: {
-                        width: '100%',
-                        maxWidth: 673,
-                        paddingX: 0,
-                        paddingY: 0,
-                        margin: '0 auto',
-                    },
+                    className: "w-full max-w-[673px] px-0 py-0 mx-auto",
                 }}
             />
 
-            {/* Footer Links Section */}
-            <Box sx={{ marginTop: 4, marginBottom: 4 }}>
-                <Grid container spacing={2} justifyContent="center">
-                    <Grid item>
-                        <Link href="/about" underline="hover">
-                            About BalanceBite
-                        </Link>
-                    </Grid>
-                    <Grid item>
-                        <Link href="/contact" underline="hover">
-                            Contact Us
-                        </Link>
-                    </Grid>
-                </Grid>
-            </Box>
-        </PageWrapper>
+            {/* Footer links */}
+            <CustomBox className="mt-4 mb-4">
+                <CustomBox className="flex flex-col sm:flex-row gap-2 justify-center text-sm">
+                    <a href="/about" className="underline hover:text-primary">About BalanceBite</a>
+                    <a href="/contact" className="underline hover:text-primary">Contact Us</a>
+                </CustomBox>
+            </CustomBox>
+        </CustomBox>
     );
 }
 

@@ -26,7 +26,6 @@ export const renderTextField = (
                 <CustomSelect
                     label={label}
                     name={name}
-                    value={watchedFields[name] || ""}
                     register={register}
                     error={!!fieldError}
                     helperText={fieldError?.message}

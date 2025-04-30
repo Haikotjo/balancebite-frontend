@@ -23,9 +23,13 @@ const CustomSelect = ({
             <select
                 id={name}
                 name={name}
-                {...(register ? register(name) : {})}
-                value={value}
-                onChange={onChange}
+                {...(register
+                    ? register(name)
+                    : {
+                        value,
+                        onChange,
+                    })}
+
                 disabled={disabled}
                 className={`peer w-full border rounded px-3 pt-5 pb-1 text-sm dark:bg-gray-800 bg-white text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
                     error ? "border-error" : "border-primary"
