@@ -10,26 +10,39 @@ import useRegister from "../../../../hooks/useRegister.js";
 import CustomTextField from "../../../layout/CustomTextField.jsx";
 import CustomTypography from "../../../layout/CustomTypography.jsx";
 import clsx from "clsx";
+import CustomSelect from "../../../layout/CustomSelect.jsx";
+import {useState} from "react";
 
-const RegisterForm = ({ onClose, onSwitchToLogin }) => {
-    const { handleRegistration, errorMessage, successMessage, setErrorMessage } = useRegister();
+const RegisterForm = ({ onClose, onSwitchToLogin, showRoles = false, isAdminContext = false }) => {
+    const { handleRegistration, errorMessage, successMessage, setErrorMessage, setSuccessMessage } = useRegister();
 
 
     const {
         register,
         handleSubmit,
         formState: { errors },
+        setValue,
     } = useForm({
         resolver: yupResolver(registerSchema),
         mode: "onBlur",
+        defaultValues: {
+            roles: ["USER"],
+        },
     });
+
+    const [selectedRole, setSelectedRole] = useState("");
+
 
     return (
         <>
             <ErrorDialog
-                open={!!errorMessage}
-                onClose={() => setErrorMessage("")}
-                message={errorMessage}
+                open={!!errorMessage || !!successMessage}
+                onClose={() => {
+                    if (errorMessage) setErrorMessage("");
+                    if (successMessage) setSuccessMessage("");
+                }}
+                message={errorMessage || successMessage}
+                type={successMessage ? "success" : "error"}
             />
 
             <CustomBox
@@ -38,71 +51,86 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
                     !onClose && "mt-10"
                 )}
             >
-            <form onSubmit={handleSubmit((data) => handleRegistration(data, onClose))} className="flex flex-col
+                <form onSubmit={handleSubmit((data) => handleRegistration(data, onClose, isAdminContext))} className="flex flex-col
                     gap-4">
-                <CustomTypography
-                    as="h2"
-                    variant="h1"
-                    className="text-center"
-                >
-                    Register
-                </CustomTypography>
+                    <CustomTypography
+                        as="h2"
+                        variant="h1"
+                        className="text-center"
+                    >
+                        Register
+                    </CustomTypography>
 
+                    <CustomTextField
+                        label="Username"
+                        name="userName"
+                        register={register}
+                        error={errors.userName}
+                        helperText={errors.userName?.message}
+                    />
 
-                {successMessage && (
-                        <CustomBox className="text-sm p-2 rounded text-green-700 bg-green-100">
-                            {successMessage}
-                        </CustomBox>
+                    <CustomTextField
+                        label="Email"
+                        name="email"
+                        type="email"
+                        register={register}
+                        error={errors.email}
+                        helperText={errors.email?.message}
+                    />
+
+                    <CustomTextField
+                        label="Password"
+                        name="password"
+                        type="password"
+                        register={register}
+                        error={errors.password}
+                        helperText={errors.password?.message}
+                    />
+
+                    <CustomTextField
+                        label="Confirm Password"
+                        name="confirmPassword"
+                        type="password"
+                        register={register}
+                        error={errors.confirmPassword}
+                        helperText={errors.confirmPassword?.message}
+                    />
+
+                    {showRoles && (
+                        <CustomSelect
+                            name="roles"
+                            label="Role"
+                            register={null}
+                            value={selectedRole}
+                            onChange={(e) => {
+                                setSelectedRole(e.target.value);
+                                setValue("roles", [e.target.value]);
+                            }}
+                            error={!!errors.roles}
+                            helperText={errors.roles?.message}
+                            options={[
+                                { value: "USER", label: "USER" },
+                                { value: "ADMIN", label: "ADMIN" },
+                                { value: "CHEF", label: "CHEF" },
+                            ]}
+                        />
                     )}
 
-                <CustomTextField
-                    label="Username"
-                    name="userName"
-                    register={register}
-                    error={errors.userName}
-                    helperText={errors.userName?.message}
-                />
-
-                <CustomTextField
-                    label="Email"
-                    name="email"
-                    type="email"
-                    register={register}
-                    error={errors.email}
-                    helperText={errors.email?.message}
-                />
-
-                <CustomTextField
-                    label="Password"
-                    name="password"
-                    type="password"
-                    register={register}
-                    error={errors.password}
-                    helperText={errors.password?.message}
-                />
-
-                <CustomTextField
-                    label="Confirm Password"
-                    name="confirmPassword"
-                    type="password"
-                    register={register}
-                    error={errors.confirmPassword}
-                    helperText={errors.confirmPassword?.message}
-                />
-
-                <CustomButton
+                    <CustomButton
                         type="submit"
                         className="bg-primary hover:bg-primary-dark text-white py-2 mt-2 self-stretch"
                     >
                         Register
                     </CustomButton>
 
-                    <CustomButton
-                        onClick={onSwitchToLogin}
-                        className="text-primary hover:underline self-start bg-transparent px-0 py-0"
-                    >
-                        Already have an account? Login
-                    </CustomButton>
+                    {!isAdminContext && (
+                        <CustomButton
+                            onClick={onSwitchToLogin}
+                            className="text-primary hover:underline self-start bg-transparent px-0 py-0"
+                        >
+                            Already have an account? Login
+                        </CustomButton>
+                    )}
 
                     {onClose && (
                         <CustomButton
@@ -120,7 +148,9 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
 
 RegisterForm.propTypes = {
     onClose: PropTypes.func,
-    onSwitchToLogin: PropTypes.func.isRequired,
+    onSwitchToLogin: PropTypes.func,
+    showRoles: PropTypes.bool,
+    isAdminContext: PropTypes.bool,
 };
 
 export default RegisterForm;

@@ -11,8 +11,10 @@ const useRegister = () => {
     const { fetchUserMealsData } = useContext(UserMealsContext);
     const { handleLogin } = useLogin();
 
-    const handleRegistration = async (formData, onClose) => {
+    const handleRegistration = async (formData, onClose, isAdminContext = false) => {
         setErrorMessage("");
+        setSuccessMessage("");
+
         try {
             localStorage.clear();
             sessionStorage.clear();
@@ -25,21 +27,24 @@ const useRegister = () => {
             localStorage.setItem("accessToken", accessToken);
             localStorage.setItem("refreshToken", refreshToken);
 
-            await handleLogin(formData.email, formData.password, async () => {
-                await fetchUserMealsData();
+            if (!isAdminContext) {
+                await handleLogin(formData.email, formData.password, async () => {
+                    await fetchUserMealsData();
+                    if (onClose) onClose();
+                    navigate("/profile");
+                });
+            } else {
+                setSuccessMessage("User successfully created.");
                 if (onClose) onClose();
-                navigate("/profile");
-            });
+            }
 
-            setSuccessMessage("Registration successful!");
         } catch (err) {
-            setSuccessMessage("");
             setErrorMessage(err.message);
             console.error("Registration failed:", err);
         }
     };
 
-    return { handleRegistration, errorMessage, successMessage, setErrorMessage };
+    return { handleRegistration, errorMessage, successMessage, setErrorMessage, setSuccessMessage };
 };
 
 export default useRegister;

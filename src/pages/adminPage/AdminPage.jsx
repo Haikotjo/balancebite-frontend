@@ -12,7 +12,6 @@ import DeleteFoodItemForm from "../../components/deleteFoodItemForm/DeleteFoodIt
 import FetchFoodItemForm from "../../components/fetchFoodItemForm/FetchFoodItemForm.jsx";
 import PromoteUserForm from "../../components/promoteUserForm/PromoteUserForm.jsx";
 import DeleteUserForm from "../../components/deleteUserForm/DeleteUserForm.jsx";
-import CreateUserFormForAdmin from "../../components/createUserFormForAdmin/CreateUserFormForAdmin.jsx";
 import DeleteMealForm from "../../components/deleteMealForm/DeleteMealForm.jsx";
 
 // Layout components
@@ -21,6 +20,7 @@ import CustomCardChip from "../../components/layout/customCardChip.jsx";
 import CustomTypography from "../../components/layout/CustomTypography.jsx";
 import clsx from "clsx";
 import CustomSelect from "../../components/layout/CustomSelect.jsx";
+import RegisterForm from "../../components/navigation/loginRegisterForm/registerForm/RegisterForm.jsx";
 
 /**
  * AdminPage – Central admin dashboard to manage food items, meals, users and future settings.
@@ -105,7 +105,7 @@ const AdminPage = () => {
 
                     {userAction === "Promote" && <PromoteUserForm />}
                     {userAction === "Delete" && <DeleteUserForm />}
-                    {userAction === "Create" && <CreateUserFormForAdmin />}
+                    {userAction === "Create" && <RegisterForm showRoles isAdminContext />}
                 </CustomBox>
             );
         }
