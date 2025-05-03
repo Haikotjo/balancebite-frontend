@@ -496,6 +496,114 @@ export const getFoodSourcesApi = async () => {
 };
 
 
+// diets
+export const fetchPublicDiets = async () => {
+    const endpoint = import.meta.env.VITE_PUBLIC_DIETS_ENDPOINT;
+    try {
+        const response = await Interceptor.get(endpoint);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+export const fetchPublicDietById = async (dietId) => {
+    const endpoint = `${import.meta.env.VITE_PUBLIC_DIET_BY_ID_ENDPOINT}/${dietId}`;
+    try {
+        const response = await Interceptor.get(endpoint);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+export const addDietToUserApi = async (dietId, token) => {
+    const endpoint = `${import.meta.env.VITE_USER_ADD_DIET_ENDPOINT}/${dietId}`;
+    try {
+        const response = await Interceptor.patch(endpoint, null, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+export const fetchUserDiets = async (token) => {
+    const endpoint = import.meta.env.VITE_USER_DIETS_ENDPOINT;
+    try {
+        const response = await Interceptor.get(endpoint, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+export const fetchUserDietById = async (dietId, token) => {
+    const endpoint = `${import.meta.env.VITE_USER_DIET_BY_ID_ENDPOINT}/${dietId}`;
+    try {
+        const response = await Interceptor.get(endpoint, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+export const createDietApi = async (data, token) => {
+    const endpoint = import.meta.env.VITE_CREATE_DIET_ENDPOINT;
+    try {
+        const response = await Interceptor.post(endpoint, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+export const updateDietApi = async (dietId, data, token) => {
+    const endpoint = `${import.meta.env.VITE_UPDATE_DIET_ENDPOINT}/${dietId}`;
+    try {
+        const response = await Interceptor.patch(endpoint, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+export const deleteDietApi = async (dietId, token) => {
+    const endpoint = `${import.meta.env.VITE_DELETE_DIET_ENDPOINT}/${dietId}`;
+    try {
+        const response = await Interceptor.delete(endpoint, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return response;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+
 
 
 

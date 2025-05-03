@@ -20,16 +20,19 @@ const CustomIconButton = ({
                               size = 35,
                               className = "",
                               disableScale = false,
+                              useMotion = true,
                           }) => {
-    const wrapperProps = disableScale
-        ? {}
-        : {
+    const Wrapper = useMotion ? motion.div : "div";
+
+    const wrapperProps = useMotion && !disableScale
+        ? {
             whileTap: { scale: 0.9 },
             whileHover: { scale: 1.15 },
-        };
+        }
+        : {};
 
     return (
-        <motion.div {...wrapperProps} className="transition-transform duration-200 ease-in-out">
+        <Wrapper {...wrapperProps} className="transition-transform duration-200 ease-in-out">
             <CustomBox
                 onClick={onClick}
                 className={`cursor-pointer ${bgColor} rounded-[40%] flex items-center justify-center ${className}`}
@@ -37,10 +40,9 @@ const CustomIconButton = ({
             >
                 {icon}
             </CustomBox>
-        </motion.div>
+        </Wrapper>
     );
 };
-
 
 CustomIconButton.propTypes = {
     icon: PropTypes.element.isRequired,
@@ -49,6 +51,7 @@ CustomIconButton.propTypes = {
     size: PropTypes.number,
     className: PropTypes.string,
     disableScale: PropTypes.bool,
+    useMotion: PropTypes.bool,
 };
 
 export default CustomIconButton;

@@ -29,7 +29,7 @@ const MealInfoOverlay = ({ meal, fontSize = "0.7rem" }) => {
                 {meal.createdBy?.userName}
                 <UserPen size={14} />
                 {meal.version && (
-                    <CustomTypography as="span" className="text-sm">
+                    <CustomTypography as="span" className="text-sm text-white">
                     {meal.version.slice(0, 10)}
                     </CustomTypography>
                 )}

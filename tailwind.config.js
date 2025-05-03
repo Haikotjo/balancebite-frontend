@@ -1,5 +1,6 @@
 import typography from "@tailwindcss/typography";
 import forms from "@tailwindcss/forms";
+import scrollbarHide from "tailwind-scrollbar-hide";
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -12,6 +13,7 @@ export default {
     extend: {
       colors: {
         primary: "#46B1C9",
+        'primary-dark': '#2e798a',
         secondary: "#EDB6A3",
         error: "#DD1155",
         success: "#71f175",
@@ -46,5 +48,5 @@ export default {
       },
     },
   },
-  plugins: [typography, forms],
+  plugins: [typography, forms, scrollbarHide],
 };

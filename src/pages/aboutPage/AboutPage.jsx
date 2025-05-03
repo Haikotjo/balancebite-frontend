@@ -1,15 +1,18 @@
-import { Link } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import CustomBox from "../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../components/layout/CustomTypography.jsx";
 import CustomAnimatedBox from "../../components/layout/CustomAnimatedBox.jsx";
 import CustomDivider from "../../components/layout/CustomDivider.jsx";
-import CustomIconButton from "../../components/layout/CustomIconButton.jsx";
 import FeatureCard from "../../components/home/FeatureCard.jsx";
 import FeatureSection from "../../components/home/FeatureSection.jsx";
-import FeatureList from "../../components/home/FeatureList.jsx";
 import Logo from "../../components/logo/Logo.jsx";
+import CustomIconButton from "../../components/layout/CustomIconButton.jsx";
+import * as iconItems from "framer-motion/m";
+import FeatureList from "../../components/home/FeatureList.jsx";
 
 function AboutPage() {
+    const navigate = useNavigate();
+
     const features = [
         {
             to: "/meals",
@@ -46,6 +49,27 @@ function AboutPage() {
         },
     ];
 
+    const iconItems = [
+        {
+            to: "/meals",
+            icon: "🍽",
+            color: "text-primary",
+            rotation: -10,
+        },
+        {
+            to: "/profile",
+            icon: "❤️",
+            color: "text-secondary",
+            rotation: 5,
+        },
+        {
+            to: "/profile",
+            icon: "📊",
+            color: "text-error",
+            rotation: 15,
+        },
+    ];
+
     return (
         <CustomBox className="flex flex-col items-center justify-center min-h-screen w-full text-center px-2">
             <CustomAnimatedBox animation="slideInDown" className="p-2 my-2">
@@ -78,6 +102,50 @@ function AboutPage() {
                     simply cutting calories wasn’t enough. I needed a tool that could help me balance my meals and get the right
                     nutrients, and so BalanceBite was born."
                 </CustomTypography>
+            </CustomAnimatedBox>
+
+            {/* Icon buttons */}
+            <CustomAnimatedBox animation="slideInUp" className="flex gap-4 my-4">
+                {iconItems.map((item, index) => (
+                    <CustomIconButton
+                        key={index}
+                        icon={
+                            <span
+                                className={`${item.color} text-[2.5rem]`}
+                                style={{ transform: `rotate(${item.rotation}deg)` }}
+                            >
+                                {item.icon}
+                            </span>
+                        }
+                        onClick={() => navigate(item.to)}
+                        size={56}
+                        className="transition-transform duration-300"
+                    />
+                ))}
+            </CustomAnimatedBox>
+
+            <CustomDivider className="my-6 border-primary" />
+
+            {/* Info text */}
+            <CustomAnimatedBox animation="slideInRight" className="app-info-section">
+                <CustomBox className="flex flex-col items-center text-center max-w-[800px] mx-auto">
+                    <CustomTypography variant="h2" as="h1" className="mb-2">
+                        Your Personal Nutrition Tracker
+                    </CustomTypography>
+
+                    <CustomTypography
+                        variant="paragraph"
+                        className="leading-relaxed mb-3 text-base sm:text-lg md:text-xl"
+                    >
+                        Stay on top of your nutrition goals with our intuitive meal tracking app.
+                        Whether you want to gain muscle, lose weight, or simply eat healthier,
+                        our app makes it easy to <strong><em>track your meals, balance your macros, and stay in control</em></strong>.
+                        Enter your meals, monitor your <strong><em>Recommended Daily Intake (RDI)</em></strong>,
+                        and see how each meal affects your daily nutrition.
+                    </CustomTypography>
+
+                    <FeatureList />
+                </CustomBox>
             </CustomAnimatedBox>
 
             <CustomDivider className="my-6 border-primary" />
