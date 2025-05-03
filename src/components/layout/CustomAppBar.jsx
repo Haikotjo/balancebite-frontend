@@ -18,7 +18,7 @@ const CustomAppBar = React.forwardRef(({ children, className, position = "sticky
                     : position === "relative"
                         ? "relative"
                         : "",
-            "w-full z-10",
+            "w-full z-50",
             "shadow-md",
             className
         )}

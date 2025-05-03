@@ -11,6 +11,7 @@ import CustomBox from "../layout/CustomBox.jsx";
  * @param {number} [size=35] - Diameter of the button.
  * @param {string} [className] - Optional extra classes for outer styling.
  * @param disableScale
+ * @param useMotion
  * @returns {JSX.Element}
  */
 const CustomIconButton = ({

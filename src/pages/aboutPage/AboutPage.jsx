@@ -7,7 +7,6 @@ import FeatureCard from "../../components/home/FeatureCard.jsx";
 import FeatureSection from "../../components/home/FeatureSection.jsx";
 import Logo from "../../components/logo/Logo.jsx";
 import CustomIconButton from "../../components/layout/CustomIconButton.jsx";
-import * as iconItems from "framer-motion/m";
 import FeatureList from "../../components/home/FeatureList.jsx";
 
 function AboutPage() {
@@ -86,7 +85,7 @@ function AboutPage() {
                 className="text-center leading-relaxed max-w-[700px] mx-4 sm:px-6 sm:mx-auto italic"
                 style={{ textShadow: "1px 1px 2px rgba(0,0,0,0.1)" }}
             >
-                BalanceBite is designed for anyone who wants to take control of their eating habits—whether you're trying to lose weight,
+                BalanceBite is designed for anyone who wants to take control of their eating habits—whether you&#39;re trying to lose weight,
                 maintain a healthy lifestyle, or just enjoy creating meals. Our app provides insights into your daily intake and helps
                 you understand what your body needs based on your weight, activity level, and goals.
             </CustomTypography>
@@ -98,9 +97,9 @@ function AboutPage() {
                     italic
                     className="text-center max-w-[700px] sm:px-6 mx-4 sm:mx-auto"
                 >
-                    "I built BalanceBite out of personal interest. I wanted to eat healthier and lose weight, but I quickly realized that
+                    &#34;I built BalanceBite out of personal interest. I wanted to eat healthier and lose weight, but I quickly realized that
                     simply cutting calories wasn’t enough. I needed a tool that could help me balance my meals and get the right
-                    nutrients, and so BalanceBite was born."
+                    nutrients, and so BalanceBite was born.&#34;
                 </CustomTypography>
             </CustomAnimatedBox>
 

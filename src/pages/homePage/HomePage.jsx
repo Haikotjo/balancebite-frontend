@@ -1,19 +1,9 @@
 import { useNavigate } from "react-router-dom";
-
 import CustomBox from "../../components/layout/CustomBox.jsx";
-import CustomTypography from "../../components/layout/CustomTypography.jsx";
-import CustomDivider from "../../components/layout/CustomDivider.jsx";
 import CustomAnimatedBox from "../../components/layout/CustomAnimatedBox.jsx";
-import CustomIconButton from "../../components/layout/CustomIconButton.jsx";
-
-import FeatureCard from "../../components/home/FeatureCard.jsx";
 import Logo from "../../components/logo/Logo.jsx";
-import FeatureSection from "../../components/home/FeatureSection.jsx";
-import FeatureList from "../../components/home/FeatureList.jsx";
 import HorizontalScrollSection from "../../components/horizontalScrollSection/HorizontalScrollSection.jsx";
-
 import { useEffect, useState} from "react";
-
 import MealCardCompact from "../../components/MealCardCompact/MealCardCompact.jsx";
 import Interceptor from "../../services/authInterceptor.js";
 import MealDetailCard from "../../components/mealCardLarge/MealDetailCard.jsx";
