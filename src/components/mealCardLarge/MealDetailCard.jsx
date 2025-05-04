@@ -45,11 +45,7 @@ const MealDetailCard = ({ meal, viewMode = "page" }) => {
     const macros = buildMacrosObject(meal, calculatedMacros);
 
     return (
-        <CustomCard
-            className={clsx(
-                "flex w-full box-border min-w-[300px] max-w-[500px]",
-            )}
-        >
+        <CustomCard className="flex w-full box-border" >
 
             {/* Image Section */}
 

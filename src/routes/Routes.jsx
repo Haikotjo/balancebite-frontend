@@ -11,6 +11,7 @@ import MealDetailsPage from "../pages/mealDetailsPage/MealDetailsPage.jsx";
 import UpdateMealPage from "../pages/updateMealPage/UpdateMealPage.jsx";
 import AdminPage from "../pages/adminPage/AdminPage.jsx";
 import RequireAdmin from "./RequireAdmin.jsx";
+import DietDetailsPage from "../pages/DietDetailsPage/DietDetailsPage.jsx";
 
 function AppRoutes() {
     return (
@@ -32,7 +33,7 @@ function AppRoutes() {
                 <Route path="/meal/:mealId" element={<MealDetailsPage />} />
                 <Route path="/update-meal/:mealId" element={<UpdateMealPage />} />
                 <Route path="/admin" element={<RequireAdmin><AdminPage /></RequireAdmin>} />
-
+                <Route path="/diet/:dietId" element={<DietDetailsPage />} />
             </Routes>
         </Router>
     );

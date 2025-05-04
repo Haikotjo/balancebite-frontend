@@ -44,7 +44,7 @@ const MealDetailsPage = () => {
             </CustomBox>
 
             {/* Alleen tonen op small screens */}
-            <CustomBox className="block md:hidden flex justify-center">
+            <CustomBox className="block md:hidden justify-center">
                 <MealDetailCard
                     meal={meal}
                     viewMode="page"

@@ -14,3 +14,4 @@ export const macroIconClasses = {
     Carbs: "text-success",
     Fats: "text-secondary",
 };
+

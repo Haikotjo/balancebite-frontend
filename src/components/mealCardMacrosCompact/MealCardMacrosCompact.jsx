@@ -1,21 +1,24 @@
+// components/MealCardMacrosSection/MealCardMacrosCompact.jsx
 import PropTypes from "prop-types";
 import CustomBox from "../layout/CustomBox.jsx";
 import CustomTypography from "../layout/CustomTypography.jsx";
 import { macroIcons, macroIconClasses } from "../../utils/helpers/macroIcons.js";
 
 /**
- * Compact macro display: only icons with their total values, aligned in one row.
+ * Compact macro display: icons with their total values, either in a row or column.
  */
-const MealCardMacrosCompact = ({ macros }) => {
+const MealCardMacrosCompact = ({ macros, vertical = false }) => {
     return (
-        <CustomBox className="flex justify-between items-center w-full px-2 py-1">
+        <CustomBox
+            className={`w-full px-2 py-1 ${vertical ? "flex flex-col gap-2" : "flex justify-between items-center"}`}
+        >
             {Object.entries(macros).map(([key, macro]) => {
                 const Icon = macroIcons[key];
                 const iconClass = macroIconClasses[key];
 
                 return (
                     <CustomBox key={key} className="flex items-center gap-1">
-                        {Icon && <Icon size={24} className={iconClass} />}
+                        {Icon && <Icon size={20} className={iconClass} />}
                         <CustomTypography variant="xsmallCard">
                             {macro.total}
                         </CustomTypography>
@@ -28,6 +31,7 @@ const MealCardMacrosCompact = ({ macros }) => {
 
 MealCardMacrosCompact.propTypes = {
     macros: PropTypes.object.isRequired,
+    vertical: PropTypes.bool,
 };
 
 export default MealCardMacrosCompact;
