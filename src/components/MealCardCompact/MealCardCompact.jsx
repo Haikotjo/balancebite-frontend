@@ -5,27 +5,19 @@ import CustomImage from "../layout/CustomImage.jsx";
 import { useNavigate } from "react-router-dom";
 import { getImageSrc } from "../../utils/helpers/getImageSrc.js";
 import PreparationTimeIcon from "../mealCardPreparationTimeIcon/PreparationTimeIcon.jsx";
+import ButtonOpenMeal from "../buttonOpenMeal/ButtonOpenMeal.jsx";
 
-const MealCardCompact = ({ meal, clickable = true }) => {
-    const navigate = useNavigate();
+const MealCardCompact = ({ meal }) => {
     const imageSrc = getImageSrc(meal);
-
-    const handleClick = () => {
-        if (clickable) {
-            navigate(`/meals/${meal.id}`);
-        }
-    };
 
     return (
         <CustomBox
-            className="relative w-48 h-48 rounded-lg overflow-hidden shadow-md border border-borderLight cursor-pointer"
-            onClick={handleClick}
-            onMouseDown={(e) => e.stopPropagation()}
-            onTouchStart={(e) => e.stopPropagation()}
+            className="relative w-48 h-48 rounded-lg overflow-hidden shadow-md border border-borderLight"
         >
             <CustomImage
                 src={imageSrc}
                 alt={meal.name}
+                draggable={false}
                 className="w-full h-full object-cover"
             />
 
@@ -36,10 +28,14 @@ const MealCardCompact = ({ meal, clickable = true }) => {
             >
                 <CustomBox className="absolute inset-0 bg-[rgba(255,255,255,0.4)] rounded-md z-0" />
                 <CustomBox className="flex items-center justify-between w-full z-10">
-                    {meal.preparationTime && (
-                        <PreparationTimeIcon preparationTime={meal.preparationTime} layout="inline" />
-                    )}
+                    <CustomBox className="flex items-center">
+                        {meal.preparationTime && (
+                            <PreparationTimeIcon preparationTime={meal.preparationTime} layout="inline" />
+                        )}
+                    </CustomBox>
+                    <ButtonOpenMeal mealId={meal.id} />
                 </CustomBox>
+
             </CustomBox>
 
 

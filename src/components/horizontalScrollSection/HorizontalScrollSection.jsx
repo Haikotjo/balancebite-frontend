@@ -27,6 +27,7 @@ const HorizontalScrollSection = ({ title, items, renderItem, onTitleClick }) => 
         if (!slider) return;
 
         const handleDown = (e) => {
+            e.preventDefault();
             isDown.current = true;
             slider.classList.add("cursor-grabbing");
             startX.current = e.pageX - slider.offsetLeft;

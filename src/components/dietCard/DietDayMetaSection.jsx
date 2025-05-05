@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import CustomBox from "../layout/CustomBox.jsx";
 import CustomTypography from "../layout/CustomTypography.jsx";
 import { macroIcons, macroIconClasses } from "../../utils/helpers/macroIcons.js";
-import MyResponsivePie from "../myResponsivePie/MyResponsivePie.jsx";
 import AccordionItem from "./AccordionItem.jsx";
 import BulletText from "../layout/BulletText.jsx";
 
@@ -22,9 +21,9 @@ const DietDayMetaSection = ({ day }) => {
                         <CustomBox className="space-y-2">
                             <BulletText showBullet={false}>{meal.mealDescription}</BulletText>
 
-                            <BulletText showBullet={false}>Bereidingstijd: {meal.preparationTime?.replace("PT", "").toLowerCase()}</BulletText>
+                            <BulletText showBullet={false}>Preparation time: {meal.preparationTime?.replace("PT", "").toLowerCase()}</BulletText>
 
-                            <BulletText showBullet={false}>Ingrediënten:</BulletText>
+                            <BulletText showBullet={false}>Ingredients:</BulletText>
                             <CustomBox className="pl-4 space-y-1">
                                 {meal.mealIngredients?.map((ing) => (
                                     <BulletText key={ing.id} showBullet={false}>
@@ -33,7 +32,7 @@ const DietDayMetaSection = ({ day }) => {
                                 ))}
                             </CustomBox>
 
-                            <BulletText showBullet={false}>Voedingswaarden:</BulletText>
+                            <BulletText showBullet={false}>Nutrition:</BulletText>
                             <CustomBox as="ul" className="pl-4 list-none space-y-1">
                                 <BulletText as="li" showBullet={false}>Calorieën: {meal.totalCalories}  kcal </BulletText>
                                 <BulletText as="li" showBullet={false}>Eiwitten: {meal.totalProtein} g</BulletText>
@@ -48,14 +47,14 @@ const DietDayMetaSection = ({ day }) => {
                                 ))}
                             </CustomBox>
 
-                            <BulletText showBullet={false}>Keukens:</BulletText>
+                            <BulletText showBullet={false}>Cuisine:</BulletText>
                             <CustomBox as="ul" className="pl-4 list-none space-y-1" >
                                 {meal.cuisines?.map((cuisine, index) => (
                                     <BulletText as="li" key={index} showBullet={false}>{cuisine}</BulletText>
                                 ))}
                             </CustomBox>
 
-                            <BulletText showBullet={false}>Dieetsoorten:</BulletText>
+                            <BulletText showBullet={false}>Diets:</BulletText>
                             <CustomBox as="ul" className="pl-4 list-none space-y-1">
                                 {meal.diets?.map((diet, index) => (
                                     <BulletText as="li" key={index} showBullet={false}>{diet}</BulletText>
@@ -71,7 +70,7 @@ const DietDayMetaSection = ({ day }) => {
                 </CustomTypography>
             )}
 
-            <CustomBox className="flex flex-wrap gap-4">
+            <CustomBox className="flex flex-wrap gap-4 mt-4">
                 {[ "Total lipid (fat) g", "Carbohydrates g", "Protein g" ].map((key) => {
                     const nutrient = totalNutrients[key];
                     if (!nutrient) return null;
