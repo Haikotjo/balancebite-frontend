@@ -31,7 +31,6 @@ const ButtonOpenMeal = ({ mealId, onClick }) => {
         <CustomIconButton
             onClick={handleClick}
             icon={<ExternalLink size={20} color="white" />}
-            bgColor="bg-cardDark"
             size={35}
         />
     );

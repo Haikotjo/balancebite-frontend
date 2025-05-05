@@ -33,10 +33,10 @@ const CustomIconButton = ({
         : {};
 
     return (
-        <Wrapper {...wrapperProps} className="transition-transform duration-200 ease-in-out">
+        <Wrapper {...wrapperProps} className="transition-transform duration-100 ease-in-out">
             <CustomBox
                 onClick={onClick}
-                className={`cursor-pointer ${bgColor} rounded-[40%] flex items-center justify-center w-8 h-8 sm:w-7 sm:h-7 ${className}`}
+                className={`cursor-pointer ${bgColor} rounded-xl flex items-center justify-center w-9 h-9 sm:w-8 sm:h-8 ${className}`}
             >
                 {icon}
             </CustomBox>

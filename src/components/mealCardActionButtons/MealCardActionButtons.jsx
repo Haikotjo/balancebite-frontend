@@ -29,8 +29,7 @@ const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page" }) => {
     );
 
     const sharedClasses = `
-        bg-[rgba(0,0,0,0.5)] rounded-[40%]
-        shadow-md flex items-center justify-center text-white
+        flex items-center justify-center text-white
         transition-transform duration-200 ease-in-out hover:scale-[1.2]
     `;
 
