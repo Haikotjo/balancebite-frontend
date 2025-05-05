@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { ChevronLeft, ChevronRight, ArrowRight  } from "lucide-react";
 import CustomBox from "../layout/CustomBox";
-import {useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import CustomTypography from "../layout/CustomTypography.jsx";
 import CustomIconButton from "../layout/CustomIconButton.jsx";
 
@@ -10,6 +10,8 @@ const HorizontalScrollSection = ({ title, items, renderItem, onTitleClick }) => 
     const isDown = useRef(false);
     const startX = useRef(0);
     const scrollLeft = useRef(0);
+
+    const [canScroll, setCanScroll] = useState(false);
 
 
     const scroll = (direction) => {
@@ -65,6 +67,21 @@ const HorizontalScrollSection = ({ title, items, renderItem, onTitleClick }) => 
         };
     }, []);
 
+    useEffect(() => {
+        const slider = scrollRef.current;
+        if (!slider) return;
+
+        const checkScroll = () => {
+            setCanScroll(slider.scrollWidth > slider.clientWidth);
+        };
+
+        checkScroll();
+
+        window.addEventListener("resize", checkScroll);
+        return () => window.removeEventListener("resize", checkScroll);
+    }, [items]); // opnieuw checken bij verandering van items
+
+
     return (
         <CustomBox className="w-full my-6 ">
 
@@ -103,23 +120,27 @@ const HorizontalScrollSection = ({ title, items, renderItem, onTitleClick }) => 
                 </CustomBox>
 
 
-                <CustomIconButton
-                    onClick={() => scroll("left")}
-                    icon={<ChevronLeft size={20} className="text-white" />}
-                    bgColor="bg-primary hover:bg-primary-dark"
-                    size={36}
-                    className="absolute left-2 top-[50%] translate-y-[-50%] z-10"
-                    useMotion={false}
-                />
+                {canScroll && (
+                    <CustomIconButton
+                        onClick={() => scroll("left")}
+                        icon={<ChevronLeft size={20} className="text-white" />}
+                        size={36}
+                        className="absolute left-2 top-[50%] translate-y-[-50%] z-10"
+                        useMotion={false}
+                    />
+                )}
 
-                <CustomIconButton
-                    onClick={() => scroll("right")}
-                    icon={<ChevronRight size={20} className="text-white" />}
-                    bgColor="bg-primary hover:bg-primary-dark"
-                    size={36}
-                    className="absolute right-2 top-[50%] translate-y-[-50%] z-10"
-                    useMotion={false}
-                />
+                {canScroll && (
+                    <CustomIconButton
+                        onClick={() => scroll("right")}
+                        icon={<ChevronRight size={20} className="text-white" />}
+
+                        size={36}
+                        className="absolute right-2 top-[50%] translate-y-[-50%] z-10"
+                        useMotion={false}
+                    />
+                )}
+
 
 
             </CustomBox>

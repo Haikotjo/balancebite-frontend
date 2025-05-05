@@ -3,6 +3,8 @@ import CustomTypography from "../layout/CustomTypography.jsx";
 import CustomGrid from "../layout/CustomGrid.jsx";
 import PropTypes from "prop-types";
 import MealDetailCard from "../mealCardLarge/MealDetailCard.jsx";
+import HorizontalScrollSection from "../horizontalScrollSection/HorizontalScrollSection.jsx";
+import MealCardCompact from "../MealCardCompact/MealCardCompact.jsx";
 
 const StaticMealList = ({ meals }) => {
     if (!meals || meals.length === 0) {
@@ -16,11 +18,15 @@ const StaticMealList = ({ meals }) => {
     }
 
     return (
-        <CustomBox className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-4">
-            {meals.map((meal) => (
-                <MealDetailCard key={meal.id} meal={meal} viewMode="list" />
-            ))}
-        </CustomBox>
+        <HorizontalScrollSection
+            title="Meals"
+            items={meals}
+            renderItem={(meal) => (
+                <CustomBox className="w-full max-w-[300px]">
+                    <MealCardCompact meal={meal} />
+                </CustomBox>
+            )}
+        />
     );
 };
 

@@ -36,8 +36,7 @@ const CustomIconButton = ({
         <Wrapper {...wrapperProps} className="transition-transform duration-200 ease-in-out">
             <CustomBox
                 onClick={onClick}
-                className={`cursor-pointer ${bgColor} rounded-[40%] flex items-center justify-center ${className}`}
-                style={{ width: size, height: size }}
+                className={`cursor-pointer ${bgColor} rounded-[40%] flex items-center justify-center w-8 h-8 sm:w-7 sm:h-7 ${className}`}
             >
                 {icon}
             </CustomBox>
