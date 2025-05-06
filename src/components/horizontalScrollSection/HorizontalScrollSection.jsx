@@ -107,11 +107,11 @@ const HorizontalScrollSection = ({ title, items, renderItem, onTitleClick, class
                 </CustomTypography>
             )}
 
-            <CustomBox className="relative py-2 bg-softIvory/50 dark:bg-cardDark rounded-xl">
+            <CustomBox className="relative py-2 bg-softIvory dark:bg-darkBackground rounded-xl">
 
                 <CustomBox
                     ref={scrollRef}
-                    className="flex gap-5 overflow-x-auto scrollbar-hide px-8 py-2"
+                    className="flex gap-2 overflow-x-auto scrollbar-hide px-2 py-1"
                 >
                     {items.map((item, index) => (
                         <CustomBox key={index} className="shrink-0">
