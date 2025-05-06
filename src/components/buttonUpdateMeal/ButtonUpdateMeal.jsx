@@ -25,7 +25,6 @@ const ButtonUpdateMeal = ({ mealId }) => {
         <CustomIconButton
             onClick={handleClick}
             icon={<Pencil size={20} color="white" />}
-            bgColor="bg-cardDark"
             size={35}
         />
     );

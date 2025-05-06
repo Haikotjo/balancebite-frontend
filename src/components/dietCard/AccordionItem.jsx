@@ -13,7 +13,7 @@ const AccordionItem = ({ title, children, defaultOpen = false }) => {
         <CustomBox className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
             <CustomButton
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full flex items-center justify-between gap-3 p-5 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 text-left"
+                className="w-full flex items-center justify-between font-medium hover:bg-gray-100 dark:hover:bg-gray-800 text-left"
             >
                 <CustomTypography className="flex-1" variant="h5">
                     {title}

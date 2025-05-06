@@ -29,7 +29,7 @@ export default {
         borderDark: "#5db3c6",
         friendlyGray: "#8f8f8f",
         softIvory: "#F0EAE2",
-        appBarColor: "#ff6d38",
+        appBarColor: "#2d2f39",
 
 
         // 🎨 User-configurable kleuren (via CSS variables)
