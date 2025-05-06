@@ -44,7 +44,7 @@ const DietDetailsPage = () => {
 
     return (
         <CustomBox className="max-w-screen-xl mx-auto mt-4 px-4">
-            <CustomBox className="my-10">
+            <CustomBox className="my-8">
                 <SubMenu isDetailPage />
             </CustomBox>
 

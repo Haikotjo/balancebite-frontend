@@ -4,8 +4,9 @@ import CustomBox from "../layout/CustomBox";
 import {useEffect, useRef, useState} from "react";
 import CustomTypography from "../layout/CustomTypography.jsx";
 import CustomIconButton from "../layout/CustomIconButton.jsx";
+import clsx from "clsx";
 
-const HorizontalScrollSection = ({ title, items, renderItem, onTitleClick }) => {
+const HorizontalScrollSection = ({ title, items, renderItem, onTitleClick, className ="" }) => {
     const scrollRef = useRef(null);
     const isDown = useRef(false);
     const startX = useRef(0);
@@ -79,11 +80,11 @@ const HorizontalScrollSection = ({ title, items, renderItem, onTitleClick }) => 
 
         window.addEventListener("resize", checkScroll);
         return () => window.removeEventListener("resize", checkScroll);
-    }, [items]); // opnieuw checken bij verandering van items
+    }, [items]);
 
 
     return (
-        <CustomBox className="w-full my-6 ">
+        <CustomBox className={clsx("w-full my-6", className)}>
 
         {title && (
                 <CustomTypography
@@ -152,7 +153,8 @@ HorizontalScrollSection.propTypes = {
     title: PropTypes.string,
     items: PropTypes.array.isRequired,
     renderItem: PropTypes.func.isRequired,
-    onTitleClick: PropTypes.func, // optional
+    onTitleClick: PropTypes.func,
+    className: PropTypes.string,
 };
 
 

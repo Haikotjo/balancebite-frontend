@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import CustomBox from "../layout/CustomBox.jsx";
 import CustomTypography from "../layout/CustomTypography.jsx";
 import CustomImage from "../layout/CustomImage.jsx";
-import { useNavigate } from "react-router-dom";
 import { getImageSrc } from "../../utils/helpers/getImageSrc.js";
 import PreparationTimeIcon from "../mealCardPreparationTimeIcon/PreparationTimeIcon.jsx";
 import ButtonOpenMeal from "../buttonOpenMeal/ButtonOpenMeal.jsx";
