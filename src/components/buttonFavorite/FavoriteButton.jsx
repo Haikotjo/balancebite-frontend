@@ -1,4 +1,3 @@
-import { useState } from "react";
 import PropTypes from "prop-types";
 import { Heart } from "lucide-react";
 import { useToggleFavorite } from "../../hooks/useToggleFavorite.js";
@@ -30,7 +29,7 @@ const FavoriteButton = ({ meal }) => {
         <>
             <CustomIconButton
                 onClick={toggleFavorite}
-                bgColor="bg-error"
+                bgColor="bg-error/80"
                 icon={
                     <Heart
                         size={20}
@@ -47,7 +46,7 @@ const FavoriteButton = ({ meal }) => {
                 showLoginForm={showLoginForm}
                 onLoginClose={() => setShowLoginForm(false)}
                 onLoginSuccess={() => setShowLoginForm(false)}
-                onLoginRedirect={handleLoginRedirect} // ✅ juiste actie
+                onLoginRedirect={handleLoginRedirect}
             />
         </>
     );

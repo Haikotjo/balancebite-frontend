@@ -9,7 +9,7 @@ const RequireAuthUI = ({
                            showLoginForm,
                            onLoginClose,
                            onLoginSuccess,
-                           onLoginRedirect, // ✅ toevoegen
+                           onLoginRedirect,
                        }) => (
     <>
         <ErrorDialog
@@ -17,7 +17,7 @@ const RequireAuthUI = ({
             onClose={onClose}
             message={message}
             actionLabel="Login or Register"
-            onAction={onLoginRedirect} // ✅ gebruiken
+            onAction={onLoginRedirect}
             type="error"
         />
         {showLoginForm && (
