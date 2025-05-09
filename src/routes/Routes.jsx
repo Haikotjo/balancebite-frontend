@@ -12,6 +12,7 @@ import UpdateMealPage from "../pages/updateMealPage/UpdateMealPage.jsx";
 import AdminPage from "../pages/adminPage/AdminPage.jsx";
 import RequireAdmin from "./RequireAdmin.jsx";
 import DietDetailsPage from "../pages/DietDetailsPage/DietDetailsPage.jsx";
+import CreateDietPage from "../pages/createDietPage/createDietPage.jsx";
 
 function AppRoutes() {
     return (
@@ -29,6 +30,7 @@ function AppRoutes() {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/meals/:userId?" element={<MealsPage />} />
                 <Route path="/create-meal" element={<CreateMealPage />} />
+                <Route path="/create-diet" element={<CreateDietPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/meal/:mealId" element={<MealDetailsPage />} />
                 <Route path="/update-meal/:mealId" element={<UpdateMealPage />} />

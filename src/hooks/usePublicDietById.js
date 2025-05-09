@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {fetchPublicDietById} from "../services/apiService.js";
+import {getPublicDietPlanByIdApi } from "../services/apiService.js";
 
 const usePublicDietById = (dietId) => {
     const [diet, setDiet] = useState(null);
@@ -9,7 +9,7 @@ const usePublicDietById = (dietId) => {
     useEffect(() => {
         const fetch = async () => {
             try {
-                const data = await fetchPublicDietById(dietId);
+                const data = await getPublicDietPlanByIdApi (dietId);
                 setDiet(data);
             } catch (err) {
                 setError(err.message || "Failed to fetch diet.");

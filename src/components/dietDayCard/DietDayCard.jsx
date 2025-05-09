@@ -14,20 +14,26 @@ const DietDayCard = ({ day }) => {
 
     return (
         <CustomBox className="mb-4 p-4 rounded-xl border border-border bg-muted dark:bg-mutedDark">
-            {day.meals?.length > 0 ? (
-                <HorizontalScrollSection
-                    items={day.meals}
-                    className="-mt-2 mb-2"
-                    renderItem={(meal) => <MealCardCompact meal={meal} />}
-                />
-            ) : (
-                <CustomBox className="flex justify-center items-center min-h-[20vh]">
-                    <CustomTypography as="p" variant="paragraph">No meals found.</CustomTypography>
-                </CustomBox>
-            )}
+            <CustomTypography variant="h2" bold className="mb-2">
+                {day.dayLabel}
+            </CustomTypography>
+            <AccordionItem title="Meals" defaultOpen={true}>
+                {day.meals?.length > 0 ? (
+                    <HorizontalScrollSection
+                        items={day.meals}
+                        className="-mt-2 mb-2"
+                        renderItem={(meal) => <MealCardCompact meal={meal} />}
+                    />
+                ) : (
+                    <CustomBox className="flex justify-center items-center min-h-[20vh]">
+                        <CustomTypography as="p" variant="paragraph">No meals found.</CustomTypography>
+                    </CustomBox>
+                )}
+
 
             {day.meals?.length > 0 ? (
                 day.meals.map((meal) => (
+                    <CustomBox key={meal.id} className="mb-4">
                     <AccordionItem key={meal.id} title={meal.name} defaultOpen={false}>
                         <CustomBox className="space-y-2">
                             <AccordionItem title="Description" defaultOpen={true}>
@@ -58,18 +64,23 @@ const DietDayCard = ({ day }) => {
                                 <CustomBox className="w-full md:w-[calc(50%-0.5rem)]">
                                     <AccordionItem title="Nutrition">
                                         <CustomBox as="ul" className="pl-4 list-none space-y-1">
-                                            <BulletText as="li" showBullet={false} italic>
-                                                Calories: {meal.totalCalories} kcal
-                                            </BulletText>
-                                            <BulletText as="li" showBullet={false} italic>
-                                                Protein: {meal.totalProtein} g
-                                            </BulletText>
-                                            <BulletText as="li" showBullet={false} italic>
-                                                Carbohydrates: {meal.totalCarbs} g
-                                            </BulletText>
-                                            <BulletText as="li" showBullet={false} italic>
-                                                Fat: {meal.totalFat} g
-                                            </BulletText>
+                                            {[
+                                                { label: "Calories", value: meal.totalCalories, unit: "kcal" },
+                                                { label: "Protein", value: meal.totalProtein, unit: "g" },
+                                                { label: "Carbs", value: meal.totalCarbs, unit: "g" },
+                                                { label: "Fats", value: meal.totalFat, unit: "g" }
+                                            ].map(({ label, value, unit }) => {
+                                                const Icon = macroIcons[label];
+                                                const iconClass = macroIconClasses[label];
+                                                return (
+                                                    <CustomBox key={label} className="flex items-center gap-2">
+                                                        {Icon && <Icon size={16} className={iconClass} />}
+                                                        <BulletText as="li" showBullet={false} italic>
+                                                            {label}: {Math.round(value)} {unit}
+                                                        </BulletText>
+                                                    </CustomBox>
+                                                );
+                                            })}
                                         </CustomBox>
                                     </AccordionItem>
                                 </CustomBox>
@@ -112,29 +123,47 @@ const DietDayCard = ({ day }) => {
                             </CustomBox>
                         </CustomBox>
                     </AccordionItem>
+                    </CustomBox>
                 ))
             ) : (
                 <CustomTypography variant="h1" className="italic">No meals Found</CustomTypography>
             )}
 
+            </AccordionItem>
+
             <CustomBox className="flex flex-wrap gap-4 mt-4">
-                {["Total lipid (fat) g", "Carbohydrates g", "Protein g"].map((key) => {
+                {[
+                    "Energy kcal",
+                    "Total lipid (fat) g",
+                    "Carbohydrates g",
+                    "Protein g"
+                ].map((key) => {
                     const nutrient = totalNutrients[key];
                     if (!nutrient) return null;
 
-                    const Icon = macroIcons[nutrient.nutrientName];
-                    const iconClass = macroIconClasses[nutrient.nutrientName];
+                    const labelMap = {
+                        "Energy kcal": "Calories",
+                        "Total lipid (fat) g": "Fats",
+                        "Carbohydrates g": "Carbs",
+                        "Protein g": "Protein",
+                    };
+
+                    const iconKey = labelMap[key];
+                    const Icon = macroIcons[iconKey];
+                    const iconClass = macroIconClasses[iconKey];
 
                     return (
-                        <CustomBox key={nutrient.nutrientId} className="flex items-center gap-2">
-                            {Icon && <Icon size={20} className={iconClass} />}
-                            <CustomTypography variant="paragraphCard">
-                                {nutrient.nutrientName}: {Math.round(nutrient.value)} {nutrient.unitName}
+                        <CustomBox key={nutrient.nutrientId || key} className="flex items-center gap-2">
+                            {Icon && <Icon size={16} className={iconClass} />}
+                            <CustomTypography variant="xsmallCard">
+                                {iconKey}: {Math.round(nutrient.value)} {nutrient.unitName}
                             </CustomTypography>
                         </CustomBox>
                     );
                 })}
             </CustomBox>
+
+
         </CustomBox>
     );
 };

@@ -496,114 +496,108 @@ export const getFoodSourcesApi = async () => {
 };
 
 
-// diets
-export const fetchPublicDiets = async () => {
-    const endpoint = import.meta.env.VITE_PUBLIC_DIETS_ENDPOINT;
-    try {
-        const response = await Interceptor.get(endpoint);
-        return response.data;
-    } catch (error) {
-        logError(error);
-        throw error;
-    }
+// ========== DIEETPLANNEN (USER) ==========
+
+export const createDietPlanApi = async (data) => {
+    const endpoint = import.meta.env.VITE_CREATE_DIETPLAN_ENDPOINT;
+    const token = localStorage.getItem("accessToken");
+    const response = await Interceptor.post(endpoint, data, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+        },
+    });
+    return response.data;
 };
 
-export const fetchPublicDietById = async (dietId) => {
-    const endpoint = `${import.meta.env.VITE_PUBLIC_DIET_BY_ID_ENDPOINT}/${dietId}`;
-    try {
-        const response = await Interceptor.get(endpoint);
-        return response.data;
-    } catch (error) {
-        logError(error);
-        throw error;
-    }
+export const addDietPlanToUserApi = async (dietPlanId) => {
+    const endpoint = `${import.meta.env.VITE_ADD_DIETPLAN_TO_USER_ENDPOINT}/${dietPlanId}`;
+    const token = localStorage.getItem("accessToken");
+    const response = await Interceptor.post(endpoint, null, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
 };
 
-export const addDietToUserApi = async (dietId, token) => {
-    const endpoint = `${import.meta.env.VITE_USER_ADD_DIET_ENDPOINT}/${dietId}`;
-    try {
-        const response = await Interceptor.patch(endpoint, null, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
-        return response.data;
-    } catch (error) {
-        logError(error);
-        throw error;
-    }
+export const updateDietPlanApi = async (dietPlanId, data) => {
+    const endpoint = `${import.meta.env.VITE_UPDATE_DIETPLAN_ENDPOINT}/${dietPlanId}`;
+    const token = localStorage.getItem("accessToken");
+    const response = await Interceptor.put(endpoint, data, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+        },
+    });
+    return response.data;
 };
 
-export const fetchUserDiets = async (token) => {
-    const endpoint = import.meta.env.VITE_USER_DIETS_ENDPOINT;
-    try {
-        const response = await Interceptor.get(endpoint, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
-        return response.data;
-    } catch (error) {
-        logError(error);
-        throw error;
-    }
+export const deleteDietPlanApi = async (dietPlanId) => {
+    const endpoint = `${import.meta.env.VITE_DELETE_DIETPLAN_ENDPOINT}/${dietPlanId}`;
+    const token = localStorage.getItem("accessToken");
+    const response = await Interceptor.delete(endpoint, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
 };
 
-export const fetchUserDietById = async (dietId, token) => {
-    const endpoint = `${import.meta.env.VITE_USER_DIET_BY_ID_ENDPOINT}/${dietId}`;
-    try {
-        const response = await Interceptor.get(endpoint, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
-        return response.data;
-    } catch (error) {
-        logError(error);
-        throw error;
-    }
+export const getAllUserDietPlansApi = async () => {
+    const endpoint = import.meta.env.VITE_GET_ALL_USER_DIETPLANS_ENDPOINT;
+    const token = localStorage.getItem("accessToken");
+    const response = await Interceptor.get(endpoint, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
 };
 
-export const createDietApi = async (data, token) => {
-    const endpoint = import.meta.env.VITE_CREATE_DIET_ENDPOINT;
-    try {
-        const response = await Interceptor.post(endpoint, data, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-        return response.data;
-    } catch (error) {
-        logError(error);
-        throw error;
-    }
+export const getUserDietPlanByIdApi = async (dietPlanId) => {
+    const endpoint = `${import.meta.env.VITE_GET_DIETPLAN_BY_ID_ENDPOINT}/${dietPlanId}`;
+    const token = localStorage.getItem("accessToken");
+    const response = await Interceptor.get(endpoint, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
 };
 
-export const updateDietApi = async (dietId, data, token) => {
-    const endpoint = `${import.meta.env.VITE_UPDATE_DIET_ENDPOINT}/${dietId}`;
-    try {
-        const response = await Interceptor.patch(endpoint, data, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-        return response.data;
-    } catch (error) {
-        logError(error);
-        throw error;
-    }
+export const addMealToDietDayApi = async (dietPlanId, dayIndex, mealId) => {
+    const endpoint = `${import.meta.env.VITE_ADD_MEAL_TO_DIETDAY_ENDPOINT}/${dietPlanId}/days/${dayIndex}/meals/${mealId}`;
+    const token = localStorage.getItem("accessToken");
+    const response = await Interceptor.post(endpoint, null, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
 };
 
-export const deleteDietApi = async (dietId, token) => {
-    const endpoint = `${import.meta.env.VITE_DELETE_DIET_ENDPOINT}/${dietId}`;
-    try {
-        const response = await Interceptor.delete(endpoint, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
-        return response;
-    } catch (error) {
-        logError(error);
-        throw error;
-    }
+export const removeMealFromDietDayApi = async (dietPlanId, dayIndex, mealId) => {
+    const endpoint = `${import.meta.env.VITE_REMOVE_MEAL_FROM_DIETDAY_ENDPOINT}/${dietPlanId}/days/${dayIndex}/meals/${mealId}`;
+    const token = localStorage.getItem("accessToken");
+    const response = await Interceptor.delete(endpoint, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
 };
 
+export const removeDietDayApi = async (dietPlanId, dayIndex) => {
+    const endpoint = `${import.meta.env.VITE_REMOVE_DIETDAY_ENDPOINT}/${dietPlanId}/days/${dayIndex}`;
+    const token = localStorage.getItem("accessToken");
+    const response = await Interceptor.delete(endpoint, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+};
 
+// ========== DIEETPLANNEN (PUBLIEK) ==========
+
+export const getAllPublicDietPlansApi = async () => {
+    const endpoint = import.meta.env.VITE_GET_ALL_PUBLIC_DIETPLANS_ENDPOINT;
+    const response = await Interceptor.get(endpoint);
+    return response.data;
+};
+
+export const getPublicDietPlanByIdApi = async (dietPlanId) => {
+    const endpoint = `${import.meta.env.VITE_GET_PUBLIC_DIETPLAN_BY_ID_ENDPOINT}/${dietPlanId}`;
+    const response = await Interceptor.get(endpoint);
+    return response.data;
+};
 
 
 
