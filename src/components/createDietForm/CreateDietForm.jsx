@@ -1,7 +1,6 @@
 // src/components/createDietForm/CreateDietFormFull.jsx
 import {useFieldArray, useForm} from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate } from "react-router-dom";
 
 import { createDietPlanSchema } from "../../utils/valadition/validationSchemas.js";
 import { useFetchMeals } from "../../hooks/useFetchMeals.js";

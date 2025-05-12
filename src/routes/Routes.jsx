@@ -13,6 +13,7 @@ import AdminPage from "../pages/adminPage/AdminPage.jsx";
 import RequireAdmin from "./RequireAdmin.jsx";
 import DietDetailsPage from "../pages/DietDetailsPage/DietDetailsPage.jsx";
 import CreateDietPage from "../pages/createDietPage/createDietPage.jsx";
+import ProtectedRoute from "./ProtectedRoute";
 
 function AppRoutes() {
     return (
@@ -29,12 +30,24 @@ function AppRoutes() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/meals/:userId?" element={<MealsPage />} />
-                <Route path="/create-meal" element={<CreateMealPage />} />
-                <Route path="/create-diet" element={<CreateDietPage />} />
-                <Route path="/profile" element={<ProfilePage />} />
+
+                <Route path="/create-meal" element={
+                    <ProtectedRoute><CreateMealPage /></ProtectedRoute>
+                } />
+                <Route path="/create-diet" element={
+                    <ProtectedRoute><CreateDietPage /></ProtectedRoute>
+                } />
+                <Route path="/profile" element={
+                    <ProtectedRoute><ProfilePage /></ProtectedRoute>
+                } />
+                <Route path="/update-meal/:mealId" element={
+                    <ProtectedRoute><UpdateMealPage /></ProtectedRoute>
+                } />
+
+                <Route path="/admin" element={
+                    <RequireAdmin><AdminPage /></RequireAdmin>
+                } />
                 <Route path="/meal/:mealId" element={<MealDetailsPage />} />
-                <Route path="/update-meal/:mealId" element={<UpdateMealPage />} />
-                <Route path="/admin" element={<RequireAdmin><AdminPage /></RequireAdmin>} />
                 <Route path="/diet/:dietId" element={<DietDetailsPage />} />
             </Routes>
         </Router>
