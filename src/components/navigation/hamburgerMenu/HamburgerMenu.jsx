@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router-dom";
-import { MenuIcon, Home, Info, LogIn, LogOut, UserPlus, Settings, Soup  } from "lucide-react";
+import { MenuIcon, Home, Info, LogIn, LogOut, UserPlus, Settings, Soup, Apple   } from "lucide-react";
 import CustomBox from "../../layout/CustomBox.jsx";
 import CustomButton from "../../layout/CustomButton.jsx";
 import CustomTypography from "../../layout/CustomTypography.jsx";
@@ -54,6 +54,7 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
         { label: "Home", icon: Home, path: "/" },
         { label: "About", icon: Info, path: "/about" },
         { label: "Meals", icon: Soup, path: "/meals" },
+        { label: "Diets", icon: Apple, path: "/diets" },
         isAdmin && { label: "Admin", icon: Settings, path: "/admin" },
         !user && { label: "Login", icon: LogIn, action: onLoginClick },
         !user && { label: "Register", icon: UserPlus, action: onRegisterClick },
