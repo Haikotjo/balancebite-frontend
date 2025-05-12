@@ -127,24 +127,14 @@ export const fetchMealNutrientsById = async (mealId) => {
 
 export const createMealApi = async (formData) => {
     const endpoint = import.meta.env.VITE_CREATE_MEAL_ENDPOINT;
-    const token = localStorage.getItem("accessToken");
 
-    if (!token) {
-        throw new Error("No access token available.");
-    }
+    const response = await Interceptor.post(endpoint, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
 
-    try {
-        const response = await Interceptor.post(endpoint, formData, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        // logResponse(response);
-        return response.data;
-    } catch (error) {
-        logError(error);
-        throw error;
-    }
+    return response.data;
 };
 
 export const getAllFoodItems = async () => {

@@ -33,6 +33,7 @@ const DeleteFoodItemForm = () => {
                 }))}
                 value={selectedItem}
                 onChange={(selected) => setSelectedItem(selected)} // Update selected item
+                onFocus={(e) => e.target.select()}
             />
 
             {/* Button to delete the selected food item */}

@@ -1,219 +1,191 @@
 // src/components/createDietForm/CreateDietFormFull.jsx
-import React, { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { createDietPlanApi, fetchMeals } from "../../services/apiService.js";
-import CustomBox from "../layout/CustomBox.jsx";
-import CustomTypography from "../layout/CustomTypography.jsx";
-import CustomTextField from "../layout/CustomTextField.jsx";
-import CustomButton from "../layout/CustomButton.jsx";
+import {useFieldArray, useForm} from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useNavigate } from "react-router-dom";
+
+import { createDietPlanSchema } from "../../utils/valadition/validationSchemas.js";
+import { useFetchMeals } from "../../hooks/useFetchMeals.js";
+import { useCreateDiet } from "../../hooks/useCreateDiet.js";
+
 import CustomFloatingSelect from "../layout/CustomFloatingSelect.jsx";
-import PropTypes from "prop-types";
-import {createDietPlanSchema} from "../../utils/valadition/validationSchemas.js";
+import CustomTextField        from "../layout/CustomTextField.jsx";
+import CustomTypography       from "../layout/CustomTypography.jsx";
+import CustomBox             from "../layout/CustomBox.jsx";
+import ErrorDialog           from "../layout/ErrorDialog.jsx";
+import CustomButton          from "../layout/CustomButton.jsx";
+import PropTypes             from "prop-types";
 
 export default function CreateDietFormFull({ onSuccess }) {
-    const [days, setDays] = useState([
-        { label: "", description: "", mealIds: [""] },
-    ]);
-    const [mealOptions, setMealOptions] = useState([]);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const { mealOptions, loading: mealsLoading, error: mealsError } = useFetchMeals();
 
-    // alleen HF voor name + description
-    const { register, handleSubmit } = useForm({
-        defaultValues: { name: "", dietDescription: "" },
+    const {
+        days,
+        loading,
+        renderDialogs,
+        handleChangeMealId,
+        addDay,
+        removeDay,
+        addMealId,
+        removeMeal,
+        onSubmit
+    } = useCreateDiet(onSuccess);
+
+    const {
+        register,
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        mode: "onChange",
+        resolver: yupResolver(createDietPlanSchema),
+        defaultValues: {
+            name: "",
+            dietDescription: "",
+            dietDays: [
+                {
+                    dayLabel: "",
+                    dietDayDescription: ""
+                },
+            ],
+        }
     });
 
-    useEffect(() => {
-        (async () => {
-            try {
-                const data = await fetchMeals("/meals");
-                if (data.content && Array.isArray(data.content)) {
-                    setMealOptions(
-                        data.content.map((m) => ({
-                            value: m.id.toString(),
-                            label: m.name,
-                        }))
-                    );
-                }
-            } catch (e) {
-                console.error("Failed to load meals", e);
-            }
-        })();
-    }, []);
+    const { fields: dietDaysFields } = useFieldArray({
+        control,
+        name: "dietDays",
+    });
 
-    const handleChangeMealId = (dayIndex, mealIndex, value) => {
-        setDays((prev) =>
-            prev.map((day, i) => {
-                if (i !== dayIndex) return day;
-                const mealIds = [...day.mealIds];
-                mealIds[mealIndex] = value;
-                if (mealIndex === 0 && prev[i].mealIds.length === 1 && value) {
-                    mealIds.push("");
-                }
-                return { ...day, mealIds };
-            })
+
+
+    if (mealsLoading) {
+        return (
+            <CustomBox className="text-center py-4">
+                <CustomTypography>Loading meals...</CustomTypography>
+            </CustomBox>
         );
-    };
-
-    const addDay = () =>
-        setDays((prev) => [...prev, { label: "", description: "", mealIds: [""] }]);
-    const addMealId = (dayIndex) => {
-        const copy = [...days];
-        copy[dayIndex].mealIds.push("");
-        setDays(copy);
-    };
-
-    const removeDay = () => setDays((prev) => prev.slice(0, -1));
-
-    const removeMeal = (dayIndex, mealIndex) => {
-        const copy = [...days];
-        copy[dayIndex].mealIds.splice(mealIndex, 1);
-        setDays(copy);
-    };
-
-    const onSubmit = async ({ name, dietDescription }) => {
-        setError(null);
-        setLoading(true);
-
-        const payload = {
-            name,
-            dietDescription,
-            dietDays: days.map(d => ({
-                dayLabel: d.label,
-                dietDayDescription: d.description,
-                mealIds: d.mealIds.filter(id => id.trim() !== ""),
-            })),
-        };
-
-        try {
-            await createDietPlanSchema.validate(payload, { abortEarly: false });
-            const newDiet = await createDietPlanApi({ ...payload, diets: [] });
-            onSuccess?.(newDiet);
-        } catch (err) {
-            if (err.name === "ValidationError") {
-                const messages = err.inner.map(e => e.message).join("\n");
-                setError(messages);
-            } else {
-                setError(err?.response?.data?.error || "Failed to create diet plan.");
-            }
-        } finally {
-            setLoading(false);
-        }
-    };
+    }
+    if (mealsError) {
+        return (
+            <ErrorDialog
+                open
+                onClose={() => {}}
+                message={mealsError}
+                type="error"
+            />
+        );
+    }
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <CustomBox className="space-y-4 max-w-3xl mx-auto">
-                <CustomTypography variant="h2" bold>
-                    Create New Diet
-                </CustomTypography>
 
-                {/* Hook Form only voor deze twee */}
+            <CustomBox className="space-y-4 max-w-3xl mx-auto">
                 <CustomTextField
                     label="Diet Name"
                     name="name"
-                    register={register}
+                    {...register("name")}
+                    error={!!errors.name}
+                    helperText={errors.name?.message}
+                    placeholder="Enter the diet name"
                     required
                 />
+
                 <CustomTextField
                     label="Description"
                     name="dietDescription"
-                    register={register}
+                    {...register("dietDescription")}
+                    error={!!errors.dietDescription}
+                    helperText={errors.dietDescription?.message}
+                    placeholder="Description of the diet"
                     multiline
-                    rows={4}
                 />
 
-                {days.map((day, dayIndex) => (
-                    <CustomBox
-                        key={dayIndex}
-                        className="border p-4 rounded-lg space-y-2 bg-muted"
-                    >
-                        <CustomTypography variant="h4" bold>
-                            Day {dayIndex + 1}
-                        </CustomTypography>
+
+                {dietDaysFields.map((day, dayIndex) => (
+                    <CustomBox key={day.id} className="border p-4 rounded-lg space-y-2 bg-muted">
+                        <CustomTypography variant="h4" bold>Day {dayIndex + 1}</CustomTypography>
 
                         <CustomTextField
                             label="Day Name"
-                            name={`dayLabel-${dayIndex}`}
-                            value={day.label}
-                            onChange={(e) => {
-                                const copy = [...days];
-                                copy[dayIndex].label = e.target.value;
-                                setDays(copy);
-                            }}
-                        />
-                        <CustomTextField
-                            label="Day Description"
-                            name={`dayDesc-${dayIndex}`}
-                            value={day.description}
-                            multiline
-                            onChange={(e) => {
-                                const copy = [...days];
-                                copy[dayIndex].description = e.target.value;
-                                setDays(copy);
-                            }}
+                            {...register(`dietDays.${dayIndex}.dayLabel`)}
+                            error={errors?.dietDays?.[dayIndex]?.dayLabel}
+                            helperText={errors?.dietDays?.[dayIndex]?.dayLabel?.message}
+                            placeholder="(optional)"
                         />
 
-                        {day.mealIds.map((id, mealIndex) => (
-                            <div key={mealIndex} className="flex items-center gap-2">
+                        <CustomTextField
+                            label="Day Description"
+                            multiline
+                            {...register(`dietDays.${dayIndex}.dietDayDescription`)}
+                            error={errors?.dietDays?.[dayIndex]?.dietDayDescription}
+                            helperText={errors?.dietDays?.[dayIndex]?.dietDayDescription?.message}
+                            placeholder="(optional)"
+                        />
+
+                        {days[dayIndex].mealIds.map((id, mealIndex) => (
+                            <CustomBox key={mealIndex} className="flex items-center gap-2">
                                 <CustomFloatingSelect
                                     label={`Meal ${mealIndex + 1}`}
-                                    placeholder="Search and select meal"
+                                    placeholder={mealIndex < 2
+                                        ? "Search and select at least 2 meals"
+                                        : "Search and select meal"
+                                    }
                                     options={mealOptions}
-                                    value={
-                                        mealOptions.find((m) => m.value === id) || { value: "", label: "" }
-                                    }
-                                    onChange={(sel) =>
-                                        handleChangeMealId(dayIndex, mealIndex, sel?.value || "")
-                                    }
+                                    value={mealOptions.find(m => m.value === id) || { value: "", label: "" }}
+                                    onChange={sel => handleChangeMealId(dayIndex, mealIndex, sel?.value || "")}
                                 />
-                                {day.mealIds.length > 1 && (
-                                    <CustomButton
-                                        type="button"
-                                        variant="danger"
-                                        onClick={() => removeMeal(dayIndex, mealIndex)}
-                                    >
-                                        Remove
+                                {days[dayIndex].mealIds.length > 1 && (
+                                    <CustomButton type="button" onClick={() => removeMeal(dayIndex, mealIndex)}>
+                                        <CustomTypography
+                                            className="text-error hover:underline hover:text-primary cursor-pointer"
+                                            as="span"
+                                        >
+                                            Remove
+                                        </CustomTypography>
                                     </CustomButton>
                                 )}
-                            </div>
+                            </CustomBox>
                         ))}
-                        {day.mealIds.length < 2 && (
-                            <CustomTypography
-                                variant="xsmallCard"
-                                className="text-error italic"
-                            >
-                                Add at least 2 meals for this day.
+
+                        {days[dayIndex].mealIds.filter(id => id.trim() !== "").length < 2 && (
+                            <CustomTypography variant="xsmallCard" className="text-error italic">
+                                {days[dayIndex].mealIds.filter(id => id.trim() !== "").length === 0
+                                    ? "Add meals for this day."
+                                    : "Select one more meal to continue."
+                                }
                             </CustomTypography>
                         )}
+
                         <CustomButton
                             type="button"
                             onClick={() => addMealId(dayIndex)}
+                            disabled={days[dayIndex].mealIds.some(id => id.trim() === "")}
                             className="group p-2"
                         >
-                            + Add Meal
+                            <CustomTypography className="group-hover:text-primary group-hover:underline cursor-pointer">
+                                + Add Meal
+                            </CustomTypography>
                         </CustomButton>
                     </CustomBox>
                 ))}
 
-                <div className="flex gap-2 items-center">
+
+                <CustomBox className="flex gap-2 items-center">
                     <CustomButton type="button" onClick={addDay} className="group p-2">
-                        + Add Day
+                        <CustomTypography className="group-hover:text-primary group-hover:underline cursor-pointer">
+                            + Add Day
+                        </CustomTypography>
                     </CustomButton>
                     {days.length > 1 && (
-                        <CustomButton
-                            type="button"
-                            onClick={removeDay}
-                            className="group p-2"
-                        >
-                            – Remove Day
+                        <CustomButton type="button" onClick={removeDay} className="group p-2">
+                            <CustomTypography
+                                className="text-error group-hover:text-primary group-hover:underline cursor-pointer">
+                                Remove Day
+                            </CustomTypography>
                         </CustomButton>
                     )}
-                </div>
+                </CustomBox>
 
-                {error && (
-                    <CustomTypography className="text-error">{error}</CustomTypography>
-                )}
+                {renderDialogs()}
 
                 <CustomButton type="submit" disabled={loading} className="group p-2">
                     {loading ? "Creating..." : "Create Diet"}

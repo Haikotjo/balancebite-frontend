@@ -1,38 +1,39 @@
-import { useState, useRef } from "react";
-import { useForm } from "react-hook-form"; // Add the useForm hook
-import { yupResolver } from "@hookform/resolvers/yup"; // Add the yup resolver
+import { useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { fdcIdSchema } from "../utils/valadition/validationSchemas.js";
 import { fetchFoodItemByFdcIdApi } from "../services/apiService";
-import {fdcIdSchema} from "../utils/valadition/validationSchemas.js"; // Your API
 
 const useFetchFoodItem = () => {
-    const [fdcId, setFdcId] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const isSubmittingRef = useRef(false);
 
-    // useForm for form validation and submission
-    const { register, handleSubmit, formState: { errors } } = useForm({
-        resolver: yupResolver(fdcIdSchema), // Using yup for validation
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors }
+    } = useForm({
+        resolver: yupResolver(fdcIdSchema),
     });
 
-    // onSubmit is handled by the hook
-    const onSubmit = async () => {
+    const onSubmit = async (data) => {
         if (loading || isSubmittingRef.current) return;
         isSubmittingRef.current = true;
+        setErrorMessage("");
         setSuccessMessage("");
         setLoading(true);
 
         try {
-            const result = await fetchFoodItemByFdcIdApi(fdcId);
+            const result = await fetchFoodItemByFdcIdApi(data.fdcId);
             setSuccessMessage(result.message);
-            setFdcId(""); // Clear input field after successful fetch
+            reset(); // 🧼 reset formulier
         } catch (error) {
-            if (error.response && error.response.data) {
-                setErrorMessage(error.response.data.error || "An unknown error occurred.");
-            } else {
-                setErrorMessage("An error occurred while fetching the food item. Please try again.");
-            }
+            setErrorMessage(
+                error?.response?.data?.error || "Error fetching food item."
+            );
         } finally {
             setLoading(false);
             isSubmittingRef.current = false;
@@ -40,16 +41,14 @@ const useFetchFoodItem = () => {
     };
 
     return {
-        fdcId,
-        setFdcId,
-        errorMessage,
-        setErrorMessage,
-        successMessage,
-        setSuccessMessage,
+        handleSubmit: handleSubmit(onSubmit),
+        register,
+        errors,
         loading,
-        register,  // Exposing register for form input fields
-        handleSubmit: handleSubmit(onSubmit), // Exposing the handleSubmit
-        errors, // Exposing the errors to display in the form
+        successMessage,
+        errorMessage,
+        setSuccessMessage,
+        setErrorMessage,
     };
 };
 

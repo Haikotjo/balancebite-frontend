@@ -64,8 +64,8 @@ const RegisterForm = ({ onClose, onSwitchToLogin, showRoles = false, isAdminCont
                     <CustomTextField
                         label="Username"
                         name="userName"
-                        register={register}
-                        error={errors.userName}
+                        {...register("userName")}
+                        error={!!errors.userName}
                         helperText={errors.userName?.message}
                     />
 
@@ -73,8 +73,8 @@ const RegisterForm = ({ onClose, onSwitchToLogin, showRoles = false, isAdminCont
                         label="Email"
                         name="email"
                         type="email"
-                        register={register}
-                        error={errors.email}
+                        {...register("email")}
+                        error={!!errors.email}
                         helperText={errors.email?.message}
                     />
 
@@ -82,8 +82,8 @@ const RegisterForm = ({ onClose, onSwitchToLogin, showRoles = false, isAdminCont
                         label="Password"
                         name="password"
                         type="password"
-                        register={register}
-                        error={errors.password}
+                        {...register("password")}
+                        error={!!errors.password}
                         helperText={errors.password?.message}
                     />
 
@@ -91,10 +91,11 @@ const RegisterForm = ({ onClose, onSwitchToLogin, showRoles = false, isAdminCont
                         label="Confirm Password"
                         name="confirmPassword"
                         type="password"
-                        register={register}
-                        error={errors.confirmPassword}
+                        {...register("confirmPassword")}
+                        error={!!errors.confirmPassword}
                         helperText={errors.confirmPassword?.message}
                     />
+
 
                     {showRoles && (
                         <CustomSelect

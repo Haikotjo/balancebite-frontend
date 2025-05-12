@@ -119,30 +119,16 @@ export const createDietPlanSchema = yup.object().shape({
             yup.object().shape({
                 dayLabel: yup
                     .string()
-                    .required("Each day must have a label.")
-                    .max(50, "Day label cannot be longer than 50 characters."),
+                    .max(50, "Day label cannot be longer than 50 characters.")
+                    .notRequired(),
 
                 dietDayDescription: yup
                     .string()
                     .max(1000, "Day description cannot be longer than 1000 characters.")
                     .nullable(),
-
-                mealIds: yup
-                    .array()
-                    .of(
-                        yup
-                            .mixed()
-                            .transform((val) =>
-                                typeof val === "string" && val.trim() !== "" ? Number(val) : val
-                            )
-                            .typeError("Meal ID must be a number.")
-                            .required("Meal ID is required.")
-                    )
-                    .min(2, "Each day must contain at least 2 meals.")
-                    .max(15, "A maximum of 15 meals per day is allowed.")
-                    .required("Meal IDs are required."),
             })
         )
         .min(1, "There must be at least one day in the diet.")
         .required("Diet days are required."),
 });
+

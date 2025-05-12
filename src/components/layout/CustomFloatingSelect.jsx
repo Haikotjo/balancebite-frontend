@@ -32,7 +32,10 @@ const CustomFloatingSelect = ({
                     setInputValue(e.target.value);
                     setShowDropdown(true);
                 }}
-                onFocus={() => setShowDropdown(true)}
+                onFocus={(e) => {
+                    e.target.select();
+                    setShowDropdown(true);
+                }}
                 placeholder={`Type to search ${label}`}
                 disabled={disabled}
                 className={`peer w-full border rounded px-3 pt-5 pb-1 text-sm dark:bg-gray-800 bg-white text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${

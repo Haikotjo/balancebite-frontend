@@ -67,25 +67,26 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                         Login
                     </CustomTypography>
 
-                    <CustomTextField
-                        label="Email"
-                        name="email"
-                        register={register}
-                        error={errors.email}
-                        helperText={errors.email?.message}
-                    />
+                <CustomTextField
+                    label="Email"
+                    name="email"
+                    {...register("email")}
+                    error={!!errors.email}
+                    helperText={errors.email?.message}
+                />
 
-                    <CustomTextField
-                        label="Password"
-                        name="password"
-                        type="password"
-                        register={register}
-                        error={errors.password}
-                        helperText={errors.password?.message}
-                    />
+                <CustomTextField
+                    label="Password"
+                    name="password"
+                    type="password"
+                    {...register("password")}
+                    error={!!errors.password}
+                    helperText={errors.password?.message}
+                />
 
 
-                    <CustomButton
+
+                <CustomButton
                         type="submit"
                         className="bg-primary hover:bg-primary-dark text-white py-2 mt-2  self-stretch"
                     >
@@ -97,7 +98,7 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                         onClick={onSwitchToRegister}
                         className="text-primary hover:underline bg-transparent self-start"
                     >
-                        Don't have an account? Register
+                        Don&#39;t have an account? Register
                     </CustomButton>
 
                     {onClose && (
