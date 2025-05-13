@@ -2,11 +2,11 @@ import * as yup from "yup";
 import {transformToNumber} from "./transforms.js";
 
 // Validation schema for Create Meal Form
-export const createMealSchema = yup.object().shape({
+export const mealSchema  = yup.object().shape({
     name: yup
         .string()
         .required("The name of the meal cannot be blank.")
-        .max(100, "The name of the meal must not exceed 50 characters."),
+        .max(100, "The name of the meal must not exceed 100 characters."),
     mealIngredients: yup
         .array()
         .of(

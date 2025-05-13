@@ -2,7 +2,7 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { createMealSchema } from "../../utils/valadition/validationSchemas.js";
+import { mealSchema  } from "../../utils/valadition/validationSchemas.js";
 import { buildMealFormData } from "../../utils/helpers/buildMealFormData.js";
 import { handleApiError } from "../../utils/helpers/handleApiError.js";
 import { updateMealApi } from "../../services/apiService.js";
@@ -37,7 +37,7 @@ const UpdateMealForm = () => {
         setValue,
         formState: { errors },
     } = useForm({
-        resolver: yupResolver(createMealSchema),
+        resolver: yupResolver(mealSchema ),
         defaultValues: {},
     });
 

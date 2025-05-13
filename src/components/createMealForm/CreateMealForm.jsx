@@ -1,7 +1,7 @@
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
-import { createMealSchema } from "../../utils/valadition/validationSchemas.js";
+import { mealSchema  } from "../../utils/valadition/validationSchemas.js";
 
 import MealImageUploader from "../createMealForm/mealImageUploader/MealImageUploader.jsx";
 import CreateMealDropdowns from "../createMealDropdowns/MealDropdowns.jsx";
@@ -29,7 +29,7 @@ const CreateMealForm = () => {
         formState: { errors, isValid },
     } = useForm({
         mode: "onChange",
-        resolver: yupResolver(createMealSchema),
+        resolver: yupResolver(mealSchema ),
         defaultValues: {
             name: "",
             mealDescription: "",
