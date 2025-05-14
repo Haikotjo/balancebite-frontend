@@ -2,11 +2,11 @@ import { useContext, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 import { UserMealsContext } from "../../context/UserMealsContext.jsx";
-import MealDetailCard from "../mealCardLarge/MealDetailCard.jsx";
 import CustomGrid from "../layout/CustomGrid.jsx";
 import CustomBox from "../layout/CustomBox.jsx";
 import Spinner from "../layout/Spinner.jsx";
 import CustomTypography from "../layout/CustomTypography.jsx";
+import MealDetailCard from "../../meals/components/mealCardLarge/MealDetailCard.jsx";
 
 /**
  * MealList component — renders a responsive grid of meals with support for filtering,

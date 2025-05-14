@@ -1,4 +1,4 @@
-import CreateMealForm from "../../components/createMealForm/CreateMealForm.jsx";
+import CreateMealForm from "../../meals/components/createMealForm/CreateMealForm.jsx";
 import CustomBox from "../../components/layout/CustomBox.jsx";
 
 const CreateMealPage = () => {

@@ -9,9 +9,10 @@ export const useMealFormData = (mealId, reset) => {
         const loadMeal = async () => {
             try {
                 const data = await fetchMealById(mealId);
+                console.log("Fetched meal data:", data);
 
-                const mappedIngredients = data.mealIngredients?.map((ing) => ({
-                    foodItemId: (ing.foodItemId || ing.id).toString(),
+                const mappedIngredients = data.mealIngredients?.map(ing => ({
+                    foodItemId: String(ing.foodItemId),
                     quantity: ing.quantity,
                 })) ?? [{ foodItemId: "", quantity: 0 }];
 

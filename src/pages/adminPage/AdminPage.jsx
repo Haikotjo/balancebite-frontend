@@ -6,13 +6,13 @@ import {
 } from "lucide-react";
 
 // Form components
-import CreateMealForm from "../../components/createMealForm/CreateMealForm.jsx";
+import CreateMealForm from "../../meals/components/createMealForm/CreateMealForm.jsx";
 import CreateFoodItemForm from "../../components/createFoodItemForm/CreateFoodItemForm.jsx";
 import DeleteFoodItemForm from "../../components/deleteFoodItemForm/DeleteFoodItemForm.jsx";
 import FetchFoodItemForm from "../../components/fetchFoodItemForm/FetchFoodItemForm.jsx";
 import PromoteUserForm from "../../components/promoteUserForm/PromoteUserForm.jsx";
 import DeleteUserForm from "../../components/deleteUserForm/DeleteUserForm.jsx";
-import DeleteMealForm from "../../components/deleteMealForm/DeleteMealForm.jsx";
+import DeleteMealForm from "../../meals/components/deleteMealForm/DeleteMealForm.jsx";
 
 // Layout components
 import CustomBox from "../../components/layout/CustomBox.jsx";

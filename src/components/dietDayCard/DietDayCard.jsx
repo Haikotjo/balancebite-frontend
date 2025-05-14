@@ -5,9 +5,9 @@ import { macroIcons, macroIconClasses } from "../../utils/helpers/macroIcons.js"
 import AccordionItem from "../dietCard/AccordionItem.jsx";
 import BulletText from "../layout/BulletText.jsx";
 import { formatEnum } from "../../utils/helpers/formatEnum.js";
-import MealCardCompact from "../MealCardCompact/MealCardCompact.jsx";
 import HorizontalScrollSection from "../horizontalScrollSection/HorizontalScrollSection.jsx";
 import {formatPreparationTime} from "../../utils/helpers/formatPreparationTime.js";
+import MealCardCompact from "../../meals/components/mealCardCompact/MealCardCompact.jsx";
 
 const DietDayCard = ({ day }) => {
     const totalNutrients = day.totalNutrients || {};
