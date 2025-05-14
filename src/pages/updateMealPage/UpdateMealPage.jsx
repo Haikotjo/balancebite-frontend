@@ -1,5 +1,5 @@
 import CustomBox from "../../components/layout/CustomBox.jsx";
-import UpdateMealForm from "../../meals/components/updateMealForm/UpdateMealForm.jsx";
+import UpdateMealForm from "../../features/meals/components/updateMealForm/UpdateMealForm.jsx";
 
 const UpdateMealPage = () => {
     return (

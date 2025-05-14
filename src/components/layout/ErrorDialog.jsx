@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { CircleAlert, CheckCircle } from "lucide-react";
 import CustomBox from "./CustomBox.jsx";
 import CustomButton from "./CustomButton.jsx";
-import { Dialog, DialogPanel, DialogTitle } from "../Dialog/Dialog.jsx";
+import { Dialog, DialogPanel, DialogTitle } from "./dialog/Dialog.jsx";
 
 const ErrorDialog = React.forwardRef(
     (

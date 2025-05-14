@@ -2,10 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { useFormMessages } from "./useFormMessages.jsx";
 import { UserMealsContext } from "../context/UserMealsContext.jsx";
-import { buildMealFormData } from "../meals/utils/helpers/buildMealFormData.js";
 import { createMealApi } from "../services/apiService.js";
 import { refreshMealsList } from "../utils/helpers/refreshMealsList.js";
 import { getReadableApiError } from "../utils/helpers/getReadableApiError.js";
+import {buildMealFormData} from "../features/meals/utils/helpers/buildMealFormData.js";
 
 export const useCreateMeal = () => {
     const navigate = useNavigate();

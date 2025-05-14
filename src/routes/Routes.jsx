@@ -1,20 +1,27 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ProtectedRoute from "./ProtectedRoute";
+
 import NavBar from "../components/navigation/NavBar";
+
 import HomePage from "../pages/homePage/HomePage";
 import AboutPage from "../pages/aboutPage/AboutPage";
-import MealsPage from "../pages/mealsPage/MealsPage";
+
 import LoginPage from "../pages/loginPage/LoginPage";
 import RegisterPage from "../pages/registerPage/RegisterPage";
-import CreateMealPage from "../pages/createMealPage/CreateMealPage";
 import ProfilePage from "../pages/profilePage/ProfilePage.jsx";
-import MealDetailsPage from "../pages/mealDetailsPage/MealDetailsPage.jsx";
-import UpdateMealPage from "../pages/updateMealPage/UpdateMealPage.jsx";
+
 import AdminPage from "../pages/adminPage/AdminPage.jsx";
 import RequireAdmin from "./RequireAdmin.jsx";
-import DietDetailsPage from "../pages/DietDetailsPage/DietDetailsPage.jsx";
-import CreateDietPage from "../pages/createDietPage/createDietPage.jsx";
-import ProtectedRoute from "./ProtectedRoute";
-import DietsPage from "../pages/dietsPage/DietsPage.jsx";
+
+import MealsPage from "../features/meals/pages/mealsPage/MealsPage.jsx";
+import MealDetailsPage from "../features/meals/pages/mealDetailsPage/MealDetailsPage.jsx";
+import UpdateMealPage from "../pages/updateMealPage/UpdateMealPage.jsx";
+import CreateMealPage from "../features/meals/pages/createMealPage/CreateMealPage.jsx";
+
+import DietsPage from "../features/diets/pages/dietsPage/DietsPage.jsx";
+import DietDetailsPage from "../features/diets/pages/dietDetailsPage/DietDetailsPage.jsx";
+import CreateDietPage from "../features/diets/pages/createDietPage/createDietPage.jsx";
+
 
 function AppRoutes() {
     return (

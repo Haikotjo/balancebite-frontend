@@ -4,11 +4,9 @@ import CustomAnimatedBox from "../../components/layout/CustomAnimatedBox.jsx";
 import Logo from "../../components/logo/Logo.jsx";
 import HorizontalScrollSection from "../../components/horizontalScrollSection/HorizontalScrollSection.jsx";
 import { useEffect, useState} from "react";
-
 import Interceptor from "../../services/authInterceptor.js";
-import MealCardCompact from "../../meals/components/mealCardCompact/MealCardCompact.jsx";
-import MealDetailCard from "../../meals/components/mealCardLarge/MealDetailCard.jsx";
-
+import MealCardCompact from "../../features/meals/components/mealCardCompact/MealCardCompact.jsx";
+import MealDetailCard from "../../features/meals/components/mealCardLarge/MealDetailCard.jsx";
 
 /**
  * HomePage
