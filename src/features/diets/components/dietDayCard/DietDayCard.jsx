@@ -8,6 +8,7 @@ import {formatPreparationTime} from "../../../../utils/helpers/formatPreparation
 import {macroIconClasses, macroIcons} from "../../../../utils/helpers/macroIcons.js";
 import {formatEnum} from "../../../../utils/helpers/formatEnum.js";
 import HorizontalScrollSection from "../../../../components/horizontalScrollSection/HorizontalScrollSection.jsx";
+import MacroSummary from "../macroSummary/MacroSummary.jsx";
 
 const DietDayCard = ({ day }) => {
     const totalNutrients = day.totalNutrients || {};
@@ -34,7 +35,7 @@ const DietDayCard = ({ day }) => {
             {day.meals?.length > 0 ? (
                 day.meals.map((meal) => (
                     <CustomBox key={meal.id} className="mb-4">
-                    <AccordionItem key={meal.id} title={meal.name} defaultOpen={false}>
+                    <AccordionItem key={meal.id} title={meal.name}>
                         <CustomBox className="space-y-2">
                             <AccordionItem title="Description" defaultOpen={true}>
                                 <BulletText showBullet={false}>{meal.mealDescription}</BulletText>
@@ -131,38 +132,7 @@ const DietDayCard = ({ day }) => {
 
             </AccordionItem>
 
-            <CustomBox className="flex flex-wrap gap-4 mt-4">
-                {[
-                    "Energy kcal",
-                    "Total lipid (fat) g",
-                    "Carbohydrates g",
-                    "Protein g"
-                ].map((key) => {
-                    const nutrient = totalNutrients[key];
-                    if (!nutrient) return null;
-
-                    const labelMap = {
-                        "Energy kcal": "Calories",
-                        "Total lipid (fat) g": "Fats",
-                        "Carbohydrates g": "Carbs",
-                        "Protein g": "Protein",
-                    };
-
-                    const iconKey = labelMap[key];
-                    const Icon = macroIcons[iconKey];
-                    const iconClass = macroIconClasses[iconKey];
-
-                    return (
-                        <CustomBox key={nutrient.nutrientId || key} className="flex items-center gap-2">
-                            {Icon && <Icon size={16} className={iconClass} />}
-                            <CustomTypography variant="xsmallCard">
-                                {iconKey}: {Math.round(nutrient.value)} {nutrient.unitName}
-                            </CustomTypography>
-                        </CustomBox>
-                    );
-                })}
-            </CustomBox>
-
+            <MacroSummary totalNutrients={day.totalNutrients} className="my-4" />
 
         </CustomBox>
     );

@@ -577,10 +577,12 @@ export const removeDietDayApi = async (dietPlanId, dayIndex) => {
 
 // ========== DIEETPLANNEN (PUBLIEK) ==========
 
-export const getAllPublicDietPlansApi = async () => {
+export const getAllPublicDietPlansApi = async (params) => {
     const endpoint = import.meta.env.VITE_GET_ALL_PUBLIC_DIETPLANS_ENDPOINT;
-    const response = await Interceptor.get(endpoint);
-    return response.data;
+    // geef bijv. params = { page: 0, size: 20, sortBy: 'name', sortOrder: 'asc', diets: [...] }
+    const response = await Interceptor.get(endpoint, { params });
+    // response.data = { content: […], totalPages: X, totalElements: Y, … }
+    return response.data.content;     // <-- alleen de array teruggeven
 };
 
 export const getPublicDietPlanByIdApi = async (dietPlanId) => {

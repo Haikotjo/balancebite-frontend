@@ -38,7 +38,7 @@ function AppRoutes() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/meals/:userId?" element={<MealsPage />} />
-                <Route path="/diets" element={<DietsPage />} />
+                <Route path="/diets/:userId?" element={<DietsPage />} />
 
                 <Route path="/create-meal" element={
                     <ProtectedRoute><CreateMealPage /></ProtectedRoute>
