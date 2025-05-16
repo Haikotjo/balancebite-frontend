@@ -51,7 +51,7 @@ const HorizontalScrollSection = ({ title, items, renderItem, onTitleClick, class
             if (!isDown.current) return;
             e.preventDefault();
             const x = e.pageX - slider.offsetLeft;
-            const walk = (x - startX.current) * 2; // scrollsnelheid
+            const walk = (x - startX.current) * 2;
             slider.scrollLeft = scrollLeft.current - walk;
         };
 
