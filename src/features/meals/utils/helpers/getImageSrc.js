@@ -1,22 +1,36 @@
 
-const placeholderImages = import.meta.glob("../../assets/images/placeholder/*.webp", { eager: true });
 
+const placeholderImages = import.meta.glob("/src/assets/images/placeholder/*.webp", { eager: true });
 const placeholders = Object.values(placeholderImages).map((img) => img.default);
-
+/**
+ * Returns a valid image source for a meal object.
+ * Falls back to a placeholder if no valid image is present.
+ *
+ * @param {Object} meal - The meal object.
+ * @returns {string} - Image source URL or data URI.
+ */
 export const getImageSrc = (meal) => {
-    if (meal.image) {
-        // Base64-encoded image
+    // 1. Base64-encoded image from backend
+    if (meal?.image) {
         return `data:image/jpeg;base64,${meal.image}`;
     }
-    if (meal.imageUrl?.startsWith("http") || meal.imageUrl?.startsWith("https")) {
-        // External URL
-        return meal.imageUrl;
-    }
-    if (meal.imageUrl) {
-        // Uploaded image from the backend
-        return `${import.meta.env.VITE_BASE_URL}/uploads/${meal.imageUrl.replace('uploads/', '')}`;
+
+    // 2. Image URL (external or internal)
+    const url = meal?.imageUrl?.trim();
+    if (url) {
+        if (url.startsWith("http") || url.startsWith("https")) {
+            return url;
+        }
+        return `${import.meta.env.VITE_BASE_URL}/uploads/${url.replace("uploads/", "")}`;
     }
 
-    const randomIndex = Math.floor(Math.random() * placeholders.length);
-    return placeholders[randomIndex];
+    // 3. Placeholder fallback
+    if (placeholders.length > 0) {
+        const index = Math.floor(Math.random() * placeholders.length);
+        return placeholders[index];
+    }
+
+    // 4. Final fallback in case placeholders are missing
+    console.warn("⚠️ No placeholder images found. Returning generic fallback.");
+    return "/fallback.jpg"; // Zorg dat deze bestaat in /public
 };
