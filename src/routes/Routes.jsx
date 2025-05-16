@@ -8,14 +8,14 @@ import AboutPage from "../pages/aboutPage/AboutPage";
 
 import LoginPage from "../pages/loginPage/LoginPage";
 import RegisterPage from "../pages/registerPage/RegisterPage";
-import ProfilePage from "../pages/profilePage/ProfilePage.jsx";
+import ProfilePage from "../features/profile/pages/profilePage/ProfilePage.jsx";
 
 import AdminPage from "../pages/adminPage/AdminPage.jsx";
 import RequireAdmin from "./RequireAdmin.jsx";
 
 import MealsPage from "../features/meals/pages/mealsPage/MealsPage.jsx";
 import MealDetailsPage from "../features/meals/pages/mealDetailsPage/MealDetailsPage.jsx";
-import UpdateMealPage from "../pages/updateMealPage/UpdateMealPage.jsx";
+import UpdateMealPage from "../features/meals/pages/updateMealPage/UpdateMealPage.jsx";
 import CreateMealPage from "../features/meals/pages/createMealPage/CreateMealPage.jsx";
 
 import DietsPage from "../features/diets/pages/dietsPage/DietsPage.jsx";

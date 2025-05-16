@@ -1,7 +1,6 @@
-import CustomBox from "../../layout/CustomBox.jsx";
-import CustomTextField from "../../layout/CustomTextField.jsx";
-import CustomSelect from "../../layout/CustomSelect.jsx";
-
+import CustomBox from "../../../../../components/layout/CustomBox.jsx";
+import CustomTextField from "../../../../../components/layout/CustomTextField.jsx";
+import CustomSelect from "../../../../../components/layout/CustomSelect.jsx";
 
 /**
  * Renders a single form field, either a text input or a select dropdown.
@@ -14,6 +13,7 @@ export const renderTextField = (
     register,
     errors,
     isEditable,
+    setValue,
     type = "text",
     isSelect = false,
     options = []
@@ -26,7 +26,8 @@ export const renderTextField = (
                 <CustomSelect
                     label={label}
                     name={name}
-                    register={register}
+                    value={watchedFields[name] || ""}
+                    onChange={(e) => setValue(name, e.target.value)}
                     error={!!fieldError}
                     helperText={fieldError?.message}
                     disabled={!isEditable}
@@ -36,8 +37,7 @@ export const renderTextField = (
                 <CustomTextField
                     label={label}
                     name={name}
-                    value={watchedFields[name]}
-                    register={register}
+                    {...register(name)}
                     error={!!fieldError}
                     helperText={fieldError?.message}
                     type={type}

@@ -1,5 +1,3 @@
-// userDetailsHelpers.js
-
 import { jwtDecode } from "jwt-decode";
 
 /**
@@ -33,7 +31,7 @@ export const handleConfirm = async (data, updateUserDetails, fetchRecommendedNut
             await fetchRecommendedNutrition();
         }
 
-        setSnackbarOpen(true); // ✅ Snackbar openen na succesvolle update
+        setSnackbarOpen(true);
     } catch (error) {
         console.error("Error updating user details:", error);
     }

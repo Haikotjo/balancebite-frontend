@@ -1,8 +1,8 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect } from "react";
-import { defaultProfileValues } from "../../../utils/helpers/defaultProfileValues.js";
-import { userDetailsSchema } from "../../../utils/valadition/userDetailsSchema.js";
+import { defaultProfileValues } from "../../../../../utils/helpers/defaultProfileValues.js";
+import { userDetailsSchema } from "../../../../../utils/valadition/userDetailsSchema.js";
 
 /**
  * Custom hook to manage the user details form.
@@ -17,6 +17,7 @@ export const useUserDetailsForm = (userProfile) => {
         handleSubmit,
         reset,
         watch,
+        setValue,
         formState: { errors },
     } = useForm({
         resolver: yupResolver(userDetailsSchema),
@@ -33,5 +34,5 @@ export const useUserDetailsForm = (userProfile) => {
         }
     }, [userProfile, reset]);
 
-    return { register, handleSubmit, reset, watch, errors };
+    return { register, handleSubmit, reset, watch, setValue, errors };
 };

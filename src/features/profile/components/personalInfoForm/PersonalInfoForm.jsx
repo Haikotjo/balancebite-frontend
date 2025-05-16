@@ -1,27 +1,21 @@
 import { useContext, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { personalInfoSchema } from "../../utils/valadition/personalInfoSchema.js";
-import { AuthContext } from "../../context/AuthContext.jsx";
-import useUpdateUserInfo from "../../hooks/useUpdateUserInfo.js";
-import useUserInitialValues from "../../hooks/useUserInitialValues.js";
+import { personalInfoSchema } from "../../../../utils/valadition/personalInfoSchema.js";
+import { AuthContext } from "../../../../context/AuthContext.jsx";
+import useUpdateUserInfo from "../utils/hooks/useUpdateUserInfo.js";
 
-import CustomBox from "../layout/CustomBox.jsx";
-import CustomTypography from "../layout/CustomTypography.jsx";
-import CustomButton from "../layout/CustomButton.jsx";
-import CustomTextField from "../layout/CustomTextField.jsx";
-import ErrorDialog from "../layout/ErrorDialog.jsx";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import CustomButton from "../../../../components/layout/CustomButton.jsx";
+import CustomTextField from "../../../../components/layout/CustomTextField.jsx";
+import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
+import {fetchUserProfile} from "../../../../services/apiService.js";
 
-/**
- * Form for viewing and editing personal information.
- * Mirrors the structure of CreateMealForm to prepare for easier React Native migration.
- *
- * @returns {JSX.Element} Rendered personal info form.
- */
 const PersonalInfoForm = () => {
     const { token } = useContext(AuthContext);
     const [isEditable, setIsEditable] = useState(false);
-    const [initialValues, setInitialValues] = useUserInitialValues(token);
+    const [initialValues, setInitialValues] = useState(null);
 
     const { updateUserInfo, updateError, updateSuccess, setUpdateError, setUpdateSuccess } = useUpdateUserInfo();
 
@@ -37,10 +31,26 @@ const PersonalInfoForm = () => {
     });
 
     useEffect(() => {
-        if (initialValues) {
-            reset(initialValues);
+        const fetchInitialValues = async () => {
+            try {
+                const result = await fetchUserProfile(token);
+                setInitialValues({
+                    username: result.userName,
+                    email: result.email,
+                });
+                reset({
+                    username: result.userName,
+                    email: result.email,
+                });
+            } catch (err) {
+                console.error("Failed to fetch user details:", err);
+            }
+        };
+
+        if (token) {
+            fetchInitialValues();
         }
-    }, [initialValues, reset]);
+    }, [token, reset]);
 
     const handleEdit = () => setIsEditable(true);
 
@@ -71,7 +81,6 @@ const PersonalInfoForm = () => {
                 Personal Information
             </CustomTypography>
 
-            {/* Error or success messages */}
             {(updateError || updateSuccess) && (
                 <ErrorDialog
                     open={!!(updateError || updateSuccess)}
@@ -84,29 +93,26 @@ const PersonalInfoForm = () => {
                 />
             )}
 
-            {/* Username input field */}
             <CustomTextField
                 label="Username"
                 name="username"
-                register={register}
+                {...register("username")}
                 error={errors.username}
                 helperText={errors.username?.message}
                 disabled={!isEditable}
                 className={!isEditable ? "bg-gray-100 cursor-not-allowed" : "bg-white"}
             />
 
-            {/* Email input field */}
             <CustomTextField
                 label="Email"
                 name="email"
                 type="email"
-                register={register}
+                {...register("email")}
                 error={errors.email}
                 helperText={errors.email?.message}
                 disabled={!isEditable}
             />
 
-            {/* Action buttons */}
             {isEditable ? (
                 <CustomBox className="flex gap-2">
                     <CustomButton type="button" onClick={handleCancel} className="bg-gray-400 text-white">
