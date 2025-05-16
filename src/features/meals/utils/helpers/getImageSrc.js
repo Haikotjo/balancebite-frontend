@@ -1,5 +1,3 @@
-
-
 const placeholderImages = import.meta.glob("/src/assets/images/placeholder/*.webp", { eager: true });
 const placeholders = Object.values(placeholderImages).map((img) => img.default);
 /**
