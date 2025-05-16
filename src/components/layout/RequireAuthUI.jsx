@@ -1,6 +1,7 @@
 import ErrorDialog from "../layout/ErrorDialog.jsx";
-import LoginRegisterForm from "../navigation/loginRegisterForm/LoginRegisterForm.jsx";
+
 import PropTypes from "prop-types";
+import LoginRegisterForm from "../../features/navigation/components/authLoginRegisterForm/LoginRegisterForm.jsx";
 
 const RequireAuthUI = ({
                            dialogOpen,

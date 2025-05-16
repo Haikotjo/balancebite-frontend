@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { Sun, Moon } from "lucide-react";
 
-import CustomBox from "../../layout/CustomBox.jsx";
-import CustomTypography from "../../layout/CustomTypography.jsx";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import PropTypes from "prop-types";
-import { useThemeMode } from "../../../themes/useThemeMode.js";
+import { useThemeMode } from "../../../../themes/useThemeMode.js";
 
 const DarkModeSwitch = ({ withLabel = false }) => {
     const { mode, toggleTheme } = useThemeMode();
@@ -23,7 +23,7 @@ const DarkModeSwitch = ({ withLabel = false }) => {
     }, [mode]);
 
     return (
-        <CustomBox className="flex items-center gap-1">
+        <CustomBox className="flex items-center gap-1 cursor-pointer" onClick={toggleTheme}>
             {withLabel && (
                 <CustomTypography as="span" className="text-sm text-userText">
                     {mode === "dark" ? "Light" : "Dark"}
@@ -33,9 +33,8 @@ const DarkModeSwitch = ({ withLabel = false }) => {
             <Sun size={18} className="text-white" />
 
             <CustomBox
-                onClick={toggleTheme}
                 className={`
-        relative w-10 h-4 rounded-full cursor-pointer transition-all duration-300 
+        relative w-10 h-4 rounded-full transition-all duration-300 
         ${mode === "dark" ? "bg-cardDark" : "bg-gray-200"}
     `}
             >

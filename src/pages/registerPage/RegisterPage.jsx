@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import RegisterForm from "../../components/navigation/loginRegisterForm/registerForm/RegisterForm.jsx";
 import CustomBox from "../../components/layout/CustomBox.jsx";
+import RegisterForm from "../../features/navigation/components/authRegisterForm/RegisterForm.jsx";
 
 function RegisterPage() {
     const navigate = useNavigate();

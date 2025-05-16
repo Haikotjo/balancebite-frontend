@@ -1,16 +1,15 @@
-// src/components/RegisterForm.jsx
 import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import registerSchema from "../../../../utils/helpers/registerSchema.js";
-import CustomBox from "../../../layout/CustomBox.jsx";
-import CustomButton from "../../../layout/CustomButton.jsx";
-import ErrorDialog from "../../../layout/ErrorDialog.jsx";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import CustomButton from "../../../../components/layout/CustomButton.jsx";
+import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import useRegister from "../../../../hooks/useRegister.js";
-import CustomTextField from "../../../layout/CustomTextField.jsx";
-import CustomTypography from "../../../layout/CustomTypography.jsx";
+import CustomTextField from "../../../../components/layout/CustomTextField.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import clsx from "clsx";
-import CustomSelect from "../../../layout/CustomSelect.jsx";
+import CustomSelect from "../../../../components/layout/CustomSelect.jsx";
 import {useState} from "react";
 
 const RegisterForm = ({ onClose, onSwitchToLogin, showRoles = false, isAdminContext = false }) => {

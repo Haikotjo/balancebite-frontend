@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 
-import NavBar from "../components/navigation/NavBar";
+import NavBar from "../features/navigation/components/navBar/NavBar.jsx";
 
 import HomePage from "../pages/homePage/HomePage";
 import AboutPage from "../pages/aboutPage/AboutPage";

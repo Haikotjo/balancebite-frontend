@@ -1,8 +1,9 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import LoginForm from "./loginForm/LoginForm.jsx";
-import RegisterForm from "./registerForm/RegisterForm.jsx";
-import CustomModal from "../../layout/CustomModal.jsx";
+
+import CustomModal from "../../../../components/layout/CustomModal.jsx";
+import RegisterForm from "../authRegisterForm/RegisterForm.jsx";
+import LoginForm from "../authLoginForm/LoginForm.jsx";
 
 /**
  * Displays a modal with either the login or register form.
@@ -12,10 +13,9 @@ import CustomModal from "../../layout/CustomModal.jsx";
  * @param {Object} props
  * @param {Function} props.onLogin - Called after successful login
  * @param {Function} props.onRegister - Called after successful registration
- * @param {string} [props.errorMessage] - Optional error message to show
  * @param {Function} props.onClose - Function to close the modal
  */
-const LoginRegisterForm = ({ onLogin, onRegister, errorMessage, onClose }) => {
+const LoginRegisterForm = ({ onLogin, onRegister, onClose }) => {
     const [isRegistering, setIsRegistering] = useState(false); // Toggle between login/register form
 
     return (
@@ -30,7 +30,6 @@ const LoginRegisterForm = ({ onLogin, onRegister, errorMessage, onClose }) => {
                 <LoginForm
                     onClose={onClose}
                     onSubmit={onLogin}
-                    errorMessage={errorMessage}
                     onSwitchToRegister={() => setIsRegistering(true)}
                 />
             )}
@@ -41,7 +40,6 @@ const LoginRegisterForm = ({ onLogin, onRegister, errorMessage, onClose }) => {
 LoginRegisterForm.propTypes = {
     onLogin: PropTypes.func.isRequired,
     onRegister: PropTypes.func.isRequired,
-    errorMessage: PropTypes.string,
     onClose: PropTypes.func.isRequired,
 };
 

@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
-import CustomTypography from "../../layout/CustomTypography.jsx";
-import CustomButton from "../../layout/CustomButton.jsx";
-import CustomBox from "../../layout/CustomBox.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import CustomButton from "../../../../components/layout/CustomButton.jsx";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
 
 /**
  * Array of navigation links shown in the top-level desktop menu.

@@ -1,40 +1,23 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext.jsx";
-import { UserMealsContext } from "../../context/UserMealsContext.jsx";
-import CustomBox from "../layout/CustomBox.jsx";
-import CustomDropdownWeb from "../layout/CustomDropdownWeb.jsx";
-import ErrorDialog from "../layout/ErrorDialog.jsx";
-import { ChevronDown, Soup, Pencil, UserPen, BookOpen } from "lucide-react";
-import CustomTypography from "../layout/CustomTypography.jsx";
+import { AuthContext } from "../../../../context/AuthContext.jsx";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import CustomDropdownWeb from "../../../../components/layout/CustomDropdownWeb.jsx";
+import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
+import {ChevronDown, Apple, Pencil, UserCheck, BookOpen, UserPen} from "lucide-react";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 
 /**
- * MealsMenu component renders a dropdown trigger and menu for navigating
- * between meal-related pages: All Meals, My Meals, Created Meals, and Create Meal.
- * Disabled items prompt login if the user is unauthenticated.
- *
- * @component
- * @returns {JSX.Element}
+ * DietsMenu component renders a dropdown for navigating diet-related pages.
  */
-const MealsMenu = () => {
-    // State for dropdown open/closed
+const DietsMenu = () => {
     const [open, setOpen] = useState(false);
-    // State for any authentication warning message
     const [authMsg, setAuthMsg] = useState(null);
-    // Authenticated user object (null if not logged in)
     const { user } = useContext(AuthContext);
-    // Context function to set which meal filter is active
-    const { setActiveOption } = useContext(UserMealsContext);
-    // Navigation helper from react-router
     const navigate = useNavigate();
 
-    /**
-     * Show authentication warning for protected items.
-     * @param {string} label - Name of the menu item that requires login.
-     */
     const showAuth = (label) => {
         setAuthMsg(`Please log in to access ${label.toLowerCase()}.`);
-        // Auto-dismiss after 3 seconds
         setTimeout(() => setAuthMsg(null), 3000);
     };
 
@@ -49,58 +32,50 @@ const MealsMenu = () => {
                         onClick={() => setOpen(!open)}
                         className="flex items-center cursor-pointer text-white"
                     >
-                        {/* Button label shown on sm+ screens */}
                         <CustomTypography className="hidden text-sm text-white sm:inline mr-2">
-                            Meals
+                            Diets
                         </CustomTypography>
-                        {/* Always-visible soup icon */}
-                        <Soup fill="white" className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                        {/* Chevron indicator */}
+                        <Apple className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         <ChevronDown className="text-white w-5 h-5 mr-2" />
                     </CustomBox>
                 }
                 items={[
                     {
-                        label: "All Meals",
+                        label: "Explore Diets",
                         icon: BookOpen,
-                        /** Navigate to /meals showing all options */
                         onClick: () => {
                             setOpen(false);
-                            setActiveOption("All Meals");
-                            navigate("/meals");
+                            navigate("/diets");
                         },
                     },
                     {
-                        label: "My Meals",
-                        icon: Soup,
+                        label: "My Diets",
+                        icon: UserCheck,
                         disabled: !user,
-                        /** If not logged in, show auth warning */
                         onClick: () => {
-                            if (!user) return showAuth("My Meals");
+                            if (!user) return showAuth("My Diets");
                             setOpen(false);
-                            setActiveOption("My Meals");
-                            navigate("/meals");
+                            navigate("/diets?tab=my-diets");
                         },
                     },
                     {
-                        label: "Created Meals",
+                        label: "Created Diets",
                         icon: UserPen,
                         disabled: !user,
                         onClick: () => {
-                            if (!user) return showAuth("Created Meals");
+                            if (!user) return showAuth("Created Diets");
                             setOpen(false);
-                            setActiveOption("Created Meals");
                             navigate("/meals");
                         },
                     },
                     {
-                        label: "Create Meal",
+                        label: "Create Diet",
                         icon: Pencil,
                         disabled: !user,
                         onClick: () => {
-                            if (!user) return showAuth("Create Meal");
+                            if (!user) return showAuth("Create Diet");
                             setOpen(false);
-                            navigate("/create-meal");
+                            navigate("/create-diet");
                         },
                     },
                 ]}
@@ -120,4 +95,4 @@ const MealsMenu = () => {
     );
 };
 
-export default MealsMenu;
+export default DietsMenu;

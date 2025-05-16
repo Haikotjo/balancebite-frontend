@@ -1,18 +1,19 @@
 import {useContext, useEffect, useState} from "react";
-import HamburgerMenu from "./hamburgerMenu/HamburgerMenu";
-import DesktopMenu from "./desktopMenu/DesktopMenu";
-import useLogout from "../../hooks/useLogout.js";
-import useLogin from "../../hooks/useLogin";
-import { AuthContext } from "../../context/AuthContext.jsx";
-import Logo from "../logo/Logo.jsx";
+import HamburgerMenu from "../hamburgerMenu/HamburgerMenu.jsx";
+import DesktopMenu from "../desktopMenu/DesktopMenu.jsx";
+import useLogout from "../../../../hooks/useLogout.js";
+import useLogin from "../../../../hooks/useLogin.js";
+import { AuthContext } from "../../../../context/AuthContext.jsx";
+import Logo from "../../../../components/logo/Logo.jsx";
 import { useNavigate } from "react-router-dom";
 import ProfileMenu from "../profileMenu/ProfileMenu.jsx";
 import MealsMenu from "../mealsMenu/MealsMenu.jsx";
 import PropTypes from "prop-types";
-import DarkModeSwitch from "./darkModeSwitch/DarkModeSwitch.jsx";
-import CustomAppBar from "../layout/CustomAppBar.jsx";
-import CustomBox from "../layout/CustomBox.jsx";
-import ErrorDialog from "../layout/ErrorDialog.jsx";
+import DarkModeSwitch from "../darkModeSwitch/DarkModeSwitch.jsx";
+import CustomAppBar from "../../../../components/layout/CustomAppBar.jsx";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
+import DietsMenu from "../dietsMenu/DietsMenu.jsx";
 
 const NavBar = () => {
     const { user } = useContext(AuthContext);
@@ -57,8 +58,13 @@ const NavBar = () => {
                         <MealsMenu />
                     </CustomBox>
 
-                    {/* Profile menu */}
+                    {/* Diets Menu */}
                     <CustomBox className="flex items-center mx-4">
+                        <DietsMenu />
+                    </CustomBox>
+
+                    {/* Profile menu */}
+                    <CustomBox className="flex items-center mr-4">
                         <ProfileMenu
                             user={user}
                             onLogout={handleLogout}

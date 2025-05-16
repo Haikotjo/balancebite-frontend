@@ -1,8 +1,8 @@
 // src/components/navigation/LoginLogoutMenuItem.jsx
 import PropTypes from "prop-types";
 import { LogIn, LogOut, UserPlus } from "lucide-react";
-import MenuItemWrapper from "../../menuItemWrapper/MenuItemWrapper.jsx";
-import CustomBox from "../../layout/CustomBox.jsx";
+import MenuItemWrapper from "../../../../components/menuItemWrapper/MenuItemWrapper.jsx";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
 
 /**
  * Shows login/register options when not logged in, logout when logged in.

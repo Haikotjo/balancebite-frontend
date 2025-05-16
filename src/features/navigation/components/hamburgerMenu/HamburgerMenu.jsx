@@ -2,10 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router-dom";
 import { MenuIcon, Home, Info, LogIn, LogOut, UserPlus, Settings, Soup, Apple   } from "lucide-react";
-import CustomBox from "../../layout/CustomBox.jsx";
-import CustomButton from "../../layout/CustomButton.jsx";
-import CustomTypography from "../../layout/CustomTypography.jsx";
-import CustomDivider from "../../layout/CustomDivider.jsx";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import CustomButton from "../../../../components/layout/CustomButton.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 
 /**
  * A responsive hamburger menu for small screens.

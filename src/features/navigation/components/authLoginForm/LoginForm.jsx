@@ -1,4 +1,3 @@
-// src/components/forms/LoginForm.jsx
 import { useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
@@ -6,11 +5,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import useLogin from "../../../../hooks/useLogin.js";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import loginSchema from "./LoginForm.js";
-import CustomBox from "../../../layout/CustomBox.jsx";
-import CustomButton from "../../../layout/CustomButton.jsx";
-import ErrorDialog from "../../../layout/ErrorDialog.jsx";
-import CustomTextField from "../../../layout/CustomTextField.jsx";
-import CustomTypography from "../../../layout/CustomTypography.jsx";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import CustomButton from "../../../../components/layout/CustomButton.jsx";
+import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
+import CustomTextField from "../../../../components/layout/CustomTextField.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import clsx from "clsx";
 
 const LoginForm = ({ onClose, onSwitchToRegister }) => {

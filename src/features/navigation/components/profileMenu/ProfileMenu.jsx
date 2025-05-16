@@ -1,9 +1,9 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import CustomBox from "../layout/CustomBox.jsx";
-import CustomDropdownWeb from "../layout/CustomDropdownWeb.jsx";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import CustomDropdownWeb from "../../../../components/layout/CustomDropdownWeb.jsx";
 import {UserCog, LogIn, LogOut, UserPlus, UserCircle, ChevronDown} from "lucide-react";
-import CustomTypography from "../layout/CustomTypography.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 
 /**
  * ProfileMenu shows a dropdown with “Profile”, “Login / Register” or “Logout”

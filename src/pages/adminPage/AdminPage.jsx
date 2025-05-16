@@ -21,7 +21,7 @@ import CustomCardChip from "../../components/layout/customCardChip.jsx";
 import CustomTypography from "../../components/layout/CustomTypography.jsx";
 import clsx from "clsx";
 import CustomSelect from "../../components/layout/CustomSelect.jsx";
-import RegisterForm from "../../components/navigation/loginRegisterForm/registerForm/RegisterForm.jsx";
+import RegisterForm from "../../features/navigation/components/authRegisterForm/RegisterForm.jsx";
 
 /**
  * AdminPage – Central admin dashboard to manage food items, meals, users and future settings.
