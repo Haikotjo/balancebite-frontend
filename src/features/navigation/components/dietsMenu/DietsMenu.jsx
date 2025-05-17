@@ -4,7 +4,7 @@ import { AuthContext } from "../../../../context/AuthContext.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomDropdownWeb from "../../../../components/layout/CustomDropdownWeb.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
-import {ChevronDown, Apple, Pencil, UserCheck, BookOpen, UserPen} from "lucide-react";
+import {ChevronDown, Apple, Pencil, UserCheck, BookOpen, UserPen, ChevronUp} from "lucide-react";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 
 /**
@@ -35,8 +35,19 @@ const DietsMenu = () => {
                         <CustomTypography className="hidden text-sm text-white sm:inline mr-2">
                             Diets
                         </CustomTypography>
-                        <Apple className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                        <ChevronDown className="text-white w-5 h-5 mr-2" />
+                        <Apple fill="white" className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                        {/* Chevron indicator */}
+                        {open ? (
+                            <>
+                                <ChevronDown className="text-white w-5 h-5 mr-2 sm:hidden" />
+                                <ChevronUp className="text-white w-5 h-5 mr-2 hidden sm:block" />
+                            </>
+                        ) : (
+                            <>
+                                <ChevronUp className="text-white w-5 h-5 mr-2 sm:hidden" />
+                                <ChevronDown className="text-white w-5 h-5 mr-2 hidden sm:block" />
+                            </>
+                        )}
                     </CustomBox>
                 }
                 items={[

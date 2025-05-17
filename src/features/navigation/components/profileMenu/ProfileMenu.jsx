@@ -2,7 +2,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomDropdownWeb from "../../../../components/layout/CustomDropdownWeb.jsx";
-import {UserCog, LogIn, LogOut, UserPlus, UserCircle, ChevronDown} from "lucide-react";
+import {UserCog, LogIn, LogOut, UserPlus, UserCircle, ChevronDown, ChevronUp} from "lucide-react";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 
 /**
@@ -40,9 +40,19 @@ const ProfileMenu = ({
                         Profile
                     </CustomTypography>
                     {/* Always-visible user icon */}
-                    <UserCog className="text-white w-5 h-5 sm:w-6 sm:h-6" />
-                    {/* little chevron indicator */}
-                    <ChevronDown className="text-white w-5 h-5 mr-2" />
+                    <UserCog  className="text-white w-5 h-5 sm:w-6 sm:h-6" />
+                    {/* Chevron indicator */}
+                    {open ? (
+                        <>
+                            <ChevronDown className="text-white w-5 h-5 mr-2 sm:hidden" />
+                            <ChevronUp className="text-white w-5 h-5 mr-2 hidden sm:block" />
+                        </>
+                    ) : (
+                        <>
+                            <ChevronUp className="text-white w-5 h-5 mr-2 sm:hidden" />
+                            <ChevronDown className="text-white w-5 h-5 mr-2 hidden sm:block" />
+                        </>
+                    )}
                 </CustomBox>
             }
             /* ── dropdown items ──────────────────────────────────────────── */

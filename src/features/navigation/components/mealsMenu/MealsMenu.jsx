@@ -5,7 +5,7 @@ import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomDropdownWeb from "../../../../components/layout/CustomDropdownWeb.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
-import { ChevronDown, Soup, Pencil, UserPen, BookOpen } from "lucide-react";
+import { ChevronDown, Soup, ChevronUp, Pencil, UserPen, BookOpen } from "lucide-react";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 
 /**
@@ -56,7 +56,17 @@ const MealsMenu = () => {
                         {/* Always-visible soup icon */}
                         <Soup fill="white" className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         {/* Chevron indicator */}
-                        <ChevronDown className="text-white w-5 h-5 mr-2" />
+                        {open ? (
+                            <>
+                                <ChevronDown className="text-white w-5 h-5 mr-2 sm:hidden" />
+                                <ChevronUp className="text-white w-5 h-5 mr-2 hidden sm:block" />
+                            </>
+                        ) : (
+                            <>
+                                <ChevronUp className="text-white w-5 h-5 mr-2 sm:hidden" />
+                                <ChevronDown className="text-white w-5 h-5 mr-2 hidden sm:block" />
+                            </>
+                        )}
                     </CustomBox>
                 }
                 items={[

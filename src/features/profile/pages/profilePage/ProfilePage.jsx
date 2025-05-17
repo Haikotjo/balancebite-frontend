@@ -32,16 +32,16 @@ const ProfilePage = () => {
     };
 
     return (
-        <CustomBox className="flex flex-col gap-5 p-5">
+        <CustomBox className="flex flex-col gap-5 p-5 pb-16 md:pb-10">
             {/* Personal Info & User Details Section */}
             <CustomBox className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
                 {/* Personal Information Form */}
-                <CustomBox className="bg-cardLight dark:bg-cardDark rounded shadow p-4">
+                <CustomBox className=" rounded shadow p-4">
                     <PersonalInfoForm onSubmit={handlePersonalInfoSubmit} />
                 </CustomBox>
 
                 {/* User Details Form */}
-                <CustomBox className="bg-cardLight dark:bg-cardDark rounded shadow p-4">
+                <CustomBox className="rounded shadow p-4">
                     <UserDetailsForm onSubmit={handleUserDetailsSubmit} />
                 </CustomBox>
             </CustomBox>
