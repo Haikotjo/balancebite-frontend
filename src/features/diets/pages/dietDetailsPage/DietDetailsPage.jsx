@@ -4,8 +4,8 @@ import DietCard from "../../components/dietCard/DietCard.jsx";
 import usePublicDietById from "../../../../hooks/usePublicDietById.js";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import Spinner from "../../../../components/layout/Spinner.jsx";
-import SubMenu from "../../../../components/submenu/SubMenu.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import SubMenu from "../../../meals/components/subMenu/SubMenu.jsx";
 
 const DietDetailsPage = () => {
     const { dietId } = useParams();

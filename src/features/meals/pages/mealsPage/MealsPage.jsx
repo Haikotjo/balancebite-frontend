@@ -5,17 +5,17 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import SearchBar from "../../../../components/searchBar/SearchBar.jsx";
 import {getAllMealNames} from "../../../../services/apiService.js";
 import FilterSidebar from "../../../../components/filterSidebar/FilterSidebar.jsx";
-import SubMenu from "../../../../components/submenu/SubMenu.jsx";
 import NutrientSortOptionsHorizontal from "../../components/nutrientSortOptions/NutrientSortOptionsHorizontal.jsx";
 import ActiveFilters from "../../components/activeFilters/ActiveFilters.jsx";
 import MealList from "../../components/mealList/MealList.jsx";
 import CustomPagination from "../../../../components/customPagination/CustomPagination.jsx";
 import ScrollToTopButton from "../../../../components/scrollToTopButton/ScrollToTopButton.jsx";
+import SubMenu from "../../components/subMenu/SubMenu.jsx";
 
 function MealPage() {
     const [sortBy, setSortBy] = useState(null);
     const [filters, setFilters] = useState({});
-    const { page, setPage, totalPages } = useContext(UserMealsContext);
+    const { page, setPage, totalPages, setActiveOption } = useContext(UserMealsContext);
     const [searchParams] = useSearchParams();
     const searchRef = useRef(null);
     const [selectedMeal, setSelectedMeal] = useState(null);
@@ -53,6 +53,14 @@ function MealPage() {
         setPage(1);
     }, [filters, sortBy, setPage]);
 
+
+    useEffect(() => {
+        const filterParam = searchParams.get("filter");
+        if (filterParam) {
+            // update context zodat MealList weet wat de bron is
+            setActiveOption(filterParam);
+        }
+    }, [searchParams, setActiveOption]);
 
 
     return (

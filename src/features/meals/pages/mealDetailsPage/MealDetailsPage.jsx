@@ -4,8 +4,8 @@ import MealCard from "../../components/mealCard/MealCard.jsx";
 import useMealById from "../../../../hooks/useMealById.js";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import Spinner from "../../../../components/layout/Spinner.jsx";
-import SubMenu from "../../../../components/submenu/SubMenu.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import SubMenu from "../../components/subMenu/SubMenu.jsx";
 
 const MealDetailsPage = () => {
     const { mealId } = useParams();
