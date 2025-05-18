@@ -31,20 +31,8 @@ const DietsPage = () => {
         }
     }, [searchParams, setActiveOption]);
 
-    useEffect(() => {
-        console.log("📦 diets binnengehaald uit context:", diets);
-        console.log("⏳ loading:", loading);
-        console.log("❌ error:", error);
-        console.log("📄 activeOption:", activeOption);
-        console.log("📃 pagina:", page, "/", totalPages);
-    }, [diets, loading, error, activeOption, page, totalPages]);
-
-
     return (
         <CustomBox className="mt-10 p-4">
-            <CustomTypography variant="h1" className="mb-4">
-                {activeOption}
-            </CustomTypography>
 
             <SubMenu />
 

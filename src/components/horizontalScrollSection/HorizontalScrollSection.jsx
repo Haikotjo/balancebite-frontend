@@ -5,6 +5,7 @@ import {useEffect, useRef, useState} from "react";
 import CustomTypography from "../layout/CustomTypography.jsx";
 import CustomIconButton from "../layout/CustomIconButton.jsx";
 import clsx from "clsx";
+import {twMerge} from "tailwind-merge";
 
 const HorizontalScrollSection = ({ title, items, renderItem, onTitleClick, className ="" }) => {
     const scrollRef = useRef(null);
@@ -84,7 +85,7 @@ const HorizontalScrollSection = ({ title, items, renderItem, onTitleClick, class
 
 
     return (
-        <CustomBox className={clsx("w-full my-6", className)}>
+        <CustomBox className={twMerge("w-full my-6", className)}>
 
         {title && (
                 <CustomTypography

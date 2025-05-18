@@ -47,9 +47,14 @@ const DietListCard = ({ diet, compact = false }) => {
             {/* Average daily macro breakdown */}
             {averages && (
                 <CustomBox>
-                    <CustomTypography variant="small" className="my-2 italic">
-                        Average daily intake:
+                    <CustomTypography variant="small" className="mb-1 italic">
+                        ({diet.dietDays.length}-day diet)
                     </CustomTypography>
+
+                    <CustomTypography variant="small" className="mb-2 italic">
+                      Average daily intake:
+                    </CustomTypography>
+
                     <MacroSummary
                         className="mb-2"
                         totalNutrients={{
@@ -85,7 +90,7 @@ const DietListCard = ({ diet, compact = false }) => {
                     <HorizontalScrollSection
                         items={allMeals}
                         renderItem={(meal) => <MealCardCompact meal={meal} />}
-                        className="my-0 py-0"
+                        className="my-0"
                     />
                 </AccordionItem>
             )}
