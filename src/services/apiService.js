@@ -17,29 +17,7 @@ const logError = (error) => {
 };
 
 // API functies
-export const registerUserApi = async (data) => {
-    const endpoint = import.meta.env.VITE_AUTH_REGISTER_ENDPOINT;
-    try {
-        const response = await Interceptor.post(endpoint, data, {
-            headers: { "Content-Type": "application/json" },
-        });
-        return response.data;
-    } catch (error) {
-        logError(error);
-        let msg = "Something went wrong, please try again later.";
-        if (error.response) {
-            const data = error.response.data;
-            if (typeof data === "string") {
-                msg = data;
-            } else if (data.message) {
-                msg = data.message;
-            } else if (data.error) {
-                msg = data.error;
-            }
-        }
-        throw new Error(msg);
-    }
-};
+
 
 export const addMealToFavoritesApi = async (mealId, token) => {
     const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_ADD_MEAL_ENDPOINT}/${mealId}`;

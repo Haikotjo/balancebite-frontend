@@ -15,7 +15,6 @@ import MealCardCompact from "../../meals/components/mealCardCompact/MealCardComp
 import DietCardActionButtons from "../components/dietCardActionButtons/DietCardActionButtons.jsx";
 
 const DietListCard = ({ diet, compact = false }) => {
-    console.log("DietListCard received diet:", diet);
     const averages = getAverageNutrients(diet.dietDays);
     const navigate = useNavigate();
     const allMeals = diet.dietDays.flatMap((day) => day.meals || []);

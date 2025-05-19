@@ -9,7 +9,7 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
  */
 const LoginLogoutMenuItem = ({ user, onLoginClick, onRegisterClick, onLogout, onClose }) => {
     const handleLogout = () => {
-        onLogout();
+        onLogout(() => {});
         onClose();
     };
 

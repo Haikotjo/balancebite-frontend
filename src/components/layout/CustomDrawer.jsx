@@ -1,5 +1,5 @@
 // src/components/layout/CustomDrawer.jsx
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import CustomBox from './CustomBox.jsx';

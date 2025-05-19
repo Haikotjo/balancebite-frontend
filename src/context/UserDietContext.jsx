@@ -25,7 +25,7 @@ export const UserDietsProvider = ({ children }) => {
 
         setLoading(true);
         try {
-            const dietsData = await fetchDiets(currentListEndpoint);
+            const dietsData = await fetchDiets(currentListEndpoint.replace(import.meta.env.VITE_BASE_URL, ""));
             setDiets(dietsData.content || []);
             setTotalPages(dietsData.totalPages || 1);
             setError(null);

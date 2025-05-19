@@ -1,8 +1,8 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { registerUserApi } from "../services/apiService";
 import { UserMealsContext } from "../context/UserMealsContext";
 import useLogin from "./useLogin";
+import {registerUserApi} from "../services/authService.js";
 
 const useRegister = () => {
     const [errorMessage, setErrorMessage] = useState("");

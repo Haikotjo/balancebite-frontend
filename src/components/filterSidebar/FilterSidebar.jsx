@@ -22,7 +22,7 @@ import Spinner from "../layout/Spinner.jsx";
  * @param {Function} props.onFilter - Callback function triggered when filters are applied or removed.
  * @param {Object} props.filters - The currently applied filters.
  */
-const FilterSidebar = ({ isOpen, onFilter, filters }) => {
+const FilterSidebar = ({ isOpen = false, onFilter, filters }) => {
 
     // Manage sidebar state (open/close)
     const { open, toggleSidebar } = useSidebarState(isOpen);

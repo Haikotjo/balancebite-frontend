@@ -87,7 +87,7 @@ const ProfileMenu = ({
                     icon: LogOut,
                     onClick: () => {
                         setOpen(false);
-                        onLogout();
+                        onLogout(() => {});
                     },
                 },
             ].filter(Boolean)} // remove null entries

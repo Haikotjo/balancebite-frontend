@@ -6,9 +6,11 @@ const useLogout = () => {
     const { logout } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    return async (onSuccess = () => {}) => {
+    return async (onSuccess) => {
         await logout();
-        await onSuccess();
+        if (typeof onSuccess === "function") {
+            await onSuccess();
+        }
         navigate("/", { replace: true });
     };
 };
