@@ -1,4 +1,3 @@
-// src/components/forms/ErrorDialog.jsx
 import React from "react";
 import PropTypes from "prop-types";
 import { CircleAlert, CheckCircle } from "lucide-react";
@@ -8,7 +7,7 @@ import { Dialog, DialogPanel, DialogTitle } from "./dialog/Dialog.jsx";
 
 const ErrorDialog = React.forwardRef(
     (
-        { open, onClose, message, actionLink, actionLabel, onAction, type = "error" },
+        { open, onClose, message, actionLabel, onAction, type = "error", children },
         ref
     ) => (
         <Dialog open={open} onClose={onClose} ref={ref} className="relative z-[1000]">
@@ -40,27 +39,18 @@ const ErrorDialog = React.forwardRef(
                     {/* message */}
                     <CustomBox className="text-sm mb-4 text-lightText dark:text-darkText">
                         {message}
+                        {children}
                     </CustomBox>
 
-
-                    {/* actie-link of knop */}
-                    {actionLabel &&
-                        (actionLink ? (
-                            <CustomButton
-                                as="a"
-                                href={actionLink}
-                                className="block mb-4 text-sm underline text-primary hover:text-primary/80"
-                            >
-                                {actionLabel}
-                            </CustomButton>
-                        ) : (
-                            <CustomButton
-                                onClick={onAction}
-                                className="block mb-4 text-sm underline text-primary hover:text-primary/80"
-                            >
-                                {actionLabel}
-                            </CustomButton>
-                        ))}
+                    {/* actie-knop */}
+                    {actionLabel && onAction && (
+                        <CustomButton
+                            onClick={onAction}
+                            className="block mb-4 text-sm underline text-primary hover:text-primary/80"
+                        >
+                            {actionLabel}
+                        </CustomButton>
+                    )}
 
                     {/* sluitknop */}
                     <CustomButton
@@ -85,10 +75,10 @@ ErrorDialog.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     message: PropTypes.string.isRequired,
-    actionLink: PropTypes.string,
     actionLabel: PropTypes.string,
     onAction: PropTypes.func,
     type: PropTypes.oneOf(["error", "success"]),
+    children: PropTypes.node,
 };
 
 export default ErrorDialog;

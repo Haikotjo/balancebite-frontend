@@ -1,15 +1,16 @@
 import PropTypes from "prop-types";
 import { Heart } from "lucide-react";
-import {useToggleFavorite} from "../../../../hooks/useToggleFavorite.js";
-import {useRequireAuthDialog} from "../../../../hooks/useRequireAuthDialog.js";
+import {useToggleDietFavorite} from "../../utils/hooks/useToggleDietFavorite.js";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 import RequireAuthUI from "../../../../components/layout/RequireAuthUI.jsx";
+import {useRequireAuthDialog} from "../../../../hooks/useRequireAuthDialog.js";
+
 
 /**
- * FavoriteButton toggles a meal as favorite using a heart icon.
+ * ButtonFavoriteDiet toggles a diet as favorite using a heart icon.
  * If not authenticated, opens a dialog with login/register prompt.
  */
-const ButtonFavorite = ({ meal }) => {
+const ButtonFavoriteDiet = ({ diet }) => {
     const {
         dialogOpen,
         errorMessage,
@@ -20,9 +21,9 @@ const ButtonFavorite = ({ meal }) => {
         setShowLoginForm,
     } = useRequireAuthDialog();
 
-    const { toggleFavorite, alreadyFavorited } = useToggleFavorite(
-        meal,
-        () => triggerAuthDialog("You must be logged in to favorite meals.")
+    const { toggleFavorite, alreadyFavorited } = useToggleDietFavorite(
+        diet,
+        () => triggerAuthDialog("You must be logged in to favorite diets.")
     );
 
     return (
@@ -52,8 +53,8 @@ const ButtonFavorite = ({ meal }) => {
     );
 };
 
-ButtonFavorite.propTypes = {
-    meal: PropTypes.object.isRequired,
+ButtonFavoriteDiet.propTypes = {
+    diet: PropTypes.object.isRequired,
 };
 
-export default ButtonFavorite;
+export default ButtonFavoriteDiet;

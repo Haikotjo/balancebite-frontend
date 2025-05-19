@@ -1,21 +1,43 @@
 import { useParams } from "react-router-dom";
-import {useEffect} from "react";
+import { useEffect, useState } from "react";
 import DietCard from "../../components/dietCard/DietCard.jsx";
-import usePublicDietById from "../../../../hooks/usePublicDietById.js";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import Spinner from "../../../../components/layout/Spinner.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import SubMenu from "../../../meals/components/subMenu/SubMenu.jsx";
+import {getPublicDietPlanByIdApi, getUserDietPlanByIdApi} from "../../../../services/apiService.js";
 
 const DietDetailsPage = () => {
     const { dietId } = useParams();
-    const { diet, loading, error } = usePublicDietById(dietId);
+    const [diet, setDiet] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
-        if (diet) {
-            console.log("✅ Diet geladen:", diet);
-        }
-    }, [diet]);
+        if (!dietId) return;
+
+        const fetchDiet = async () => {
+            try {
+                const privateDiet = await getUserDietPlanByIdApi(dietId);
+                setDiet(privateDiet);
+            } catch (err) {
+                if (err.response?.status === 403 || err.response?.status === 404) {
+                    try {
+                        const publicDiet = await getPublicDietPlanByIdApi(dietId);
+                        setDiet(publicDiet);
+                    } catch {
+                        setError(true);
+                    }
+                } else {
+                    setError(true);
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchDiet();
+    }, [dietId]);
 
     if (loading) {
         return (
@@ -34,7 +56,7 @@ const DietDetailsPage = () => {
                 <CustomTypography
                     className="text-2xl font-bold text-center mt-10 text-error"
                 >
-                    Diet not found
+                    Diet not found or access denied
                 </CustomTypography>
             </>
         );

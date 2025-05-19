@@ -503,7 +503,7 @@ export const createDietPlanApi = async (data) => {
 export const addDietPlanToUserApi = async (dietPlanId) => {
     const endpoint = `${import.meta.env.VITE_ADD_DIETPLAN_TO_USER_ENDPOINT}/${dietPlanId}`;
     const token = localStorage.getItem("accessToken");
-    const response = await Interceptor.post(endpoint, null, {
+    const response = await Interceptor.patch(endpoint, null, {
         headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
@@ -521,13 +521,27 @@ export const updateDietPlanApi = async (dietPlanId, data) => {
     return response.data;
 };
 
-export const deleteDietPlanApi = async (dietPlanId) => {
-    const endpoint = `${import.meta.env.VITE_DELETE_DIETPLAN_ENDPOINT}/${dietPlanId}`;
-    const token = localStorage.getItem("accessToken");
-    const response = await Interceptor.delete(endpoint, {
-        headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
+export const removeDietFromUserApi = async (dietPlanId, token) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_REMOVE_DIET_ENDPOINT}/${dietPlanId}`;
+    try {
+        const response = await Interceptor.delete(endpoint, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        logResponse(response);
+        return response.data;
+    } catch (error) {
+        const errData = error?.response?.data;
+        console.error("❌ Backend responded with error:", errData);
+
+        throw {
+            ...error,
+            response: {
+                ...error.response,
+                data: errData,
+            }
+        };
+    }
+
 };
 
 export const getAllUserDietPlansApi = async (page = 0, size = 12) => {

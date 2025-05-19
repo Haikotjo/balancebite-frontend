@@ -1,9 +1,9 @@
 // src/hooks/useToggleFavorite.js
 
 import { useState, useContext } from "react";
-import { UserMealsContext } from "../context/UserMealsContext.jsx";
-import useFavorites from "./useFavorites.jsx";
-import {AuthContext} from "../context/AuthContext.jsx";
+import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
+import useFavoritesMeals from "./useFavoritesMeals.jsx";
+import {AuthContext} from "../../../../context/AuthContext.jsx";
 
 /**
  * Custom hook to toggle a meal as favorite or remove it from favorites.
@@ -18,10 +18,10 @@ import {AuthContext} from "../context/AuthContext.jsx";
  *  - alreadyFavorited: Boolean indicating if the meal is currently favorited.
  *  - isProcessing: Boolean indicating if the toggle is in progress.
  */
-export const useToggleFavorite = (meal, onAuthRequired, onError, onSuccess) => {
+export const useToggleMealFavorite = (meal, onAuthRequired, onError, onSuccess) => {
     const { userMeals } = useContext(UserMealsContext);
     const { user } = useContext(AuthContext);
-    const { addMealToFavorites, removeMealFromFavorites } = useFavorites();
+    const { addMealToFavorites, removeMealFromFavorites } = useFavoritesMeals();
     const [isProcessing, setIsProcessing] = useState(false);
 
     const alreadyFavorited = userMeals.some(userMeal => userMeal.id === meal.id);
@@ -43,8 +43,17 @@ export const useToggleFavorite = (meal, onAuthRequired, onError, onSuccess) => {
             }
         } catch (e) {
             console.error("Favorite toggle failed:", e);
-            onError?.("Could not toggle favorite. Try again later.");
-        } finally {
+            console.log("⚠️ Full error object:", e.response?.data);
+
+            console.log("⚠️ Full error response:", e.response?.data);
+            const backendMessage = e?.response?.data?.error || "Could not toggle favorite. Try again later.";
+            const diets = e?.response?.data?.diets || [];
+            console.log("⚠️ diets:", diets);
+
+            onError?.({ message: backendMessage, diets });
+
+        }
+        finally {
             setIsProcessing(false);
         }
     };

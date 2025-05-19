@@ -1,9 +1,9 @@
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext.jsx";
-import { UserMealsContext } from "../context/UserMealsContext.jsx";
-import { addMealToFavoritesApi, removeMealFromFavoritesApi } from "../services/apiService.js";
+import { AuthContext } from "../../../../context/AuthContext.jsx";
+import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
+import { addMealToFavoritesApi, removeMealFromFavoritesApi } from "../../../../services/apiService.js";
 
-export const useFavorites = () => {
+export const useFavoritesMeals = () => {
     const { token } = useContext(AuthContext);
     const {
         removeMealFromUserMeals,
@@ -32,4 +32,4 @@ export const useFavorites = () => {
     return { addMealToFavorites, removeMealFromFavorites };
 };
 
-export default useFavorites;
+export default useFavoritesMeals;

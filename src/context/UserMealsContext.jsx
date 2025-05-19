@@ -6,13 +6,13 @@ import { fetchMeals, fetchUserMeals } from "../services/apiService";
 export const UserMealsContext = createContext();
 
 export const UserMealsProvider = ({ children }) => {
+    const [meals, setMeals] = useState([]);
+    const [userMeals, setUserMeals] = useState([]);
+    const [loadingUserMeals, setLoadingUserMeals] = useState(false);
+    const [loadingMeals, setLoadingMeals] = useState(true);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const { user } = useContext(AuthContext);
-    const [meals, setMeals] = useState([]);
-    const [userMeals, setUserMeals] = useState([]);
-    const [loadingMeals, setLoadingMeals] = useState(true);
-    const [loadingUserMeals, setLoadingUserMeals] = useState(false);
     const [error, setError] = useState(null);
     const [filters, setFilters] = useState({});
     const [sortBy, setSortBy] = useState(null);
@@ -52,13 +52,6 @@ export const UserMealsProvider = ({ children }) => {
         }
     }, []);
 
-    const replaceMealInMeals = (originalMealId, newMeal) => {
-        setMeals((prevMeals) =>
-            prevMeals.map((meal) =>
-                String(meal.id) === String(originalMealId) ? newMeal : meal
-            )
-        );
-    };
 
     useEffect(() => {
         let baseUrl =
@@ -94,6 +87,14 @@ export const UserMealsProvider = ({ children }) => {
             fetchUserMealsData();
         }
     }, [user]);
+
+    const replaceMealInMeals = (originalMealId, newMeal) => {
+        setMeals((prevMeals) =>
+            prevMeals.map((meal) =>
+                String(meal.id) === String(originalMealId) ? newMeal : meal
+            )
+        );
+    };
 
     const removeMealFromUserMeals = (mealId) => {
         setUserMeals((prev) => prev.filter((meal) => meal.id !== mealId));

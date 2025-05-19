@@ -4,7 +4,6 @@ import CustomBox from "../layout/CustomBox";
 import {useEffect, useRef, useState} from "react";
 import CustomTypography from "../layout/CustomTypography.jsx";
 import CustomIconButton from "../layout/CustomIconButton.jsx";
-import clsx from "clsx";
 import {twMerge} from "tailwind-merge";
 
 const HorizontalScrollSection = ({ title, items, renderItem, onTitleClick, className ="" }) => {

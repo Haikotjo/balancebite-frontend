@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import HorizontalScrollSection from "../../../components/horizontalScrollSection/HorizontalScrollSection.jsx";
 import MealCardCompact from "../../meals/components/mealCardCompact/MealCardCompact.jsx";
+import DietCardActionButtons from "../components/dietCardActionButtons/DietCardActionButtons.jsx";
 
 const DietListCard = ({ diet, compact = false }) => {
     console.log("DietListCard received diet:", diet);
@@ -21,6 +22,9 @@ const DietListCard = ({ diet, compact = false }) => {
 
     return (
         <CustomCard className="p-4">
+            <CustomBox className="mb-2 flex gap-2 justify-end">
+                <DietCardActionButtons diet={diet} />
+            </CustomBox>
             {/* Diet title with navigation link */}
             <CustomBox
                 onClick={() => navigate(`/diet/${diet.id}`)}
@@ -47,6 +51,7 @@ const DietListCard = ({ diet, compact = false }) => {
             {/* Average daily macro breakdown */}
             {averages && (
                 <CustomBox>
+
                     <CustomTypography variant="small" className="mb-1 italic">
                         ({diet.dietDays.length}-day diet)
                     </CustomTypography>
@@ -81,7 +86,7 @@ const DietListCard = ({ diet, compact = false }) => {
                 <AccordionItem
                     title={
                         <CustomTypography variant="paragraphCard">
-                            Meals in diet
+                            View meals in diet
                         </CustomTypography>
                     }
                     defaultOpen={!compact}

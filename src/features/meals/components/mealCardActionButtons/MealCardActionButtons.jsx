@@ -5,10 +5,10 @@ import { useContext } from "react";
 import EatButton from "../buttonEat/EatButton.jsx";
 import ButtonOpenMeal from "../buttonOpenMeal/ButtonOpenMeal.jsx";
 import ButtonUpdateMeal from "../buttonUpdateMeal/ButtonUpdateMeal.jsx";
-import ButtonFavorite from "../buttonFavorite/FavoriteButton.jsx";
 import {RecommendedNutritionContext} from "../../../../context/RecommendedNutritionContext.jsx";
 import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import ButtonFavorite from "../buttonFavoriteMeal/FavoriteButtonMeal.jsx";
 
 /**
  * Displays a horizontal group of meal-related action buttons.
