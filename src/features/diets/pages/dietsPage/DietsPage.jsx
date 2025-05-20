@@ -23,13 +23,13 @@ const DietsPage = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
-    // // Zorg dat submenu reageert op zoekparams (zoals ?filter=My Diets)
-    // useEffect(() => {
-    //     const filterParam = searchParams.get("filter");
-    //     if (filterParam) {
-    //         setActiveOption(filterParam);
-    //     }
-    // }, [searchParams, setActiveOption]);
+    // Zorg dat submenu reageert op zoekparams (zoals ?filter=My Diets)
+    useEffect(() => {
+        const filterParam = searchParams.get("filter");
+        if (filterParam) {
+            setActiveOption(filterParam);
+        }
+    }, [searchParams, setActiveOption]);
 
     return (
         <CustomBox className="mt-10 p-4">
