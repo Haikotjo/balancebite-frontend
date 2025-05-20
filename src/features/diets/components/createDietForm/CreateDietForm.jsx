@@ -1,9 +1,8 @@
-// src/components/createDietForm/CreateDietFormFull.jsx
 import {useFieldArray, useForm} from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import PropTypes             from "prop-types";
 import {useFetchMeals} from "../../../../hooks/useFetchMeals.js";
-import {useCreateDiet} from "../../../../hooks/useCreateDiet.js";
+import {useCreateDiet} from "../../utils/hooks/useCreateDiet.js";
 import {createDietPlanSchema} from "../../../../utils/valadition/validationSchemas.js";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
@@ -14,18 +13,6 @@ import CustomButton from "../../../../components/layout/CustomButton.jsx";
 
 export default function CreateDietFormFull({ onSuccess }) {
     const { mealOptions, loading: mealsLoading, error: mealsError } = useFetchMeals();
-
-    const {
-        days,
-        loading,
-        renderDialogs,
-        handleChangeMealId,
-        addDay,
-        removeDay,
-        addMealId,
-        removeMeal,
-        onSubmit
-    } = useCreateDiet(onSuccess);
 
     const {
         register,
@@ -47,12 +34,22 @@ export default function CreateDietFormFull({ onSuccess }) {
         }
     });
 
-    const { fields: dietDaysFields } = useFieldArray({
+    const { fields: dietDaysFields, append, remove } = useFieldArray({
         control,
         name: "dietDays",
     });
 
-
+    const {
+        days,
+        loading,
+        renderDialogs,
+        handleChangeMealId,
+        addDay,
+        removeDay,
+        addMealId,
+        removeMeal,
+        onSubmit
+    } = useCreateDiet(onSuccess, append, remove);
 
     if (mealsLoading) {
         return (
@@ -119,7 +116,7 @@ export default function CreateDietFormFull({ onSuccess }) {
                         />
 
                         {days[dayIndex].mealIds.map((id, mealIndex) => (
-                            <CustomBox key={mealIndex} className="flex items-center gap-2">
+                            <CustomBox key={`${dayIndex}-${mealIndex}`} className="flex items-center gap-2">
                                 <CustomFloatingSelect
                                     label={`Meal ${mealIndex + 1}`}
                                     placeholder={mealIndex < 2

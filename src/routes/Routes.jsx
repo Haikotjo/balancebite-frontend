@@ -21,6 +21,7 @@ import CreateMealPage from "../features/meals/pages/createMealPage/CreateMealPag
 import DietsPage from "../features/diets/pages/dietsPage/DietsPage.jsx";
 import DietDetailsPage from "../features/diets/pages/dietDetailsPage/DietDetailsPage.jsx";
 import CreateDietPage from "../features/diets/pages/createDietPage/createDietPage.jsx";
+import UpdateDietPage from "../features/diets/pages/updateDietPage/UpdateDietPage.jsx";
 
 
 function AppRoutes() {
@@ -46,6 +47,10 @@ function AppRoutes() {
                 <Route path="/create-diet" element={
                     <ProtectedRoute><CreateDietPage /></ProtectedRoute>
                 } />
+                <Route path="/update-diet/:dietId" element={
+                    <ProtectedRoute><UpdateDietPage /></ProtectedRoute>
+                } />
+
                 <Route path="/profile" element={
                     <ProtectedRoute><ProfilePage /></ProtectedRoute>
                 } />
