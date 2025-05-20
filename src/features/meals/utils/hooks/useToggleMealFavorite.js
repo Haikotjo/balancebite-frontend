@@ -1,5 +1,3 @@
-// src/hooks/useToggleFavorite.js
-
 import { useState, useContext } from "react";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import useFavoritesMeals from "./useFavoritesMeals.jsx";

@@ -6,26 +6,25 @@ import {
     removeDietFromUserApi
 } from "../../../../services/apiService.js";
 
-export const useDietFavorites = () => {
+export const useFavoritesDiets = () => {
     const { token } = useContext(AuthContext);
     const {
-        addDietToUserDiets,
         removeDietFromUserDiets,
+        addDietToUserDiets,
         removeDietFromDiets,
         replaceDietInDiets,
     } = useContext(UserDietsContext);
 
     const addDietToFavorites = async (diet) => {
-        console.log("⬅️ Received diet object:", diet);
-        if (!diet?.id) throw new Error("No diet ID provided.");
-
         const response = await addDietPlanToUserApi(diet.id);
-        const copiedDiet = response;
+        let newDiet = response.diets?.find(d => String(d.originalDietId) === String(diet.id))
+            || response.diets?.find(d => String(d.id) === String(diet.id))
+            || response;
 
-        if (!copiedDiet?.originalDietId) throw new Error("Copied diet has no originalDietId");
+        if (!newDiet) throw new Error("Diet not found in response.");
 
-        replaceDietInDiets(copiedDiet.originalDietId, copiedDiet);
-        addDietToUserDiets(copiedDiet);
+        addDietToUserDiets(newDiet);
+        replaceDietInDiets(diet.id, newDiet);
     };
 
     const removeDietFromFavorites = async (diet) => {
@@ -37,4 +36,4 @@ export const useDietFavorites = () => {
     return { addDietToFavorites, removeDietFromFavorites };
 };
 
-export default useDietFavorites;
+export default useFavoritesDiets;

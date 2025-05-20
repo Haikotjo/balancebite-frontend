@@ -79,29 +79,19 @@ export const UserDietsProvider = ({ children }) => {
             baseUrl += `&sortBy=${sortBy.sortKey}&sortOrder=${sortBy.sortOrder}`;
         }
 
-        // 🔍 Logging hier
-        console.log("🧪 [UserDietsProvider] Active Option:", activeOption);
-        console.log("🧪 [UserDietsProvider] New baseUrl:", baseUrl);
-        console.log("🧪 [UserDietsProvider] Current endpoint:", currentListEndpoint);
-
         if (baseUrl !== currentListEndpoint) {
             setCurrentListEndpoint(baseUrl);
         }
     }, [activeOption, filters, sortBy, page]);
 
-
-
-
     useEffect(() => {
+        if (!currentListEndpoint) return;
         fetchDietsData();
 
         if (activeOption === "My Diets" && user) {
             fetchUserDietsData();
         }
-    }, [activeOption, user, fetchDietsData]);
-
-
-
+    }, [currentListEndpoint, user]);
 
 
     useEffect(() => {
@@ -110,26 +100,24 @@ export const UserDietsProvider = ({ children }) => {
         }
     }, [user]);
 
-
-    const addDietToUserDiets = (diet) => {
-        setUserDiets((prev) => [...prev, diet]);
-    };
-
-    const removeDietFromUserDiets = (dietId) => {
-        setDiets((prevDiets) => prevDiets.filter((diet) => diet.id !== dietId));
-    };
-
-    const removeDietFromDiets = (dietId) => {
-        setDiets((prev) => prev.filter((diet) => diet.id !== dietId));
-    };
-
-
     const replaceDietInDiets = (originalDietId, newDiet) => {
         setDiets((prevDiets) =>
             prevDiets.map((diet) =>
                 String(diet.id) === String(originalDietId) ? newDiet : diet
             )
         );
+    };
+
+    const removeDietFromUserDiets = (dietId) => {
+        setDiets((prevDiets) => prevDiets.filter((diet) => diet.id !== dietId));
+    };
+
+    const addDietToUserDiets = (diet) => {
+        setUserDiets((prev) => [...prev, diet]);
+    };
+
+    const removeDietFromDiets = (dietId) => {
+        setDiets((prev) => prev.filter((diet) => diet.id !== dietId));
     };
 
     return (

@@ -42,8 +42,16 @@ export const removeMealFromFavoritesApi = async (mealId, token) => {
         logResponse(response);
         return response.data;
     } catch (error) {
-        logError(error);
-        throw error;
+        const errData = error?.response?.data;
+        console.error("❌ Backend responded with error:", errData);
+
+        throw {
+            ...error,
+            response: {
+                ...error.response,
+                data: errData,
+            },
+        };
     }
 };
 
@@ -519,7 +527,6 @@ export const removeDietFromUserApi = async (dietPlanId, token) => {
             }
         };
     }
-
 };
 
 export const getAllUserDietPlansApi = async (token, page = 0, size = 12) => {

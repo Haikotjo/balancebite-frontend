@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
 import {AuthContext} from "../../../../context/AuthContext.jsx";
-import useDietFavorites from "./useFavoriteDiets.js";
+import useFavoritesDiets from "./useFavoriteDiets.js";
 
 /**
  * Custom hook to toggle a diet as favorite or remove it from favorites.
@@ -19,7 +19,7 @@ import useDietFavorites from "./useFavoriteDiets.js";
 export const useToggleDietFavorite = (diet, onAuthRequired, onError, onSuccess) => {
     const { userDiets } = useContext(UserDietsContext);
     const { user } = useContext(AuthContext);
-    const { addDietToFavorites, removeDietFromFavorites } = useDietFavorites();
+    const { addDietToFavorites, removeDietFromFavorites } = useFavoritesDiets();
     const [isProcessing, setIsProcessing] = useState(false);
 
     const alreadyFavorited = userDiets.some(userDiet => userDiet.id === diet.id);
@@ -33,22 +33,27 @@ export const useToggleDietFavorite = (diet, onAuthRequired, onError, onSuccess) 
         setIsProcessing(true);
         try {
             if (alreadyFavorited) {
-                console.log("🔄 Removing from favorites:", diet);
                 await removeDietFromFavorites(diet);
                 onSuccess?.(`${diet.name} removed from favorites`);
             } else {
-                console.log("➕ Adding to favorites:", diet);
-                const result = await addDietToFavorites(diet);
-                console.log("✅ Add result:", result);
+                await addDietToFavorites(diet);
                 onSuccess?.(`${diet.name} added to favorites`);
             }
         } catch (e) {
             console.error("❌ Favorite toggle failed:", e);
-            onError?.("Could not toggle favorite. Try again later.");
+            console.log("⚠️ Full error object:", e.response?.data);
+
+            console.log("⚠️ Full error response:", e.response?.data);
+            const backendMessage = e?.response?.data?.error || "Could not toggle favorite. Try again later.";
+            const diets = e?.response?.data?.diets || [];
+            console.log("⚠️ diets:", diets);
+
+            onError?.({ message: backendMessage, diets });
         } finally {
             setIsProcessing(false);
         }
     };
+
 
     return { toggleFavorite, alreadyFavorited, isProcessing };
 };
