@@ -529,15 +529,33 @@ export const removeDietFromUserApi = async (dietPlanId, token) => {
     }
 };
 
-export const getAllUserDietPlansApi = async (token, page = 0, size = 12) => {
+export const getAllUserDietPlansApi = async (
+    token,
+    page = 0,
+    size = 12,
+    diets = [],
+    sortBy = "name",
+    sortOrder = "asc"
+) => {
     if (!token) throw new Error("No access token provided");
 
-    const endpoint = `${import.meta.env.VITE_GET_ALL_USER_DIETPLANS_ENDPOINT}?page=${page}&size=${size}`;
+    const params = new URLSearchParams();
+    params.append("page", page);
+    params.append("size", size);
+    if (sortBy) params.append("sortBy", sortBy);
+    if (sortOrder) params.append("sortOrder", sortOrder);
+    if (Array.isArray(diets)) {
+        diets.forEach(diet => params.append("diets", diet));
+    }
+
+    const endpoint = `${import.meta.env.VITE_GET_ALL_USER_DIETPLANS_ENDPOINT}?${params.toString()}`;
+
     const response = await Interceptor.get(endpoint, {
         headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
 };
+
 
 export const getCreatedDietPlansApi = async (page = 0, size = 12) => {
     const endpoint = `${import.meta.env.VITE_GET_CREATED_DIETPLANS_ENDPOINT}?page=${page}&size=${size}`;

@@ -51,7 +51,14 @@ export const UserDietsProvider = ({ children }) => {
         try {
             const token = localStorage.getItem("accessToken");
             if (token) {
-                const userDietsData = await getAllUserDietPlansApi(token);
+                const userDietsData = await getAllUserDietPlansApi(
+                    token,
+                    0,           // page
+                    12,          // size
+                    [],          // diets (leeg = geen filter)
+                    "name",      // sortBy
+                    "asc"        // sortOrder
+                );
                 setUserDiets(Array.isArray(userDietsData.content) ? userDietsData.content : []);
             }
         } catch (err) {
@@ -61,6 +68,7 @@ export const UserDietsProvider = ({ children }) => {
             setLoadingUserDiets(false);
         }
     }, []);
+
 
 
     useEffect(() => {

@@ -1,12 +1,14 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import {useContext, useState} from "react";
 import { useFormMessages } from "./useFormMessages.jsx";
 import { createDietPlanApi } from "../services/apiService.js";
 import { getReadableApiError } from "../utils/helpers/getReadableApiError.js";
+import {UserDietsContext} from "../context/UserDietContext.jsx";
 
 export function useCreateDiet(onSuccess) {
     const navigate = useNavigate();
     const { setError, setSuccess, clear, renderDialogs } = useFormMessages();
+    const { fetchUserDietsData } = useContext(UserDietsContext);
 
     const [days, setDays] = useState([
         { mealIds: [""] }
@@ -65,12 +67,11 @@ export function useCreateDiet(onSuccess) {
         try {
             const newDiet = await createDietPlanApi({ ...payload, diets: [] });
             setSuccess(`Diet created: ${newDiet.name || "Unknown diet"}`);
+            await fetchUserDietsData(); // ⬅️ Voeg dit toe
             onSuccess?.(newDiet);
             navigate(`/diet/${newDiet.id}`);
         } catch (err) {
             setError(getReadableApiError(err));
-        } finally {
-            setLoading(false);
         }
     };
 
