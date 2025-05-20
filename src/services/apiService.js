@@ -522,9 +522,10 @@ export const removeDietFromUserApi = async (dietPlanId, token) => {
 
 };
 
-export const getAllUserDietPlansApi = async (page = 0, size = 12) => {
+export const getAllUserDietPlansApi = async (token, page = 0, size = 12) => {
+    if (!token) throw new Error("No access token provided");
+
     const endpoint = `${import.meta.env.VITE_GET_ALL_USER_DIETPLANS_ENDPOINT}?page=${page}&size=${size}`;
-    const token = localStorage.getItem("accessToken");
     const response = await Interceptor.get(endpoint, {
         headers: { Authorization: `Bearer ${token}` },
     });
@@ -551,14 +552,12 @@ export const getUserDietPlanByIdApi = async (dietPlanId) => {
 };
 
 export const fetchDiets = async (path) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${path}`;
+    const isFullUrl = path.startsWith("http://") || path.startsWith("https://");
+    const endpoint = isFullUrl ? path : `${import.meta.env.VITE_BASE_URL}${path}`;
     try {
         const token = localStorage.getItem("accessToken");
 
-        const headers = token
-            ? { Authorization: `Bearer ${token}` }
-            : {};
-
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
         const response = await Interceptor.get(endpoint, { headers });
         return response.data;
     } catch (error) {

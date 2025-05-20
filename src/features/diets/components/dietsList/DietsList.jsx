@@ -6,9 +6,9 @@ import DietListCard from "../../dietListCard/DietListCard.jsx";
 const DietsList = ({ diets, onItemClick }) => (
     <CustomBox className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
         {diets.map((diet) => (
-            <div key={diet.id} className="break-inside-avoid">
+            <CustomBox key={diet.id} className="break-inside-avoid">
                 <DietListCard diet={diet} onClick={() => onItemClick(diet.id)} />
-            </div>
+            </CustomBox>
         ))}
     </CustomBox>
 

@@ -74,6 +74,8 @@ export const UserMealsProvider = ({ children }) => {
         }
     }, [activeOption, filters, sortBy, page]);
 
+
+
     useEffect(() => {
         fetchMealsData();
 
@@ -81,6 +83,10 @@ export const UserMealsProvider = ({ children }) => {
             fetchUserMealsData();
         }
     }, [activeOption, user, fetchMealsData]);
+
+
+
+
 
     useEffect(() => {
         if (user) {

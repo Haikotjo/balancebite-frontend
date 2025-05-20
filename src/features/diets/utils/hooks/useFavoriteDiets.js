@@ -20,11 +20,10 @@ export const useDietFavorites = () => {
         if (!diet?.id) throw new Error("No diet ID provided.");
 
         const response = await addDietPlanToUserApi(diet.id);
-        const copiedDiet = response; // DietPlanDTO van backend
+        const copiedDiet = response;
 
         if (!copiedDiet?.originalDietId) throw new Error("Copied diet has no originalDietId");
 
-        // ✅ Vervang het originele dieet met dezelfde originalDietId
         replaceDietInDiets(copiedDiet.originalDietId, copiedDiet);
         addDietToUserDiets(copiedDiet);
     };

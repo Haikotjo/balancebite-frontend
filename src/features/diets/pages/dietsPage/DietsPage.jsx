@@ -1,11 +1,11 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
-import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
 import ScrollToTopButton from "../../../../components/scrollToTopButton/ScrollToTopButton.jsx";
 import DietsList from "../../components/dietsList/DietsList.jsx";
-import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
 import SubMenu from "../../components/subMenu/SubMenu.jsx";
+import Spinner from "../../../../components/layout/Spinner.jsx";
 
 const DietsPage = () => {
     const {
@@ -23,13 +23,13 @@ const DietsPage = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
-    // Zorg dat submenu reageert op zoekparams (zoals ?filter=My Diets)
-    useEffect(() => {
-        const filterParam = searchParams.get("filter");
-        if (filterParam) {
-            setActiveOption(filterParam);
-        }
-    }, [searchParams, setActiveOption]);
+    // // Zorg dat submenu reageert op zoekparams (zoals ?filter=My Diets)
+    // useEffect(() => {
+    //     const filterParam = searchParams.get("filter");
+    //     if (filterParam) {
+    //         setActiveOption(filterParam);
+    //     }
+    // }, [searchParams, setActiveOption]);
 
     return (
         <CustomBox className="mt-10 p-4">
@@ -38,7 +38,7 @@ const DietsPage = () => {
 
             {error && <p className="text-red-500">Fout bij ophalen: {error}</p>}
             {loading ? (
-                <p>Loading...</p>
+                <Spinner className="mx-auto my-10" />
             ) : (
                 <DietsList
                     diets={diets}

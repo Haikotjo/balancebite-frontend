@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { AuthContext } from "./AuthContext";
-import { fetchDiets } from "../services/apiService";
+import {fetchDiets, getAllUserDietPlansApi, getCreatedDietPlansApi} from "../services/apiService";
 
 export const UserDietsContext = createContext();
 
@@ -9,7 +9,7 @@ export const UserDietsProvider = ({ children }) => {
     const [diets, setDiets] = useState([]);
     const [userDiets, setUserDiets] = useState([]);
     const [loadingUserDiets, setLoadingUserDiets] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [loadingDiets, setLoadingDiets] = useState(false);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const { user } = useContext(AuthContext);
@@ -23,9 +23,18 @@ export const UserDietsProvider = ({ children }) => {
     const fetchDietsData = useCallback(async () => {
         if (!currentListEndpoint) return;
 
-        setLoading(true);
+        setLoadingDiets(true);
         try {
-            const dietsData = await fetchDiets(currentListEndpoint.replace(import.meta.env.VITE_BASE_URL, ""));
+            let dietsData;
+
+            if (activeOption === "Created Diets") {
+                dietsData = await getCreatedDietPlansApi(page - 1, 12); // gebruik aparte API
+            } else {
+                dietsData = await fetchDiets(currentListEndpoint); // standaard gedrag
+            }
+
+            console.log("[fetchDietsData] ontvangen dietsData:", dietsData);
+
             setDiets(dietsData.content || []);
             setTotalPages(dietsData.totalPages || 1);
             setError(null);
@@ -33,17 +42,17 @@ export const UserDietsProvider = ({ children }) => {
             console.error("❌ Error fetching diets:", err);
             setError(err.message);
         } finally {
-            setLoading(false);
+            setLoadingDiets(false);
         }
-    }, [currentListEndpoint]);
+    }, [currentListEndpoint, activeOption, page]);
 
     const fetchUserDietsData = useCallback(async () => {
         setLoadingUserDiets(true);
         try {
             const token = localStorage.getItem("accessToken");
             if (token) {
-                const response = await fetchDiets("/users/diet-plans");
-                setUserDiets(Array.isArray(response.content) ? response.content : []);
+                const userDietsData = await getAllUserDietPlansApi(token);
+                setUserDiets(Array.isArray(userDietsData.content) ? userDietsData.content : []);
             }
         } catch (err) {
             console.error("⚠️ Failed to fetch user diets:", err.message);
@@ -70,10 +79,18 @@ export const UserDietsProvider = ({ children }) => {
             baseUrl += `&sortBy=${sortBy.sortKey}&sortOrder=${sortBy.sortOrder}`;
         }
 
+        // 🔍 Logging hier
+        console.log("🧪 [UserDietsProvider] Active Option:", activeOption);
+        console.log("🧪 [UserDietsProvider] New baseUrl:", baseUrl);
+        console.log("🧪 [UserDietsProvider] Current endpoint:", currentListEndpoint);
+
         if (baseUrl !== currentListEndpoint) {
             setCurrentListEndpoint(baseUrl);
         }
     }, [activeOption, filters, sortBy, page]);
+
+
+
 
     useEffect(() => {
         fetchDietsData();
@@ -82,6 +99,10 @@ export const UserDietsProvider = ({ children }) => {
             fetchUserDietsData();
         }
     }, [activeOption, user, fetchDietsData]);
+
+
+
+
 
     useEffect(() => {
         if (user) {
@@ -116,7 +137,7 @@ export const UserDietsProvider = ({ children }) => {
             value={{
                 diets,
                 userDiets,
-                loading: loading || loadingUserDiets,
+                loading: loadingDiets || loadingUserDiets,
                 error,
                 activeOption,
                 setActiveOption,

@@ -1,10 +1,9 @@
 import { useContext } from "react";
 import { Soup, UserPen, BookOpen } from "lucide-react";
 import { AuthContext } from "../../../../context/AuthContext.jsx";
-
+import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
 import SubMenuGeneric from "../../../../components/subMenuGeneric/SubMenuGeneric.jsx";
 import PropTypes from "prop-types";
-import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
 
 const DietSubMenu = ({ isDetailPage = false }) => {
     const { activeOption, setActiveOption } = useContext(UserDietsContext);
