@@ -9,13 +9,13 @@ import {buildMealFormData} from "../../utils/helpers/buildMealFormData.js";
 import {updateMealApi} from "../../../../services/apiService.js";
 import {refreshMealsList} from "../../../../utils/helpers/refreshMealsList.js";
 import {handleApiError} from "../../../../utils/helpers/handleApiError.js";
-import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
-import CustomBox from "../../../../components/layout/CustomBox.jsx";
-import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
-import CustomTextField from "../../../../components/layout/CustomTextField.jsx";
 import CreateMealMealIngredients from "../createMealMealIngredients/CreateMealMealIngredients.jsx";
 import CreateMealDropdowns from "../createMealDropdowns/MealDropdowns.jsx";
 import MealImageUploader from "../createMealForm/mealImageUploader/MealImageUploader.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import CustomTextField from "../../../../components/layout/CustomTextField.jsx";
+import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import {mealSchema} from "../../../../utils/valadition/validationSchemas.js";
 
@@ -37,7 +37,7 @@ export default function UpdateMealForm() {
     } = useForm({
         mode: "onChange",
         resolver: yupResolver(mealSchema),
-        defaultValues: {}, // wordt overschreven door reset in useMealFormData
+        defaultValues: {},
     });
 
     const { loading, imageUrl, setImageUrl } = useMealFormData(mealId, reset);
