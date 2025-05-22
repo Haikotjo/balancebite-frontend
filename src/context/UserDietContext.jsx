@@ -28,9 +28,9 @@ export const UserDietsProvider = ({ children }) => {
             let dietsData;
 
             if (activeOption === "Created Diets") {
-                dietsData = await getCreatedDietPlansApi(page - 1, 12); // gebruik aparte API
+                dietsData = await getCreatedDietPlansApi(page - 1, 12);
             } else {
-                dietsData = await fetchDiets(currentListEndpoint); // standaard gedrag
+                dietsData = await fetchDiets(currentListEndpoint);
             }
 
             console.log("[fetchDietsData] ontvangen dietsData:", dietsData);

@@ -1,14 +1,16 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DietCard from "../../components/dietCard/DietCard.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import Spinner from "../../../../components/layout/Spinner.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import SubMenu from "../../components/subMenu/SubMenu.jsx";
-import {getPublicDietPlanByIdApi, getUserDietPlanByIdApi} from "../../../../services/apiService.js";
+import { getPublicDietPlanByIdApi } from "../../../../services/apiService.js";
+import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
 
 const DietDetailsPage = () => {
     const { dietId } = useParams();
+    const { userDiets } = useContext(UserDietsContext);
     const [diet, setDiet] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -16,28 +18,27 @@ const DietDetailsPage = () => {
     useEffect(() => {
         if (!dietId) return;
 
+        const dietFromUser = userDiets.find(d => String(d.id) === String(dietId));
+        if (dietFromUser) {
+            setDiet(dietFromUser);
+            setLoading(false);
+            return;
+        }
+
         const fetchDiet = async () => {
             try {
-                const privateDiet = await getUserDietPlanByIdApi(dietId);
-                setDiet(privateDiet);
+                const publicDiet = await getPublicDietPlanByIdApi(dietId);
+                setDiet(publicDiet);
             } catch (err) {
-                if (err.response?.status === 403 || err.response?.status === 404) {
-                    try {
-                        const publicDiet = await getPublicDietPlanByIdApi(dietId);
-                        setDiet(publicDiet);
-                    } catch {
-                        setError(true);
-                    }
-                } else {
-                    setError(true);
-                }
-            } finally {
+                console.error("Failed to fetch diet:", err);
+                setError(true);
+            }finally {
                 setLoading(false);
             }
         };
 
         fetchDiet();
-    }, [dietId]);
+    }, [dietId, userDiets]);
 
     if (loading) {
         return (
