@@ -50,7 +50,7 @@ const MealCard = ({ meal, viewMode = "page"  }) => {
                     className="absolute top-0 left-0 w-full flex items-center justify-between px-2 py-1 z-10 pointer-events-auto cursor-default"
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <CustomBox className="absolute inset-0 bg-[rgba(255,255,255,0.4)] rounded-md z-0" />
+                    <CustomBox className="absolute inset-0 rounded-md z-0" />
                     <CustomBox className="flex items-center justify-between w-full z-10">
                         {meal.preparationTime && (
                             <PreparationTimeIcon preparationTime={meal.preparationTime} layout="inline" />

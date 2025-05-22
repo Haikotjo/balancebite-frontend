@@ -4,6 +4,7 @@ import UpdateDietForm from "../../components/upfateDietForm/UpdateDietForm.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import {useUpdateDiet} from "../../utils/hooks/useUpdateDiet.js";
+import Spinner from "../../../../components/layout/Spinner.jsx";
 
 const UpdateDietPage = () => {
     const { dietId } = useParams();
@@ -17,6 +18,15 @@ const UpdateDietPage = () => {
             navigate(`/diet/${dietId}`);
         }, 2000);
     });
+
+    if (loading) {
+        return (
+            <CustomBox className="flex flex-col items-center justify-center h-[calc(100vh-64px)]">
+                <Spinner />
+                <p className="mt-2 text-sm text-muted-foreground">Loading...</p>
+            </CustomBox>
+        );
+    }
 
     return (
         <CustomBox className="max-w-[600px] mx-auto px-2 sm:px-4 pb-[4rem] sm:pb-[2rem] overflow-y-auto h-[calc(100vh-64px)] md:overflow-visible md:h-auto">

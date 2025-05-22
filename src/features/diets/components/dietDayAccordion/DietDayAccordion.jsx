@@ -34,9 +34,8 @@ const DietDayAccordion = ({ day }) => {
             {/* MacroSummary onderaan dag */}
             <CustomBox className="my-4">
                 <CustomTypography variant="small" className="mb-2">
-                    Daily macros:
                 </CustomTypography>
-                <MacroSummary totalNutrients={day.totalNutrients} />
+                <MacroSummary totalNutrients={day.totalNutrients} compact />
             </CustomBox>
 
             {/* Meals */}

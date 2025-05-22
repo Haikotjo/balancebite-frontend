@@ -18,6 +18,17 @@ const DietDayCard = ({ day }) => {
             <CustomTypography variant="h2" bold className="mb-2">
                 {day.dayLabel}
             </CustomTypography>
+
+            {day.dietDayDescription && (
+                <AccordionItem title="Day Description" defaultOpen={true}>
+                    <CustomTypography variant="paragraphCard" className="italic">
+                        {day.dietDayDescription}
+                    </CustomTypography>
+                </AccordionItem>
+            )}
+
+            <MacroSummary totalNutrients={day.totalNutrients} className="my-4" />
+
             <AccordionItem title="Meals" defaultOpen={true}>
                 {day.meals?.length > 0 ? (
                     <HorizontalScrollSection
@@ -131,8 +142,6 @@ const DietDayCard = ({ day }) => {
             )}
 
             </AccordionItem>
-
-            <MacroSummary totalNutrients={day.totalNutrients} className="my-4" />
 
         </CustomBox>
     );

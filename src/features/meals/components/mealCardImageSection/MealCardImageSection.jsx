@@ -40,7 +40,6 @@ const MealCardImageSection = ({
                     className="absolute top-0 left-0 w-full flex items-center justify-between px-2 py-1 z-0 pointer-events-auto cursor-default"
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <CustomBox className="absolute inset-0 z-0" />
                     <CustomBox className="flex items-center justify-between w-full z-10">
                         {meal.preparationTime && (
                             <PreparationTimeIcon preparationTime={meal.preparationTime} layout="inline" />

@@ -7,12 +7,12 @@ import CustomDivider from "../../../components/layout/CustomDivider.jsx";
 import CustomBox from "../../../components/layout/CustomBox.jsx";
 import { UserPen } from "lucide-react";
 import {getAverageNutrients} from "../utils/helpers/getAverageNutrients.js";
-import MacroSummary from "../components/macroSummary/MacroSummary.jsx";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import HorizontalScrollSection from "../../../components/horizontalScrollSection/HorizontalScrollSection.jsx";
 import MealCardCompact from "../../meals/components/mealCardCompact/MealCardCompact.jsx";
 import DietCardActionButtons from "../components/dietCardActionButtons/DietCardActionButtons.jsx";
+import AverageNutrientSummary from "../components/averageNutrientSummary/AverageNutrientSummary.jsx";
 
 const DietListCard = ({ diet, compact = false }) => {
     const averages = getAverageNutrients(diet.dietDays);
@@ -22,14 +22,14 @@ const DietListCard = ({ diet, compact = false }) => {
     return (
         <CustomCard className="p-4">
             <CustomBox className="mb-2 flex gap-2 justify-end">
-                <DietCardActionButtons diet={diet} />
+                <DietCardActionButtons diet={diet} viewMode="list" />
             </CustomBox>
             {/* Diet title with navigation link */}
             <CustomBox
                 onClick={() => navigate(`/diet/${diet.id}`)}
-                className="mb-2 cursor-pointer flex items-center gap-2 text-primary"
+                className="mb-2 cursor-pointer flex items-center gap-2 text-primary max-w-full min-w-0"
             >
-                <CustomTypography variant="h4" className="hover:text-primary">
+            <CustomTypography variant="h4"   className="hover:text-primary break-words truncate max-w-full">
                     {diet.name}
                 </CustomTypography>
                 <ChevronRight size={18} />
@@ -49,33 +49,14 @@ const DietListCard = ({ diet, compact = false }) => {
 
             {/* Average daily macro breakdown */}
             {averages && (
-                <CustomBox>
+                <AverageNutrientSummary averages={averages} dayCount={diet.dietDays.length} />
 
-                    <CustomTypography variant="small" className="mb-1 italic">
-                        ({diet.dietDays.length}-day diet)
-                    </CustomTypography>
-
-                    <CustomTypography variant="small" className="mb-2 italic">
-                      Average daily intake:
-                    </CustomTypography>
-
-                    <MacroSummary
-                        className="mb-2"
-                        totalNutrients={{
-                            "Energy kcal": { value: Math.round(averages.avgCalories) },
-                            "Protein g": { value: Math.round(averages.avgProtein) },
-                            "Total lipid (fat) g": { value: Math.round(averages.avgFat) },
-                            "Carbohydrates g": { value: Math.round(averages.avgCarbs) },
-                        }}
-                    />
-                    <CustomDivider className="my-4" />
-                </CustomBox>
             )}
 
 
             {/* All diet days */}
             {!compact && diet.dietDays.map((day) => (
-                <DietDayAccordion key={day.id} day={day} />
+                <DietDayAccordion key={day.id} day={day} compact />
             ))}
 
             {!compact && <CustomDivider className="my-4" />}
