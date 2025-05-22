@@ -35,27 +35,19 @@ const MealDetailsPage = () => {
     }
 
     return (
-        <CustomBox className="max-w-screen-xl mx-auto mt-4 px-4">
-            <CustomBox className="my-10">
-                <SubMenu isDetailPage/>
-            </CustomBox>
+        <CustomBox className="pt-6 sm:pt-10 pb-20 sm:pb-10 px-4">
+            <CustomBox className="max-w-screen-xl mx-auto">
+                    <SubMenu isDetailPage />
+                {/* Alleen tonen op small screens */}
+                <CustomBox className="block md:hidden justify-center">
+                    <MealDetailCard meal={meal} viewMode="page" />
+                </CustomBox>
 
-            {/* Alleen tonen op small screens */}
-            <CustomBox className="block md:hidden justify-center">
-                <MealDetailCard
-                    meal={meal}
-                    viewMode="page"
-                />
+                <CustomBox className="hidden md:flex justify-center">
+                    <MealCard meal={meal} />
+                </CustomBox>
             </CustomBox>
-
-            <CustomBox className="hidden md:flex justify-center">
-                <MealCard
-                    meal={meal}
-                />
-            </CustomBox>
-
         </CustomBox>
-
     );
 };
 

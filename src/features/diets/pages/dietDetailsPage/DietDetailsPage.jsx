@@ -50,29 +50,28 @@ const DietDetailsPage = () => {
 
     if (error || !diet) {
         return (
-            <>
-                <CustomBox className="mb-4 mt-10">
-                    <SubMenu isDetailPage />
-                </CustomBox>
+            <CustomBox className="pt-6 sm:pt-10 pb-20 sm:pb-10 px-4">
+                <SubMenu isDetailPage />
+
                 <CustomTypography
                     className="text-2xl font-bold text-center mt-10 text-error"
                 >
                     Diet not found or access denied
                 </CustomTypography>
-            </>
+            </CustomBox>
         );
     }
 
     return (
-        <CustomBox className="max-w-screen-xl mx-auto mt-4 px-4">
-            <CustomBox className="my-8">
-                <SubMenu isDetailPage />
-            </CustomBox>
-
-            <CustomBox className="flex justify-center">
-                <DietCard diet={diet} />
+        <CustomBox className="pt-6 sm:pt-10 pb-20 sm:pb-10 px-4">
+            <CustomBox className="max-w-screen-xl mx-auto">
+                    <SubMenu isDetailPage />
+                <CustomBox className="flex justify-center">
+                    <DietCard diet={diet} />
+                </CustomBox>
             </CustomBox>
         </CustomBox>
+
     );
 };
 

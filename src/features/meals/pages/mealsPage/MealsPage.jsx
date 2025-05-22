@@ -64,7 +64,7 @@ function MealPage() {
 
 
     return (
-        <CustomBox className="flex flex-col items-center pt-4 gap-4">
+        <CustomBox className="flex flex-col items-center pt-4 gap-4 pb-20 sm:pb-0">
 
             {/* Search Bar */}
                 <CustomBox

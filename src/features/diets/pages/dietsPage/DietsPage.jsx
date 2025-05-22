@@ -32,9 +32,9 @@ const DietsPage = () => {
     }, [searchParams, setActiveOption]);
 
     return (
-        <CustomBox className="mt-10 p-4">
+        <CustomBox className="pt-6 sm:pt-10 px-4 pb-20 sm:pb-10">
 
-            <SubMenu />
+        <SubMenu />
 
             {error && <p className="text-red-500">Fout bij ophalen: {error}</p>}
             {loading ? (
