@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useForm, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useState, useEffect } from "react";
+import {useState, useEffect, useContext} from "react";
 import PropTypes from "prop-types";
 import { useFetchMeals } from "../../../../hooks/useFetchMeals.js";
 import { getUserDietPlanByIdApi } from "../../../../services/apiService.js";
@@ -12,12 +12,16 @@ import CustomTextField from "../../../../components/layout/CustomTextField.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import { createDietPlanSchema } from "../../../../utils/valadition/validationSchemas.js";
+import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
 
 export default function UpdateDietForm({ onSubmit }) {
     const { dietId } = useParams();
     const [days, setDays] = useState([]);
     const [loadingDiet, setLoadingDiet] = useState(true);
     const [errorDiet, setErrorDiet] = useState("");
+    const [showError, setShowError] = useState(true);
+    const { userMeals } = useContext(UserMealsContext);
+
 
     const {
         register,
@@ -62,6 +66,7 @@ export default function UpdateDietForm({ onSubmit }) {
             } catch (err) {
                 console.error("Fout bij ophalen dieet:", err);
                 setErrorDiet("Failed to fetch diet.");
+                setShowError(true);
             } finally {
                 setLoadingDiet(false);
             }
@@ -99,9 +104,9 @@ export default function UpdateDietForm({ onSubmit }) {
         setDays(prev => [...prev, { mealIds: ["", ""] }]);
     };
 
-    const removeDay = () => {
-        remove(dietDaysFields.length - 1);
-        setDays(prev => prev.slice(0, -1));
+    const removeDay = (index) => {
+        remove(index);
+        setDays(prev => prev.filter((_, i) => i !== index));
     };
 
     const handleFormSubmit = (formData) => {
@@ -125,9 +130,21 @@ export default function UpdateDietForm({ onSubmit }) {
 
     if (errorDiet || mealsError) {
         return (
-            <ErrorDialog open onClose={() => {}} message={errorDiet || mealsError} type="error" />
+            <ErrorDialog
+                open={showError}
+                onClose={() => setShowError(false)}
+                message={errorDiet || mealsError}
+                type="error"
+            />
+
         );
     }
+
+    const combinedOptions = [
+        ...(mealOptions || []),
+        ...(userMeals || []).map(m => ({ value: m.id.toString(), label: m.name })),
+    ];
+
 
     return (
         <form onSubmit={handleSubmit(handleFormSubmit)}>
@@ -184,8 +201,8 @@ export default function UpdateDietForm({ onSubmit }) {
                                     placeholder={mealIndex < 2
                                         ? "Search and select at least 2 meals"
                                         : "Search and select meal"}
-                                    options={mealOptions}
-                                    value={mealOptions.find(m => m.value === id) || { value: "", label: "" }}
+                                    options={combinedOptions}
+                                    value={combinedOptions.find(m => m.value === id) || { value: id }}
                                     onChange={sel => handleChangeMealId(dayIndex, mealIndex, sel?.value || "")}
                                 />
                                 {(days[dayIndex]?.mealIds.length ?? 0) > 1 && (
@@ -219,6 +236,18 @@ export default function UpdateDietForm({ onSubmit }) {
                                 + Add Meal
                             </CustomTypography>
                         </CustomButton>
+
+                        {days.length > 1 && (
+                            <CustomButton
+                                type="button"
+                                onClick={() => removeDay(dayIndex)}
+                                className="group p-2"
+                            >
+                                <CustomTypography className="text-error group-hover:text-primary group-hover:underline cursor-pointer">
+                                    Remove Day
+                                </CustomTypography>
+                            </CustomButton>
+                        )}
                     </CustomBox>
                 ))}
 
@@ -228,13 +257,6 @@ export default function UpdateDietForm({ onSubmit }) {
                             + Add Day
                         </CustomTypography>
                     </CustomButton>
-                    {days.length > 1 && (
-                        <CustomButton type="button" onClick={removeDay} className="group p-2">
-                            <CustomTypography className="text-error group-hover:text-primary group-hover:underline cursor-pointer">
-                                Remove Day
-                            </CustomTypography>
-                        </CustomButton>
-                    )}
                 </CustomBox>
 
                 <CustomButton type="submit" className="group p-2" disabled={!isValid}>
