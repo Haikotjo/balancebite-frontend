@@ -8,8 +8,11 @@ import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
 const DietsList = ({ diets, onItemClick }) => {
     const { userDiets } = useContext(UserDietsContext);
 
+
     return (
+
         <CustomBox className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
+
             {diets.map((diet) => {
                 const userDietMatch = userDiets.find(userDiet =>
                     String(userDiet.originalDietId) === String(diet.id)

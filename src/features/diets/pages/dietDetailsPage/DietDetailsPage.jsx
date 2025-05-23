@@ -40,6 +40,35 @@ const DietDetailsPage = () => {
         fetchDiet();
     }, [dietId, userDiets]);
 
+
+    useEffect(() => {
+        if (!dietId) return;
+
+        const dietFromUser = userDiets.find(d => String(d.id) === String(dietId));
+        if (dietFromUser) {
+            console.log("[✅ DietDetailsPage] Loaded diet from userDiets:", dietFromUser); // 🔍 log
+            setDiet(dietFromUser);
+            setLoading(false);
+            return;
+        }
+
+        const fetchDiet = async () => {
+            try {
+                const publicDiet = await getPublicDietPlanByIdApi(dietId);
+                console.log("[🌐 DietDetailsPage] Loaded public diet from API:", publicDiet); // 🔍 log
+                setDiet(publicDiet);
+            } catch (err) {
+                console.error("❌ Failed to fetch diet:", err);
+                setError(true);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchDiet();
+    }, [dietId, userDiets]);
+
+
     if (loading) {
         return (
             <CustomBox className="flex justify-center mt-10">

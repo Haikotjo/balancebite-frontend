@@ -18,6 +18,8 @@ export const UserDietsProvider = ({ children }) => {
     const [sortBy, setSortBy] = useState(null);
     const [activeOption, setActiveOption] = useState("All Diets");
     const [currentListEndpoint, setCurrentListEndpoint] = useState("");
+    const [sortKey, setSortKey] = useState("name");
+    const [sortOrder, setSortOrder] = useState("asc");
 
 
     const fetchDietsData = useCallback(async () => {
@@ -30,10 +32,16 @@ export const UserDietsProvider = ({ children }) => {
             if (activeOption === "Created Diets") {
                 dietsData = await getCreatedDietPlansApi(page - 1, 12);
             } else {
-                dietsData = await fetchDiets(currentListEndpoint);
-            }
+                const params = new URLSearchParams();
+                params.set("sortBy", sortKey);
+                params.set("sortOrder", sortOrder);
+                params.set("page", page - 1);
+                params.set("size", 12);
 
-            console.log("[fetchDietsData] ontvangen dietsData:", dietsData);
+                const fullUrl = `${currentListEndpoint}?${params.toString()}`;
+
+                dietsData = await fetchDiets(fullUrl);
+            }
 
             setDiets(dietsData.content || []);
             setTotalPages(dietsData.totalPages || 1);
@@ -44,7 +52,8 @@ export const UserDietsProvider = ({ children }) => {
         } finally {
             setLoadingDiets(false);
         }
-    }, [currentListEndpoint, activeOption, page]);
+    }, [currentListEndpoint, activeOption, page, sortBy, sortOrder]);
+
 
     const fetchUserDietsData = useCallback(async () => {
         setLoadingUserDiets(true);
@@ -83,14 +92,14 @@ export const UserDietsProvider = ({ children }) => {
             baseUrl += `&${key}=${encodeURIComponent(value)}`;
         });
 
-        if (sortBy?.sortKey && sortBy?.sortOrder) {
-            baseUrl += `&sortBy=${sortBy.sortKey}&sortOrder=${sortBy.sortOrder}`;
+        if (sortKey && sortOrder) {
+            baseUrl += `&sortBy=${sortKey}&sortOrder=${sortOrder}`;
         }
 
         if (baseUrl !== currentListEndpoint) {
             setCurrentListEndpoint(baseUrl);
         }
-    }, [activeOption, filters, sortBy, page]);
+    }, [activeOption, filters, sortKey, sortOrder, page]);
 
     useEffect(() => {
         if (!currentListEndpoint) return;
@@ -139,8 +148,10 @@ export const UserDietsProvider = ({ children }) => {
                 setActiveOption,
                 filters,
                 setFilters,
-                sortBy,
-                setSortBy,
+                sortKey,
+                setSortKey,
+                sortOrder,
+                setSortOrder,
                 fetchUserDietsData,
                 fetchDietsData,
                 addDietToUserDiets,
@@ -150,10 +161,9 @@ export const UserDietsProvider = ({ children }) => {
                 page,
                 setPage,
                 totalPages,
-
             }}
         >
-            {children}
+        {children}
         </UserDietsContext.Provider>
     );
 };
