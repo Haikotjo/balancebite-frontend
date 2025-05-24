@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import {useContext, useEffect, useState} from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
@@ -7,6 +7,7 @@ import DietsList from "../../components/dietsList/DietsList.jsx";
 import SubMenu from "../../components/subMenu/SubMenu.jsx";
 import Spinner from "../../../../components/layout/Spinner.jsx";
 import CustomPagination from "../../../../components/customPagination/CustomPagination.jsx";
+import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 
 const DietsPage = () => {
     const {
@@ -25,6 +26,7 @@ const DietsPage = () => {
         setSortOrder,
     } = useContext(UserDietsContext);
 
+    const [showErrorDialog, setShowErrorDialog] = useState(false);
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
@@ -63,6 +65,11 @@ const DietsPage = () => {
         setPage(1);
     }, [sortKey, sortOrder]);
 
+    useEffect(() => {
+        if (error) {
+            setShowErrorDialog(true);
+        }
+    }, [error]);
 
     return (
         <CustomBox className="pt-6 sm:pt-10 px-4 pb-20 sm:pb-10">
@@ -91,7 +98,13 @@ const DietsPage = () => {
                 ))}
             </CustomBox>
 
-            {error && <p className="text-red-500">Fout bij ophalen: {error}</p>}
+            <ErrorDialog
+                open={showErrorDialog}
+                onClose={() => setShowErrorDialog(false)}
+                message={`Unable to load diets: ${error}`}
+                type="error"
+            />
+
 
             {loading ? (
                 <Spinner className="mx-auto my-10" />

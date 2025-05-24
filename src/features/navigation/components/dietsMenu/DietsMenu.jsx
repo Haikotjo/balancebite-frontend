@@ -6,6 +6,7 @@ import CustomDropdownWeb from "../../../../components/layout/CustomDropdownWeb.j
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import {ChevronDown, Apple, Pencil, UserCheck, BookOpen, UserPen, ChevronUp} from "lucide-react";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
 
 /**
  * DietsMenu component renders a dropdown for navigating diet-related pages.
@@ -15,6 +16,8 @@ const DietsMenu = () => {
     const [authMsg, setAuthMsg] = useState(null);
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
+    const { setActiveOption } = useContext(UserDietsContext);
+
 
     const showAuth = (label) => {
         setAuthMsg(`Please log in to access ${label.toLowerCase()}.`);
@@ -55,6 +58,7 @@ const DietsMenu = () => {
                         label: "Explore Diets",
                         icon: BookOpen,
                         onClick: () => {
+                            setActiveOption("All Diets");
                             setOpen(false);
                             navigate("/diets");
                         },
@@ -65,8 +69,9 @@ const DietsMenu = () => {
                         disabled: !user,
                         onClick: () => {
                             if (!user) return showAuth("My Diets");
+                            setActiveOption("My Diets");
                             setOpen(false);
-                            navigate("/diets?tab=my-diets");
+                            navigate("/diets");
                         },
                     },
                     {
@@ -75,20 +80,12 @@ const DietsMenu = () => {
                         disabled: !user,
                         onClick: () => {
                             if (!user) return showAuth("Created Diets");
+                            setActiveOption("Created Diets");
                             setOpen(false);
-                            navigate("/meals");
+                            navigate("/diets");
                         },
                     },
-                    {
-                        label: "Create Diet",
-                        icon: Pencil,
-                        disabled: !user,
-                        onClick: () => {
-                            if (!user) return showAuth("Create Diet");
-                            setOpen(false);
-                            navigate("/create-diet");
-                        },
-                    },
+
                 ]}
             />
 

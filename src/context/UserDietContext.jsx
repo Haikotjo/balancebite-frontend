@@ -76,6 +76,8 @@ export const UserDietsProvider = ({ children }) => {
     }, [activeOption, filters, page, sortKey, sortOrder, applyUserCopies]);
 
     const fetchUserDietsData = useCallback(async () => {
+        const token = localStorage.getItem("accessToken");
+        if (!token) return;
         setLoadingUserDiets(true);
         try {
             const token = localStorage.getItem("accessToken");
@@ -98,6 +100,22 @@ export const UserDietsProvider = ({ children }) => {
         }
     }, []);
 
+    // Publieke diëten (werkt ook zonder user)
+    useEffect(() => {
+        if (activeOption !== "All Diets") return;
+
+        const currentParams = {
+            page: page - 1,
+            size: 12,
+            sortBy: sortKey,
+            sortOrder,
+            ...filters
+        };
+
+        fetchDietsData([], currentParams);
+    }, [activeOption, user, page, sortKey, sortOrder, filters]);
+
+// User-diëten (alleen als user bestaat)
     useEffect(() => {
         if (!user) return;
 
@@ -109,14 +127,15 @@ export const UserDietsProvider = ({ children }) => {
             ...filters
         };
 
-        if (activeOption === "All Diets") {
+        if (activeOption === "Created Diets" || activeOption === "My Diets") {
+            fetchDietsData([], currentParams);
+        } else {
             fetchUserDietsData().then(() => {
                 fetchDietsData(userDiets, currentParams);
             });
-        } else {
-            fetchDietsData([], currentParams);
         }
     }, [activeOption, user, page, sortKey, sortOrder, filters]);
+
 
     useEffect(() => {
         if (user) {
