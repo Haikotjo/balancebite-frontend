@@ -36,10 +36,7 @@ const DietsPage = () => {
 
         setSortKey(field);
         setSortOrder(newOrder);
-
-        console.log(`[🔀 SORT] Sorting by ${field} (${newOrder})`);
     };
-
 
     // Pas activeOption aan op basis van zoekparams
     useEffect(() => {
@@ -49,17 +46,6 @@ const DietsPage = () => {
         }
     }, [searchParams, setActiveOption]);
 
-
-    // Log gesorteerde waarden
-    useEffect(() => {
-        if (diets && diets.length > 0) {
-            const top = diets.slice(0, 5).map(diet => ({
-                name: diet.name,
-                value: diet[sortKey],
-            }));
-            console.log("🔍 Top 5 sorted diets:", top);
-        }
-    }, [diets, sortKey]);
 
     useEffect(() => {
         setPage(1);

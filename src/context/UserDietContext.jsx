@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import {createContext, useContext, useState, useEffect, useCallback, useRef} from "react";
 import PropTypes from "prop-types";
 import { AuthContext } from "./AuthContext";
 import {
@@ -22,6 +22,11 @@ export const UserDietsProvider = ({ children }) => {
     const [sortOrder, setSortOrder] = useState("asc");
     const [activeOption, setActiveOption] = useState("All Diets");
     const [favoriteDiets, setFavoriteDiets] = useState([]);
+
+    const userDietsRef = useRef(userDiets);
+    useEffect(() => {
+        userDietsRef.current = userDiets;
+    }, [userDiets]);
 
     const applyUserCopies = useCallback((publicDiets, userCopies) => {
         return publicDiets.map(diet => {
@@ -68,7 +73,6 @@ export const UserDietsProvider = ({ children }) => {
             setTotalPages(data.totalPages || 1);
             setError(null);
         } catch (err) {
-            console.error("❌ Error fetching diets:", err);
             setError(err.message);
         } finally {
             setLoadingDiets(false);
@@ -100,7 +104,6 @@ export const UserDietsProvider = ({ children }) => {
         }
     }, []);
 
-    // Publieke diëten (werkt ook zonder user)
     useEffect(() => {
         if (activeOption !== "All Diets") return;
 
@@ -112,10 +115,11 @@ export const UserDietsProvider = ({ children }) => {
             ...filters
         };
 
-        fetchDietsData([], currentParams);
-    }, [activeOption, user, page, sortKey, sortOrder, filters]);
+        (async () => {
+            await fetchDietsData([], currentParams);
+        })();
+    }, [activeOption, user, page, sortKey, sortOrder, filters, fetchDietsData]);
 
-// User-diëten (alleen als user bestaat)
     useEffect(() => {
         if (!user) return;
 
@@ -124,24 +128,30 @@ export const UserDietsProvider = ({ children }) => {
             size: 12,
             sortBy: sortKey,
             sortOrder,
-            ...filters
+            ...filters,
         };
 
-        if (activeOption === "Created Diets" || activeOption === "My Diets") {
-            fetchDietsData([], currentParams);
-        } else {
-            fetchUserDietsData().then(() => {
-                fetchDietsData(userDiets, currentParams);
-            });
-        }
-    }, [activeOption, user, page, sortKey, sortOrder, filters]);
+        const run = async () => {
+            if (activeOption === "Created Diets" || activeOption === "My Diets") {
+                await fetchDietsData([], currentParams);
+            } else {
+                await fetchUserDietsData();
+                await fetchDietsData(userDietsRef.current, currentParams);
+            }
+        };
 
+        run().catch(console.error);
+    }, [activeOption, user, page, sortKey, sortOrder, filters, fetchDietsData, fetchUserDietsData]);
 
     useEffect(() => {
-        if (user) {
-            fetchUserDietsData();
-        }
-    }, [user]);
+        if (!user) return;
+
+        const run = async () => {
+            await fetchUserDietsData();
+        };
+
+        run().catch(console.error);
+    }, [user, fetchUserDietsData]);
 
     const replaceDietInDiets = (originalDietId, newDiet) => {
         setDiets(prev => [
