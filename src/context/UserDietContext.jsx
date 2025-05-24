@@ -30,7 +30,7 @@ export const UserDietsProvider = ({ children }) => {
         });
     }, []);
 
-    const fetchDietsData = useCallback(async (userCreatedDiets = []) => {
+    const fetchDietsData = useCallback(async (userCreatedDiets = [], overrideParams = null) => {
         setLoadingDiets(true);
         try {
             const token = localStorage.getItem("accessToken");
@@ -42,13 +42,15 @@ export const UserDietsProvider = ({ children }) => {
             ];
             const safeSortKey = validSortKeys.includes(sortKey) ? sortKey : "createdAt";
 
-            const params = {
+            const defaultParams = {
                 page: page - 1,
                 size: 12,
                 sortBy: safeSortKey,
                 sortOrder,
                 ...filters
             };
+
+            const params = overrideParams || defaultParams;
 
             let data;
             if (activeOption === "Created Diets") {
@@ -73,24 +75,19 @@ export const UserDietsProvider = ({ children }) => {
         }
     }, [activeOption, filters, page, sortKey, sortOrder, applyUserCopies]);
 
-    const fetchUserDietsData = useCallback(async (triggerDietsFetch = false) => {
+    const fetchUserDietsData = useCallback(async () => {
         setLoadingUserDiets(true);
         try {
             const token = localStorage.getItem("accessToken");
             if (token) {
-                const saved = await getAllUserDietPlans(token, { mode: "saved", page: 0, size: 100 });
-                const created = await getAllUserDietPlans(token, { mode: "created", page: 0, size: 100 });
+                const saved = await getAllUserDietPlans(token, { mode: "saved", page: 0, size: 1000 });
+                const created = await getAllUserDietPlans(token, { mode: "created", page: 0, size: 1000 });
 
-                const createdList = created.content || [];
                 const savedList = saved.content || [];
-                const combined = [...createdList, ...savedList];
+                const createdList = created.content || [];
 
                 setFavoriteDiets(savedList);
-                setUserDiets(combined);
-
-                if (triggerDietsFetch) {
-                    await fetchDietsData(combined); // ✅ hier wordt het correct gedaan
-                }
+                setUserDiets([...createdList, ...savedList]);
             }
         } catch (err) {
             console.error("⚠️ Failed to fetch user diets:", err.message);
@@ -99,22 +96,27 @@ export const UserDietsProvider = ({ children }) => {
         } finally {
             setLoadingUserDiets(false);
         }
-    }, [fetchDietsData]);
-
+    }, []);
 
     useEffect(() => {
         if (!user) return;
 
+        const currentParams = {
+            page: page - 1,
+            size: 12,
+            sortBy: sortKey,
+            sortOrder,
+            ...filters
+        };
+
         if (activeOption === "All Diets") {
-            fetchUserDietsData(true); // ✅ laat die het regelen
-        } else if (activeOption === "My Diets") {
-            fetchUserDietsData();
+            fetchUserDietsData().then(() => {
+                fetchDietsData(userDiets, currentParams);
+            });
         } else {
-            fetchDietsData([]); // bijv. voor "Templates" of andere optie
+            fetchDietsData([], currentParams);
         }
     }, [activeOption, user, page, sortKey, sortOrder, filters]);
-
-
 
     useEffect(() => {
         if (user) {

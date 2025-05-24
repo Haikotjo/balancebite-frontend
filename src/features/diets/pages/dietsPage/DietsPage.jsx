@@ -6,6 +6,7 @@ import ScrollToTopButton from "../../../../components/scrollToTopButton/ScrollTo
 import DietsList from "../../components/dietsList/DietsList.jsx";
 import SubMenu from "../../components/subMenu/SubMenu.jsx";
 import Spinner from "../../../../components/layout/Spinner.jsx";
+import CustomPagination from "../../../../components/customPagination/CustomPagination.jsx";
 
 const DietsPage = () => {
     const {
@@ -46,10 +47,6 @@ const DietsPage = () => {
         }
     }, [searchParams, setActiveOption]);
 
-    // Trigger data ophalen bij load of verandering
-    useEffect(() => {
-        fetchDietsData();
-    }, [activeOption, page, sortKey, sortOrder, fetchDietsData]);
 
     // Log gesorteerde waarden
     useEffect(() => {
@@ -61,6 +58,11 @@ const DietsPage = () => {
             console.log("🔍 Top 5 sorted diets:", top);
         }
     }, [diets, sortKey]);
+
+    useEffect(() => {
+        setPage(1);
+    }, [sortKey, sortOrder]);
+
 
     return (
         <CustomBox className="pt-6 sm:pt-10 px-4 pb-20 sm:pb-10">
@@ -100,6 +102,15 @@ const DietsPage = () => {
                 />
             )}
 
+            {totalPages > 1 && (
+                <CustomBox className="mt-2 mb-20 sm:mb-8">
+                    <CustomPagination
+                        currentPage={page}
+                        totalPages={totalPages}
+                        onPageChange={(newPage) => setPage(newPage)}
+                    />
+                </CustomBox>
+            )}
             <ScrollToTopButton />
         </CustomBox>
     );
