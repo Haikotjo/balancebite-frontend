@@ -17,12 +17,16 @@ import useFavoritesDiets from "./useFavoriteDiets.js";
  *  - isProcessing: Boolean indicating if the toggle is in progress.
  */
 export const useToggleDietFavorite = (diet, onAuthRequired, onError, onSuccess) => {
-    const { userDiets } = useContext(UserDietsContext);
+    const {
+        favoriteDiets,
+        addDietToFavoritesInContext,
+        removeDietFromFavoritesInContext
+    } = useContext(UserDietsContext);
     const { user } = useContext(AuthContext);
     const { addDietToFavorites, removeDietFromFavorites } = useFavoritesDiets();
     const [isProcessing, setIsProcessing] = useState(false);
 
-    const alreadyFavorited = userDiets.some(userDiet => userDiet.id === diet.id);
+    const alreadyFavorited = favoriteDiets.some(fav => fav.id === diet.id);
 
     const toggleFavorite = async () => {
         if (!user) {
@@ -34,11 +38,14 @@ export const useToggleDietFavorite = (diet, onAuthRequired, onError, onSuccess) 
         try {
             if (alreadyFavorited) {
                 await removeDietFromFavorites(diet);
+                removeDietFromFavoritesInContext(diet.id); // ← context bijwerken
                 onSuccess?.(`${diet.name} removed from favorites`);
             } else {
                 await addDietToFavorites(diet);
+                addDietToFavoritesInContext(diet); // ← context bijwerken
                 onSuccess?.(`${diet.name} added to favorites`);
             }
+
         } catch (e) {
             console.error("❌ Favorite toggle failed:", e);
             console.log("⚠️ Full error object:", e.response?.data);

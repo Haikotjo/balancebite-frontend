@@ -1,7 +1,10 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { AuthContext } from "./AuthContext";
-import {fetchDiets, getAllUserDietPlansApi, getCreatedDietPlansApi} from "../services/apiService";
+import {
+    getAllPublicDietPlans,
+    getAllUserDietPlans
+} from "../services/ApiService";
 
 export const UserDietsContext = createContext();
 
@@ -15,36 +18,52 @@ export const UserDietsProvider = ({ children }) => {
     const { user } = useContext(AuthContext);
     const [error, setError] = useState(null);
     const [filters, setFilters] = useState({});
-    const [sortBy, setSortBy] = useState(null);
-    const [activeOption, setActiveOption] = useState("All Diets");
-    const [currentListEndpoint, setCurrentListEndpoint] = useState("");
     const [sortKey, setSortKey] = useState("name");
     const [sortOrder, setSortOrder] = useState("asc");
+    const [activeOption, setActiveOption] = useState("All Diets");
+    const [favoriteDiets, setFavoriteDiets] = useState([]);
 
+    const applyUserCopies = useCallback((publicDiets, userCopies) => {
+        return publicDiets.map(diet => {
+            const copy = userCopies.find(d => String(d.originalDietId) === String(diet.id));
+            return copy || diet;
+        });
+    }, []);
 
-    const fetchDietsData = useCallback(async () => {
-        if (!currentListEndpoint) return;
-
+    const fetchDietsData = useCallback(async (userCreatedDiets = []) => {
         setLoadingDiets(true);
         try {
-            let dietsData;
+            const token = localStorage.getItem("accessToken");
 
+            const validSortKeys = [
+                "avgProtein", "avgCarbs", "avgFat", "avgCalories",
+                "totalProtein", "totalCarbs", "totalFat", "totalCalories",
+                "createdAt", "name"
+            ];
+            const safeSortKey = validSortKeys.includes(sortKey) ? sortKey : "createdAt";
+
+            const params = {
+                page: page - 1,
+                size: 12,
+                sortBy: safeSortKey,
+                sortOrder,
+                ...filters
+            };
+
+            let data;
             if (activeOption === "Created Diets") {
-                dietsData = await getCreatedDietPlansApi(page - 1, 12);
+                data = await getAllUserDietPlans(token, { ...params, mode: "created" });
+                setDiets(data.content || []);
+            } else if (activeOption === "My Diets") {
+                data = await getAllUserDietPlans(token, { ...params, mode: "saved" });
+                setDiets(data.content || []);
             } else {
-                const params = new URLSearchParams();
-                params.set("sortBy", sortKey);
-                params.set("sortOrder", sortOrder);
-                params.set("page", page - 1);
-                params.set("size", 12);
-
-                const fullUrl = `${currentListEndpoint}?${params.toString()}`;
-
-                dietsData = await fetchDiets(fullUrl);
+                data = await getAllPublicDietPlans(params);
+                const replaced = applyUserCopies(data.content || [], userCreatedDiets);
+                setDiets(replaced);
             }
 
-            setDiets(dietsData.content || []);
-            setTotalPages(dietsData.totalPages || 1);
+            setTotalPages(data.totalPages || 1);
             setError(null);
         } catch (err) {
             console.error("❌ Error fetching diets:", err);
@@ -52,63 +71,49 @@ export const UserDietsProvider = ({ children }) => {
         } finally {
             setLoadingDiets(false);
         }
-    }, [currentListEndpoint, activeOption, page, sortBy, sortOrder]);
+    }, [activeOption, filters, page, sortKey, sortOrder, applyUserCopies]);
 
-
-    const fetchUserDietsData = useCallback(async () => {
+    const fetchUserDietsData = useCallback(async (triggerDietsFetch = false) => {
         setLoadingUserDiets(true);
         try {
             const token = localStorage.getItem("accessToken");
             if (token) {
-                const userDietsData = await getAllUserDietPlansApi(
-                    token,
-                    0,           // page
-                    12,          // size
-                    [],          // diets (leeg = geen filter)
-                    "name",      // sortBy
-                    "asc"        // sortOrder
-                );
-                setUserDiets(Array.isArray(userDietsData.content) ? userDietsData.content : []);
+                const saved = await getAllUserDietPlans(token, { mode: "saved", page: 0, size: 100 });
+                const created = await getAllUserDietPlans(token, { mode: "created", page: 0, size: 100 });
+
+                const createdList = created.content || [];
+                const savedList = saved.content || [];
+                const combined = [...createdList, ...savedList];
+
+                setFavoriteDiets(savedList);
+                setUserDiets(combined);
+
+                if (triggerDietsFetch) {
+                    await fetchDietsData(combined); // ✅ hier wordt het correct gedaan
+                }
             }
         } catch (err) {
             console.error("⚠️ Failed to fetch user diets:", err.message);
+            setFavoriteDiets([]);
             setUserDiets([]);
         } finally {
             setLoadingUserDiets(false);
         }
-    }, []);
-
+    }, [fetchDietsData]);
 
 
     useEffect(() => {
-        let baseUrl =
-            activeOption === "My Diets"
-                ? `/users/diet-plans?page=${page - 1}&size=12`
-                : activeOption === "Created Diets"
-                    ? `/users/diet-plans/created?page=${page - 1}&size=12`
-                    : `/public/diet-plans?page=${page - 1}&size=12`;
+        if (!user) return;
 
-        Object.entries(filters).forEach(([key, value]) => {
-            baseUrl += `&${key}=${encodeURIComponent(value)}`;
-        });
-
-        if (sortKey && sortOrder) {
-            baseUrl += `&sortBy=${sortKey}&sortOrder=${sortOrder}`;
-        }
-
-        if (baseUrl !== currentListEndpoint) {
-            setCurrentListEndpoint(baseUrl);
-        }
-    }, [activeOption, filters, sortKey, sortOrder, page]);
-
-    useEffect(() => {
-        if (!currentListEndpoint) return;
-        fetchDietsData();
-
-        if (activeOption === "My Diets" && user) {
+        if (activeOption === "All Diets") {
+            fetchUserDietsData(true); // ✅ laat die het regelen
+        } else if (activeOption === "My Diets") {
             fetchUserDietsData();
+        } else {
+            fetchDietsData([]); // bijv. voor "Templates" of andere optie
         }
-    }, [currentListEndpoint, user]);
+    }, [activeOption, user, page, sortKey, sortOrder, filters]);
+
 
 
     useEffect(() => {
@@ -118,23 +123,41 @@ export const UserDietsProvider = ({ children }) => {
     }, [user]);
 
     const replaceDietInDiets = (originalDietId, newDiet) => {
-        setDiets((prevDiets) =>
-            prevDiets.map((diet) =>
-                String(diet.id) === String(originalDietId) ? newDiet : diet
-            )
-        );
+        setDiets(prev => [
+            ...prev.filter(d => String(d.id) !== String(originalDietId)),
+            newDiet
+        ]);
+
+        setUserDiets(prev => [
+            ...prev.filter(d => String(d.id) !== String(originalDietId)),
+            newDiet
+        ]);
+
+        setFavoriteDiets(prev => [
+            ...prev.filter(d => String(d.id) !== String(originalDietId)),
+            newDiet
+        ]);
     };
 
     const removeDietFromUserDiets = (dietId) => {
-        setDiets((prevDiets) => prevDiets.filter((diet) => diet.id !== dietId));
+        setUserDiets(prev => prev.filter(diet => String(diet.id) !== String(dietId)));
+        setDiets(prev => prev.filter(diet => String(diet.id) !== String(dietId)));
     };
 
     const addDietToUserDiets = (diet) => {
-        setUserDiets((prev) => [...prev, diet]);
+        setUserDiets(prev => [...prev, diet]);
+    };
+
+    const addDietToFavoritesInContext = (diet) => {
+        setFavoriteDiets(prev => [...prev, diet]);
+    };
+
+    const removeDietFromFavoritesInContext = (dietId) => {
+        setFavoriteDiets(prev => prev.filter(d => String(d.id) !== String(dietId)));
     };
 
     const removeDietFromDiets = (dietId) => {
-        setDiets((prev) => prev.filter((diet) => diet.id !== dietId));
+        setDiets(prev => prev.filter(diet => String(diet.id) !== String(dietId)));
     };
 
     return (
@@ -142,6 +165,9 @@ export const UserDietsProvider = ({ children }) => {
             value={{
                 diets,
                 userDiets,
+                favoriteDiets,
+                addDietToFavoritesInContext,
+                removeDietFromFavoritesInContext,
                 loading: loadingDiets || loadingUserDiets,
                 error,
                 activeOption,
@@ -163,7 +189,7 @@ export const UserDietsProvider = ({ children }) => {
                 totalPages,
             }}
         >
-        {children}
+            {children}
         </UserDietsContext.Provider>
     );
 };

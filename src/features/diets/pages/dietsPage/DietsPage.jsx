@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
@@ -18,26 +18,27 @@ const DietsPage = () => {
         setPage,
         totalPages,
         fetchDietsData,
+        sortKey,
+        setSortKey,
+        sortOrder,
+        setSortOrder,
     } = useContext(UserDietsContext);
-    const { sortKey, setSortKey, sortOrder, setSortOrder } = useContext(UserDietsContext);
-
-    const handleSort = (field) => {
-        let newOrder = "desc";
-        if (sortKey === field) {
-            newOrder = sortOrder === "asc" ? "desc" : "asc";
-            setSortOrder(newOrder);
-        } else {
-            setSortKey(field);
-            setSortOrder("desc");
-        }
-
-        console.log(`[Sort] Sorting by: ${field}, Order: ${sortKey === field ? newOrder : "desc"}`);
-    };
 
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
-    // Zorg dat submenu reageert op zoekparams (zoals ?filter=My Diets)
+    const handleSort = (field) => {
+        const isSameField = sortKey === field;
+        const newOrder = isSameField && sortOrder === "asc" ? "desc" : "asc";
+
+        setSortKey(field);
+        setSortOrder(newOrder);
+
+        console.log(`[🔀 SORT] Sorting by ${field} (${newOrder})`);
+    };
+
+
+    // Pas activeOption aan op basis van zoekparams
     useEffect(() => {
         const filterParam = searchParams.get("filter");
         if (filterParam) {
@@ -45,48 +46,51 @@ const DietsPage = () => {
         }
     }, [searchParams, setActiveOption]);
 
+    // Trigger data ophalen bij load of verandering
     useEffect(() => {
-        console.log(`[Fetch] Triggered by sort change → sortBy: ${sortKey }, sortOrder: ${sortOrder}`);
         fetchDietsData();
-    }, [sortKey , sortOrder]);
+    }, [activeOption, page, sortKey, sortOrder, fetchDietsData]);
 
+    // Log gesorteerde waarden
     useEffect(() => {
         if (diets && diets.length > 0) {
-            console.log("[DietsPage] Gemiddelde waarden van huidige diets op pagina:");
-            diets.forEach((diet) => {
-                console.log(`- ${diet.name} → Calories: ${diet.avgCalories}, Protein: ${diet.avgProtein}, Carbs: ${diet.avgCarbs}, Fat: ${diet.avgFat}`);
-            });
-        } else {
-            console.log("[DietsPage] Geen diets beschikbaar op deze pagina.");
+            const top = diets.slice(0, 5).map(diet => ({
+                name: diet.name,
+                value: diet[sortKey],
+            }));
+            console.log("🔍 Top 5 sorted diets:", top);
         }
-    }, [diets]);
-
-
+    }, [diets, sortKey]);
 
     return (
         <CustomBox className="pt-6 sm:pt-10 px-4 pb-20 sm:pb-10">
+            <SubMenu />
 
-        <SubMenu />
             <CustomBox className="flex gap-2 mb-4 flex-wrap">
                 {[
-                    { label: "Protein", field: "avgProtein" },
-                    { label: "Carbs", field: "avgCarbs" },
-                    { label: "Fat", field: "avgFat" },
-                    { label: "Calories", field: "avgCalories" },
+                    { label: "Protein (avg)", field: "avgProtein" },
+                    { label: "Carbs (avg)", field: "avgCarbs" },
+                    { label: "Fat (avg)", field: "avgFat" },
+                    { label: "Calories (avg)", field: "avgCalories" },
+                    { label: "Protein (total)", field: "totalProtein" },
+                    { label: "Carbs (total)", field: "totalCarbs" },
+                    { label: "Fat (total)", field: "totalFat" },
+                    { label: "Calories (total)", field: "totalCalories" },
                 ].map(({ label, field }) => (
                     <button
                         key={field}
                         onClick={() => handleSort(field)}
                         className={`px-3 py-1 border rounded ${
-                            sortKey  === field ? "bg-blue-600 text-white" : "bg-gray-200"
+                            sortKey === field ? "bg-blue-600 text-white" : "bg-gray-200"
                         }`}
                     >
-                        {label} {sortKey  === field ? (sortOrder === "asc" ? "↑" : "↓") : ""}
+                        {label} {sortKey === field ? (sortOrder === "asc" ? "↑" : "↓") : ""}
                     </button>
                 ))}
             </CustomBox>
 
             {error && <p className="text-red-500">Fout bij ophalen: {error}</p>}
+
             {loading ? (
                 <Spinner className="mx-auto my-10" />
             ) : (
@@ -96,7 +100,6 @@ const DietsPage = () => {
                 />
             )}
 
-            {/* Scroll button */}
             <ScrollToTopButton />
         </CustomBox>
     );

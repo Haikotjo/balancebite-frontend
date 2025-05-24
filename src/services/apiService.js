@@ -529,7 +529,6 @@ export const removeDietFromUserApi = async (dietPlanId, token) => {
     }
 };
 
-
 export const addMealToDietDayApi = async (dietPlanId, dayIndex, mealId) => {
     const endpoint = `${import.meta.env.VITE_ADD_MEAL_TO_DIETDAY_ENDPOINT}/${dietPlanId}/days/${dayIndex}/meals/${mealId}`;
     const token = localStorage.getItem("accessToken");
@@ -559,73 +558,11 @@ export const removeDietDayApi = async (dietPlanId, dayIndex) => {
 
 // ========== DIEETPLANNEN (PUBLIEK) ==========
 
-export const getAllPublicDietPlansApi = async (params) => {
-    const endpoint = import.meta.env.VITE_GET_ALL_PUBLIC_DIETPLANS_ENDPOINT;
-    // geef bijv. params = { page: 0, size: 20, sortBy: 'name', sortOrder: 'asc', diets: [...] }
-    const response = await Interceptor.get(endpoint, { params });
-    // response.data = { content: […], totalPages: X, totalElements: Y, … }
-    return response.data.content;     // <-- alleen de array teruggeven
-};
-
 export const getPublicDietPlanByIdApi = async (dietPlanId) => {
     const endpoint = `${import.meta.env.VITE_GET_PUBLIC_DIETPLAN_BY_ID_ENDPOINT}/${dietPlanId}`;
     const response = await Interceptor.get(endpoint);
     return response.data;
 };
-
-
-export const fetchDiets = async (path) => {
-    const isFullUrl = path.startsWith("http://") || path.startsWith("https://");
-    const endpoint = isFullUrl ? path : `${import.meta.env.VITE_BASE_URL}${path}`;
-    try {
-        const token = localStorage.getItem("accessToken");
-
-        const headers = token ? { Authorization: `Bearer ${token}` } : {};
-        const response = await Interceptor.get(endpoint, { headers });
-        return response.data;
-    } catch (error) {
-        logError(error);
-        return { content: [], totalPages: 1 };
-    }
-};
-
-export const getAllUserDietPlansApi = async (
-    token,
-    page = 0,
-    size = 12,
-    diets = [],
-    sortBy = "name",
-    sortOrder = "asc"
-) => {
-    if (!token) throw new Error("No access token provided");
-
-    const params = new URLSearchParams();
-    params.append("page", page);
-    params.append("size", size);
-    if (sortBy) params.append("sortBy", sortBy);
-    if (sortOrder) params.append("sortOrder", sortOrder);
-    if (Array.isArray(diets)) {
-        diets.forEach(diet => params.append("diets", diet));
-    }
-
-    const endpoint = `${import.meta.env.VITE_GET_ALL_USER_DIETPLANS_ENDPOINT}?${params.toString()}`;
-
-    const response = await Interceptor.get(endpoint, {
-        headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
-};
-
-
-export const getCreatedDietPlansApi = async (page = 0, size = 12) => {
-    const endpoint = `${import.meta.env.VITE_GET_CREATED_DIETPLANS_ENDPOINT}?page=${page}&size=${size}`;
-    const token = localStorage.getItem("accessToken");
-    const response = await Interceptor.get(endpoint, {
-        headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
-};
-
 
 export const getUserDietPlanByIdApi = async (dietPlanId) => {
     const endpoint = `${import.meta.env.VITE_GET_DIETPLAN_BY_ID_ENDPOINT}/${dietPlanId}`;
@@ -635,5 +572,23 @@ export const getUserDietPlanByIdApi = async (dietPlanId) => {
     });
     return response.data;
 };
+
+
+// dietPlanApiService.ts
+
+export const getAllPublicDietPlans = async (params) => {
+    const response = await Interceptor.get(import.meta.env.VITE_GET_ALL_PUBLIC_DIETPLANS_ENDPOINT, { params });
+    return response.data;
+};
+
+export const getAllUserDietPlans = async (token, params) => {
+    const response = await Interceptor.get(import.meta.env.VITE_GET_ALL_USER_DIETPLANS_ENDPOINT, {
+        headers: { Authorization: `Bearer ${token}` },
+        params,
+    });
+    return response.data;
+};
+
+
 
 
