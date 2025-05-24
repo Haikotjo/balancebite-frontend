@@ -13,11 +13,15 @@ import HorizontalScrollSection from "../../../components/horizontalScrollSection
 import MealCardCompact from "../../meals/components/mealCardCompact/MealCardCompact.jsx";
 import DietCardActionButtons from "../components/dietCardActionButtons/DietCardActionButtons.jsx";
 import AverageNutrientSummary from "../components/averageNutrientSummary/AverageNutrientSummary.jsx";
+import {UserDietsContext} from "../../../context/UserDietContext.jsx";
+import {useContext} from "react";
+import CustomButton from "../../../components/layout/CustomButton.jsx";
 
 const DietListCard = ({ diet, compact = false }) => {
     const averages = getAverageNutrients(diet.dietDays);
     const navigate = useNavigate();
     const allMeals = diet.dietDays.flatMap((day) => day.meals || []);
+    const { setCreatorIdFilter, setActiveOption } = useContext(UserDietsContext);
 
     return (
         <CustomCard className="p-4">
@@ -81,14 +85,24 @@ const DietListCard = ({ diet, compact = false }) => {
             )}
 
             {/* Creator info (if available) */}
-            {!compact && diet.createdBy?.userName && (
-                <CustomBox className="mt-4 flex items-center gap-1">
+            {diet.createdBy?.userName && (
+                <CustomButton
+                    type="button"
+                    onClick={() => {
+                        setCreatorIdFilter(diet.createdBy.id);
+                        setActiveOption("All Diets");
+                        if (!window.location.pathname.includes("/diets")) {
+                            navigate("/diets");
+                        }
+                    }}
+                    className="flex items-center gap-1 mt-1 bg-transparent text-inherit hover:text-primary"
+                >
                     <UserPen size={14} />
-                    <CustomTypography variant="xsmallCard" className="italic">
-                        {diet.createdBy.userName}
-                    </CustomTypography>
-                </CustomBox>
+                    {diet.createdBy.userName}
+                </CustomButton>
             )}
+
+
         </CustomCard>
     );
 };
@@ -99,6 +113,7 @@ DietListCard.propTypes = {
         name: PropTypes.string.isRequired,
         dietDescription: PropTypes.string,
         createdBy: PropTypes.shape({
+            id: PropTypes.number.isRequired,
             userName: PropTypes.string.isRequired,
         }),
         dietDays: PropTypes.array.isRequired,

@@ -35,7 +35,7 @@ const CustomButton = React.forwardRef(
             disabled={disabled}
             className={clsx(
                 "text-sm px-2 py-1 rounded-md transition-all",
-                "hover:bg-accent hover:text-white",
+                "hover:bg-accent",
                 disabled && "opacity-50 cursor-not-allowed",
                 className
             )}

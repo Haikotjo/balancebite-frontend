@@ -22,6 +22,8 @@ export const UserDietsProvider = ({ children }) => {
     const [sortOrder, setSortOrder] = useState("asc");
     const [activeOption, setActiveOption] = useState("All Diets");
     const [favoriteDiets, setFavoriteDiets] = useState([]);
+    const [creatorIdFilter, setCreatorIdFilter] = useState(null);
+
 
     const userDietsRef = useRef(userDiets);
     useEffect(() => {
@@ -52,7 +54,8 @@ export const UserDietsProvider = ({ children }) => {
                 size: 12,
                 sortBy: safeSortKey,
                 sortOrder,
-                ...filters
+                ...filters,
+                ...(creatorIdFilter ? { createdByUserId: creatorIdFilter } : {})
             };
 
             const params = overrideParams || defaultParams;
@@ -105,34 +108,26 @@ export const UserDietsProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        if (activeOption !== "All Diets") return;
-
-        const currentParams = {
-            page: page - 1,
-            size: 12,
-            sortBy: sortKey,
-            sortOrder,
-            ...filters
-        };
-
-        (async () => {
-            await fetchDietsData([], currentParams);
-        })();
-    }, [activeOption, user, page, sortKey, sortOrder, filters, fetchDietsData]);
-
-    useEffect(() => {
-        if (!user) return;
-
         const currentParams = {
             page: page - 1,
             size: 12,
             sortBy: sortKey,
             sortOrder,
             ...filters,
+            ...(creatorIdFilter ? { createdByUserId: creatorIdFilter } : {})
         };
 
         const run = async () => {
+            if (!user) {
+                // Niet ingelogd → alleen public diets (géén user copies)
+                await fetchDietsData([], currentParams);
+                return;
+            }
+
+            // Ingelogd
             if (activeOption === "Created Diets" || activeOption === "My Diets") {
+                await fetchDietsData([], currentParams);
+            } else if (creatorIdFilter) {
                 await fetchDietsData([], currentParams);
             } else {
                 await fetchUserDietsData();
@@ -141,7 +136,18 @@ export const UserDietsProvider = ({ children }) => {
         };
 
         run().catch(console.error);
-    }, [activeOption, user, page, sortKey, sortOrder, filters, fetchDietsData, fetchUserDietsData]);
+    }, [
+        user,
+        activeOption,
+        page,
+        sortKey,
+        sortOrder,
+        filters,
+        creatorIdFilter,
+        fetchDietsData,
+        fetchUserDietsData
+    ]);
+
 
     useEffect(() => {
         if (!user) return;
@@ -209,6 +215,8 @@ export const UserDietsProvider = ({ children }) => {
                 setSortKey,
                 sortOrder,
                 setSortOrder,
+                creatorIdFilter,
+                setCreatorIdFilter,
                 fetchUserDietsData,
                 fetchDietsData,
                 addDietToUserDiets,
