@@ -8,6 +8,7 @@ import SubMenu from "../../components/subMenu/SubMenu.jsx";
 import Spinner from "../../../../components/layout/Spinner.jsx";
 import CustomPagination from "../../../../components/customPagination/CustomPagination.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
+import SortControls from "../../components/sortControls/SortControls.jsx";
 
 const DietsPage = () => {
     const {
@@ -107,31 +108,40 @@ const DietsPage = () => {
                         Clear all ✕
                     </button>
 
+                    {/* Min/max range filters */}
+                    {Object.entries(filters).map(([key, value]) => {
+                        if (
+                            ["minProtein", "maxProtein", "minCarbs", "maxCarbs", "minFat", "maxFat", "minCalories", "maxCalories"].includes(key)
+                        ) {
+                            return (
+                                <button
+                                    key={key}
+                                    onClick={() => {
+                                        const updated = { ...filters };
+                                        delete updated[key];
+                                        setFilters(updated);
+                                    }}
+                                    className="px-2 py-1 text-sm rounded bg-purple-100 hover:bg-purple-200 text-purple-800"
+                                >
+                                    {key}: {value} ✕
+                                </button>
+                            );
+                        }
+                        return null;
+                    })}
+
                 </CustomBox>
             )}
-
-            <CustomBox className="flex gap-2 mb-4 flex-wrap">
-                {[
-                    {label: "Protein (avg)", field: "avgProtein"},
-                    {label: "Carbs (avg)", field: "avgCarbs"},
-                    {label: "Fat (avg)", field: "avgFat" },
-                    { label: "Calories (avg)", field: "avgCalories" },
-                    { label: "Protein (total)", field: "totalProtein" },
-                    { label: "Carbs (total)", field: "totalCarbs" },
-                    { label: "Fat (total)", field: "totalFat" },
-                    { label: "Calories (total)", field: "totalCalories" },
-                ].map(({ label, field }) => (
-                    <button
-                        key={field}
-                        onClick={() => handleSort(field)}
-                        className={`px-3 py-1 border rounded ${
-                            sortKey === field ? "bg-blue-600 text-white" : "bg-gray-200"
-                        }`}
-                    >
-                        {label} {sortKey === field ? (sortOrder === "asc" ? "↑" : "↓") : ""}
-                    </button>
-                ))}
-            </CustomBox>
+            <SortControls
+                sortKey={sortKey}
+                sortOrder={sortOrder}
+                onSortChange={(field, order) => {
+                    setSortKey(field);
+                    setSortOrder(order);
+                }}
+                filters={filters}
+                setFilters={setFilters}
+            />
 
             <ErrorDialog
                 open={showErrorDialog}

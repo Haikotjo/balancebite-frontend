@@ -4,7 +4,7 @@ import { AuthContext } from "../../../../context/AuthContext.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomDropdownWeb from "../../../../components/layout/CustomDropdownWeb.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
-import {ChevronDown, Apple, UserCheck, BookOpen, UserPen, ChevronUp} from "lucide-react";
+import {ChevronDown, Apple, Pencil, UserCheck, BookOpen, UserPen, ChevronUp} from "lucide-react";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
 
@@ -85,8 +85,18 @@ const DietsMenu = () => {
                             navigate("/diets");
                         },
                     },
-
+                    {
+                        label: "Create Diet",
+                        icon: Pencil,
+                        disabled: !user,
+                        onClick: () => {
+                            if (!user) return showAuth("Create Diet");
+                            setOpen(false);
+                            navigate("/create-diet");
+                        },
+                    },
                 ]}
+
             />
 
             <ErrorDialog

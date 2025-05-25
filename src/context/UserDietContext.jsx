@@ -60,17 +60,54 @@ export const UserDietsProvider = ({ children }) => {
 
             const params = overrideParams || defaultParams;
 
+            // Debug logging: Sorting & Filters
+            console.log("🔍 Sorting & Filters Debug", {
+                activeOption,
+                sortKey: safeSortKey,
+                sortOrder,
+                filters,
+                creatorIdFilter,
+                isLoggedIn: !!token,
+                params,
+            });
+
+            console.group("🎯 Actieve Min/Max Filters");
+            Object.entries(filters).forEach(([key, value]) => {
+                if (value !== undefined && value !== null && value !== "") {
+                    console.log(`${key}: ${value}`);
+                }
+            });
+            console.groupEnd();
+
             let data;
+
             if (activeOption === "Created Diets") {
                 data = await getAllUserDietPlans(token, { ...params, mode: "created" });
-                setDiets(data.content || []);
+                const content = data.content || [];
+                setDiets(content);
+                console.log("📦 Resultaten (Created):");
+                content.slice(0, 5).forEach((d, i) => {
+                    console.log(`#${i + 1}`, d.name, d[safeSortKey], '👤 creatorId:', d.createdBy?.id);
+
+                });
             } else if (activeOption === "My Diets") {
                 data = await getAllUserDietPlans(token, { ...params, mode: "saved" });
-                setDiets(data.content || []);
+                const content = data.content || [];
+                setDiets(content);
+                console.log("📦 Resultaten (Saved):");
+                content.slice(0, 5).forEach((d, i) => {
+                    console.log(`#${i + 1}`, d.name, d[safeSortKey], '👤 creatorId:', d.createdBy?.id);
+
+                });
             } else {
                 data = await getAllPublicDietPlans(params);
-                const replaced = applyUserCopies(data.content || [], userCreatedDiets);
+                const content = data.content || [];
+                const replaced = applyUserCopies(content, userCreatedDiets);
                 setDiets(replaced);
+                console.log("📦 Resultaten (Public + Copies):");
+                replaced.slice(0, 5).forEach((d, i) => {
+                    console.log(`#${i + 1}`, d.name, d[safeSortKey], '👤 creatorId:', d.createdBy?.id);
+                });
             }
 
             setTotalPages(data.totalPages || 1);
@@ -80,7 +117,8 @@ export const UserDietsProvider = ({ children }) => {
         } finally {
             setLoadingDiets(false);
         }
-    }, [activeOption, filters, page, sortKey, sortOrder, applyUserCopies]);
+    }, [activeOption, filters, page, sortKey, sortOrder, creatorIdFilter, applyUserCopies]);
+
 
     const fetchUserDietsData = useCallback(async () => {
         const token = localStorage.getItem("accessToken");
@@ -116,6 +154,16 @@ export const UserDietsProvider = ({ children }) => {
             ...filters,
             ...(creatorIdFilter ? { createdByUserId: creatorIdFilter } : {})
         };
+
+        console.log("🔍 Sorting & Filters Debug", {
+            activeOption,
+            sortKey,
+            sortOrder,
+            filters,
+            creatorIdFilter,
+            params: currentParams,
+            isLoggedIn: !!user
+        });
 
         const run = async () => {
             if (!user) {
