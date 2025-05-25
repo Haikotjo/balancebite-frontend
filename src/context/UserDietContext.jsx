@@ -55,6 +55,8 @@ export const UserDietsProvider = ({ children }) => {
                 sortBy: safeSortKey,
                 sortOrder,
                 ...filters,
+                ...(filters.requiredDiets ? { requiredDiets: filters.requiredDiets } : {}),
+                ...(filters.excludedDiets ? { excludedDiets: filters.excludedDiets } : {}),
                 ...(creatorIdFilter ? { createdByUserId: creatorIdFilter } : {})
             };
 
@@ -97,7 +99,7 @@ export const UserDietsProvider = ({ children }) => {
                 console.log("📦 Resultaten (Saved):");
                 content.slice(0, 5).forEach((d, i) => {
                     console.log(`#${i + 1}`, d.name, d[safeSortKey], '👤 creatorId:', d.createdBy?.id);
-
+                    console.log("    ➜ Diets:", d.diets?.join(", "));
                 });
             } else {
                 data = await getAllPublicDietPlans(params);
@@ -107,6 +109,7 @@ export const UserDietsProvider = ({ children }) => {
                 console.log("📦 Resultaten (Public + Copies):");
                 replaced.slice(0, 5).forEach((d, i) => {
                     console.log(`#${i + 1}`, d.name, d[safeSortKey], '👤 creatorId:', d.createdBy?.id);
+                    console.log("    ➜ Diets:", d.diets?.join(", "));
                 });
             }
 

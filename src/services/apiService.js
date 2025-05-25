@@ -1,5 +1,6 @@
 import { Interceptor } from "./authInterceptor";
 import { roundNutrientValues } from "../utils/helpers/roundNutrientValues";
+import qs from "qs";
 
 // Logging helpers
 const logResponse = (response) => {
@@ -577,15 +578,27 @@ export const getUserDietPlanByIdApi = async (dietPlanId) => {
 // dietPlanApiService.ts
 
 export const getAllPublicDietPlans = async (params) => {
-    const response = await Interceptor.get(import.meta.env.VITE_GET_ALL_PUBLIC_DIETPLANS_ENDPOINT, { params });
+    const response = await Interceptor.get(
+        import.meta.env.VITE_GET_ALL_PUBLIC_DIETPLANS_ENDPOINT,
+        {
+            params,
+            paramsSerializer: (params) =>
+                qs.stringify(params, { arrayFormat: "repeat" }),
+        }
+    );
     return response.data;
 };
 
 export const getAllUserDietPlans = async (token, params) => {
-    const response = await Interceptor.get(import.meta.env.VITE_GET_ALL_USER_DIETPLANS_ENDPOINT, {
-        headers: { Authorization: `Bearer ${token}` },
-        params,
-    });
+    const response = await Interceptor.get(
+        import.meta.env.VITE_GET_ALL_USER_DIETPLANS_ENDPOINT,
+        {
+            headers: { Authorization: `Bearer ${token}` },
+            params,
+            paramsSerializer: (params) =>
+                qs.stringify(params, { arrayFormat: "repeat" }),
+        }
+    );
     return response.data;
 };
 

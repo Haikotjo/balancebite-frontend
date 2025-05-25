@@ -127,8 +127,28 @@ const DietsPage = () => {
                                 </button>
                             );
                         }
+
+                        if (["requiredDiets", "excludedDiets"].includes(key) && Array.isArray(value)) {
+                            return value.map((diet) => (
+                                <button
+                                    key={`${key}-${diet}`}
+                                    onClick={() => {
+                                        const updated = { ...filters };
+                                        updated[key] = updated[key].filter((d) => d !== diet);
+                                        if (updated[key].length === 0) delete updated[key];
+                                        setFilters(updated);
+                                    }}
+                                    className="px-2 py-1 text-sm rounded bg-indigo-100 hover:bg-indigo-200 text-indigo-800"
+                                >
+                                    {key === "requiredDiets" ? "Must have: " : "Exclude: "}
+                                    {diet} ✕
+                                </button>
+                            ));
+                        }
+
                         return null;
                     })}
+
 
                 </CustomBox>
             )}

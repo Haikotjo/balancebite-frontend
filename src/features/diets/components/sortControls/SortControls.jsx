@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import {dietsOptions} from "../../../meals/utils/helpers/dropdownOptionsMealsTypes.js";
 
 const sortOptions = [
     { label: "Protein (avg)", field: "avgProtein" },
@@ -42,6 +43,14 @@ const SortControls = ({
         setLocalFilters((prev) => ({
             ...prev,
             [`${bound.toLowerCase()}${backendField}`]: value === "" ? undefined : Number(value),
+        }));
+    };
+
+    const handleDietListChange = (key, selectedOptions) => {
+        const values = Array.from(selectedOptions).map((opt) => opt.value);
+        setFilters((prev) => ({
+            ...prev,
+            [key]: values.length > 0 ? values : undefined,
         }));
     };
 
@@ -110,6 +119,39 @@ const SortControls = ({
                 >
                     Apply Filters
                 </button>
+
+                <CustomBox className="flex flex-col text-sm">
+                    <label className="font-semibold">Required Diets</label>
+                    <select
+                        multiple
+                        className="border px-2 py-1 rounded w-52"
+                        value={filters.requiredDiets || []}
+                        onChange={(e) => handleDietListChange("requiredDiets", e.target.selectedOptions)}
+                    >
+                        {dietsOptions.map((opt) => (
+                            <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                            </option>
+                        ))}
+                    </select>
+                </CustomBox>
+
+                <CustomBox className="flex flex-col text-sm">
+                    <label className="font-semibold">Excluded Diets</label>
+                    <select
+                        multiple
+                        className="border px-2 py-1 rounded w-52"
+                        value={filters.excludedDiets || []}
+                        onChange={(e) => handleDietListChange("excludedDiets", e.target.selectedOptions)}
+                    >
+                        {dietsOptions.map((opt) => (
+                            <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                            </option>
+                        ))}
+                    </select>
+                </CustomBox>
+
             </CustomBox>
         </>
     );
