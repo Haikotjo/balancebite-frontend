@@ -74,11 +74,20 @@ const CustomMultiSelect = ({
                 )}
             >
                 {/* Selected text preview */}
-                <CustomBox className="truncate">
+                <CustomBox
+                    className={clsx(
+                        "truncate",
+                        selectedValues.length === 0 && "text-gray-400 dark:text-gray-500 italic"
+                    )}
+                >
                     {selectedValues.length > 0
-                        ? options.filter(opt => selectedValues.includes(opt.value)).map(opt => opt.label).join(", ")
+                        ? options
+                            .filter((opt) => selectedValues.includes(opt.value))
+                            .map((opt) => opt.label)
+                            .join(", ")
                         : placeholder}
                 </CustomBox>
+
                 <ChevronDown className="h-4 w-4 text-gray-500" />
             </CustomButton>
 

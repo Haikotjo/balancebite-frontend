@@ -47,6 +47,7 @@ export const UserDietsProvider = ({ children }) => {
                 "totalProtein", "totalCarbs", "totalFat", "totalCalories",
                 "createdAt", "name"
             ];
+
             const safeSortKey = validSortKeys.includes(sortKey) ? sortKey : "createdAt";
 
             const defaultParams = {
@@ -60,7 +61,7 @@ export const UserDietsProvider = ({ children }) => {
                 ...(creatorIdFilter ? { createdByUserId: creatorIdFilter } : {})
             };
 
-            const params = overrideParams || defaultParams;
+            const params = defaultParams;
 
             // Debug logging: Sorting & Filters
             console.log("🔍 Sorting & Filters Debug", {
