@@ -38,7 +38,7 @@ const getMinMaxKeys = (field) => {
 };
 
 const SortControls = ({ sortKey, sortOrder, onSortChange, filters, setFilters }) => {
-    const [selectedField, setSelectedField] = useState(null);
+    // const [selectedField, setSelectedField] = useState(null);
 
     const handleSort = (field) => {
         const isSameField = sortKey === field;
@@ -46,30 +46,30 @@ const SortControls = ({ sortKey, sortOrder, onSortChange, filters, setFilters })
         onSortChange(field, newOrder);
     };
 
-    // Alleen min/max filters behouden voor gekozen veld (reset bij veld wisselen)
-    useEffect(() => {
-        if (!selectedField) return;
-        const [keepMin, keepMax] = getMinMaxKeys(selectedField.value);
-        setFilters((prev) => {
-            return Object.fromEntries(
-                Object.entries(prev).filter(
-                    ([k]) =>
-                        k === keepMin ||
-                        k === keepMax ||
-                        (!k.startsWith("min") && !k.startsWith("max"))
-                )
-            );
-        });
-        // eslint-disable-next-line
-    }, [selectedField]);
+    // // Alleen min/max filters behouden voor gekozen veld (reset bij veld wisselen)
+    // useEffect(() => {
+    //     if (!selectedField) return;
+    //     const [keepMin, keepMax] = getMinMaxKeys(selectedField.value);
+    //     setFilters((prev) => {
+    //         return Object.fromEntries(
+    //             Object.entries(prev).filter(
+    //                 ([k]) =>
+    //                     k === keepMin ||
+    //                     k === keepMax ||
+    //                     (!k.startsWith("min") && !k.startsWith("max"))
+    //             )
+    //         );
+    //     });
+    //     // eslint-disable-next-line
+    // }, [selectedField]);
 
     // Huidige min/max van geselecteerde veld (valt terug op 0/300 of 0/2000 voor calories)
-    const selectedMinMax = selectedField ? getMinMaxKeys(selectedField.value) : [];
-    const currentMin = selectedMinMax[0] ? filters[selectedMinMax[0]] ?? 0 : 0;
-    const currentMax = selectedMinMax[1]
-        ? filters[selectedMinMax[1]] ??
-        (selectedField && selectedField.value === "avgCalories" ? 2000 : 300)
-        : 300;
+    // const selectedMinMax = selectedField ? getMinMaxKeys(selectedField.value) : [];
+    // const currentMin = selectedMinMax[0] ? filters[selectedMinMax[0]] ?? 0 : 0;
+    // const currentMax = selectedMinMax[1]
+    //     ? filters[selectedMinMax[1]] ??
+    //     (selectedField && selectedField.value === "avgCalories" ? 2000 : 300)
+    //     : 300;
 
     return (
         <>
@@ -95,52 +95,34 @@ const SortControls = ({ sortKey, sortOrder, onSortChange, filters, setFilters })
                     );
                 })}
             </CustomBox>
-            {/*<CustomBox className="flex flex-col text-sm w-full max-w-xs mt-4">*/}
-            {/*    <label className="mb-1 font-medium">Carbs (avg) los instellen</label>*/}
-            {/*    <CustomDualSlider*/}
-            {/*        label="Carbs (avg) los"*/}
-            {/*        minValue={0}*/}
-            {/*        maxValue={300}*/}
-            {/*        value={[*/}
-            {/*            filters.minCarbs ?? 0,*/}
-            {/*            filters.maxCarbs ?? 300,*/}
-            {/*        ]}*/}
-            {/*        onChange={([newMin, newMax]) => {*/}
-            {/*            setFilters((prev) => ({*/}
-            {/*                ...prev,*/}
-            {/*                minCarbs: newMin,*/}
-            {/*                maxCarbs: newMax,*/}
-            {/*            }));*/}
-            {/*        }}*/}
-            {/*    />*/}
-            {/*</CustomBox>*/}
+
+            <CustomBox className="flex flex-row flex-wrap justify-between gap-1 mt-4 mx-4 max-w-full">
+                {avgFields.map(({ label, value }) => {
+                    const [minKey, maxKey] = getMinMaxKeys(value);
+                    const minValue = filters[minKey] ?? 0;
+                    const maxValue = filters[maxKey] ?? (value === "avgCalories" ? 2000 : 300);
+
+                    return (
+                        <CustomBox key={value} className="flex-1 min-w-[200px] max-w-[300px]">
+                            <CustomDualSlider
+                                label={label}
+                                minValue={0}
+                                maxValue={value === "avgCalories" ? 2000 : 300}
+                                value={[minValue, maxValue]}
+                                onChange={([newMin, newMax]) => {
+                                    setFilters(prev => ({
+                                        ...prev,
+                                        [minKey]: newMin,
+                                        [maxKey]: newMax,
+                                    }));
+                                }}
+                            />
+                        </CustomBox>
+                    );
+                })}
+            </CustomBox>
 
             <CustomBox className="flex gap-4 flex-wrap items-end mb-4">
-                <CustomBox className="flex flex-col text-sm w-full max-w-xs">
-                    <CustomFloatingSelect
-                        label="Select Range Field"
-                        value={selectedField}
-                        onChange={setSelectedField}
-                        options={avgFields}
-                    />
-
-                    {selectedField && (
-                        <CustomDualSlider
-                            label={`${selectedField.label} range`}
-                            minValue={0}
-                            maxValue={selectedField.value === "avgCalories" ? 2000 : 300}
-                            value={[currentMin, currentMax]}
-                            onChange={([newMin, newMax]) => {
-                                const [minKey, maxKey] = getMinMaxKeys(selectedField.value);
-                                setFilters((prev) => ({
-                                    ...prev,
-                                    [minKey]: newMin,
-                                    [maxKey]: newMax,
-                                }));
-                            }}
-                        />
-                    )}
-                </CustomBox>
 
                 <CustomBox className="flex flex-col text-sm w-52">
                     <CustomMultiSelect

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import noUiSlider from "nouislider"; // ✅ correcte import
-import "nouislider/dist/nouislider.css"; // ✅ correcte CSS
+import noUiSlider from "nouislider";
+import "nouislider/dist/nouislider.css";
 import CustomBox from "./CustomBox.jsx";
 import CustomTypography from "./CustomTypography.jsx";
 import clsx from "clsx";
@@ -60,7 +60,7 @@ const CustomDualSlider = ({
     return (
         <CustomBox className={clsx("w-full max-w-md", className)}>
             {label && (
-                <CustomTypography as="label" className="font-semibold mb-2 block">
+                <CustomTypography as="label" variant="small" className="mb-2 block italic text-center">
                     {label}
                 </CustomTypography>
             )}

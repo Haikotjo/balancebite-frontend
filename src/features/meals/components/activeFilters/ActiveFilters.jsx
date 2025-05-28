@@ -1,4 +1,3 @@
-// src/components/mealList/activeFilters/ActiveFilters.jsx
 import PropTypes from "prop-types";
 import { CircleX } from "lucide-react";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
