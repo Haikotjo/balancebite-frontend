@@ -1,4 +1,5 @@
 /* src/styles/globals.css */
+@import "./chips.css";
 
 /* Zorg ervoor dat Tailwind de juiste basisstijlen toepast */
 @tailwind base;
@@ -16,13 +17,26 @@
     --bg-dark: #191e23; /* Donkere achtergrondkleur */
     --text-light: #494d5f; /* Lichtgrijze tekstkleur */
     --text-dark: #ffffff; /* Witte tekstkleur */
+
+    /*Chip filter colors*/
+    --chip-nutrient: #7c3aed;
+    --chip-nutrient-border: #7c3aed;
+    --filter-clear: #dc2626;
+    --filter-clear-border: #dc2626;
 }
 
 .dark {
     --bg-light: #121212; /* Donkere achtergrondkleur in dark mode */
     --text-light: #ffffff; /* Witte tekstkleur in dark mode */
     --color-primary: #46B1C9;
+
+    /*Chip filter colors*/
+    --chip-nutrient: #d8b4fe;
+    --chip-nutrient-border: #d8b4fe;
+    --filter-clear: #fca5a5;
+    --filter-clear-border: #fca5a5;
 }
+
 
 /* ===================== */
 /* Tailwind Utility-klassen voor kleuren */
@@ -41,6 +55,15 @@
     @apply text-[var(--text-dark)];
 }
 
+
+
+
+
+
+
+/* ===================== */
+/* Custom noUi component */
+/* ===================== */
 
 .noUi-tooltip {
     font-size: 0.7rem !important;

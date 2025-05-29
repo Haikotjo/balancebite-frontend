@@ -34,10 +34,8 @@ const CustomTypography = ({
                           }) => {
     const Tag = as;
 
-    const hasCustomTextColor = /\btext-(white|black|lightText|darkText|error|success|[\[#])/.test(className) || !!color;
-
     const combinedClass = clsx(
-        !hasCustomTextColor && "text-lightText dark:text-darkText",
+        FONT_MAP[font],
         FONT_MAP[font],
         bold && VARIANT_STYLES.bold,
         italic && VARIANT_STYLES.italic,

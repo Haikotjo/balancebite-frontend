@@ -1,0 +1,29 @@
+/* Purple chip */
+.chip-purple {
+    @apply text-purple-600 dark:text-purple-300 border-purple-600 dark:border-purple-300 stroke-purple-600 dark:stroke-purple-300;
+}
+
+/* Yellow chip */
+.chip-yellow {
+    @apply text-yellow-600 dark:text-yellow-200 border-yellow-600 dark:border-yellow-200 stroke-yellow-600 dark:stroke-yellow-200;
+}
+
+/* Emerald chip */
+.chip-emerald {
+    @apply text-emerald-600 dark:text-emerald-200 border-emerald-600 dark:border-emerald-200 stroke-emerald-600 dark:stroke-emerald-200;
+}
+
+/* Blue chip */
+.chip-blue {
+    @apply text-blue-600 dark:text-blue-200 border-blue-400 dark:border-blue-200 stroke-blue-600 dark:stroke-blue-200;
+}
+
+/* Orange chip */
+.chip-orange {
+    @apply text-orange-600 dark:text-orange-300 border-orange-600 dark:border-orange-300 stroke-orange-600 dark:stroke-orange-300;
+}
+
+/* Red chip */
+.chip-red {
+    @apply text-red-600 dark:text-red-300 border-red-600 dark:border-red-300 stroke-red-600 dark:stroke-red-300;
+}

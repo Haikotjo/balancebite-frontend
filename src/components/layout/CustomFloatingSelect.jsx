@@ -53,7 +53,6 @@ const CustomFloatingSelect = ({
 
             />
 
-            {/* Clear-knop */}
             {value?.value && (
                 <X
                     size={20}
@@ -65,7 +64,6 @@ const CustomFloatingSelect = ({
                 />
             )}
 
-            {/* Verborgen native select voor formulier-compatibiliteit */}
             <select
                 value={value ? value.value : ""}
                 onChange={e => {

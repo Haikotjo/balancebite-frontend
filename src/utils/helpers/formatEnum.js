@@ -5,12 +5,18 @@
  * - Replaces underscores (_) with spaces.
  * - Capitalizes the first letter of each word.
  *
+ * If input is not a string, it is converted to a string safely.
+ *
  * @param {string} text - The enum string to be formatted (e.g., "LOW_CARB").
  * @returns {string} - The formatted string (e.g., "Low Carb").
  */
 export const formatEnum = (text) => {
+    if (typeof text !== "string") {
+        text = String(text ?? ""); // handle null/undefined gracefully
+    }
+
     return text
-        .toLowerCase() // Convert to lowercase
-        .replace(/_/g, " ") // Replace underscores with spaces
-        .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize first letter of each word
+        .toLowerCase()
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, (char) => char.toUpperCase());
 };

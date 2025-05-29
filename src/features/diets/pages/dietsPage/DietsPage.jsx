@@ -12,18 +12,16 @@ import SortControls from "../../components/sortControls/SortControls.jsx";
 import DietsFilterChip from "../../components/DietsFilterChip.jsx";
 import NutrientRangeChips from "../../components/nutrientRangeChips/NutrientRangeChips.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import ActiveFilterChips from "../../components/activeFilterChips/ActiveFilterChips.jsx";
 
 const DietsPage = () => {
     const {
         diets,
         loading,
         error,
-        activeOption,
-        setActiveOption,
         page,
         setPage,
         totalPages,
-        fetchDietsData,
         sortKey,
         setSortKey,
         sortOrder,
@@ -35,16 +33,20 @@ const DietsPage = () => {
     } = useContext(UserDietsContext);
 
     const [showErrorDialog, setShowErrorDialog] = useState(false);
-    const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const creatorName = creatorIdFilter
-        ? diets.find(d => d.createdBy?.id === creatorIdFilter)?.createdBy?.userName || "Creator"
-        : null;
+    const [creatorName, setCreatorName] = useState(null);
 
     useEffect(() => {
-        const filterParam = searchParams.get("filter");
-        if (filterParam) setActiveOption(filterParam);
-    }, [searchParams, setActiveOption]);
+        if (creatorIdFilter) {
+            const match = diets.find(d => d.createdBy?.id === creatorIdFilter);
+            if (match) {
+                setCreatorName(match.createdBy.userName);
+            }
+        } else {
+            setCreatorName(null);
+        }
+    }, [creatorIdFilter, diets]);
+
 
     useEffect(() => {
         setPage(1);
@@ -58,70 +60,17 @@ const DietsPage = () => {
         <CustomBox className="pt-6 sm:pt-10 px-4 pb-20 sm:pb-10">
             <SubMenu />
 
-            {(Object.keys(filters).length > 0 || creatorIdFilter || sortKey !== "name" || sortOrder !== "asc") && (
-                <CustomBox className="mb-4 gap-2 flex flex-wrap items-center">
-                    <CustomTypography variant="paragraph" bold className="mr-1 block sm:hidden">
-                        Filters:
-                    </CustomTypography>
-
-                    <CustomTypography variant="paragraph" bold className="mr-2 hidden sm:block">
-                        Active filters:
-                    </CustomTypography>
-
-                    {(Object.keys(filters).length + (creatorIdFilter ? 1 : 0) + ((sortKey !== "name" || sortOrder !== "asc") ? 1 : 0)) > 0 && (
-                        <DietsFilterChip
-                            label="Clear all"
-                            colorClass="text-red-600 dark:text-red-400 border-red-600 dark:border-red-400"
-
-                            onRemove={() => {
-                                setFilters({});
-                                setCreatorIdFilter(null);
-                                setSortKey("name");
-                                setSortOrder("asc");
-                            }}
-                        />
-                    )}
-
-                    {(sortKey !== "name" || sortOrder !== "asc") && (
-                        <DietsFilterChip
-                            label={`Sort: ${sortKey} (${sortOrder})`}
-                            colorClass="text-yellow-600 dark:text-yellow-400"
-                            onRemove={() => {
-                                setSortKey("name");
-                                setSortOrder("asc");
-                            }}
-                        />
-                    )}
-
-                    {creatorIdFilter && creatorName && (
-                        <DietsFilterChip
-                            label={creatorName}
-                            colorClass="text-emerald-600 dark:text-emerald-400 border-emerald-600 dark:border-emerald-400"
-                            onRemove={() => setCreatorIdFilter(null)}
-                        />
-                    )}
-
-                    <NutrientRangeChips filters={filters} setFilters={setFilters} />
-
-                    {filters.requiredDiets && filters.requiredDiets.length > 0 && (
-                        <DietsFilterChip
-                            label={`Includes: ${filters.requiredDiets.join(", ")}`}
-                            colorClass="text-blue-600 dark:text-blue-400"
-                            onRemove={() => setFilters(prev => ({ ...prev, requiredDiets: undefined }))}
-                        />
-                    )}
-
-                    {filters.excludedDiets && filters.excludedDiets.length > 0 && (
-                        <DietsFilterChip
-                            label={`Excludes: ${filters.excludedDiets.join(", ")}`}
-                            colorClass="text-orange-600 dark:text-orange-400 border-orange-600 dark:border-orange-400"
-                            onRemove={() => setFilters(prev => ({ ...prev, excludedDiets: undefined }))}
-                        />
-                    )}
-
-
-                </CustomBox>
-            )}
+            <ActiveFilterChips
+                filters={filters}
+                setFilters={setFilters}
+                creatorIdFilter={creatorIdFilter}
+                setCreatorIdFilter={setCreatorIdFilter}
+                creatorName={creatorName}
+                sortKey={sortKey}
+                setSortKey={setSortKey}
+                sortOrder={sortOrder}
+                setSortOrder={setSortOrder}
+            />
 
             <SortControls
                 className="mt-6"
