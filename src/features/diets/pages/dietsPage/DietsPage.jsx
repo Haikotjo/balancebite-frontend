@@ -65,7 +65,8 @@ const DietsPage = () => {
                     {(Object.keys(filters).length + (creatorIdFilter ? 1 : 0) + ((sortKey !== "name" || sortOrder !== "asc") ? 1 : 0)) > 0 && (
                         <DietsFilterChip
                             label="Clear all"
-                            colorClass="text-red-600"
+                            colorClass="text-red-600 dark:text-red-400 border-red-600 dark:border-red-400"
+
                             onRemove={() => {
                                 setFilters({});
                                 setCreatorIdFilter(null);
@@ -78,7 +79,7 @@ const DietsPage = () => {
                     {(sortKey !== "name" || sortOrder !== "asc") && (
                         <DietsFilterChip
                             label={`Sort: ${sortKey} (${sortOrder})`}
-                            colorClass="text-yellow-600"
+                            colorClass="text-yellow-600 dark:text-yellow-400"
                             onRemove={() => {
                                 setSortKey("name");
                                 setSortOrder("asc");
@@ -89,17 +90,35 @@ const DietsPage = () => {
                     {creatorIdFilter && creatorName && (
                         <DietsFilterChip
                             label={creatorName}
-                            colorClass="text-green-600"
+                            colorClass="text-emerald-600 dark:text-emerald-400 border-emerald-600 dark:border-emerald-400"
                             onRemove={() => setCreatorIdFilter(null)}
                         />
                     )}
 
                     <NutrientRangeChips filters={filters} setFilters={setFilters} />
 
+                    {filters.requiredDiets && filters.requiredDiets.length > 0 && (
+                        <DietsFilterChip
+                            label={`Includes: ${filters.requiredDiets.join(", ")}`}
+                            colorClass="text-blue-600 dark:text-blue-400"
+                            onRemove={() => setFilters(prev => ({ ...prev, requiredDiets: undefined }))}
+                        />
+                    )}
+
+                    {filters.excludedDiets && filters.excludedDiets.length > 0 && (
+                        <DietsFilterChip
+                            label={`Excludes: ${filters.excludedDiets.join(", ")}`}
+                            colorClass="text-orange-600 dark:text-orange-400 border-orange-600 dark:border-orange-400"
+                            onRemove={() => setFilters(prev => ({ ...prev, excludedDiets: undefined }))}
+                        />
+                    )}
+
+
                 </CustomBox>
             )}
 
             <SortControls
+                className="mt-6"
                 sortKey={sortKey}
                 sortOrder={sortOrder}
                 onSortChange={(field, order) => {

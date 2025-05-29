@@ -13,13 +13,13 @@ const DietsFilterChip = ({ label, colorClass, onRemove }) => {
             <CustomTypography
                 as="span"
                 variant="xsmallCard"
-                className={`mr-2 font-semibold ${colorClass}`}
+                className={`mr-2 ${colorClass}`}
             >
                 {label}
             </CustomTypography>
             <CircleX
                 size={16}
-                className={`${colorClass} hover:text-red-500`}
+                className={`${colorClass}`}
                 onClick={e => {
                     e.stopPropagation();
                     onRemove();

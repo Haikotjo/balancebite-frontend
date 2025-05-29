@@ -5,21 +5,21 @@ import CustomMultiSelect from "../../../../components/layout/CustomMultiSelect.j
 import CustomChip from "../../../../components/layout/CustomChip.jsx";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import CustomDualSlider from "../../../../components/layout/CustomRangeSlider.jsx";
-import CustomFloatingSelect from "../../../../components/layout/CustomFloatingSelect.jsx";
-import { useState, useEffect } from "react";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 
 const sortOptions = [
-    { label: "Protein (avg)", field: "avgProtein" },
-    { label: "Carbs (avg)", field: "avgCarbs" },
-    { label: "Fat (avg)", field: "avgFat" },
-    { label: "Calories (avg)", field: "avgCalories" },
+    { label: "Protein", field: "avgProtein" },
+    { label: "Carbs", field: "avgCarbs" },
+    { label: "Fat", field: "avgFat" },
+    { label: "Calories", field: "avgCalories" },
+
 ];
 
 const avgFields = [
-    { label: "Protein (avg)", value: "avgProtein" },
-    { label: "Carbs (avg)", value: "avgCarbs" },
-    { label: "Fat (avg)", value: "avgFat" },
-    { label: "Calories (avg)", value: "avgCalories" },
+    { label: "Average daily protein", value: "avgProtein" },
+    { label: "Average daily carbohydrates", value: "avgCarbs" },
+    { label: "Average daily fat", value: "avgFat" },
+    { label: "Average daily calories", value: "avgCalories" },
 ];
 
 const getMinMaxKeys = (field) => {
@@ -37,7 +37,7 @@ const getMinMaxKeys = (field) => {
     }
 };
 
-const SortControls = ({ sortKey, sortOrder, onSortChange, filters, setFilters }) => {
+const SortControls = ({ className = "", sortKey, sortOrder, onSortChange, filters, setFilters }) => {
     // const [selectedField, setSelectedField] = useState(null);
 
     const handleSort = (field) => {
@@ -46,112 +46,104 @@ const SortControls = ({ sortKey, sortOrder, onSortChange, filters, setFilters })
         onSortChange(field, newOrder);
     };
 
-    // // Alleen min/max filters behouden voor gekozen veld (reset bij veld wisselen)
-    // useEffect(() => {
-    //     if (!selectedField) return;
-    //     const [keepMin, keepMax] = getMinMaxKeys(selectedField.value);
-    //     setFilters((prev) => {
-    //         return Object.fromEntries(
-    //             Object.entries(prev).filter(
-    //                 ([k]) =>
-    //                     k === keepMin ||
-    //                     k === keepMax ||
-    //                     (!k.startsWith("min") && !k.startsWith("max"))
-    //             )
-    //         );
-    //     });
-    //     // eslint-disable-next-line
-    // }, [selectedField]);
-
-    // Huidige min/max van geselecteerde veld (valt terug op 0/300 of 0/2000 voor calories)
-    // const selectedMinMax = selectedField ? getMinMaxKeys(selectedField.value) : [];
-    // const currentMin = selectedMinMax[0] ? filters[selectedMinMax[0]] ?? 0 : 0;
-    // const currentMax = selectedMinMax[1]
-    //     ? filters[selectedMinMax[1]] ??
-    //     (selectedField && selectedField.value === "avgCalories" ? 2000 : 300)
-    //     : 300;
-
     return (
         <>
-            <CustomBox className="flex gap-2 mb-4 flex-wrap">
-                {sortOptions.map(({ label, field }) => {
-                    const isSelected = sortKey === field;
-                    const arrowIcon = isSelected
-                        ? sortOrder === "asc"
-                            ? <ChevronUp size={14} className="ml-1" />
-                            : <ChevronDown size={14} className="ml-1" />
-                        : null;
+            <CustomBox className={className}>
+                <CustomBox className="flex items-center gap-4 mb-4 flex-wrap">
+                    <CustomTypography variant="paragraph" className="font-semibold hidden sm:block">
+                        Sort by:
+                    </CustomTypography>
+                    <CustomBox className="flex gap-3 flex-wrap">
+                        {sortOptions.map(({ label, field }) => {
+                            const isSelected = sortKey === field;
+                            const arrowIcon = isSelected
+                                ? sortOrder === "asc"
+                                    ? <ChevronUp size={14} className="ml-1" />
+                                    : <ChevronDown size={14} className="ml-1" />
+                                : null;
 
-                    return (
-                        <CustomChip
-                            key={field}
-                            selected={isSelected}
-                            onClick={() => handleSort(field)}
-                            iconMargin={0}
-                            iconSize={0}
-                            className="w-auto px-3 py-1 flex-row"
-                            icon={<CustomBox className="flex items-center"><span className="text-sm">{label}</span>{arrowIcon}</CustomBox>}
-                        />
-                    );
-                })}
-            </CustomBox>
-
-            <CustomBox className="flex flex-row flex-wrap justify-between gap-1 mt-4 mx-4 max-w-full">
-                {avgFields.map(({ label, value }) => {
-                    const [minKey, maxKey] = getMinMaxKeys(value);
-                    const minValue = filters[minKey] ?? 0;
-                    const maxValue = filters[maxKey] ?? (value === "avgCalories" ? 2000 : 300);
-
-                    return (
-                        <CustomBox key={value} className="flex-1 min-w-[200px] max-w-[300px]">
-                            <CustomDualSlider
-                                label={label}
-                                minValue={0}
-                                maxValue={value === "avgCalories" ? 2000 : 300}
-                                value={[minValue, maxValue]}
-                                onChange={([newMin, newMax]) => {
-                                    setFilters(prev => ({
-                                        ...prev,
-                                        [minKey]: newMin,
-                                        [maxKey]: newMax,
-                                    }));
-                                }}
-                            />
-                        </CustomBox>
-                    );
-                })}
-            </CustomBox>
-
-            <CustomBox className="flex gap-4 flex-wrap items-end mb-4">
-
-                <CustomBox className="flex flex-col text-sm w-52">
-                    <CustomMultiSelect
-                        label="All meals must contain"
-                        placeholder="e.g. High Protein + Gluten Free"
-                        options={dietsOptions}
-                        value={filters.requiredDiets || []}
-                        onChange={(newValues) =>
-                            setFilters((prev) => ({
-                                ...prev,
-                                requiredDiets: newValues.length > 0 ? newValues : undefined,
-                            }))
-                        }
-                    />
+                            return (
+                                <CustomChip
+                                    key={field}
+                                    selected={isSelected}
+                                    onClick={() => handleSort(field)}
+                                    iconMargin={0}
+                                    iconSize={0}
+                                    className="w-auto py-1 flex-row"
+                                    icon={
+                                        <CustomBox className="flex items-center">
+                                            <CustomTypography variant="small" className="mr-1 my-1">
+                                                {label}
+                                            </CustomTypography>
+                                            {arrowIcon}
+                                        </CustomBox>
+                                    }
+                                />
+                            );
+                        })}
+                    </CustomBox>
                 </CustomBox>
 
-                <CustomBox className="flex flex-col text-sm w-52">
-                    <CustomMultiSelect
-                        label="No meals can contain"
-                        placeholder="e.g. Nut Free + Vegan"
-                        options={dietsOptions}
-                        value={filters.excludedDiets || []}
-                        onChange={(newValues) =>
-                            setFilters((prev) => ({
-                                ...prev,
-                                excludedDiets: newValues.length > 0 ? newValues : undefined,
-                            }))
-                        }
-                    />
+
+
+                <CustomBox className="flex flex-wrap justify-center gap-x-12 gap-y-8 mt-4 ml-3 mr-6 max-w-full">
+
+                    {avgFields.map(({ label, value }) => {
+                        const [minKey, maxKey] = getMinMaxKeys(value);
+                        const minValue = filters[minKey] ?? 0;
+                        const maxValue = filters[maxKey] ?? (value === "avgCalories" ? 4000 : 300);
+
+                        return (
+                            <CustomBox key={value} className="flex-1 min-w-[200px] ">
+                                <CustomDualSlider
+                                    label={label}
+                                    minValue={0}
+                                    maxValue={value === "avgCalories" ? 4000 : 300}
+                                    value={[minValue, maxValue]}
+                                    onChange={([newMin, newMax]) => {
+                                        setFilters(prev => ({
+                                            ...prev,
+                                            [minKey]: newMin,
+                                            [maxKey]: newMax,
+                                        }));
+                                    }}
+                                />
+                            </CustomBox>
+                        );
+                    })}
+                </CustomBox>
+
+                <CustomBox className="flex gap-4 flex-wrap items-end mt-4 mb-8">
+
+                    <CustomBox className="flex flex-col text-sm w-80">
+                        <CustomMultiSelect
+                            label="All meals must contain"
+                            placeholder="e.g. High Protein + Gluten Free"
+                            options={dietsOptions}
+                            value={filters.requiredDiets || []}
+                            onChange={(newValues) =>
+                                setFilters((prev) => ({
+                                    ...prev,
+                                    requiredDiets: newValues.length > 0 ? newValues : undefined,
+                                }))
+                            }
+                        />
+                    </CustomBox>
+
+                    <CustomBox className="flex flex-col text-sm w-80">
+                        <CustomMultiSelect
+                            label="No meals can contain"
+                            placeholder="e.g. Nut Free + Vegan"
+                            options={dietsOptions}
+                            value={filters.excludedDiets || []}
+                            onChange={(newValues) =>
+                                setFilters((prev) => ({
+                                    ...prev,
+                                    excludedDiets: newValues.length > 0 ? newValues : undefined,
+                                }))
+                            }
+                        />
+                    </CustomBox>
                 </CustomBox>
             </CustomBox>
         </>
@@ -159,11 +151,13 @@ const SortControls = ({ sortKey, sortOrder, onSortChange, filters, setFilters })
 };
 
 SortControls.propTypes = {
+    className: PropTypes.string,
     sortKey: PropTypes.string.isRequired,
     sortOrder: PropTypes.oneOf(["asc", "desc"]).isRequired,
     onSortChange: PropTypes.func.isRequired,
     filters: PropTypes.object.isRequired,
     setFilters: PropTypes.func.isRequired,
 };
+
 
 export default SortControls;

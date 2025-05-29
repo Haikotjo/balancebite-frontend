@@ -39,7 +39,7 @@ const NutrientRangeChips = ({ filters, setFilters }) => {
                     <DietsFilterChip
                         key={macro}
                         label={label}
-                        colorClass="text-purple-600"
+                        colorClass="text-purple-600 dark:text-purple-400 border-purple-600 dark:border-purple-400"
                         onRemove={() => handleRemove([minKey, maxKey])}
                     />
                 );
