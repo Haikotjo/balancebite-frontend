@@ -30,11 +30,11 @@ const CustomTextField = React.forwardRef(function CustomTextField(
                 placeholder=" "
                 rows={multiline ? rows : undefined}
                 {...rest}
-                className={`peer w-full border ${error ? "border-error" : "border-primary"} rounded px-3 ${inputPaddingTop} pb-2 text-sm dark:bg-gray-800 bg-white text-black dark:text-white focus:outline-none focus:border-success resize-none`}
+                className={`peer w-full border ${error ? "border-error" : "border-primary"} rounded px-3 ${inputPaddingTop} pb-2 text-sm bg-[var(--bg-light)] dark:bg-[var(--bg-dark)] text-[var(--text-light)] dark:text-[var(--text-dark)] focus:outline-none focus:border-success resize-none`}
             />
             <label
                 htmlFor={name}
-                className="absolute left-3 -top-2 bg-white dark:bg-gray-800 px-1 text-xs text-primary peer-focus:text-primary peer-focus:text-xs peer-focus:-top-2 transition-all duration-200"
+                className="absolute left-3 -top-2 px-1 text-xs text-primary peer-focus:text-primary peer-focus:text-xs peer-focus:-top-2 transition-all duration-200 bg-[var(--bg-light)] dark:bg-[var(--bg-dark)]"
             >
                 {label}
             </label>

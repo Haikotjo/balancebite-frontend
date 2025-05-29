@@ -1,4 +1,5 @@
-// src/components/searchBar/SearchBar.jsx
+// src/components/
+// searchBar/SearchBar.jsx
 import PropTypes from "prop-types";
 import useDebouncedSearch from "../../hooks/useDebouncedSearch.js";
 import CustomAutocomplete from "../layout/CustomAutocomplete.jsx";
@@ -37,12 +38,13 @@ const SearchBar = ({ onSearch, onQuerySubmit, placeholder = "Search..." }) => {
                 )}
                 classNames={{
                     container: "relative w-full",
-                    inputWrapper: "flex items-center border-2 border-primary rounded-md p-1 bg-white dark:bg-gray-800",
-                    input: "w-full bg-transparent text-xs lg:text-base text-gray-900 dark:text-white",
-                    dropdown: "absolute left-0 right-0 bg-white dark:bg-gray-800 border-x-2 border-b-2 border-primary rounded-b-md mt-1 z-50 max-h-60 overflow-y-auto",
+                    inputWrapper: "flex items-center border-2 border-primary rounded-md p-1 bg-[var(--bg-light)] dark:bg-[var(--bg-dark)]",
+                    input: "w-full bg-transparent text-xs lg:text-base text-[var(--text-light)] dark:text-[var(--text-dark)] border-none",
+                    dropdown: "absolute left-0 right-0 bg-[var(--bg-light)] dark:bg-[var(--bg-dark)] border-x-2 border-b-2 border-primary rounded-b-md mt-1 z-50 max-h-60 overflow-y-auto",
                     option: "px-4 py-2 cursor-pointer transition-colors duration-100",
-                    highlight: "bg-gray-200 dark:bg-gray-700",
+                    highlight: "bg-[var(--userPrimary)] text-white",
                 }}
+
             />
         </CustomBox>
     );

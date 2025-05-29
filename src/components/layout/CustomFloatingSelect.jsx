@@ -47,9 +47,10 @@ const CustomFloatingSelect = ({
                 }}
                 placeholder={`Type to search ${label}`}
                 disabled={disabled}
-                className={`peer w-full border rounded px-3 pt-5 pb-1 text-sm dark:bg-gray-800 bg-white text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
+                className={`peer w-full border rounded px-3 pt-5 pb-1 text-sm bg-[var(--bg-light)] dark:bg-[var(--bg-dark)] text-[var(--text-light)] dark:text-[var(--text-dark)] focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
                     error ? "border-error" : "border-primary"
                 } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""}`}
+
             />
 
             {/* Clear-knop */}
@@ -84,9 +85,9 @@ const CustomFloatingSelect = ({
 
             {/* Dropdownlijst */}
             {showDropdown && filteredOptions.length > 0 && (
-                <div className="absolute bg-white dark:bg-gray-800 w-full z-10 mt-1 max-h-60 overflow-y-auto border rounded shadow">
+                <CustomBox className="absolute bg-[var(--bg-light)] dark:bg-[var(--bg-dark)] w-full z-10 mt-1 max-h-60 overflow-y-auto border rounded shadow">
                     {filteredOptions.map(option => (
-                        <div
+                        <CustomBox
                             key={option.value}
                             className="px-3 py-2 text-sm cursor-pointer hover:bg-primary hover:text-white"
                             onClick={() => {
@@ -96,13 +97,14 @@ const CustomFloatingSelect = ({
                             }}
                         >
                             {option.label}
-                        </div>
+                        </CustomBox>
                     ))}
-                </div>
+                </CustomBox>
             )}
 
             {label && (
-                <label className="absolute left-3 -top-2 bg-white dark:bg-gray-800 px-1 text-xs text-primary peer-focus:text-primary peer-focus:text-xs peer-focus:-top-2 transition-all duration-200">
+                <label
+                    className="absolute left-3 -top-2 px-1 text-xs text-primary bg-[var(--bg-light)] dark:bg-[var(--bg-dark)] peer-focus:text-primary peer-focus:text-xs peer-focus:-top-2 transition-all duration-200">
                     {label}
                 </label>
             )}

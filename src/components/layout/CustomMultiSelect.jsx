@@ -60,7 +60,9 @@ const CustomMultiSelect = ({
     return (
         <CustomBox ref={dropdownRef} className={`relative w-full mt-4 ${containerClassName}`}>
             {label && (
-                <label className="absolute -top-2 left-3 bg-white dark:bg-gray-800 px-1 text-[0.6rem] text-primary z-10">
+                <label
+                    className="absolute -top-2 left-3 px-1 text-[0.6rem] text-primary z-10 bg-[var(--bg-light)] dark:bg-[var(--bg-dark)]">
+
                     {label}
                 </label>
             )}
@@ -69,7 +71,7 @@ const CustomMultiSelect = ({
             <CustomButton
                 onClick={() => setIsOpen((prev) => !prev)}
                 className={clsx(
-                    "w-full border rounded px-3 py-2 text-sm bg-white dark:bg-gray-800 border-primary focus:outline-none flex justify-between items-center",
+                    "w-full border rounded px-3 py-2 text-sm bg-[var(--bg-light)] dark:bg-[var(--bg-dark)] border-primary focus:outline-none flex justify-between items-center",
                     className
                 )}
             >
