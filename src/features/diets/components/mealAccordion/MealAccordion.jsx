@@ -16,7 +16,7 @@ const MealAccordion = ({ meal }) => {
             {/* Meal description */}
             <AccordionItem
                 title={
-                    <CustomTypography variant="small" className="text-gray-500">
+                    <CustomTypography variant="small">
                         Description
                     </CustomTypography>
                 }
@@ -30,7 +30,7 @@ const MealAccordion = ({ meal }) => {
             {/* Ingredients */}
             <AccordionItem
                 title={
-                    <CustomTypography variant="small" className="text-gray-500">
+                    <CustomTypography variant="small" >
                         Ingredients
                     </CustomTypography>
                 }
@@ -56,7 +56,7 @@ const MealAccordion = ({ meal }) => {
             {/* Details */}
             <AccordionItem
                 title={
-                    <CustomTypography variant="small" className="text-gray-500">
+                    <CustomTypography variant="small" >
                         Details
                     </CustomTypography>
                 }

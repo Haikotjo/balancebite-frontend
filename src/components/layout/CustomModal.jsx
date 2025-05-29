@@ -45,15 +45,9 @@ const CustomModal = ({ isOpen, onClose, children }) => {
             onClick={handleOverlayClick} // Close modal when clicking on overlay
         >
             <CustomBox
-                className="bg-[var(--card-bg)] rounded-lg shadow-lg max-w-sm w-full mx-4"
+                className="bg-[var(--card-bg)] text-[var(--text-light)] rounded-lg shadow-lg max-w-sm w-full mx-4"
                 onClick={(e) => e.stopPropagation()} // Prevent closing the modal when clicking inside the modal content
             >
-                <CustomButton
-                    onClick={onClose} // Close button to trigger the onClose callback
-                    className="absolute top-2 right- text-gray-600 dark:text-gray-300 hover:text-gray-800"
-                >
-                    ✕
-                </CustomButton>
                 <CustomBox >{children}</CustomBox> {/* Modal content passed as children */}
             </CustomBox>
         </CustomBox>,

@@ -31,9 +31,9 @@ const DietListCard = ({ diet, compact = false }) => {
             {/* Diet title with navigation link */}
             <CustomBox
                 onClick={() => navigate(`/diet/${diet.id}`)}
-                className="mb-2 cursor-pointer flex items-center gap-2 text-primary max-w-full min-w-0"
+                className="mb-2 cursor-pointer flex items-center gap-2 max-w-full min-w-0"
             >
-            <CustomTypography variant="h4"   className="hover:text-primary break-words truncate max-w-full">
+            <CustomTypography variant="h4" className="hover:text-primary break-words truncate max-w-full">
                     {diet.name}
                 </CustomTypography>
                 <ChevronRight size={18} />
@@ -70,7 +70,7 @@ const DietListCard = ({ diet, compact = false }) => {
                 <AccordionItem
                     title={
                         <CustomTypography variant="paragraphCard">
-                            View meals in diet
+                            All Meals in diet
                         </CustomTypography>
                     }
                     defaultOpen={!compact}

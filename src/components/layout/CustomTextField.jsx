@@ -30,7 +30,7 @@ const CustomTextField = React.forwardRef(function CustomTextField(
                 placeholder=" "
                 rows={multiline ? rows : undefined}
                 {...rest}
-                className={`peer w-full border ${error ? "border-error" : "border-primary"} rounded px-3 ${inputPaddingTop} pb-2 text-sm bg-[var(--bg-light)] dark:bg-[var(--bg-dark)] text-[var(--text-light)] dark:text-[var(--text-dark)] focus:outline-none focus:border-success resize-none`}
+                className={`peer w-full border ${error ? "border-error" : "border-primary"} rounded px-3 ${inputPaddingTop} pb-2 text-sm bg-[var(--bg-light)] dark:bg-[var(--bg-dark)]  focus:outline-none focus:border-success resize-none`}
             />
             <label
                 htmlFor={name}
