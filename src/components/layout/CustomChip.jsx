@@ -46,14 +46,16 @@ const CustomChip = ({
             )}
         >
             {label && (
+
                 <CustomTypography
                     as="span"
                     className={clsx(
                         labelFontSize,
                         "text-center font-semibold",
-                        selected ? "text-primary" : "text-gray-800 dark:text-white",
+                        selected ? "text-primary" : "undefined",
                         labelPosition === "top" ? "mb-1" : "mt-1"
                     )}
+
                 >
                     {label}
                 </CustomTypography>

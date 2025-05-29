@@ -1,5 +1,5 @@
 import {useContext, useEffect, useState} from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
 import ScrollToTopButton from "../../../../components/scrollToTopButton/ScrollToTopButton.jsx";
@@ -9,9 +9,6 @@ import Spinner from "../../../../components/layout/Spinner.jsx";
 import CustomPagination from "../../../../components/customPagination/CustomPagination.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import SortControls from "../../components/sortControls/SortControls.jsx";
-import DietsFilterChip from "../../components/DietsFilterChip.jsx";
-import NutrientRangeChips from "../../components/nutrientRangeChips/NutrientRangeChips.jsx";
-import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import ActiveFilterChips from "../../components/activeFilterChips/ActiveFilterChips.jsx";
 
 const DietsPage = () => {

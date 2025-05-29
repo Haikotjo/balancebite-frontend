@@ -17,8 +17,6 @@ export default {
         secondary: "#EDB6A3",
         error: "#DD1155",
         success: "#71f175",
-        lightText: "#494d5f",
-        darkText: "#ffffff",
         lightBackground: "#F9FAFB",
         darkBackground: "#191e23",
         cardLight: "#FFFFFF",

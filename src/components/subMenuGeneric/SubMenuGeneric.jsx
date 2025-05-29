@@ -29,8 +29,8 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
                             onClick={() => handleChipClick(label)}
                             className={`w-16 h-12 flex items-center justify-center border-2 rounded-full transition-colors ${
                                 selected
-                                    ? "bg-primary border-primary text-white"
-                                    : "bg-white dark:bg-gray-800 border-primary text-primary"
+                                    ? "bg-primary border-primary"
+                                    : "bg-white dark:bg-gray-800 border-primary"
                             }`}
                             textClassName="text-xl"
                         >
@@ -38,7 +38,7 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
                         </CustomCardChip>
                         <CustomTypography
                             as="span"
-                            className="text-[0.65rem] sm:text-[0.7rem] md:text-[0.8rem] text-center text-gray-700 dark:text-gray-200"
+                            className="text-[0.65rem] sm:text-[0.7rem] md:text-[0.8rem] text-center"
                         >
                             {label}
                         </CustomTypography>

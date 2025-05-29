@@ -15,26 +15,16 @@
     --color-primary: #46B1C9;
     --bg-light: #ffffff; /* Lichte achtergrondkleur */
     --bg-dark: #191e23; /* Donkere achtergrondkleur */
-    --text-light: #494d5f; /* Lichtgrijze tekstkleur */
+    --text-light: #ff0000; /* Lichtgrijze tekstkleur */
     --text-dark: #ffffff; /* Witte tekstkleur */
-
-    /*Chip filter colors*/
-    --chip-nutrient: #7c3aed;
-    --chip-nutrient-border: #7c3aed;
-    --filter-clear: #dc2626;
-    --filter-clear-border: #dc2626;
+    --card-bg: #ffffff;
 }
 
 .dark {
     --bg-light: #121212; /* Donkere achtergrondkleur in dark mode */
-    --text-light: #ffffff; /* Witte tekstkleur in dark mode */
+    --text-light: #ff0000; /* Witte tekstkleur in dark mode */
     --color-primary: #46B1C9;
-
-    /*Chip filter colors*/
-    --chip-nutrient: #d8b4fe;
-    --chip-nutrient-border: #d8b4fe;
-    --filter-clear: #fca5a5;
-    --filter-clear-border: #fca5a5;
+    --card-bg: #1f2937;
 }
 
 
@@ -54,12 +44,6 @@
 .dark .text-darkText {
     @apply text-[var(--text-dark)];
 }
-
-
-
-
-
-
 
 /* ===================== */
 /* Custom noUi component */
