@@ -9,7 +9,6 @@ import Spinner from "../../../../components/layout/Spinner.jsx";
 import CustomPagination from "../../../../components/customPagination/CustomPagination.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import SortControls from "../../components/sortControls/SortControls.jsx";
-import DietsPageChip from "../../components/dietsPageChip/DietsPageChip.jsx";
 import DietsFilterChip from "../../components/DietsFilterChip.jsx";
 import NutrientRangeChips from "../../components/nutrientRangeChips/NutrientRangeChips.jsx";
 
@@ -59,7 +58,7 @@ const DietsPage = () => {
             <SubMenu />
 
             {(Object.keys(filters).length > 0 || creatorIdFilter || sortKey !== "name" || sortOrder !== "asc") && (
-                <CustomBox className="mb-4 flex flex-wrap gap-2 items-center">
+                <CustomBox className="mb-4 flex flex-wrap items-center">
                     <span className="font-semibold">Active filters:</span>
 
                     {(Object.keys(filters).length + (creatorIdFilter ? 1 : 0) + ((sortKey !== "name" || sortOrder !== "asc") ? 1 : 0)) > 0 && (
