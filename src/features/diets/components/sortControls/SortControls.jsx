@@ -23,7 +23,7 @@ const SortControls = ({ className = "", sortKey, sortOrder, onSortChange, filter
     return (
         <CustomBox className={className}>
             <CustomBox className="flex items-center gap-4 mb-4 flex-wrap">
-                <CustomTypography variant="paragraph" className="font-semibold hidden sm:block">
+                <CustomTypography variant="paragraph" bold className="mr-2 hidden sm:block">
                     Sort by:
                 </CustomTypography>
                 <CustomBox className="flex gap-2 sm:gap-3 flex-wrap">

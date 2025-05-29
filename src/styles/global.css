@@ -11,6 +11,7 @@
 
 /* Globale kleuren via CSS-variabelen */
 :root {
+    --color-primary: #46B1C9;
     --bg-light: #ffffff; /* Lichte achtergrondkleur */
     --bg-dark: #191e23; /* Donkere achtergrondkleur */
     --text-light: #494d5f; /* Lichtgrijze tekstkleur */
@@ -20,6 +21,7 @@
 .dark {
     --bg-light: #121212; /* Donkere achtergrondkleur in dark mode */
     --text-light: #ffffff; /* Witte tekstkleur in dark mode */
+    --color-primary: #46B1C9;
 }
 
 /* ===================== */
@@ -42,10 +44,13 @@
 
 .noUi-tooltip {
     font-size: 0.7rem !important;
-    padding: 2px 6px !important;
+    padding: 4px 6px !important;
     line-height: 1 !important;
     border-radius: 3px !important;
+    background: var(--color-primary) !important;
+    color: white !important;
 }
+
 
 .noUi-horizontal {
     height: 6px !important;
@@ -58,12 +63,12 @@
     top: 50% !important;
     transform: translateY(-50%) !important;
     border-radius: 50% !important;
-    background: #4A90E2 !important;
+    background: var(--color-primary) !important;
     border: none !important;
 }
 
 .noUi-connects, .noUi-connect {
-    background: #4A90E2 !important;
+    background: var(--color-primary) !important;
 }
 
 .noUi-handle:before, .noUi-handle:after {

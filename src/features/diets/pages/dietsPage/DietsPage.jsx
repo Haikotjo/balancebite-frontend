@@ -11,6 +11,7 @@ import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import SortControls from "../../components/sortControls/SortControls.jsx";
 import DietsFilterChip from "../../components/DietsFilterChip.jsx";
 import NutrientRangeChips from "../../components/nutrientRangeChips/NutrientRangeChips.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 
 const DietsPage = () => {
     const {
@@ -58,8 +59,14 @@ const DietsPage = () => {
             <SubMenu />
 
             {(Object.keys(filters).length > 0 || creatorIdFilter || sortKey !== "name" || sortOrder !== "asc") && (
-                <CustomBox className="mb-4 flex flex-wrap items-center">
-                    <span className="font-semibold">Active filters:</span>
+                <CustomBox className="mb-4 gap-2 flex flex-wrap items-center">
+                    <CustomTypography variant="paragraph" bold className="mr-1 block sm:hidden">
+                        Filters:
+                    </CustomTypography>
+
+                    <CustomTypography variant="paragraph" bold className="mr-2 hidden sm:block">
+                        Active filters:
+                    </CustomTypography>
 
                     {(Object.keys(filters).length + (creatorIdFilter ? 1 : 0) + ((sortKey !== "name" || sortOrder !== "asc") ? 1 : 0)) > 0 && (
                         <DietsFilterChip
