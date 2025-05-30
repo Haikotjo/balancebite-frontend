@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import CustomBox from "./CustomBox.jsx";
 import CustomTypography from "./CustomTypography.jsx";
-import { useEffect, useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import { X } from "lucide-react";
 
 /**
@@ -19,6 +19,7 @@ const CustomFloatingSelect = ({
                               }) => {
     const [inputValue, setInputValue] = useState("");
     const [showDropdown, setShowDropdown] = useState(false);
+    const wrapperRef = useRef(null);
 
     const filteredOptions = options.filter(option =>
         option.label.toLowerCase().includes(inputValue.toLowerCase())
@@ -32,9 +33,24 @@ const CustomFloatingSelect = ({
         }
     }, [value]);
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+                setShowDropdown(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
+
     return (
-        <CustomBox className={`relative w-full mt-4 ${className}`}>
-            <input
+        <CustomBox ref={wrapperRef} className={`relative w-full mt-4 ${className}`}>
+
+        <input
                 type="text"
                 value={inputValue}
                 onChange={e => {
@@ -47,7 +63,7 @@ const CustomFloatingSelect = ({
                 }}
                 placeholder={`Type to search ${label}`}
                 disabled={disabled}
-                className={`peer w-full border rounded px-3 pt-5 pb-1 text-sm bg-[var(--bg-light)] dark:bg-[var(--bg-dark)] text-[var(--text-light)] dark:text-[var(--text-dark)] focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
+                className={`peer w-full border rounded px-3 pt-5 pb-1 text-sm bg-lightBackground dark:bg-darkBackground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
                     error ? "border-error" : "border-primary"
                 } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""}`}
 
@@ -81,10 +97,10 @@ const CustomFloatingSelect = ({
                 ))}
             </select>
 
-            {/* Dropdownlijst */}
+            {/* Dropdownlist */}
             {showDropdown && filteredOptions.length > 0 && (
-                <CustomBox className="absolute bg-[var(--bg-light)] dark:bg-[var(--bg-dark)] w-full z-10 mt-1 max-h-60 overflow-y-auto border rounded shadow">
-                    {filteredOptions.map(option => (
+                <CustomBox className="absolute bg-lightBackground dark:bg-darkBackground w-full z-30 mt-1 max-h-60 overflow-y-auto border border-gray-400 dark:border-gray-300 rounded shadow">
+                {filteredOptions.map(option => (
                         <CustomBox
                             key={option.value}
                             className="px-3 py-2 text-sm cursor-pointer hover:bg-primary hover:text-white"
@@ -102,7 +118,7 @@ const CustomFloatingSelect = ({
 
             {label && (
                 <label
-                    className="absolute left-3 -top-2 px-1 text-xs text-primary bg-[var(--bg-light)] dark:bg-[var(--bg-dark)] peer-focus:text-primary peer-focus:text-xs peer-focus:-top-2 transition-all duration-200">
+                    className="absolute left-3 -top-2 px-1 text-xs text-primary bg-lightBackground dark:bg-darkBackground peer-focus:text-primary peer-focus:text-xs peer-focus:-top-2 transition-all duration-200">
                     {label}
                 </label>
             )}

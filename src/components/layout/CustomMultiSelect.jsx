@@ -61,7 +61,7 @@ const CustomMultiSelect = ({
         <CustomBox ref={dropdownRef} className={`relative w-full mt-4 ${containerClassName}`}>
             {label && (
                 <label
-                    className="absolute -top-2 left-3 px-1 text-[0.6rem] text-primary z-10 bg-[var(--bg-light)] dark:bg-[var(--bg-dark)]">
+                    className="absolute -top-2 left-3 px-1 text-[0.6rem] text-primary z-10 bg-lightBackground dark:bg-darkBackground">
 
                     {label}
                 </label>
@@ -71,7 +71,7 @@ const CustomMultiSelect = ({
             <CustomButton
                 onClick={() => setIsOpen((prev) => !prev)}
                 className={clsx(
-                    "w-full border rounded px-3 py-2 text-sm bg-[var(--bg-light)] dark:bg-[var(--bg-dark)] border-primary focus:outline-none flex justify-between items-center",
+                    "w-full border rounded px-3 py-2 text-sm bg-lightBackground dark:bg-darkBackground border-primary focus:outline-none flex justify-between items-center",
                     className
                 )}
             >
@@ -95,7 +95,7 @@ const CustomMultiSelect = ({
 
             {/* Dropdown panel */}
             {isOpen && (
-                <CustomBox className="absolute z-20 mt-1 w-full max-h-60 overflow-auto rounded bg-white dark:bg-gray-800 shadow-lg border border-gray-300">
+                <CustomBox className="absolute z-20 mt-1 w-full max-h-60 overflow-auto rounded bg-lightBackground dark:bg-darkBackground  shadow-lg border border-gray-400 dark:border-gray-300">
                     {options.map((option) => (
                         <CustomBox
                             key={option.value}

@@ -93,13 +93,13 @@ input:-webkit-autofill,
 textarea:-webkit-autofill,
 select:-webkit-autofill {
     -webkit-box-shadow: 0 0 0px 1000px #F9FAFB inset; /* achtergrondkleur light mode */
-    -webkit-text-fill-color: #1f2937; /* tekstkleur light mode */
+    -webkit-text-fill-color: #5e6a7c; /* tekstkleur light mode */
     transition: background-color 5000s ease-in-out 0s;
 }
 
 .dark input:-webkit-autofill,
 .dark textarea:-webkit-autofill,
 .dark select:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0px 1000px #191e23 inset; /* achtergrondkleur dark mode */
-    -webkit-text-fill-color: #f3f4f6; /* tekstkleur dark mode */
+    -webkit-box-shadow: 0 0 0px 1000px #111827 inset; /* achtergrondkleur dark mode */
+    -webkit-text-fill-color: #F9FAFB; /* tekstkleur dark mode */
 }
