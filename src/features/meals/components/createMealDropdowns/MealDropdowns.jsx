@@ -11,7 +11,7 @@ import CustomFloatingSelect from "../../../../components/layout/CustomFloatingSe
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomMultiSelect from "../../../../components/layout/CustomMultiSelect.jsx";
-import CustomGrid from "../../../../components/layout/CustomGrid.jsx";
+import CustomGridCompact from "../../../../components/layout/CustomGridCompact.jsx";
 
 /**
  * Renders dropdowns for preparation time, meal types, cuisines and diets.
@@ -27,7 +27,7 @@ const CreateMealDropdowns = ({ control, errors }) => {
                 const selected = options.find(opt => opt.value === field.value) || null;
                 return (
                     // each field wrapper fixed width of 160px
-                    <CustomBox className="w-[160px]">
+                    <CustomBox>
                         <CustomFloatingSelect
                             label={label}
                             options={options}
@@ -52,7 +52,7 @@ const CreateMealDropdowns = ({ control, errors }) => {
             defaultValue={[]}
             render={({ field }) => (
                 // each field wrapper fixed width of 160px
-                <CustomBox className="w-[160px]">
+                <CustomBox>
                     <CustomMultiSelect
                         label={label}
                         options={options}
@@ -71,12 +71,12 @@ const CreateMealDropdowns = ({ control, errors }) => {
 
     return (
         // grid layout, items have fixed width wrappers
-        <CustomGrid gap="1rem">
+        <CustomGridCompact gap="1rem">
             {renderSingleSelect("preparationTime", "Preparation Time", preparationTimeOptions, errors?.preparationTime)}
             {renderMultiSelect("mealTypes", "Meal Types", mealTypesOptions, errors?.mealTypes)}
             {renderMultiSelect("cuisines", "Cuisines", cuisinesOptions, errors?.cuisines)}
             {renderMultiSelect("diets", "Diets", dietsOptions, errors?.diets)}
-        </CustomGrid>
+        </CustomGridCompact>
     );
 };
 

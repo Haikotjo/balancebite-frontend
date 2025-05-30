@@ -71,7 +71,7 @@ const CustomMultiSelect = ({
             <CustomButton
                 onClick={() => setIsOpen((prev) => !prev)}
                 className={clsx(
-                    "w-full border rounded px-3 py-2 text-sm bg-lightBackground dark:bg-darkBackground border-primary focus:outline-none flex justify-between items-center",
+                    "w-full border rounded px-3 pt-5 pb-1 text-sm bg-lightBackground dark:bg-darkBackground border-primary focus:outline-none flex justify-between items-center",
                     className
                 )}
             >
@@ -95,7 +95,7 @@ const CustomMultiSelect = ({
 
             {/* Dropdown panel */}
             {isOpen && (
-                <CustomBox className="absolute z-20 mt-1 w-full max-h-60 overflow-auto rounded bg-lightBackground dark:bg-darkBackground  shadow-lg border border-gray-400 dark:border-gray-300">
+                <CustomBox className="absolute z-30 mt-1 w-full max-h-60 overflow-auto rounded bg-lightBackground dark:bg-darkBackground  shadow-lg border border-gray-400 dark:border-gray-300">
                     {options.map((option) => (
                         <CustomBox
                             key={option.value}
