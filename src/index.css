@@ -5,8 +5,3 @@ html, body {
     -webkit-overflow-scrolling: touch;
 }
 
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-

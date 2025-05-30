@@ -10,40 +10,40 @@
 /* 🌗 Globale Custom Properties */
 /* ===================== */
 
-/* Globale kleuren via CSS-variabelen */
-:root {
-    --color-primary: #46B1C9;
-    --bg-light: #ffffff; /* Lichte achtergrondkleur */
-    --bg-dark: #191e23; /* Donkere achtergrondkleur */
-    --text-light: #ff0000; /* Lichtgrijze tekstkleur */
-    --text-dark: #ffffff; /* Witte tekstkleur */
-    --card-bg: #ffffff;
-}
+/*!* Globale kleuren via CSS-variabelen *!*/
+/*:root {*/
+/*    --color-primary: #46B1C9;*/
+/*    --bg-light: #ffffff; !* Lichte achtergrondkleur *!*/
+/*    --bg-dark: #191e23; !* Donkere achtergrondkleur *!*/
+/*    --text-light: #ff0000; !* Lichtgrijze tekstkleur *!*/
+/*    --text-dark: #ffffff; !* Witte tekstkleur *!*/
+/*    --card-bg: #ffffff;*/
+/*}*/
 
-.dark {
-    --bg-light: #121212; /* Donkere achtergrondkleur in dark mode */
-    --text-light: #ff0000; /* Witte tekstkleur in dark mode */
-    --color-primary: #46B1C9;
-    --card-bg: #1f2937;
-}
+/*.dark {*/
+/*    --bg-light: #121212; !* Donkere achtergrondkleur in dark mode *!*/
+/*    --text-light: #ff0000; !* Witte tekstkleur in dark mode *!*/
+/*    --color-primary: #46B1C9;*/
+/*    --card-bg: #1f2937;*/
+/*}*/
 
 
-/* ===================== */
-/* Tailwind Utility-klassen voor kleuren */
-/* ===================== */
-.bg-lightBackground {
-    @apply bg-[var(--bg-light)];
-}
-.dark .bg-darkBackground {
-    @apply bg-[var(--bg-dark)];
-}
+/*!* ===================== *!*/
+/*!* Tailwind Utility-klassen voor kleuren *!*/
+/*!* ===================== *!*/
+/*.bg-lightBackground {*/
+/*    @apply bg-[var(--bg-light)];*/
+/*}*/
+/*.dark .bg-darkBackground {*/
+/*    @apply bg-[var(--bg-dark)];*/
+/*}*/
 
-.text-lightText {
-    @apply text-[var(--text-light)];
-}
-.dark .text-darkText {
-    @apply text-[var(--text-dark)];
-}
+/*.text-lightText {*/
+/*    @apply text-[var(--text-light)];*/
+/*}*/
+/*.dark .text-darkText {*/
+/*    @apply text-[var(--text-dark)];*/
+/*}*/
 
 /* ===================== */
 /* Custom noUi component */
@@ -54,7 +54,7 @@
     padding: 4px 6px !important;
     line-height: 1 !important;
     border-radius: 3px !important;
-    background: var(--color-primary) !important;
+    background: #2e798a !important;
     color: white !important;
 }
 
@@ -70,12 +70,12 @@
     top: 50% !important;
     transform: translateY(-50%) !important;
     border-radius: 50% !important;
-    background: var(--color-primary) !important;
+    background: #2e798a !important;
     border: none !important;
 }
 
 .noUi-connects, .noUi-connect {
-    background: var(--color-primary) !important;
+    background: #2e798a !important;
 }
 
 .noUi-handle:before, .noUi-handle:after {
@@ -85,4 +85,21 @@
 
 .noUi-handle {
     transform: translate(-6px, -50%) !important;
+}
+
+
+
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px #F9FAFB inset; /* achtergrondkleur light mode */
+    -webkit-text-fill-color: #1f2937; /* tekstkleur light mode */
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+.dark input:-webkit-autofill,
+.dark textarea:-webkit-autofill,
+.dark select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px #191e23 inset; /* achtergrondkleur dark mode */
+    -webkit-text-fill-color: #f3f4f6; /* tekstkleur dark mode */
 }
