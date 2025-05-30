@@ -8,12 +8,13 @@ const AccordionItem = ({ title, children, defaultOpen = false, headerClassName }
     const [isOpen, setIsOpen] = useState(defaultOpen);
 
     return (
-        <CustomBox className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+        <CustomBox className="border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden">
             <CustomButton
                 onClick={() => setIsOpen(!isOpen)}
                 className={`w-full flex items-center justify-between font-medium text-left transition ${
-                    headerClassName || "hover:bg-gray-100 dark:hover:bg-gray-800"
+                    headerClassName || "bg-gray-50 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-900"
                 }`}
+
             >
                 <CustomBox className="flex-1">
                     {title}
@@ -23,7 +24,7 @@ const AccordionItem = ({ title, children, defaultOpen = false, headerClassName }
                 />
             </CustomButton>
             {isOpen && (
-                <CustomBox className="p-5 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+                <CustomBox className="p-5 border-t border-gray-300 dark:border-gray-700 dark:bg-gray-900">
                     {children}
                 </CustomBox>
             )}

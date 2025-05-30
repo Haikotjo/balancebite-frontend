@@ -12,10 +12,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        lightText: "#1f2937",
+        lightText: "#5e6a7c",
         darkText: "#F9FAFB",
         lightBackground: "#F9FAFB",
-        darkBackground: "#191e23",
+        darkBackground: "#111827",
 
         primary: "#46B1C9",
         'primary-dark': '#2e798a',
