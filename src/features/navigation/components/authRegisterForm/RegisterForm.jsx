@@ -135,7 +135,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin, showRoles = false, isAdminCont
                     {onClose && (
                         <CustomButton
                             onClick={onClose}
-                            className=" hover:underline self-end bg-transparent px-0 py-0text-lightText dark:text-darkText"
+                            className=" hover:underline self-end bg-transparent px-0 py-0 text-lightText dark:text-darkText"
                         >
                             Close
                         </CustomButton>

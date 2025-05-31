@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import CustomBox from './CustomBox.jsx';
-import CustomButton from "./CustomButton.jsx";
 
 /**
  * Custom modal component that displays content in a centered modal.
@@ -45,7 +44,7 @@ const CustomModal = ({ isOpen, onClose, children }) => {
             onClick={handleOverlayClick} // Close modal when clicking on overlay
         >
             <CustomBox
-                className="bg-[var(--card-bg)] text-[var(--text-light)] rounded-lg shadow-lg max-w-sm w-full mx-4"
+                className="bg-lightBackground dark:bg-darkBackground rounded-lg shadow-lg max-w-sm w-full mx-4"
                 onClick={(e) => e.stopPropagation()} // Prevent closing the modal when clicking inside the modal content
             >
                 <CustomBox >{children}</CustomBox> {/* Modal content passed as children */}
