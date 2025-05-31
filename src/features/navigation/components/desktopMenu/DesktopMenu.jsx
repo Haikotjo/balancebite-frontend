@@ -1,41 +1,22 @@
 import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Home } from "lucide-react";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import clsx from "clsx";
 
-/**
- * Array of navigation links shown in the top-level desktop menu.
- * Each item includes a display label and the corresponding route path.
- */
 const navItems = [
-    { label: "Home", path: "/" },
     { label: "About", path: "/about" },
-    { label: "View Meals", path: "/meals" },
+    { label: "Meals", path: "/meals" },
     { label: "Diets", path: "/diets" },
 ];
 
-/**
- * DesktopMenu renders navigation buttons and login/logout/register options.
- * Navigation buttons highlight the active route.
- *
- * @component
- * @param {object} props - Component props
- * @param {object|null} props.user - Current user object or null if not logged in
- * @param {Function} props.onLogout - Callback to handle logout
- * @param {Function} props.onLoginClick - Callback to open login flow
- * @param {Function} props.onRegisterClick - Callback to open registration flow
- * @returns {JSX.Element}
- */
 const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const isAdmin = user?.roles.includes("ADMIN");
 
-    /**
-     * Returns true if the current route matches the given path.
-     * For root ("/"), it requires exact match.
-     */
     const isActive = (path) =>
         path === "/"
             ? location.pathname === "/"
@@ -43,51 +24,64 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
 
     return (
         <CustomBox className="flex gap-3 items-center">
-            {/* Render main navigation links */}
+            {/* Home icon button */}
+            <CustomButton
+                onClick={() => navigate("/")}
+                className={clsx(
+                    "p-2 rounded-md border border-white/30 transition-all hover:bg-white/30",
+                    isActive("/") ? "text-navActive" : "text-navInactive"
+                )}
+            >
+                <Home className="w-5 h-5" />
+            </CustomButton>
+
+            {/* Render other nav links */}
             {navItems.map((item) => (
                 <CustomButton
                     key={item.path}
                     onClick={() => navigate(item.path)}
-                    className={`px-3 py-1 rounded-md text-sm transition-all border border-white/30
-            ${isActive(item.path)
-                        ? "bg-userPrimary text-white"
-                        : "text-userText"} hover:bg-white/30`}
+                    className={clsx(
+                        "px-3 py-1 rounded-md text-sm transition-all border border-white/30",
+                        isActive(item.path)
+                            ? "text-navActive"
+                            : "text-navInactive hover:bg-white/30"
+                    )}
                 >
-                    <CustomTypography className="text-sm text-white">{item.label}</CustomTypography>
+                    <CustomTypography className="text-sm">{item.label}</CustomTypography>
                 </CustomButton>
             ))}
 
+            {/* Admin */}
             {isAdmin && (
                 <CustomButton
                     onClick={() => navigate("/admin")}
-                    className="px-3 py-1 rounded-md text-sm transition-all border border-white/30 text-userText hover:bg-white/30"
+                    className="px-3 py-1 rounded-md text-sm transition-all border border-white/30 text-navInactive hover:bg-white/30"
                 >
-                    <CustomTypography className="text-sm text-white">Admin</CustomTypography>
+                    <CustomTypography className="text-sm">Admin</CustomTypography>
                 </CustomButton>
             )}
 
-
-            {/* Render authentication options */}
+            {/* Auth */}
             {user ? (
                 <CustomButton
                     onClick={onLogout}
-                    className="text-userText hover:bg-white/30 px-3 py-1 rounded-md border border-white/30"
+                    className="text-navInactive hover:bg-white/30 px-3 py-1 rounded-md border border-white/30"
                 >
-                    <CustomTypography className="text-sm text-white">Logout</CustomTypography>
+                    <CustomTypography className="text-sm">Logout</CustomTypography>
                 </CustomButton>
             ) : (
                 <>
                     <CustomButton
                         onClick={onLoginClick}
-                        className="text-userText hover:bg-white/30 px-3 py-1 rounded-md border border-white/30"
+                        className="text-navInactive hover:bg-white/30 px-3 py-1 rounded-md border border-white/30"
                     >
-                        <CustomTypography className="text-sm text-white">Login</CustomTypography>
+                        <CustomTypography className="text-sm">Login</CustomTypography>
                     </CustomButton>
                     <CustomButton
                         onClick={onRegisterClick}
-                        className="text-userText hover:bg-white/30 px-3 py-1 rounded-md border border-white/30"
+                        className="text-navInactive hover:bg-white/30 px-3 py-1 rounded-md border border-white/30"
                     >
-                        <CustomTypography className="text-sm text-white">Register</CustomTypography>
+                        <CustomTypography className="text-sm">Register</CustomTypography>
                     </CustomButton>
                 </>
             )}

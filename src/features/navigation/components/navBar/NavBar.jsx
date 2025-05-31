@@ -1,104 +1,116 @@
-import {useContext, useEffect, useState} from "react";
-import HamburgerMenu from "../hamburgerMenu/HamburgerMenu.jsx";
-import DesktopMenu from "../desktopMenu/DesktopMenu.jsx";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
+
+import { AuthContext } from "../../../../context/AuthContext.jsx";
 import useLogout from "../../../../hooks/useLogout.js";
 import useLogin from "../../../../hooks/useLogin.js";
-import { AuthContext } from "../../../../context/AuthContext.jsx";
-import Logo from "../../../../components/logo/Logo.jsx";
-import { useNavigate } from "react-router-dom";
-import ProfileMenu from "../profileMenu/ProfileMenu.jsx";
-import MealsMenu from "../mealsMenu/MealsMenu.jsx";
-import PropTypes from "prop-types";
-import DarkModeSwitch from "../darkModeSwitch/DarkModeSwitch.jsx";
+
 import CustomAppBar from "../../../../components/layout/CustomAppBar.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
+import Logo from "../../../../components/logo/Logo.jsx";
+import MealsMenu from "../mealsMenu/MealsMenu.jsx";
 import DietsMenu from "../dietsMenu/DietsMenu.jsx";
+import ProfileMenu from "../profileMenu/ProfileMenu.jsx";
+import DesktopMenu from "../desktopMenu/DesktopMenu.jsx";
+import HamburgerMenu from "../hamburgerMenu/HamburgerMenu.jsx";
+import DarkModeSwitch from "../darkModeSwitch/DarkModeSwitch.jsx";
+import clsx from "clsx";
 
 const NavBar = () => {
     const { user } = useContext(AuthContext);
     const handleLogout = useLogout();
     const { errorMessage } = useLogin();
     const navigate = useNavigate();
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
+
     const [showError, setShowError] = useState(false);
 
-    useEffect(() => {
-        const handleResize = () => setIsMobile(window.innerWidth < 640);
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
+    const [isVisible, setIsVisible] = useState(true);
+    const [lastScrollY, setLastScrollY] = useState(0);
 
     useEffect(() => {
-        if (errorMessage) {
-            setShowError(true);
-        }
+        const handleScroll = () => {
+            if (window.innerWidth < 1024) return; // alleen vanaf lg
+            const currentY = window.scrollY;
+
+            if (currentY > lastScrollY && currentY > 80) {
+                setIsVisible(false); // scroll naar beneden
+            } else if (currentY < lastScrollY) {
+                setIsVisible(true); // scroll omhoog
+            }
+
+            setLastScrollY(currentY);
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [lastScrollY]);
+
+
+    useEffect(() => {
+        if (errorMessage) setShowError(true);
     }, [errorMessage]);
-
 
     return (
         <CustomAppBar
-            position={isMobile ? "fixed" : "sticky"}
-            className={isMobile ? "bottom-0 top-auto" : "top-0"}
+            className={clsx(
+                "fixed bottom-0 lg:sticky lg:top-0 lg:bottom-auto z-50 transition-transform duration-300",
+                !isVisible && "lg:-translate-y-full",
+                isVisible && "lg:translate-y-0"
+            )}
             bgColor="bg-appBarColor"
         >
-            <CustomBox className="w-full flex justify-between items-center px-4 py-1">
-                {/* Logo */}
-                {!isMobile && (
-                    <CustomBox className="flex-shrink-0 p-1">
-                        <Logo size={40} className="text-white" to="/" />
-                    </CustomBox>
-                )}
 
-
-                {/* Menu */}
-                <CustomBox className="flex items-center">
-                    {/* Meals Menu */}
-                    <CustomBox className="flex items-center">
-                        <MealsMenu />
-                    </CustomBox>
-
-                    {/* Diets Menu */}
-                    <CustomBox className="flex items-center mx-4">
-                        <DietsMenu />
-                    </CustomBox>
-
-                    {/* Profile menu */}
-                    <CustomBox className="flex items-center mr-4">
-                        <ProfileMenu
-                            user={user}
-                            onLogout={handleLogout}
-                            onLoginClick={() => navigate("/login")}
-                            onRegisterClick={() => navigate("/register")}
-                            text="Profile"
-                        />
-                    </CustomBox>
-
-
-                    {/* Hamburger and Desktop Menu */}
-                    {isMobile ? (
-                        <HamburgerMenu
-                            user={user}
-                            onLogout={handleLogout}
-                            onLoginClick={() => navigate("/login")}
-                            onRegisterClick={() => navigate("/register")}
-                            iconColor="text.light"
-                        />
-                    ) : (
-                        <DesktopMenu
-                            user={user}
-                            onLogout={handleLogout}
-                            onLoginClick={() => navigate("/login")}
-                            onRegisterClick={() => navigate("/register")}
-                        />
-                    )}
+        {/* Mobile layout */}
+            <CustomBox className="flex md:hidden items-center justify-between px-4 py-2 w-full">
+                <CustomBox className="flex items-center gap-4">
+                    <MealsMenu />
+                    <DietsMenu />
+                    <ProfileMenu
+                        user={user}
+                        onLogout={handleLogout}
+                        onLoginClick={() => navigate("/login")}
+                        onRegisterClick={() => navigate("/register")}
+                        text="Profile"
+                    />
                 </CustomBox>
+                <CustomBox className="relative">
+                    <HamburgerMenu
+                        user={user}
+                        onLogout={handleLogout}
+                        onLoginClick={() => navigate("/login")}
+                        onRegisterClick={() => navigate("/register")}
+                        iconColor="text.light"
+                    />
+                </CustomBox>
+            </CustomBox>
 
-                {/* Dark Mode Switch */}
-                <DarkModeSwitch />
-            </CustomBox >
+            {/* Desktop layout */}
+            <CustomBox className="hidden md:flex items-center justify-between px-4 py-2 w-full">
+                <CustomBox className="flex items-center gap-6">
+                    <Logo size={40} className="text-white" to="/" />
+                    <MealsMenu />
+                    <DietsMenu />
+                    <ProfileMenu
+                        user={user}
+                        onLogout={handleLogout}
+                        onLoginClick={() => navigate("/login")}
+                        onRegisterClick={() => navigate("/register")}
+                        text="Profile"
+                    />
+                </CustomBox>
+                <CustomBox className="flex items-center gap-4">
+                    <DesktopMenu
+                        user={user}
+                        onLogout={handleLogout}
+                        onLoginClick={() => navigate("/login")}
+                        onRegisterClick={() => navigate("/register")}
+                    />
+                    <DarkModeSwitch />
+                </CustomBox>
+            </CustomBox>
 
-            {/* Error Alert */}
             {errorMessage && (
                 <ErrorDialog
                     open={showError}

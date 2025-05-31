@@ -4,22 +4,15 @@ import clsx from "clsx";
 
 /**
  * Custom AppBar component.
- * with support for logo, menu items, and responsive behavior.
+ * Background color and layout fully customizable via Tailwind classes.
+ * Positioning (fixed, sticky, etc.) is now controlled entirely via className.
  */
-const CustomAppBar = React.forwardRef(({ children, className, position = "sticky", bgColor = "bg-primary", ...props }, ref) => (
+const CustomAppBar = React.forwardRef(({ children, className, bgColor = "bg-primary", ...props }, ref) => (
     <header
         ref={ref}
         className={clsx(
-            bgColor, // Use the dynamic background color here
-            position === "sticky"
-                ? "sticky top-0"
-                : position === "fixed"
-                    ? "fixed bottom-0 top-auto"
-                    : position === "relative"
-                        ? "relative"
-                        : "",
-            "w-full z-50",
-            "shadow-md",
+            bgColor,
+            "w-full z-50 shadow-md",
             className
         )}
         {...props}
@@ -33,7 +26,6 @@ CustomAppBar.displayName = "CustomAppBar";
 CustomAppBar.propTypes = {
     children: PropTypes.node.isRequired,
     className: PropTypes.string,
-    position: PropTypes.oneOf(["sticky", "relative", "fixed"]),
     bgColor: PropTypes.string,
 };
 

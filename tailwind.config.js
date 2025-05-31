@@ -12,10 +12,17 @@ export default {
   theme: {
     extend: {
       colors: {
-        lightText: "#5e6a7c",
-        darkText: "#F9FAFB",
+        lightText: "#aa0411",
+        darkText: "#007df6",
+        userText: "#111827",
+        userTextDark: "#F9FAFB",
+
+        navActive: "#91c9e0",
+        navInactive: "#ffffff",
+
         lightBackground: "#F9FAFB",
         darkBackground: "#111827",
+
 
         primary: "#46B1C9",
         'primary-dark': '#2e798a',
@@ -41,7 +48,6 @@ export default {
         userPrimary: "var(--user-primary)",
         userSecondary: "var(--user-secondary)",
         userBackground: "var(--user-background)",
-        userText: "var(--user-text)",
       },
       fontFamily: {
         sans: ["Nunito", "sans-serif"],

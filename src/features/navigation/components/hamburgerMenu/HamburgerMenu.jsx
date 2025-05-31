@@ -76,7 +76,8 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
 
             {/* Dropdown menu */}
             {open && (
-                <CustomBox className="absolute bottom-full mb-2 sm:bottom-auto sm:top-full sm:mt-2 mt-2 left-0 sm:left-auto sm:right-0 min-w-[10rem] max-w-[90vw] rounded-xl bg-white dark:bg-gray-800 shadow-lg z-[999] px-4">
+                <CustomBox className="absolute bottom-full mb-2 right-0 z-50 w-64 max-w-[90vw] rounded-xl bg-white dark:bg-gray-800 shadow-lg px-4">
+
                 {menuItems.map(({ label, icon: Icon, path, action }, index) => (
                         <CustomBox key={label}>
                             <CustomButton
