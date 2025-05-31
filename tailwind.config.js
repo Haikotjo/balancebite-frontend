@@ -17,9 +17,6 @@ export default {
         userText: "#111827",
         userTextDark: "#F9FAFB",
 
-        navActive: "#91c9e0",
-        navInactive: "#ffffff",
-
         lightBackground: "#F9FAFB",
         darkBackground: "#111827",
 

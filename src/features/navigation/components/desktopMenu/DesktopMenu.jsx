@@ -12,7 +12,7 @@ const navItems = [
     { label: "Diets", path: "/diets" },
 ];
 
-const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
+const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const isAdmin = user?.roles.includes("ADMIN");
@@ -29,27 +29,30 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                 onClick={() => navigate("/")}
                 className={clsx(
                     "p-2 rounded-md border border-white/30 transition-all hover:bg-white/30",
-                    isActive("/") ? "text-navActive" : "text-navInactive"
+                    isActive("/") ? "text-primary" : "text-userTextDark"
                 )}
             >
                 <Home className="w-5 h-5" />
             </CustomButton>
 
             {/* Render other nav links */}
-            {navItems.map((item) => (
-                <CustomButton
-                    key={item.path}
-                    onClick={() => navigate(item.path)}
-                    className={clsx(
-                        "px-3 py-1 rounded-md text-sm transition-all border border-white/30",
-                        isActive(item.path)
-                            ? "text-navActive"
-                            : "text-navInactive hover:bg-white/30"
-                    )}
-                >
-                    <CustomTypography className="text-sm">{item.label}</CustomTypography>
-                </CustomButton>
-            ))}
+            {navItems.map((item) => {
+                const active = isActive(item.path);
+                return (
+                    <CustomButton
+                        key={item.path}
+                        onClick={() => navigate(item.path)}
+                        className={clsx(
+                            "p-2 rounded-md border border-white/30 transition-all hover:bg-white/30",
+                            active ? "text-navActive" : "text-userTextDark"
+                        )}
+                    >
+                        {item.label}
+                    </CustomButton>
+                );
+            })}
+
+
 
             {/* Admin */}
             {isAdmin && (
@@ -67,14 +70,14 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     onClick={onLoginClick}
                     className="text-navInactive hover:bg-white/30 px-3 py-1 rounded-md border border-white/30"
                 >
-                    <CustomTypography className="text-sm">Login / Register</CustomTypography>
+                    <CustomTypography className="text-sm text-white dark:text-white">Sign In</CustomTypography>
                 </CustomButton>
             ) : (
                 <CustomButton
                     onClick={onLogout}
                     className="text-navInactive hover:bg-white/30 px-3 py-1 rounded-md border border-white/30"
                 >
-                    <CustomTypography className="text-sm">Logout</CustomTypography>
+                    <CustomTypography className="text-sm text-white">Logout</CustomTypography>
                 </CustomButton>
             )}
         </CustomBox>
