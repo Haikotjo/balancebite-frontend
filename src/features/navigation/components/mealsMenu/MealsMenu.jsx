@@ -43,7 +43,7 @@ const MealsMenu = () => {
             <CustomDropdownWeb
                 open={open}
                 onOpenChange={setOpen}
-                className="mt-2 left-0 sm:left-auto sm:right-0 min-w-[10rem] max-w-[90vw]"
+                className="mt-2 right-auto min-w-[10rem] max-w-[90vw]"
                 trigger={
                     <CustomBox
                         onClick={() => setOpen(!open)}

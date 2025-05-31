@@ -12,10 +12,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        lightText: "#aa0411",
-        darkText: "#007df6",
+        lightText: "#1f2937",
+        darkText: "#F9FAFB",
+        // lightText: "#aa0411",
+        // darkText: "#007df6",
         userText: "#111827",
         userTextDark: "#F9FAFB",
+
+        // navActive: "#46B1C9",
+        // navInactive: "#ffffff",
 
         lightBackground: "#F9FAFB",
         darkBackground: "#111827",

@@ -99,7 +99,6 @@ const NavBar = () => {
                         }}
                         iconColor="text.light"
                     />
-
                 </CustomBox>
             </CustomBox>
 

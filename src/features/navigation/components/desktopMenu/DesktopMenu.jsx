@@ -29,7 +29,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                 onClick={() => navigate("/")}
                 className={clsx(
                     "p-2 rounded-md border border-white/30 transition-all hover:bg-white/30",
-                    isActive("/") ? "text-primary" : "text-userTextDark"
+                    isActive("/") ? "text-primary" : "text-white"
                 )}
             >
                 <Home className="w-5 h-5" />
@@ -44,7 +44,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                         onClick={() => navigate(item.path)}
                         className={clsx(
                             "p-2 rounded-md border border-white/30 transition-all hover:bg-white/30",
-                            active ? "text-navActive" : "text-userTextDark"
+                            active ? "text-primary" : "text-white"
                         )}
                     >
                         {item.label}

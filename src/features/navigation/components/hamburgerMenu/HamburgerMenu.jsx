@@ -6,6 +6,7 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
+import DarkModeSwitch from "../darkModeSwitch/DarkModeSwitch.jsx";
 
 /**
  * A responsive hamburger menu for small screens.
@@ -99,6 +100,13 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     ))}
                     {/* Divider before the theme toggle */}
                     <CustomDivider className="bg-gray-200 dark:bg-gray-600" />
+                    <CustomDivider className="bg-gray-200 dark:bg-gray-600" />
+                    <CustomButton
+                        className="w-full flex items-center justify-start gap-6 px-4 py-4 text-sm text-userText hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                        <DarkModeSwitch hamburgerStyle />
+                    </CustomButton>
+
 
                 </CustomBox>
             )}
