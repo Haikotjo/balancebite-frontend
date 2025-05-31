@@ -62,28 +62,20 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
             )}
 
             {/* Auth */}
-            {user ? (
+            {!user ? (
+                <CustomButton
+                    onClick={onLoginClick}
+                    className="text-navInactive hover:bg-white/30 px-3 py-1 rounded-md border border-white/30"
+                >
+                    <CustomTypography className="text-sm">Login / Register</CustomTypography>
+                </CustomButton>
+            ) : (
                 <CustomButton
                     onClick={onLogout}
                     className="text-navInactive hover:bg-white/30 px-3 py-1 rounded-md border border-white/30"
                 >
                     <CustomTypography className="text-sm">Logout</CustomTypography>
                 </CustomButton>
-            ) : (
-                <>
-                    <CustomButton
-                        onClick={onLoginClick}
-                        className="text-navInactive hover:bg-white/30 px-3 py-1 rounded-md border border-white/30"
-                    >
-                        <CustomTypography className="text-sm">Login</CustomTypography>
-                    </CustomButton>
-                    <CustomButton
-                        onClick={onRegisterClick}
-                        className="text-navInactive hover:bg-white/30 px-3 py-1 rounded-md border border-white/30"
-                    >
-                        <CustomTypography className="text-sm">Register</CustomTypography>
-                    </CustomButton>
-                </>
             )}
         </CustomBox>
     );

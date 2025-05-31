@@ -15,8 +15,9 @@ import LoginForm from "../authLoginForm/LoginForm.jsx";
  * @param {Function} props.onRegister - Called after successful registration
  * @param {Function} props.onClose - Function to close the modal
  */
-const LoginRegisterForm = ({ onLogin, onRegister, onClose }) => {
-    const [isRegistering, setIsRegistering] = useState(false); // Toggle between login/register form
+const LoginRegisterForm = ({ onLogin, onRegister, onClose, startInRegisterMode }) => {
+    const [isRegistering, setIsRegistering] = useState(startInRegisterMode);
+
 
     return (
         <CustomModal isOpen={true} onClose={onClose}>
@@ -41,6 +42,7 @@ LoginRegisterForm.propTypes = {
     onLogin: PropTypes.func.isRequired,
     onRegister: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
+    startInRegisterMode: PropTypes.bool.isRequired,
 };
 
 export default LoginRegisterForm;

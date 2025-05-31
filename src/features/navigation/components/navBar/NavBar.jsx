@@ -17,17 +17,20 @@ import DesktopMenu from "../desktopMenu/DesktopMenu.jsx";
 import HamburgerMenu from "../hamburgerMenu/HamburgerMenu.jsx";
 import DarkModeSwitch from "../darkModeSwitch/DarkModeSwitch.jsx";
 import clsx from "clsx";
+import RequireAuthUI from "../../../../components/layout/RequireAuthUI.jsx";
 
 const NavBar = () => {
     const { user } = useContext(AuthContext);
     const handleLogout = useLogout();
     const { errorMessage } = useLogin();
     const navigate = useNavigate();
+    const [showLoginForm, setShowLoginForm] = useState(false);
 
     const [showError, setShowError] = useState(false);
 
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
+    const [startInRegisterMode, setStartInRegisterMode] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -70,19 +73,33 @@ const NavBar = () => {
                     <ProfileMenu
                         user={user}
                         onLogout={handleLogout}
-                        onLoginClick={() => navigate("/login")}
-                        onRegisterClick={() => navigate("/register")}
+                        onLoginClick={() => {
+                            setStartInRegisterMode(false);
+                            setShowLoginForm(true);
+                        }}
+                        onRegisterClick={() => {
+                            setStartInRegisterMode(true);
+                            setShowLoginForm(true);
+                        }}
                         text="Profile"
                     />
+
                 </CustomBox>
                 <CustomBox className="relative">
                     <HamburgerMenu
                         user={user}
                         onLogout={handleLogout}
-                        onLoginClick={() => navigate("/login")}
-                        onRegisterClick={() => navigate("/register")}
+                        onLoginClick={() => {
+                            setStartInRegisterMode(false);
+                            setShowLoginForm(true);
+                        }}
+                        onRegisterClick={() => {
+                            setStartInRegisterMode(true);
+                            setShowLoginForm(true);
+                        }}
                         iconColor="text.light"
                     />
+
                 </CustomBox>
             </CustomBox>
 
@@ -95,17 +112,24 @@ const NavBar = () => {
                     <ProfileMenu
                         user={user}
                         onLogout={handleLogout}
-                        onLoginClick={() => navigate("/login")}
-                        onRegisterClick={() => navigate("/register")}
+                        onLoginClick={() => {
+                            setStartInRegisterMode(false);
+                            setShowLoginForm(true);
+                        }}
+                        onRegisterClick={() => {
+                            setStartInRegisterMode(true);
+                            setShowLoginForm(true);
+                        }}
                         text="Profile"
                     />
+
                 </CustomBox>
                 <CustomBox className="flex items-center gap-4">
                     <DesktopMenu
                         user={user}
                         onLogout={handleLogout}
-                        onLoginClick={() => navigate("/login")}
-                        onRegisterClick={() => navigate("/register")}
+                        onLoginClick={() => setShowLoginForm(true)}
+                        onRegisterClick={() => setShowLoginForm(true)}
                     />
                     <DarkModeSwitch />
                 </CustomBox>
@@ -119,6 +143,19 @@ const NavBar = () => {
                     type="error"
                 />
             )}
+
+            <RequireAuthUI
+                dialogOpen={false}
+                onClose={() => setShowLoginForm(false)}
+                message=""
+                showLoginForm={showLoginForm}
+                onLoginClose={() => setShowLoginForm(false)}
+                onLoginSuccess={() => setShowLoginForm(false)}
+                onLoginRedirect={() => setShowLoginForm(true)}
+                startInRegisterMode={startInRegisterMode}
+            />
+
+
         </CustomAppBar>
     );
 };
