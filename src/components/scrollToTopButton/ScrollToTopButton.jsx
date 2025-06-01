@@ -47,7 +47,7 @@ const ScrollToTopButton = () => {
             */}
             <CustomIconButton
                 onClick={scrollToTop}
-                icon={<ChevronsUp size={20} />}
+                icon={<ChevronsUp size={20} className="text-white" />}
                 bgColor="bg-primary"
                 size={30}
             />
