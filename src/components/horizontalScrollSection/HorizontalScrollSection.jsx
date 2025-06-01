@@ -107,7 +107,7 @@ const HorizontalScrollSection = ({ title, items, renderItem, onTitleClick, class
                 </CustomTypography>
             )}
 
-            <CustomBox className="relative py-2 bg-softIvory dark:bg-darkBackground rounded-xl">
+            <CustomBox className="relative py-2 rounded-xl">
 
                 <CustomBox
                     ref={scrollRef}

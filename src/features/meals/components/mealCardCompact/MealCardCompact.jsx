@@ -5,9 +5,15 @@ import {getImageSrc} from "../../utils/helpers/getImageSrc.js";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomImage from "../../../../components/layout/CustomImage.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import { useNavigate } from "react-router-dom";
 
 const MealCardCompact = ({ meal }) => {
     const imageSrc = getImageSrc(meal);
+    const navigate = useNavigate();
+
+    const handleOpen = () => {
+        navigate(`/meal/${meal.id}`);
+    };
 
     return (
         <CustomBox
@@ -36,8 +42,10 @@ const MealCardCompact = ({ meal }) => {
 
             </CustomBox>
 
-            <CustomBox className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/70 to-transparent p-2 z-20">
-                <CustomTypography className="text-white text-sm font-semibold truncate text-left pl-1">
+            <CustomBox
+                className="absolute bottom-0 left-0 w-full bg-[rgba(0,0,0,0.5)] p-1 z-20 cursor-pointer"
+            >
+                <CustomTypography onClick={handleOpen} className="text-white text-sm font-semibold truncate text-left pl-1">
                     {meal.name}
                 </CustomTypography>
             </CustomBox>

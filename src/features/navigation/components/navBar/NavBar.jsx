@@ -1,10 +1,8 @@
-import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
 import PropTypes from "prop-types";
 
 import { AuthContext } from "../../../../context/AuthContext.jsx";
 import useLogout from "../../../../hooks/useLogout.js";
-import useLogin from "../../../../hooks/useLogin.js";
 
 import CustomAppBar from "../../../../components/layout/CustomAppBar.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
@@ -22,15 +20,8 @@ import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 const NavBar = () => {
     const { user } = useContext(AuthContext);
     const handleLogout = useLogout();
-    const { errorMessage } = useLogin();
-    const navigate = useNavigate();
     const [showLoginForm, setShowLoginForm] = useState(false);
-    const [showError, setShowError] = useState(false);
     const [startInRegisterMode, setStartInRegisterMode] = useState(false);
-
-    useEffect(() => {
-        if (errorMessage) setShowError(true);
-    }, [errorMessage]);
 
     return (
         <CustomAppBar
@@ -83,11 +74,11 @@ const NavBar = () => {
             <CustomBox className="hidden md:flex md:flex-col md:justify-between md:h-full">
                 <CustomBox className="flex flex-col space-y-6 px-4 py-4">
                     <Logo size={40} className="hidden lg:block text-white" to="/" />
-                    <CustomDivider className="hidden lg:block  mx-0 bg-gray-200 dark:bg-gray-600" />
+                    <CustomDivider className="hidden lg:block  mx-0 bg-white" />
                     <MealsMenu />
-                    <CustomDivider className="mx-0 bg-gray-200 dark:bg-gray-600" />
+                    <CustomDivider className="hidden lg:block  mx-0 bg-white" />
                     <DietsMenu />
-                    <CustomDivider className="mx-0 bg-gray-200 dark:bg-gray-600" />
+                    <CustomDivider className="hidden lg:block  mx-0 bg-white" />
                     <ProfileMenu
                         user={user}
                         onLogout={handleLogout}
@@ -101,7 +92,7 @@ const NavBar = () => {
                         }}
                         text="Profile"
                     />
-                    <CustomDivider className="mx-0 bg-gray-200 dark:bg-gray-600" />
+                    <CustomDivider className="hidden lg:block  mx-0 bg-white" />
                 </CustomBox>
 
                 <CustomBox className="flex flex-col space-y-4 px-4 pb-4">

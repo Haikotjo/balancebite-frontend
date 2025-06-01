@@ -57,18 +57,19 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
             })}
 
             {/* Admin */}
-                <CustomButton
-                    onClick={() => navigate("/admin")}
-                    className={clsx(
-                        "w-full text-left p-2 rounded-md border border-white/30 transition-all hover:bg-white/30",
-                        isActive("/admin") ? "text-primary" : "text-white"
-                    )}
-                >
-                    <CustomBox className="flex items-center gap-2">
-                        Admin
-                    </CustomBox>
-                </CustomButton>
-
+                {isAdmin && (
+                    <CustomButton
+                        onClick={() => navigate("/admin")}
+                        className={clsx(
+                            "w-full text-left p-2 rounded-md border border-white/30 transition-all hover:bg-white/30",
+                            isActive("/admin") ? "text-primary" : "text-white"
+                        )}
+                    >
+                        <CustomBox className="flex items-center gap-2">
+                            Admin
+                        </CustomBox>
+                    </CustomButton>
+                )}
 
                 {/* Auth */}
             {!user ? (
