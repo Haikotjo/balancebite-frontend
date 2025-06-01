@@ -12,7 +12,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        lightText: "#1f2937",
+        lightText: "#5b616e",
         darkText: "#F9FAFB",
         // lightText: "#aa0411",
         // darkText: "#007df6",
@@ -26,24 +26,23 @@ export default {
         darkBackground: "#111827",
 
 
-        primary: "#46B1C9",
-        'primary-dark': '#2e798a',
+        primary: "#41D3BD",
         secondary: "#EDB6A3",
         error: "#DD1155",
         success: "#71f175",
 
         cardLight: "#FFFFFF",
-        cardDark: "#2d2f39",
+        cardDark: "#192339",
         cardAccentLight: "#F9FAFB",
         cardAccentDark: "#191e23",
 
-        borderLight: "#46B1C9",
-        borderDark: "#5db3c6",
+        borderLight: "#41D3BD",
+        borderDark: "#41D3BD",
 
         friendlyGray: "#8f8f8f",
         softIvory: "#F0EAE2",
 
-        appBarColor: "#2d2f39",
+        appBarColor: "#DB324D",
 
 
         // 🎨 User-configurable kleuren (via CSS variables)

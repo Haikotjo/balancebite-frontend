@@ -33,7 +33,7 @@ export default function CustomDropdownWeb({
             {/* Dropdown panel */}
             {open && (
                 <CustomBox
-                    className={`absolute z-[9999] w-56 rounded-xl bg-white shadow-lg dark:bg-gray-800 bottom-full mb-2 sm:bottom-auto sm:top-full mb:mt-2 ${className}`}
+                    className={`absolute z-[9999] w-56 rounded-xl bg-white shadow-lg dark:bg-gray-800 ${className}`}
                 >
                     {items.map(({ label, onClick, icon: Icon, disabled }, index) => (
                         <CustomBox key={index}>
@@ -57,7 +57,7 @@ export default function CustomDropdownWeb({
                             </CustomBox>
 
                             {index < items.length - 1 && (
-                                <CustomDivider className="mx-4 bg-gray-200 dark:bg-gray-600" />
+                                <CustomDivider className="mx-0 bg-gray-200 dark:bg-gray-600" />
                             )}
                         </CustomBox>
                     ))}

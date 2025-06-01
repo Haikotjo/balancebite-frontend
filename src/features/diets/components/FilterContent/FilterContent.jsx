@@ -50,7 +50,7 @@ const FilterContent = ({ filters, setFilters }) => {
                 })}
             </CustomBox>
 
-            <CustomBox className="flex gap-4 flex-wrap items-end mt-4 mb-8">
+            <CustomBox className="flex flex-col sm:flex-row sm:flex-nowrap gap-4 items-end mt-4 mb-8 px-2">
                 <CustomBox className="flex flex-col text-sm w-80">
                     <CustomMultiSelect
                         label="All meals must contain"

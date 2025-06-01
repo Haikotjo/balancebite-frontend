@@ -8,7 +8,6 @@ import useLogin from "../../../../hooks/useLogin.js";
 
 import CustomAppBar from "../../../../components/layout/CustomAppBar.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
-import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import Logo from "../../../../components/logo/Logo.jsx";
 import MealsMenu from "../mealsMenu/MealsMenu.jsx";
 import DietsMenu from "../dietsMenu/DietsMenu.jsx";
@@ -18,6 +17,7 @@ import HamburgerMenu from "../hamburgerMenu/HamburgerMenu.jsx";
 import DarkModeSwitch from "../darkModeSwitch/DarkModeSwitch.jsx";
 import clsx from "clsx";
 import RequireAuthUI from "../../../../components/layout/RequireAuthUI.jsx";
+import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 
 const NavBar = () => {
     const { user } = useContext(AuthContext);
@@ -25,31 +25,8 @@ const NavBar = () => {
     const { errorMessage } = useLogin();
     const navigate = useNavigate();
     const [showLoginForm, setShowLoginForm] = useState(false);
-
     const [showError, setShowError] = useState(false);
-
-    const [isVisible, setIsVisible] = useState(true);
-    const [lastScrollY, setLastScrollY] = useState(0);
     const [startInRegisterMode, setStartInRegisterMode] = useState(false);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            if (window.innerWidth < 1024) return; // alleen vanaf lg
-            const currentY = window.scrollY;
-
-            if (currentY > lastScrollY && currentY > 80) {
-                setIsVisible(false); // scroll naar beneden
-            } else if (currentY < lastScrollY) {
-                setIsVisible(true); // scroll omhoog
-            }
-
-            setLastScrollY(currentY);
-        };
-
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, [lastScrollY]);
-
 
     useEffect(() => {
         if (errorMessage) setShowError(true);
@@ -58,16 +35,17 @@ const NavBar = () => {
     return (
         <CustomAppBar
             className={clsx(
-                "fixed bottom-0 lg:sticky lg:top-0 lg:bottom-auto z-50 transition-transform duration-300",
-                !isVisible && "lg:-translate-y-full",
-                isVisible && "lg:translate-y-0"
+                // Mobiel/medium: fixed onderaan
+                "fixed bottom-0 w-full z-50",
+                // Desktop (>=lg): vastgezet links, volledige hoogte
+                "md:top-0 md:left-0 md:bottom-auto md:h-screen md:w-auto md:max-w-max bg-appBarColor"
             )}
             bgColor="bg-appBarColor"
         >
 
-        {/* Mobile layout */}
+            {/* Mobile layout */}
             <CustomBox className="flex md:hidden items-center justify-between px-4 py-2 w-full">
-                <CustomBox className="flex items-center gap-4">
+                <CustomBox className="flex items-center gap-2">
                     <MealsMenu />
                     <DietsMenu />
                     <ProfileMenu
@@ -83,7 +61,6 @@ const NavBar = () => {
                         }}
                         text="Profile"
                     />
-
                 </CustomBox>
                 <CustomBox className="relative">
                     <HamburgerMenu
@@ -103,11 +80,14 @@ const NavBar = () => {
             </CustomBox>
 
             {/* Desktop layout */}
-            <CustomBox className="hidden md:flex items-center justify-between px-4 py-2 w-full">
-                <CustomBox className="flex items-center gap-6">
-                    <Logo size={40} className="text-white" to="/" />
+            <CustomBox className="hidden md:flex md:flex-col md:justify-between md:h-full">
+                <CustomBox className="flex flex-col space-y-6 px-4 py-4">
+                    <Logo size={40} className="hidden lg:block text-white" to="/" />
+                    <CustomDivider className="hidden lg:block  mx-0 bg-gray-200 dark:bg-gray-600" />
                     <MealsMenu />
+                    <CustomDivider className="mx-0 bg-gray-200 dark:bg-gray-600" />
                     <DietsMenu />
+                    <CustomDivider className="mx-0 bg-gray-200 dark:bg-gray-600" />
                     <ProfileMenu
                         user={user}
                         onLogout={handleLogout}
@@ -121,9 +101,10 @@ const NavBar = () => {
                         }}
                         text="Profile"
                     />
-
+                    <CustomDivider className="mx-0 bg-gray-200 dark:bg-gray-600" />
                 </CustomBox>
-                <CustomBox className="flex items-center gap-4">
+
+                <CustomBox className="flex flex-col space-y-4 px-4 pb-4">
                     <DesktopMenu
                         user={user}
                         onLogout={handleLogout}
@@ -133,15 +114,6 @@ const NavBar = () => {
                     <DarkModeSwitch />
                 </CustomBox>
             </CustomBox>
-
-            {errorMessage && (
-                <ErrorDialog
-                    open={showError}
-                    onClose={() => setShowError(false)}
-                    message={errorMessage}
-                    type="error"
-                />
-            )}
 
             <RequireAuthUI
                 dialogOpen={false}
@@ -153,7 +125,6 @@ const NavBar = () => {
                 onLoginRedirect={() => setShowLoginForm(true)}
                 startInRegisterMode={startInRegisterMode}
             />
-
 
         </CustomAppBar>
     );

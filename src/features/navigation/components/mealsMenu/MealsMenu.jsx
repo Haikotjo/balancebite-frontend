@@ -43,28 +43,29 @@ const MealsMenu = () => {
             <CustomDropdownWeb
                 open={open}
                 onOpenChange={setOpen}
-                className="mt-2 right-auto min-w-[10rem] max-w-[90vw]"
+                className="absolute bottom-full left-0 min-w-[10rem] max-w-[90vw] md:left-full md:top-0 md:bottom-auto"
                 trigger={
                     <CustomBox
                         onClick={() => setOpen(!open)}
-                        className="flex items-center cursor-pointer text-white"
+                        className="w-full flex justify-between items-center cursor-pointer text-white"
                     >
                         {/* Button label shown on sm+ screens */}
-                        <CustomTypography className="hidden text-sm text-white sm:inline mr-2">
+                        <CustomTypography className="text-xs sm:text-sm text-white mr-2 md:inline">
                             Meals
                         </CustomTypography>
+
                         {/* Always-visible soup icon */}
                         <Soup fill="white" className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         {/* Chevron indicator */}
                         {open ? (
                             <>
-                                <ChevronDown className="text-white w-5 h-5 mr-2 sm:hidden" />
-                                <ChevronUp className="text-white w-5 h-5 mr-2 hidden sm:block" />
+                                <ChevronDown className="text-white w-5 h-5 mr-2 md:hidden" />
+                                <ChevronUp className="text-white w-5 h-5 mr-2 hidden lg:block" />
                             </>
                         ) : (
                             <>
-                                <ChevronUp className="text-white w-5 h-5 mr-2 sm:hidden" />
-                                <ChevronDown className="text-white w-5 h-5 mr-2 hidden sm:block" />
+                                <ChevronUp className="text-white w-5 h-5 mr-2 md:hidden" />
+                                <ChevronDown className="text-white w-5 h-5 mr-2 hidden lg:block" />
                             </>
                         )}
                     </CustomBox>

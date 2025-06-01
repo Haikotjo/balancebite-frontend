@@ -29,14 +29,15 @@ const ProfileMenu = ({
         <CustomDropdownWeb
             open={open}
             onOpenChange={setOpen}
-            className="mt-2 left-0 sm:left-auto sm:right-0 min-w-[10rem] max-w-[90vw]"
+            className="absolute bottom-full left-0 min-w-[10rem] max-w-[40vw] md:left-full md:top-0 md:bottom-auto"
+
             /* ── trigger element ─────────────────────────────────────────── */
             trigger={
                 <CustomBox
                     onClick={() => setOpen(!open)}
-                    className="flex items-center cursor-pointer text-white"
+                    className="w-full flex justify-between items-center cursor-pointer text-white"
                 >
-                    <CustomTypography className="hidden text-sm text-white sm:inline mr-2">
+                    <CustomTypography className="text-xs sm:text-sm text-white mr-2 md:inline">
                         Profile
                     </CustomTypography>
                     {/* Always-visible user icon */}
@@ -44,15 +45,16 @@ const ProfileMenu = ({
                     {/* Chevron indicator */}
                     {open ? (
                         <>
-                            <ChevronDown className="text-white w-5 h-5 mr-2 sm:hidden" />
-                            <ChevronUp className="text-white w-5 h-5 mr-2 hidden sm:block" />
+                            <ChevronDown className="text-white w-5 h-5 mr-2 md:hidden" />
+                            <ChevronUp className="text-white w-5 h-5 mr-2 hidden lg:block" />
                         </>
                     ) : (
                         <>
-                            <ChevronUp className="text-white w-5 h-5 mr-2 sm:hidden" />
-                            <ChevronDown className="text-white w-5 h-5 mr-2 hidden sm:block" />
+                            <ChevronUp className="text-white w-5 h-5 mr-2 md:hidden" />
+                            <ChevronDown className="text-white w-5 h-5 mr-2 hidden lg:block" />
                         </>
                     )}
+
                 </CustomBox>
             }
             /* ── dropdown items ──────────────────────────────────────────── */

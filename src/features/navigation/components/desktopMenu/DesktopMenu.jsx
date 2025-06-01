@@ -23,19 +23,23 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
             : location.pathname.startsWith(path);
 
     return (
-        <CustomBox className="flex gap-3 items-center">
-            {/* Home icon button */}
+        <CustomBox className="flex flex-col space-y-2 w-full">
+            <CustomBox className="flex flex-col space-y-2 w-full font-body font-bold">
+            {/* Home */}
             <CustomButton
                 onClick={() => navigate("/")}
                 className={clsx(
-                    "p-2 rounded-md border border-white/30 transition-all hover:bg-white/30",
+                    "w-full text-left p-2 rounded-md border border-white/30 transition-all hover:bg-white/30",
                     isActive("/") ? "text-primary" : "text-white"
                 )}
             >
-                <Home className="w-5 h-5" />
+                <CustomBox  className="flex items-center gap-2">
+                    <Home className="w-5 h-5 md:hidden" />
+                    Home
+                </CustomBox >
             </CustomButton>
 
-            {/* Render other nav links */}
+            {/* Nav‐links */}
             {navItems.map((item) => {
                 const active = isActive(item.path);
                 return (
@@ -43,7 +47,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                         key={item.path}
                         onClick={() => navigate(item.path)}
                         className={clsx(
-                            "p-2 rounded-md border border-white/30 transition-all hover:bg-white/30",
+                            "w-full text-left p-2 rounded-md border border-white/30 transition-all hover:bg-white/30",
                             active ? "text-primary" : "text-white"
                         )}
                     >
@@ -52,34 +56,42 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                 );
             })}
 
-
-
             {/* Admin */}
-            {isAdmin && (
                 <CustomButton
                     onClick={() => navigate("/admin")}
-                    className="px-3 py-1 rounded-md text-sm transition-all border border-white/30 text-navInactive hover:bg-white/30"
+                    className={clsx(
+                        "w-full text-left p-2 rounded-md border border-white/30 transition-all hover:bg-white/30",
+                        isActive("/admin") ? "text-primary" : "text-white"
+                    )}
                 >
-                    <CustomTypography className="text-sm">Admin</CustomTypography>
+                    <CustomBox className="flex items-center gap-2">
+                        Admin
+                    </CustomBox>
                 </CustomButton>
-            )}
 
-            {/* Auth */}
+
+                {/* Auth */}
             {!user ? (
                 <CustomButton
                     onClick={onLoginClick}
-                    className="text-navInactive hover:bg-white/30 px-3 py-1 rounded-md border border-white/30"
+                    className={clsx(
+                        "w-full text-left px-3 py-1 rounded-md border border-white/30 transition-all hover:bg-white/30",
+                        isActive("/login") ? "text-primary" : "text-white"
+                    )}
                 >
-                    <CustomTypography className="text-sm text-white dark:text-white">Sign In</CustomTypography>
+                    <CustomTypography className="text-sm text-white dark:text-white">
+                        Sign In
+                    </CustomTypography>
                 </CustomButton>
             ) : (
                 <CustomButton
                     onClick={onLogout}
-                    className="text-navInactive hover:bg-white/30 px-3 py-1 rounded-md border border-white/30"
+                    className="w-full text-left px-3 py-1 rounded-md border border-white/30 text-white hover:bg-white/30"
                 >
                     <CustomTypography className="text-sm text-white">Logout</CustomTypography>
                 </CustomButton>
             )}
+        </CustomBox>
         </CustomBox>
     );
 };

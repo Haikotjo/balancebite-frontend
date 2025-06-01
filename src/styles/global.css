@@ -54,7 +54,7 @@
     padding: 4px 6px !important;
     line-height: 1 !important;
     border-radius: 3px !important;
-    background: #2e798a !important;
+    background: #41D3BD !important;
     color: white !important;
 }
 
@@ -70,12 +70,12 @@
     top: 50% !important;
     transform: translateY(-50%) !important;
     border-radius: 50% !important;
-    background: #2e798a !important;
+    background: #41D3BD !important;
     border: none !important;
 }
 
 .noUi-connects, .noUi-connect {
-    background: #2e798a !important;
+    background: #41D3BD !important;
 }
 
 .noUi-handle:before, .noUi-handle:after {
