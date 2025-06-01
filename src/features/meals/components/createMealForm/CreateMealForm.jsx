@@ -54,7 +54,7 @@ const CreateMealForm = () => {
         <CustomBox
             as="form"
             onSubmit={handleSubmit(onSubmit)}
-            className="w-full p-2 flex flex-col gap-2 my-4"
+            className="w-full pb-16 px-2 flex flex-col gap-2 mb-4"
         >
             <CustomTypography as="h2" variant="h1" className="text-left">
                 Create Your Meal
