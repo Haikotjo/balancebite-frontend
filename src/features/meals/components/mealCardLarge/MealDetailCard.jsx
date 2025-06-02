@@ -15,7 +15,7 @@ import CustomCard from "../../../../components/layout/CustomCard.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 
-const MealDetailCard = ({ meal, viewMode = "page" }) => {
+const MealDetailCard = ({ meal, viewMode = "page", onMealClick  }) => {
     const { userMeals } = useContext(UserMealsContext);
     const userMealMatch = userMeals.find(m => String(m.originalMealId) === String(meal.id));
     const mealToRender = userMealMatch || meal;
@@ -24,7 +24,6 @@ const MealDetailCard = ({ meal, viewMode = "page" }) => {
 
     const isPage = viewMode === "page";
     const isListItem = viewMode === "list";
-    const isMobile = viewMode === "mobile";
 
     const categoryMap = {
         mealTypes: "mealTypes",
@@ -52,6 +51,7 @@ const MealDetailCard = ({ meal, viewMode = "page" }) => {
                     meal={mealToRender}
                     showUpdateButton={showUpdateButton}
                     viewMode={viewMode}
+                    onMealClick={typeof onMealClick === "function" ? onMealClick : undefined}
                 />
 
             {/* Details Section */}
@@ -135,6 +135,7 @@ const MealDetailCard = ({ meal, viewMode = "page" }) => {
 MealDetailCard.propTypes = {
     meal: PropTypes.object.isRequired,
     viewMode: PropTypes.oneOf(["page", "list", "mobile"]),
+    onMealClick: PropTypes.func,
 };
 
 export default MealDetailCard;

@@ -18,8 +18,8 @@ import CustomGrid from "../../../../components/layout/CustomGrid.jsx";
  * @param {Object} [props.selectedMeal] - If present, only this meal is shown.
  * @returns {JSX.Element}
  */
-function MealList({ filters, sortBy, selectedMeal }) {
-    const { meals, loading, error, userMeals, setFilters, setSortBy } = useContext(UserMealsContext);
+function MealList({ filters, sortBy, selectedMeal, onMealClick }) {
+    const { meals, loading, error, userMeals, setFilters, setSortBy  } = useContext(UserMealsContext);
     const location = useLocation();
 
     // Apply name filter or selected meal override
@@ -93,6 +93,7 @@ function MealList({ filters, sortBy, selectedMeal }) {
                         <MealDetailCard
                             meal={mealToRender}
                             viewMode="list"
+                            onMealClick={onMealClick}
                         />
                     </CustomBox>
                 );
@@ -107,6 +108,7 @@ MealList.propTypes = {
         sortKey: PropTypes.string,
         sortOrder: PropTypes.string
     }),
+    onMealClick: PropTypes.func,
     selectedMeal: PropTypes.object
 };
 

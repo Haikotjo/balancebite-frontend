@@ -12,6 +12,7 @@ const MealCardImageSection = ({
                                   meal,
                                   viewMode = "page",
                                   showUpdateButton = true,
+                                  onMealClick,
                               }) => {
     const imageSrc = getImageSrc(meal);
     const navigate = useNavigate();
@@ -21,12 +22,16 @@ const MealCardImageSection = ({
             <CustomBox
                 className={clsx(
                     "relative aspect-[4/3] w-full shadow-[8px_8px_12px_rgba(0,0,0,0.8)] overflow-hidden rounded-md",
-                    viewMode === "list" && "cursor-pointer"
+                    viewMode === "list" && "cursor-pointer",
                 )}
-                onClick={viewMode === "list" ? () => {
-                    console.log("container clicked", meal.id);
-                    navigate(`/meal/${meal.id}`);
-                } : undefined}
+                onClick={
+                    viewMode === "list" && !onMealClick
+                        ? () => {
+                            console.log("➡️ fallback navigate naar meal-page:", meal.id);
+                            navigate(`/meal/${meal.id}`);
+                        }
+                        : undefined
+                }
             >
                 {/* IMAGE */}
                 <CustomImage
@@ -48,6 +53,7 @@ const MealCardImageSection = ({
                             meal={meal}
                             showUpdateButton={showUpdateButton}
                             viewMode="list"
+                            onMealClick={onMealClick}
                         />
                     </CustomBox>
                 </CustomBox>
@@ -73,6 +79,7 @@ MealCardImageSection.propTypes = {
     showUpdateButton: PropTypes.bool,
     viewMode: PropTypes.oneOf(["page", "list", "mobile"]),
     variant: PropTypes.oneOf(["overlay", "inline"]),
+    onMealClick: PropTypes.func,
 };
 
 export default MealCardImageSection;

@@ -24,7 +24,7 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
                 const selected = label === activeOption;
 
                 return (
-                    <CustomBox key={label} className="flex flex-col items-center gap-1 mb-6">
+                    <CustomBox key={label} className="flex flex-col items-center gap-1 mb-2">
                         <CustomCardChip
                             onClick={() => handleChipClick(label)}
                             className={`w-16 h-12 flex items-center justify-center border-2 rounded-full transition-colors ${

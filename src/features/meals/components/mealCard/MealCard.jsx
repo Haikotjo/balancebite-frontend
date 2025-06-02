@@ -81,7 +81,7 @@ const MealCard = ({ meal, viewMode = "page"  }) => {
                         {meal.name}
                     </CustomTypography>
                     <CustomDivider className="my-6" />
-                    <CustomTypography className="text-base text-muted italic">
+                    <CustomTypography className=" italic">
                         {meal.mealDescription}
                     </CustomTypography>
                     <CustomDivider className="my-6" />

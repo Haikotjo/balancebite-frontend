@@ -20,16 +20,20 @@ const ButtonOpenMeal = ({ mealId, onClick }) => {
     const navigate = useNavigate();
 
     const handleClick = () => {
-        if (onClick) {
+        if (onClick !== undefined) {
+            console.log("➡️ onClick aanwezig, uitvoeren");
             onClick();
         } else {
+            console.log("➡️ Geen onClick, navigeren naar meal page");
             navigate(`/meal/${mealId}`);
         }
     };
 
+
     return (
         <CustomIconButton
             onClick={handleClick}
+            className="bg-[rgba(0,0,0,0.4)]"
             icon={<ExternalLink size={20} color="white" />}
             size={35}
         />

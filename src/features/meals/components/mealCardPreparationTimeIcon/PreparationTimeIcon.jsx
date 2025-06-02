@@ -10,7 +10,7 @@ const PreparationTimeIcon = ({ preparationTime, iconSize = 16 }) => {
 
     return (
         <CustomBox
-            className="h-8 sm:h-7 min-w-fit px-2 bg-[rgba(0,0,0,0.5)] rounded-xl flex items-center gap-1 text-white text-[0.75rem]"
+            className="h-8 sm:h-7 min-w-fit px-2 bg-[rgba(0,0,0,0.4)] rounded-xl flex items-center gap-1 text-white text-[0.75rem]"
         >
             <Timer size={iconSize} className="text-white" />
             <span className="leading-none">

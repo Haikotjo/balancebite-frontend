@@ -4,9 +4,7 @@ import PropTypes from "prop-types";
 import { useContext } from "react";
 import EatButton from "../buttonEat/EatButton.jsx";
 import ButtonOpenMeal from "../buttonOpenMeal/ButtonOpenMeal.jsx";
-import ButtonUpdateMeal from "../buttonUpdateMeal/ButtonUpdateMeal.jsx";
 import {RecommendedNutritionContext} from "../../../../context/RecommendedNutritionContext.jsx";
-import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import ButtonFavorite from "../buttonFavoriteMeal/FavoriteButtonMeal.jsx";
 
@@ -20,13 +18,8 @@ import ButtonFavorite from "../buttonFavoriteMeal/FavoriteButtonMeal.jsx";
  * @param {string} [props.viewMode="page"] - Controls visibility of open button.
  * @returns {JSX.Element}
  */
-const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page" }) => {
+const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page",  onMealClick }) => {
     const { refetchRecommendedNutrition } = useContext(RecommendedNutritionContext);
-    const { userMeals } = useContext(UserMealsContext);
-
-    const isUserMeal = userMeals.some((userMeal) =>
-        String(userMeal.id) === String(meal.id)
-    );
 
     const sharedClasses = `
         flex items-center justify-center text-white
@@ -48,15 +41,13 @@ const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page" }) => {
 
             {viewMode !== "page" && (
                 <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
-                    <ButtonOpenMeal mealId={meal.id} />
+                    <ButtonOpenMeal
+                        mealId={meal.id}
+                        onClick={onMealClick ? () => onMealClick(meal) : undefined}
+                    />
                 </CustomBox>
             )}
 
-            {isUserMeal && (
-                <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
-                    <ButtonUpdateMeal mealId={meal.id} />
-                </CustomBox>
-            )}
         </CustomBox>
     );
 };
@@ -65,6 +56,7 @@ MealCardActionButtons.propTypes = {
     meal: PropTypes.object.isRequired,
     iconSize: PropTypes.number,
     viewMode: PropTypes.oneOf(["page", "list", "modal"]),
+    onMealClick: PropTypes.func,
 };
 
 export default MealCardActionButtons;

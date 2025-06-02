@@ -5,7 +5,7 @@ const CustomCard = ({ children, className = "" }) => {
     return (
         <CustomBox
             className={`flex flex-col w-full rounded-xl overflow-hidden 
-                shadow-2xl border border-borderLight dark:border-borderDark
+                shadow-lg border border-borderLight dark:border-borderDark
                 bg-cardLight dark:bg-cardDark
                 ${className}`}
         >

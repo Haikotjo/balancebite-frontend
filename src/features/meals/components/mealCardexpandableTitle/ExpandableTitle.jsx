@@ -27,7 +27,7 @@ const ExpandableTitle = ({ title, mealId }) => {
         <CustomBox className="flex items-start max-w-full mb-2">
             <CustomTypography
                 onClick={handleNavigate}
-                className="text-xl sm:text-2xl md:text-3xl font-semibold leading-snug cursor-pointer hover:underline"
+                className="text-xl sm:text-2xl md:text-2xl font-semibold leading-snug cursor-pointer hover:text-primary"
             >
                 {expanded || !isLongText ? (
                     <>
@@ -35,7 +35,8 @@ const ExpandableTitle = ({ title, mealId }) => {
                         {isLongText && (
                             <CustomTypography
                                 as="span"
-                                className="ml-1 text-sm text-userPrimary cursor-pointer"
+                                color="text-primary"
+                                className="ml-1 text-sm cursor-pointer"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setExpanded(false);
@@ -50,7 +51,8 @@ const ExpandableTitle = ({ title, mealId }) => {
                         {title.substring(0, 50)}{" "}
                         <CustomTypography
                             as="span"
-                            className="text-sm text-userPrimary cursor-pointer"
+                            color="text-primary"
+                            className="text-sm cursor-pointer"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 setExpanded(true);

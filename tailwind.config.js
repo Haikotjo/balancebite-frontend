@@ -36,8 +36,8 @@ export default {
         cardAccentLight: "#F9FAFB",
         cardAccentDark: "#191e23",
 
-        borderLight: "#41D3BD",
-        borderDark: "#41D3BD",
+        borderLight: "#d8d8d8",
+        borderDark: "#344875",
 
         friendlyGray: "#8f8f8f",
         softIvory: "#F0EAE2",
