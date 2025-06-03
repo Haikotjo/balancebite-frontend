@@ -5,7 +5,7 @@ import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
 import SubMenuGeneric from "../../../../components/subMenuGeneric/SubMenuGeneric.jsx";
 import PropTypes from "prop-types";
 
-const DietSubMenu = ({ isDetailPage = false }) => {
+const DietSubMenu = ({ isDetailPage = false, onSelect }) => {
     const { activeOption, setActiveOption } = useContext(UserDietsContext);
     const { user } = useContext(AuthContext);
 
@@ -25,12 +25,14 @@ const DietSubMenu = ({ isDetailPage = false }) => {
             setActiveOption={!isDetailPage ? setActiveOption : () => {}}
             basePath="/diets"
             isDetailPage={isDetailPage}
+            onSelect={onSelect}
         />
     );
 };
 
 DietSubMenu.propTypes = {
     isDetailPage: PropTypes.bool,
+    onSelect: PropTypes.func,
 };
 
 export default DietSubMenu;
