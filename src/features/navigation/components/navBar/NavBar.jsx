@@ -1,6 +1,5 @@
 import {useContext, useEffect, useState} from "react";
 import PropTypes from "prop-types";
-
 import { AuthContext } from "../../../../context/AuthContext.jsx";
 import useLogout from "../../../../hooks/useLogout.js";
 import { Menu } from "lucide-react";
@@ -14,7 +13,6 @@ import DesktopMenu from "../desktopMenu/DesktopMenu.jsx";
 import HamburgerMenu from "../hamburgerMenu/HamburgerMenu.jsx";
 import DarkModeSwitch from "../darkModeSwitch/DarkModeSwitch.jsx";
 import clsx from "clsx";
-import RequireAuthUI from "../../../../components/layout/RequireAuthUI.jsx";
 import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import { useLocation } from "react-router-dom";
@@ -36,9 +34,7 @@ const NavBar = () => {
     return (
         <CustomAppBar
             className={clsx(
-                // Mobiel/medium: fixed onderaan
                 "fixed bottom-0 w-full z-50",
-                // Desktop (>=lg): vastgezet links, volledige hoogte
                 "md:top-0 md:left-0 md:bottom-auto md:h-screen md:w-auto md:max-w-max bg-appBarColor"
             )}
             bgColor="bg-appBarColor"

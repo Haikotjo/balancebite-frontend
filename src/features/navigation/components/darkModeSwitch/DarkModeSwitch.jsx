@@ -47,21 +47,21 @@ const DarkModeSwitch = ({ withLabel = false, hamburgerStyle = false }) => {
             <CustomBox
                 className={`
                     relative 
-                    w-10 h-4 md:w-8 md:h-3 
+                    w-10 h-3 
                     rounded-full transition-all duration-300 
                     ${mode === "dark" ? "bg-cardDark" : "bg-gray-200"}
                 `}
             >
                 <CustomBox
                     className={`
-                        absolute top-1 left-1 
-                        w-2 h-2 md:w-1.5 md:h-1.5 
+                        absolute top-0.5 left-0.5
+                        w-2 h-2 
                         rounded-full shadow-md transition-transform duration-300 
-                        ${mode === "dark" ? "bg-white md:translate-x-5" : "bg-gray-500 translate-x-0"}
+                        ${mode === "dark" ? "bg-white md:translate-x-7" : "bg-gray-500 translate-x-0"}
                     `}
                 />
             </CustomBox>
-            <Moon className="text-gray-500 w-5 h-5 md:w-4 md:h-4" />
+            <Moon className="text-gray-800 fill-gray-800 w-5 h-5 md:w-4 md:h-4" />
         </CustomBox>
     );
 };

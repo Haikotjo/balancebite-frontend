@@ -2,14 +2,14 @@ import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Home } from "lucide-react";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
-import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 import clsx from "clsx";
 
 const navItems = [
     { label: "About", path: "/about" },
-    { label: "Meals", path: "/meals" },
-    { label: "Diets", path: "/diets" },
+    { label: "All Meals", path: "/meals" },
+    { label: "All Diets", path: "/diets" },
 ];
 
 const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
@@ -18,81 +18,83 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
     const isAdmin = user?.roles.includes("ADMIN");
 
     const isActive = (path) =>
-        path === "/"
-            ? location.pathname === "/"
-            : location.pathname.startsWith(path);
+        path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
 
     return (
-        <CustomBox className="flex flex-col space-y-2 w-full">
-            <CustomBox className="flex flex-col space-y-2 w-full font-body font-bold">
+        <CustomBox className="flex flex-col space-y-2 w-full font-body font-bold text-white">
             {/* Home */}
-            <CustomButton
+            <CustomBox
                 onClick={() => navigate("/")}
                 className={clsx(
-                    "w-full text-left p-2 rounded-md border border-white/30 transition-all hover:bg-white/30",
+                    "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
                     isActive("/") ? "text-primary" : "text-white"
                 )}
             >
-                <CustomBox  className="flex items-center gap-2">
+                <CustomBox className="flex items-center gap-2">
                     <Home className="w-5 h-5 md:hidden" />
                     Home
-                </CustomBox >
-            </CustomButton>
+                </CustomBox>
+            </CustomBox>
+
+            <CustomDivider className="bg-white my-2" />
 
             {/* Nav‐links */}
             {navItems.map((item) => {
                 const active = isActive(item.path);
                 return (
-                    <CustomButton
+                    <CustomBox
                         key={item.path}
                         onClick={() => navigate(item.path)}
                         className={clsx(
-                            "w-full text-left p-2 rounded-md border border-white/30 transition-all hover:bg-white/30",
+                            "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
                             active ? "text-primary" : "text-white"
                         )}
                     >
                         {item.label}
-                    </CustomButton>
+                    </CustomBox>
                 );
             })}
 
+            <CustomDivider className="bg-white my-2" />
+
             {/* Admin */}
-                {isAdmin && (
-                    <CustomButton
+            {isAdmin && (
+                <>
+                    <CustomBox
                         onClick={() => navigate("/admin")}
                         className={clsx(
-                            "w-full text-left p-2 rounded-md border border-white/30 transition-all hover:bg-white/30",
+                            "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
                             isActive("/admin") ? "text-primary" : "text-white"
                         )}
                     >
-                        <CustomBox className="flex items-center gap-2">
-                            Admin
-                        </CustomBox>
-                    </CustomButton>
-                )}
+                        Admin
+                    </CustomBox>
+                    <CustomDivider className="bg-white my-2" />
+                </>
+            )}
 
-                {/* Auth */}
+            {/* Auth */}
             {!user ? (
-                <CustomButton
+                <CustomBox
                     onClick={onLoginClick}
                     className={clsx(
-                        "w-full text-left px-3 py-1 rounded-md border border-white/30 transition-all hover:bg-white/30",
-                        isActive("/login") ? "text-primary" : "text-white"
+                        "w-full cursor-pointer p-2 rounded-md transition-all hover:bg-white/10"
                     )}
                 >
-                    <CustomTypography className="text-sm text-white dark:text-white">
+                    <CustomTypography className="text-sm text-white">
                         Sign In
                     </CustomTypography>
-                </CustomButton>
+                </CustomBox>
             ) : (
-                <CustomButton
+                <CustomBox
                     onClick={onLogout}
-                    className="w-full text-left px-3 py-1 rounded-md border border-white/30 text-white hover:bg-white/30"
+                    className="w-full cursor-pointer p-2 rounded-md hover:bg-white/10"
                 >
-                    <CustomTypography className="text-sm text-white">Logout</CustomTypography>
-                </CustomButton>
+                    <CustomTypography className="text-sm text-white">
+                        Logout
+                    </CustomTypography>
+                </CustomBox>
             )}
-        </CustomBox>
         </CustomBox>
     );
 };

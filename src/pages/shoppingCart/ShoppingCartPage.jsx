@@ -1,10 +1,7 @@
-// src/features/shoppingCart/pages/ShoppingCartPage.jsx
-
 import { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getShoppingCartForDietPlanApi } from "../../services/apiService.js";
 import { UserDietsContext } from "../../context/UserDietContext.jsx";
-import { AuthContext } from "../../context/AuthContext.jsx";
 import CustomBox from "../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../components/layout/CustomTypography.jsx";
 import BulletText from "../../components/layout/BulletText.jsx";
@@ -22,7 +19,6 @@ const ShoppingCartPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { userDiets, setActiveOption } = useContext(UserDietsContext);
-    const { user } = useContext(AuthContext);
     const navigate = useNavigate();
     const [checkedItems, setCheckedItems] = useState({});
 
@@ -73,10 +69,8 @@ const ShoppingCartPage = () => {
             <DietSubMenu
                 isDetailPage={true}
                 onSelect={(label) => {
-                    // label = "All Diets" of "My Diets" of "Created Diets"
-                    setActiveOption(label); // context bewaren
+                    setActiveOption(label);
                     const optionParam = label.toLowerCase().replace(" ", "-");
-                    // bvb "My Diets" → "my-diets"
                     navigate(`/diets?option=${optionParam}`);
                 }}
             />
