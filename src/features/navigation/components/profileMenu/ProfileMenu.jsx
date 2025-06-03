@@ -73,7 +73,7 @@ const ProfileMenu = ({
                     icon: LogIn,
                     onClick: () => {
                         setOpen(false);
-                        onLoginClick();
+                        onLoginClick(false);
                     },
                 },
                 !user && {
@@ -81,7 +81,7 @@ const ProfileMenu = ({
                     icon: UserPlus,
                     onClick: () => {
                         setOpen(false);
-                        onRegisterClick();
+                        onRegisterClick(true);
                     },
                 },
                 user && {

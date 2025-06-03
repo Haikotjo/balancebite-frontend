@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 import { CircleX } from "lucide-react";
 
-import CustomBox from "../../../components/layout/CustomBox.jsx";
-import CustomTypography from "../../../components/layout/CustomTypography.jsx";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 
 const DietsFilterChip = ({ label, colorClass, onRemove }) => {
     return (

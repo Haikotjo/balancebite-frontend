@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
-import DietsFilterChip from "../DietsFilterChip.jsx";
+import DietsFilterChip from "../dietsFilterChip/DietsFilterChip.jsx";
 import NutrientRangeChips from "../nutrientRangeChips/NutrientRangeChips.jsx";
 
 const ActiveFilterChips = ({

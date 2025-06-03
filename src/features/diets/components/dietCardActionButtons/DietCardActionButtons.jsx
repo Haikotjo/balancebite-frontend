@@ -5,6 +5,7 @@ import ButtonUpdateDiet from "../buttonUpdateDiet/ButtonUpdateDiet.jsx";
 import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import ButtonFavoriteDiet from "../buttonFavoriteDiet/ButtonFavoriteDiet.jsx";
+import ButtonOpenShoppingCart from "../ButtonOpenShoppingCart.jsx";
 
 
 /**
@@ -42,9 +43,15 @@ const DietCardActionButtons = ({ diet, iconSize = 35, viewMode = "page" }) => {
             )}
 
             {isUserDiet && (
-                <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
-                    <ButtonUpdateDiet dietId={diet.id} />
-                </CustomBox>
+                <>
+                    <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
+                        <ButtonUpdateDiet dietId={diet.id} />
+                    </CustomBox>
+
+                    <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
+                        <ButtonOpenShoppingCart dietId={diet.id} />
+                    </CustomBox>
+                </>
             )}
         </CustomBox>
     );

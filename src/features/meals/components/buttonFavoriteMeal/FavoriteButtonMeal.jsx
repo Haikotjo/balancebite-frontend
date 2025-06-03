@@ -39,10 +39,6 @@ const ButtonFavorite = ({ meal }) => {
         }
     );
 
-    const handleNavigateToDiet = (dietId) => {
-        navigate(`/diet/${dietId}`);
-    };
-
     return (
         <>
             <CustomIconButton
@@ -65,6 +61,7 @@ const ButtonFavorite = ({ meal }) => {
                 onLoginClose={() => setShowLoginForm(false)}
                 onLoginSuccess={() => setShowLoginForm(false)}
                 onLoginRedirect={handleLoginRedirect}
+                startInRegisterMode={false}
             />
 
             <ErrorDialog

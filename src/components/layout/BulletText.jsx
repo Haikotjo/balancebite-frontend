@@ -15,9 +15,10 @@ const BulletText = ({
     return (
         <CustomBox as={as} className="flex items-start gap-2">
             {showBullet && (
-                <CustomTypography as="span" className="text-primary text-[1rem] leading-tight">•</CustomTypography>
+                <CustomTypography color="primary" as="span" className="text-primary text-[1rem] leading-tight">•</CustomTypography>
             )}
             <CustomTypography
+
                 as="span"
                 variant={variant}
                 bold={bold}

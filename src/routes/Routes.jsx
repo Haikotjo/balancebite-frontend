@@ -22,6 +22,7 @@ import DietsPage from "../features/diets/pages/dietsPage/DietsPage.jsx";
 import DietDetailsPage from "../features/diets/pages/dietDetailsPage/DietDetailsPage.jsx";
 import CreateDietPage from "../features/diets/pages/createDietPage/createDietPage.jsx";
 import UpdateDietPage from "../features/diets/pages/updateDietPage/UpdateDietPage.jsx";
+import ShoppingCartPage from "../pages/shoppingCart/ShoppingCartPage.jsx";
 
 
 function AppRoutes() {
@@ -58,9 +59,14 @@ function AppRoutes() {
                     <ProtectedRoute><UpdateMealPage /></ProtectedRoute>
                 } />
 
+                <Route path="/shopping-cart/:dietPlanId" element={
+                    <ProtectedRoute><ShoppingCartPage /></ProtectedRoute>
+                } />
+
                 <Route path="/admin" element={
                     <RequireAdmin><AdminPage /></RequireAdmin>
                 } />
+
                 <Route path="/meal/:mealId" element={<MealDetailsPage />} />
                 <Route path="/diet/:dietId" element={<DietDetailsPage />} />
             </Routes>

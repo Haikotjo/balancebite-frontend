@@ -1,5 +1,4 @@
 import ErrorDialog from "../layout/ErrorDialog.jsx";
-
 import PropTypes from "prop-types";
 import LoginRegisterForm from "../../features/navigation/components/authLoginRegisterForm/LoginRegisterForm.jsx";
 
@@ -11,7 +10,7 @@ const RequireAuthUI = ({
                            onLoginClose,
                            onLoginSuccess,
                            onLoginRedirect,
-                           startInRegisterMode,
+
                        }) => (
     <>
         <ErrorDialog
@@ -28,7 +27,6 @@ const RequireAuthUI = ({
                 onLogin={onLoginSuccess}
                 onRegister={() => {}}
                 errorMessage={message}
-                startInRegisterMode={startInRegisterMode}
             />
         )}
     </>
@@ -43,7 +41,6 @@ RequireAuthUI.propTypes = {
     onLoginClose: PropTypes.func.isRequired,
     onLoginSuccess: PropTypes.func.isRequired,
     onLoginRedirect: PropTypes.func.isRequired,
-    startInRegisterMode: PropTypes.bool.isRequired,
 };
 
 export default RequireAuthUI;

@@ -602,6 +602,21 @@ export const getAllUserDietPlans = async (token, params) => {
     return response.data;
 };
 
+export const getShoppingCartForDietPlanApi = async (dietPlanId) => {
+    const token = localStorage.getItem("accessToken");
+    const endpoint = `${import.meta.env.VITE_GET_SHOPPING_CART_ENDPOINT}/${dietPlanId}/shopping-cart`;
+
+    try {
+        const response = await Interceptor.get(endpoint, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
 
 
 

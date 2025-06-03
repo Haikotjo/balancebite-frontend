@@ -4,7 +4,7 @@ import DietCard from "../../components/dietCard/DietCard.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import Spinner from "../../../../components/layout/Spinner.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
-import SubMenu from "../../components/subMenu/SubMenu.jsx";
+import SubMenu from "../../components/subMenu/DietsSubMenu.jsx";
 import { getPublicDietPlanByIdApi } from "../../../../services/apiService.js";
 import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
 

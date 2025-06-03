@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import DietsFilterChip from "../DietsFilterChip.jsx";
+import DietsFilterChip from "../dietsFilterChip/DietsFilterChip.jsx";
 
 const macros = ["Protein", "Carbs", "Fat", "Calories"];
 

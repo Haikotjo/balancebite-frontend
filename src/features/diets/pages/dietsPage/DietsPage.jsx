@@ -1,10 +1,10 @@
-import {useContext, useEffect, useState} from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
 import ScrollToTopButton from "../../../../components/scrollToTopButton/ScrollToTopButton.jsx";
 import DietsList from "../../components/dietsList/DietsList.jsx";
-import SubMenu from "../../components/subMenu/SubMenu.jsx";
+import DietSubMenu from "../../components/subMenu/DietsSubMenu.jsx";
 import Spinner from "../../../../components/layout/Spinner.jsx";
 import CustomPagination from "../../../../components/customPagination/CustomPagination.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
@@ -27,23 +27,22 @@ const DietsPage = () => {
         setFilters,
         creatorIdFilter,
         setCreatorIdFilter,
+        setActiveOption,
     } = useContext(UserDietsContext);
 
     const [showErrorDialog, setShowErrorDialog] = useState(false);
     const navigate = useNavigate();
     const [creatorName, setCreatorName] = useState(null);
+    const location = useLocation();
 
     useEffect(() => {
         if (creatorIdFilter) {
-            const match = diets.find(d => d.createdBy?.id === creatorIdFilter);
-            if (match) {
-                setCreatorName(match.createdBy.userName);
-            }
+            const match = diets.find((d) => d.createdBy?.id === creatorIdFilter);
+            setCreatorName(match ? match.createdBy.userName : null);
         } else {
             setCreatorName(null);
         }
     }, [creatorIdFilter, diets]);
-
 
     useEffect(() => {
         setPage(1);
@@ -53,9 +52,27 @@ const DietsPage = () => {
         if (error) setShowErrorDialog(true);
     }, [error]);
 
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const option = params.get("option");
+        if (option) {
+            const formatted = option
+                .split("-")
+                .map((s, i) =>
+                    i === 0 ? s.charAt(0).toUpperCase() + s.slice(1) : s
+                )
+                .join(" ");
+            setActiveOption(formatted);
+        }
+    }, [location.search, setActiveOption]);
+
     return (
         <CustomBox className="pt-6 sm:pt-10 px-4 pb-20 sm:pb-10">
-            <SubMenu />
+            <DietSubMenu
+                isDetailPage={false}
+                onSelect={() => {
+                }}
+            />
 
             <ActiveFilterChips
                 filters={filters}
@@ -91,10 +108,7 @@ const DietsPage = () => {
             {loading ? (
                 <Spinner className="mx-auto my-10" />
             ) : (
-                <DietsList
-                    diets={diets}
-                    onItemClick={(id) => navigate(`/diet/${id}`)}
-                />
+                <DietsList diets={diets} onItemClick={(id) => navigate(`/diet/${id}`)} />
             )}
 
             {totalPages > 1 && (

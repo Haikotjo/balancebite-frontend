@@ -1,4 +1,3 @@
-// src/features/diets/pages/dietsPage/DietsList.jsx
 import PropTypes from "prop-types";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import DietListCard from "../../dietListCard/DietListCard.jsx";

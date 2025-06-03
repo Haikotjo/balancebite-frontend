@@ -11,9 +11,6 @@ import MealList from "../../components/mealList/MealList.jsx";
 import CustomPagination from "../../../../components/customPagination/CustomPagination.jsx";
 import ScrollToTopButton from "../../../../components/scrollToTopButton/ScrollToTopButton.jsx";
 import SubMenu from "../../components/subMenu/SubMenu.jsx";
-import CustomModal from "../../../../components/layout/CustomModal.jsx";
-import MealDetailCard from "../../components/mealCardLarge/MealDetailCard.jsx";
-import MealCard from "../../components/mealCard/MealCard.jsx";
 import MealModal from "../../components/mealModal/MealModal.jsx";
 import useIsSmallScreen from "../../../../hooks/useIsSmallScreen.js";
 
@@ -81,9 +78,7 @@ function MealPage() {
 
 
     return (
-        <CustomBox className="flex flex-col items-center pt-4 gap-4 pb-20 sm:pb-0">
-
-
+        <CustomBox className="flex flex-col items-center pt-5 gap-4 pb-20 sm:pb-0">
 
             {/* Filter Sidebar */}
             <FilterSidebar filters={filters} onFilter={handleFiltersChange} />

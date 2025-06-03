@@ -5,6 +5,7 @@ import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import {useUpdateDiet} from "../../utils/hooks/useUpdateDiet.js";
 import Spinner from "../../../../components/layout/Spinner.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 
 const UpdateDietPage = () => {
     const { dietId } = useParams();
@@ -23,8 +24,14 @@ const UpdateDietPage = () => {
         return (
             <CustomBox className="flex flex-col items-center justify-center h-[calc(100vh-64px)]">
                 <Spinner />
-                <p className="mt-2 text-sm text-muted-foreground">Loading...</p>
+                <CustomTypography
+                    as="p"
+                    className="mt-2 text-sm text-muted-foreground text-center"
+                >
+                    Loading...
+                </CustomTypography>
             </CustomBox>
+
         );
     }
 

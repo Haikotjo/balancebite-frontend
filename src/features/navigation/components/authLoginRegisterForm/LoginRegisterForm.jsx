@@ -42,7 +42,11 @@ LoginRegisterForm.propTypes = {
     onLogin: PropTypes.func.isRequired,
     onRegister: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
-    startInRegisterMode: PropTypes.bool.isRequired,
+    startInRegisterMode: PropTypes.bool,
+};
+
+LoginRegisterForm.defaultProps = {
+    startInRegisterMode: false,
 };
 
 export default LoginRegisterForm;

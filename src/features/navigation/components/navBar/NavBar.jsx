@@ -18,6 +18,7 @@ import RequireAuthUI from "../../../../components/layout/RequireAuthUI.jsx";
 import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import { useLocation } from "react-router-dom";
+import LoginRegisterForm from "../authLoginRegisterForm/LoginRegisterForm.jsx";
 
 
 const NavBar = () => {
@@ -127,24 +128,27 @@ const NavBar = () => {
                     <DesktopMenu
                         user={user}
                         onLogout={handleLogout}
-                        onLoginClick={() => setShowLoginForm(true)}
-                        onRegisterClick={() => setShowLoginForm(true)}
+                        onLoginClick={() => {
+                            setStartInRegisterMode(false);
+                            setShowLoginForm(true);
+                        }}
+                        onRegisterClick={() => {
+                            setStartInRegisterMode(true);
+                            setShowLoginForm(true);
+                        }}
                     />
                     <DarkModeSwitch />
                 </CustomBox>
             </CustomBox>
 
-            <RequireAuthUI
-                dialogOpen={false}
-                onClose={() => setShowLoginForm(false)}
-                message=""
-                showLoginForm={showLoginForm}
-                onLoginClose={() => setShowLoginForm(false)}
-                onLoginSuccess={() => setShowLoginForm(false)}
-                onLoginRedirect={() => setShowLoginForm(true)}
-                startInRegisterMode={startInRegisterMode}
-            />
-
+            {showLoginForm && (
+                <LoginRegisterForm
+                    onClose={() => setShowLoginForm(false)}
+                    onLogin={() => setShowLoginForm(false)}
+                    onRegister={() => setShowLoginForm(false)}
+                    startInRegisterMode={startInRegisterMode}
+                />
+            )}
         </CustomAppBar>
     );
 };
