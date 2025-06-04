@@ -1,21 +1,21 @@
 import PropTypes from "prop-types";
-import CustomTypography from "../../../components/layout/CustomTypography.jsx";
-import CustomCard from "../../../components/layout/CustomCard.jsx";
-import AccordionItem from "../components/accordionItem/AccordionItem.jsx";
-import DietDayAccordion from "../components/dietDayAccordion/DietDayAccordion.jsx";
-import CustomDivider from "../../../components/layout/CustomDivider.jsx";
-import CustomBox from "../../../components/layout/CustomBox.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import CustomCard from "../../../../components/layout/CustomCard.jsx";
+import AccordionItem from "../accordionItem/AccordionItem.jsx";
+import DietDayAccordion from "../dietDayAccordion/DietDayAccordion.jsx";
+import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import { UserPen } from "lucide-react";
-import {getAverageNutrients} from "../utils/helpers/getAverageNutrients.js";
+import {getAverageNutrients} from "../../utils/helpers/getAverageNutrients.js";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
-import HorizontalScrollSection from "../../../components/horizontalScrollSection/HorizontalScrollSection.jsx";
-import MealCardCompact from "../../meals/components/mealCardCompact/MealCardCompact.jsx";
-import DietCardActionButtons from "../components/dietCardActionButtons/DietCardActionButtons.jsx";
-import AverageNutrientSummary from "../components/averageNutrientSummary/AverageNutrientSummary.jsx";
-import {UserDietsContext} from "../../../context/UserDietContext.jsx";
+import HorizontalScrollSection from "../../../../components/horizontalScrollSection/HorizontalScrollSection.jsx";
+import MealCardCompact from "../../../meals/components/mealCardCompact/MealCardCompact.jsx";
+import DietCardActionButtons from "../dietCardActionButtons/DietCardActionButtons.jsx";
+import AverageNutrientSummary from "../averageNutrientSummary/AverageNutrientSummary.jsx";
+import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
 import {useContext} from "react";
-import CustomButton from "../../../components/layout/CustomButton.jsx";
+import CustomButton from "../../../../components/layout/CustomButton.jsx";
 
 const DietListCard = ({ diet, compact = false }) => {
     const averages = getAverageNutrients(diet.dietDays);

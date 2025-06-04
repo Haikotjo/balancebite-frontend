@@ -10,7 +10,7 @@ import LoginPage from "../pages/loginPage/LoginPage";
 import RegisterPage from "../pages/registerPage/RegisterPage";
 import ProfilePage from "../features/profile/pages/profilePage/ProfilePage.jsx";
 
-import AdminPage from "../pages/adminPage/AdminPage.jsx";
+import AdminPage from "../features/admin/pages/AdminPage.jsx";
 import RequireAdmin from "./RequireAdmin.jsx";
 
 import MealsPage from "../features/meals/pages/mealsPage/MealsPage.jsx";

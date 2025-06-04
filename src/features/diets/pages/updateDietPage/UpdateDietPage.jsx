@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
-import UpdateDietForm from "../../components/upfateDietForm/UpdateDietForm.jsx";
+import UpdateDietForm from "../../components/updateDietForm/UpdateDietForm.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import {useUpdateDiet} from "../../utils/hooks/useUpdateDiet.js";

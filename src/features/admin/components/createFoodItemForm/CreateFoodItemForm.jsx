@@ -1,14 +1,14 @@
-import CustomFloatingSelect from "../layout/CustomFloatingSelect.jsx";
+import CustomFloatingSelect from "../../../../components/layout/CustomFloatingSelect.jsx";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { foodItemSchema } from "../../utils/valadition/validationSchemas.js";
-import CustomTextField from "../layout/CustomTextField.jsx";
-import { useCreateFoodItem } from "../../hooks/useCreateFoodItem.js";
-import CustomBox from "../layout/CustomBox.jsx";
-import CustomTypography from "../layout/CustomTypography.jsx";
-import CustomButton from "../layout/CustomButton.jsx";
-import { useFormMessages } from "../../hooks/useFormMessages.jsx";
-import {getReadableApiError} from "../../utils/helpers/getReadableApiError.js";
+import { foodItemSchema } from "../../../../utils/valadition/validationSchemas.js";
+import CustomTextField from "../../../../components/layout/CustomTextField.jsx";
+import { useCreateFoodItem } from "../../../../hooks/useCreateFoodItem.js";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import CustomButton from "../../../../components/layout/CustomButton.jsx";
+import { useFormMessages } from "../../../../hooks/useFormMessages.jsx";
+import {getReadableApiError} from "../../../../utils/helpers/getReadableApiError.js";
 
 const CreateFoodItemForm = () => {
     const {

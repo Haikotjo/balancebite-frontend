@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
-import DietListCard from "../../dietListCard/DietListCard.jsx";
+import DietListCard from "../dietListCard/DietListCard.jsx";
 import {useContext} from "react";
 import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
 

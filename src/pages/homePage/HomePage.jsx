@@ -6,7 +6,7 @@ import Logo from "../../components/logo/Logo.jsx";
 import HorizontalScrollSection from "../../components/horizontalScrollSection/HorizontalScrollSection.jsx";
 import MealCardCompact from "../../features/meals/components/mealCardCompact/MealCardCompact.jsx";
 import MealDetailCard from "../../features/meals/components/mealCardLarge/MealDetailCard.jsx";
-import DietListCard from "../../features/diets/dietListCard/DietListCard.jsx";
+import DietListCard from "../../features/diets/components/dietListCard/DietListCard.jsx";
 import Interceptor from "../../services/authInterceptor.js";
 import { UserDietsContext } from "../../context/UserDietContext.jsx";
 

@@ -1,10 +1,10 @@
-import CustomFloatingSelect from "../layout/CustomFloatingSelect.jsx";
-import useFoodItems from "../../hooks/useFoodItems.js";
+import CustomFloatingSelect from "../../../../components/layout/CustomFloatingSelect.jsx";
+import useFoodItems from "../../../../hooks/useFoodItems.js";
 import { useState } from "react";
-import CustomBox from "../layout/CustomBox.jsx";
-import useDeleteFoodItem from "../../hooks/useDeleteFoodItem.js";
-import CustomButton from "../layout/CustomButton.jsx";
-import ErrorDialog from "../layout/ErrorDialog.jsx";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import useDeleteFoodItem from "../../../../hooks/useDeleteFoodItem.js";
+import CustomButton from "../../../../components/layout/CustomButton.jsx";
+import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 
 /**
  * Component to handle deletion of a food item.

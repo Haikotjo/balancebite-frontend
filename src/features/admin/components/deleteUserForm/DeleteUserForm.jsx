@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import CustomFloatingSelect from "../layout/CustomFloatingSelect.jsx";
-import { getAccessToken } from "../../utils/helpers/getAccessToken.js";
-import { handleApiError } from "../../utils/helpers/handleApiError.js";
-import { getAllUsersApi, deleteUserApi } from "../../services/apiService.js";
-import CustomBox from "../layout/CustomBox.jsx";
-import CustomButton from "../layout/CustomButton.jsx";
-import ErrorDialog from "../layout/ErrorDialog.jsx";
+import CustomFloatingSelect from "../../../../components/layout/CustomFloatingSelect.jsx";
+import { getAccessToken } from "../../../../utils/helpers/getAccessToken.js";
+import { handleApiError } from "../../../../utils/helpers/handleApiError.js";
+import { getAllUsersApi, deleteUserApi } from "../../../../services/apiService.js";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import CustomButton from "../../../../components/layout/CustomButton.jsx";
+import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 
 const DeleteUserForm = () => {
     const [users, setUsers] = useState([]);

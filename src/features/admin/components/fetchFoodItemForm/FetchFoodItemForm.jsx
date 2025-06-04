@@ -1,10 +1,10 @@
-import CustomBox from "../layout/CustomBox.jsx";
-import CustomTypography from "../layout/CustomTypography.jsx";
-import CustomTextField from "../layout/CustomTextField.jsx";
-import useFetchFoodItem from "../../hooks/useFetchFoodItem.js";
-import Spinner from "../layout/Spinner.jsx";
-import CustomButton from "../layout/CustomButton.jsx";
-import ErrorDialog from "../layout/ErrorDialog.jsx";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import CustomTextField from "../../../../components/layout/CustomTextField.jsx";
+import useFetchFoodItem from "../../../../hooks/useFetchFoodItem.js";
+import Spinner from "../../../../components/layout/Spinner.jsx";
+import CustomButton from "../../../../components/layout/CustomButton.jsx";
+import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 
 const FetchFoodItemForm = () => {
     const {

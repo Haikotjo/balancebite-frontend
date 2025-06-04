@@ -2,26 +2,30 @@ import { useState } from "react";
 import {
     PlusSquare,
     Utensils,
-    Settings
+    Settings,
+    Apple
 } from "lucide-react";
 
 // Form components
-import CreateFoodItemForm from "../../components/createFoodItemForm/CreateFoodItemForm.jsx";
-import DeleteFoodItemForm from "../../components/deleteFoodItemForm/DeleteFoodItemForm.jsx";
-import FetchFoodItemForm from "../../components/fetchFoodItemForm/FetchFoodItemForm.jsx";
-import PromoteUserForm from "../../components/promoteUserForm/PromoteUserForm.jsx";
+import CreateFoodItemForm from "../components/createFoodItemForm/CreateFoodItemForm.jsx";
+import DeleteFoodItemForm from "../components/deleteFoodItemForm/DeleteFoodItemForm.jsx";
+import FetchFoodItemForm from "../components/fetchFoodItemForm/FetchFoodItemForm.jsx";
+import PromoteUserForm from "../components/promoteUserForm/PromoteUserForm.jsx";
 
-import DeleteUserForm from "../../components/deleteUserForm/DeleteUserForm.jsx";
-import CreateMealForm from "../../features/meals/components/createMealForm/CreateMealForm.jsx";
-import DeleteMealForm from "../../features/meals/components/deleteMealForm/DeleteMealForm.jsx";
+import DeleteUserForm from "../components/deleteUserForm/DeleteUserForm.jsx";
+import CreateMealForm from "../../meals/components/createMealForm/CreateMealForm.jsx";
+import DeleteMealForm from "../../meals/components/deleteMealForm/DeleteMealForm.jsx";
+
+import CreateDietForm from "../../diets/components/createDietForm/CreateDietForm.jsx";
 
 // Layout components
-import CustomBox from "../../components/layout/CustomBox.jsx";
-import CustomCardChip from "../../components/layout/customCardChip.jsx";
-import CustomTypography from "../../components/layout/CustomTypography.jsx";
+import CustomBox from "../../../components/layout/CustomBox.jsx";
+import CustomCardChip from "../../../components/layout/customCardChip.jsx";
+import CustomTypography from "../../../components/layout/CustomTypography.jsx";
 import clsx from "clsx";
-import CustomSelect from "../../components/layout/CustomSelect.jsx";
-import RegisterForm from "../../features/navigation/components/authRegisterForm/RegisterForm.jsx";
+import CustomSelect from "../../../components/layout/CustomSelect.jsx";
+import RegisterForm from "../../navigation/components/authRegisterForm/RegisterForm.jsx";
+import DeleteDietPlanForm from "../components/deleteDietForm/DeleteMealForm.jsx";
 
 /**
  * AdminPage – Central admin dashboard to manage food items, meals, users and future settings.
@@ -32,12 +36,14 @@ const AdminPage = () => {
     const [foodItemAction, setFoodItemAction] = useState("Create");
     const [userAction, setUserAction] = useState("Promote");
     const [mealAction, setMealAction] = useState("Create");
+    const [dietAction, setDietAction] = useState("Create");
 
     // Main top-level options for admin sections
     const options = [
         { label: "Food Item", icon: <PlusSquare className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
         { label: "Meals", icon: <Utensils className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
         { label: "Users", icon: <Settings className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
+        { label: "Diets", icon: <Apple className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
         { label: "Settings", icon: <Settings className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
     ];
 
@@ -110,6 +116,28 @@ const AdminPage = () => {
                 </CustomBox>
             );
         }
+
+        if (activeOption === "Diets") {
+            return (
+                <CustomBox>
+                    <CustomSelect
+                        name="dietAction"
+                        label="Diet Action"
+                        value={dietAction}
+                        onChange={(e) => setDietAction(e.target.value)}
+                        options={[
+                            { value: "Create", label: "Create Diet" },
+                            { value: "Delete", label: "Delete Diet" },
+                        ]}
+                        className="py-2 sm:py-3"
+                    />
+
+                    {dietAction === "Create" && <CreateDietForm />}
+                    {dietAction === "Delete" && <DeleteDietPlanForm />}
+                </CustomBox>
+            );
+        }
+
 
         if (activeOption === "Settings") {
             return (

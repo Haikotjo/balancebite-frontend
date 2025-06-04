@@ -4,11 +4,14 @@ import { useFormMessages } from "../../../../hooks/useFormMessages.jsx";
 import { createDietPlanApi } from "../../../../services/apiService.js";
 import { getReadableApiError } from "../../../../utils/helpers/getReadableApiError.js";
 import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
+import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
 
 export function useCreateDiet(onSuccess, append, remove) {
     const navigate = useNavigate();
     const { setError, setSuccess, clear, renderDialogs } = useFormMessages();
     const { fetchUserDietsData } = useContext(UserDietsContext);
+    const { addMealToUserMeals } = useContext(UserMealsContext);
+
 
     const [days, setDays] = useState([
         { mealIds: [""] }
@@ -88,6 +91,14 @@ export function useCreateDiet(onSuccess, append, remove) {
             const newDiet = await createDietPlanApi({ ...payload, diets: [] });
             setSuccess(`Diet created: ${newDiet.name || "Unknown diet"}`);
             await fetchUserDietsData();
+
+            newDiet.dietDays?.forEach(day => {
+                day.meals?.forEach(meal => {
+                    if (meal && meal.id) {
+                        addMealToUserMeals(meal);
+                    }
+                });
+            });
             onSuccess?.(newDiet);
             navigate(`/diet/${newDiet.id}`);
         } catch (err) {

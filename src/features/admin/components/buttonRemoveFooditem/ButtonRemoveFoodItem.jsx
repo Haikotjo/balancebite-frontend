@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { Trash2 } from "lucide-react";
-import CustomIconButton from "../layout/CustomIconButton.jsx";
+import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 
 /**
  * RemoveFoodItemButton renders a trash icon button to remove a food item

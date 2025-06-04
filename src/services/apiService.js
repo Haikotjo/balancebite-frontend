@@ -56,6 +56,27 @@ export const removeMealFromFavoritesApi = async (mealId, token) => {
     }
 };
 
+export const forceUnlinkMealFromUserApi = async (mealId, token) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_FORCE_UNLINK_MEAL_ENDPOINT}/${mealId}/force`;
+
+    try {
+        const response = await Interceptor.delete(endpoint, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return response.data;
+    } catch (error) {
+        const errData = error?.response?.data;
+        console.error("❌ Backend responded with error (force unlink):", errData);
+        throw {
+            ...error,
+            response: {
+                ...error.response,
+                data: errData,
+            },
+        };
+    }
+};
+
 export const fetchMeals = async (path) => {
     const endpoint = `${import.meta.env.VITE_BASE_URL}${path}`;
     try {
@@ -617,6 +638,31 @@ export const getShoppingCartForDietPlanApi = async (dietPlanId) => {
     }
 };
 
+export const getAllAdminDietPlansApi = async (token) => {
+    const endpoint = import.meta.env.VITE_GET_ALL_ADMIN_DIETPLANS_ENDPOINT;
+    try {
+        const response = await Interceptor.get(endpoint, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("[API Error] Failed to fetch admin diet plans:", error);
+        throw error;
+    }
+};
+
+export const deleteAdminDietPlanApi = async (dietPlanId, token) => {
+    const endpoint = `${import.meta.env.VITE_DELETE_ADMIN_DIETPLAN_ENDPOINT}/${dietPlanId}`;
+    try {
+        const response = await Interceptor.delete(endpoint, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return response;
+    } catch (error) {
+        console.error(`[API Error] Failed to delete diet plan with ID ${dietPlanId}:`, error);
+        throw error;
+    }
+};
 
 
 

@@ -4,7 +4,7 @@ import useFoodItems from "../../../../hooks/useFoodItems.js";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomFloatingSelect from "../../../../components/layout/CustomFloatingSelect.jsx";
 import CustomFloatingNumberInput from "../../../../components/layout/CustomFloatingNumberInput.jsx";
-import ButtonRemoveFoodItem from "../../../../components/buttonRemoveFooditem/ButtonRemoveFoodItem.jsx";
+import ButtonRemoveFoodItem from "../../../admin/components/buttonRemoveFooditem/ButtonRemoveFoodItem.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 

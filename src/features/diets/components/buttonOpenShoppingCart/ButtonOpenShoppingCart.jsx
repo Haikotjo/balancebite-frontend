@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { ShoppingBasket } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import CustomIconButton from "../../../components/layout/CustomIconButton.jsx";
+import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 
 
 /**

@@ -8,7 +8,7 @@ import BulletText from "../../components/layout/BulletText.jsx";
 import CustomCard from "../../components/layout/CustomCard.jsx";
 import Spinner from "../../components/layout/Spinner.jsx";
 import CustomLink from "../../components/layout/customLink.jsx";
-import DietListCard from "../../features/diets/dietListCard/DietListCard.jsx";
+import DietListCard from "../../features/diets/components/dietListCard/DietListCard.jsx";
 import DietSubMenu from "../../features/diets/components/subMenu/DietsSubMenu.jsx";
 import CustomCheckbox from "../../components/layout/CustomCheckbox.jsx";
 import CustomDivider from "../../components/layout/CustomDivider.jsx";

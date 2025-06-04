@@ -1,7 +1,8 @@
 import { useState, useContext } from "react";
-import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
-import {AuthContext} from "../../../../context/AuthContext.jsx";
+import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
+import { AuthContext } from "../../../../context/AuthContext.jsx";
 import useFavoritesDiets from "./useFavoriteDiets.js";
+import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
 
 /**
  * Custom hook to toggle a diet as favorite or remove it from favorites.
@@ -22,6 +23,8 @@ export const useToggleDietFavorite = (diet, onAuthRequired, onError, onSuccess) 
         addDietToFavoritesInContext,
         removeDietFromFavoritesInContext
     } = useContext(UserDietsContext);
+
+    const { addMealToUserMealsContext } = useContext(UserMealsContext); // ✅ toegevoegd
     const { user } = useContext(AuthContext);
     const { addDietToFavorites, removeDietFromFavorites } = useFavoritesDiets();
     const [isProcessing, setIsProcessing] = useState(false);
@@ -38,11 +41,17 @@ export const useToggleDietFavorite = (diet, onAuthRequired, onError, onSuccess) 
         try {
             if (alreadyFavorited) {
                 await removeDietFromFavorites(diet);
-                removeDietFromFavoritesInContext(diet.id); // ← context bijwerken
+                removeDietFromFavoritesInContext(diet.id);
                 onSuccess?.(`${diet.name} removed from favorites`);
             } else {
                 await addDietToFavorites(diet);
-                addDietToFavoritesInContext(diet); // ← context bijwerken
+                addDietToFavoritesInContext(diet);
+
+                // ✅ Voeg meals uit dieet toe aan userMealsContext
+                if (diet.meals && Array.isArray(diet.meals)) {
+                    diet.meals.forEach(meal => addMealToUserMealsContext(meal));
+                }
+
                 onSuccess?.(`${diet.name} added to favorites`);
             }
 
@@ -50,17 +59,14 @@ export const useToggleDietFavorite = (diet, onAuthRequired, onError, onSuccess) 
             console.error("❌ Favorite toggle failed:", e);
             console.log("⚠️ Full error object:", e.response?.data);
 
-            console.log("⚠️ Full error response:", e.response?.data);
             const backendMessage = e?.response?.data?.error || "Could not toggle favorite. Try again later.";
             const diets = e?.response?.data?.diets || [];
-            console.log("⚠️ diets:", diets);
 
             onError?.({ message: backendMessage, diets });
         } finally {
             setIsProcessing(false);
         }
     };
-
 
     return { toggleFavorite, alreadyFavorited, isProcessing };
 };

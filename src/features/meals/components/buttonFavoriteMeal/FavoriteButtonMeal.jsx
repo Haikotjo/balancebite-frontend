@@ -1,12 +1,18 @@
 import PropTypes from "prop-types";
-import { Heart } from "lucide-react";
-import { useState } from "react";
+import { Heart, AlertTriangle  } from "lucide-react";
+import {useContext, useState} from "react";
 import { useToggleMealFavorite } from "../../utils/hooks/useToggleMealFavorite.js";
 import { useRequireAuthDialog } from "../../../../hooks/useRequireAuthDialog.js";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 import RequireAuthUI from "../../../../components/layout/RequireAuthUI.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import { useNavigate } from "react-router-dom";
+import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
+import {forceUnlinkMealFromUserApi} from "../../../../services/apiService.js";
+import {AuthContext} from "../../../../context/AuthContext.jsx";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import CustomButton from "../../../../components/layout/CustomButton.jsx";
 
 const ButtonFavorite = ({ meal }) => {
     const navigate = useNavigate();
@@ -23,7 +29,19 @@ const ButtonFavorite = ({ meal }) => {
 
     const [errorDialogOpen, setErrorDialogOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-    const [errorDiets, setErrorDiets] = useState([]); // array van { id, name }
+    const [errorDiets, setErrorDiets] = useState([]);
+    const { removeMealFromUserMeals } = useContext(UserMealsContext);
+    const { token } = useContext(AuthContext);
+
+    const handleForceUnlink = async () => {
+        try {
+            await forceUnlinkMealFromUserApi(meal.id, token); // <--- gebruik DIT
+            removeMealFromUserMeals(meal.id);
+            setErrorDialogOpen(false);
+        } catch (e) {
+            console.error("Force unlink failed", e);
+        }
+    };
 
     const { toggleFavorite, alreadyFavorited } = useToggleMealFavorite(
         meal,
@@ -67,23 +85,39 @@ const ButtonFavorite = ({ meal }) => {
             <ErrorDialog
                 open={errorDialogOpen}
                 onClose={() => setErrorDialogOpen(false)}
-                message={errorMessage}
                 type="error"
             >
                 {errorDiets.length > 0 && (
-                    <div className="mt-4 space-y-2">
+                    <CustomBox className="mt-4 space-y-2 border border-error rounded-lg p-4 ">
+                        <CustomBox className="flex items-center gap-2 text-error  font-medium">
+                            <AlertTriangle size={18} />
+                            <CustomTypography variant="h5">
+                                This meal is still used in one or more diets
+                            </CustomTypography>
+                        </CustomBox>
+
+
                         {errorDiets.map((diet) => (
-                            <button
+                            <CustomButton
                                 key={diet.id}
+                                as="button"
                                 onClick={() => navigate(`/diet/${diet.id}`)}
-                                className="text-blue-500 underline hover:text-blue-700 block text-left"
+                                className="text-primary underline hover:text-blue-700 block text-left"
                             >
                                 View: {diet.name}
-                            </button>
+                            </CustomButton>
                         ))}
-                    </div>
+
+                        <CustomButton
+                            onClick={handleForceUnlink}
+                            className="text-red-600 underline hover:text-red-800 block text-left font-semibold"
+                        >
+                            Remove from my meals and all diets
+                        </CustomButton>
+                    </CustomBox>
                 )}
             </ErrorDialog>
+
 
         </>
     );

@@ -5,7 +5,7 @@ import ButtonUpdateDiet from "../buttonUpdateDiet/ButtonUpdateDiet.jsx";
 import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import ButtonFavoriteDiet from "../buttonFavoriteDiet/ButtonFavoriteDiet.jsx";
-import ButtonOpenShoppingCart from "../ButtonOpenShoppingCart.jsx";
+import ButtonOpenShoppingCart from "../buttonOpenShoppingCart/ButtonOpenShoppingCart.jsx";
 
 
 /**
