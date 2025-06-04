@@ -1,14 +1,12 @@
 import PropTypes from "prop-types";
 import { useContext, useEffect } from "react";
-import { RecommendedNutritionContext } from "../../context/RecommendedNutritionContext.jsx";
-import { AuthContext } from "../../context/AuthContext.jsx";
-import { getSortedNutritionData } from "./nutritionHelpers.js";
-
-import CustomCard from "../layout/CustomCard.jsx";
-import CustomBox from "../layout/CustomBox.jsx";
-import CustomTypography from "../layout/CustomTypography.jsx";
-import Spinner from "../layout/Spinner.jsx";
-import NutritionDate from "./NutritionDate.jsx";
+import { RecommendedNutritionContext } from "../../../../context/RecommendedNutritionContext.jsx";
+import { AuthContext } from "../../../../context/AuthContext.jsx";
+import { getSortedNutritionData } from "../../utils/nutritionHelpers.js";
+import CustomCard from "../../../../components/layout/CustomCard.jsx";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import Spinner from "../../../../components/layout/Spinner.jsx";
 import NutritionTable from "./NutritionTable.jsx";
 
 const RecommendedNutritionDisplay = ({ useBaseRDI = false }) => {
@@ -42,7 +40,13 @@ const RecommendedNutritionDisplay = ({ useBaseRDI = false }) => {
                     {useBaseRDI ? "Recommended" : "Today"}
                 </CustomTypography>
 
-                <NutritionTable sortedNutrients={sortedNutrients} useBaseRDI={useBaseRDI} />
+                <NutritionTable
+                    sortedNutrients={sortedNutrients.filter(n =>
+                        n.name !== "Saturated and Trans fats" &&
+                        n.name !== "Mono- and Polyunsaturated fats"
+                    )}
+                    useBaseRDI={useBaseRDI}
+                />
 
                 <CustomTypography variant="xsmallCard" className="text-right text-friendlyGray mt-2">
                     {createdAt}

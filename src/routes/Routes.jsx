@@ -23,6 +23,7 @@ import DietDetailsPage from "../features/diets/pages/dietDetailsPage/DietDetails
 import CreateDietPage from "../features/diets/pages/createDietPage/createDietPage.jsx";
 import UpdateDietPage from "../features/diets/pages/updateDietPage/UpdateDietPage.jsx";
 import ShoppingCartPage from "../pages/shoppingCart/ShoppingCartPage.jsx";
+import DashboardPage from "../features/profile/pages/dashboardPage/DashboardPage.jsx";
 
 
 function AppRoutes() {
@@ -61,6 +62,10 @@ function AppRoutes() {
 
                 <Route path="/shopping-cart/:dietPlanId" element={
                     <ProtectedRoute><ShoppingCartPage /></ProtectedRoute>
+                } />
+
+                <Route path="/dashboard" element={
+                    <ProtectedRoute><DashboardPage /></ProtectedRoute>
                 } />
 
                 <Route path="/admin" element={

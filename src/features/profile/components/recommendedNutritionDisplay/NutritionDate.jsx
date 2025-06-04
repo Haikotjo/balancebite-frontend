@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import CustomTypography from "../layout/CustomTypography.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 
 const NutritionDate = ({ createdAt }) => {
     return (

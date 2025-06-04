@@ -7,16 +7,21 @@ import { useNavigate } from "react-router-dom";
 /**
  * Generic SubMenu component for both Meals and Diets.
  */
-function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "", isDetailPage = false }) {
+function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "", isDetailPage = false, onSelect }) {
     const navigate = useNavigate();
 
     const handleChipClick = (label) => {
         if (isDetailPage) {
-            navigate(`${basePath}?filter=${label}`);
+            if (onSelect) {
+                onSelect(label);
+            } else {
+                navigate(`${basePath}?filter=${label}`);
+            }
         } else {
             setActiveOption(label);
         }
     };
+
 
     return (
         <CustomBox className="flex justify-center items-center gap-4">
@@ -60,6 +65,7 @@ SubMenuGeneric.propTypes = {
     setActiveOption: PropTypes.func.isRequired,
     basePath: PropTypes.string,
     isDetailPage: PropTypes.bool,
+    onSelect: PropTypes.func,
 };
 
 export default SubMenuGeneric;

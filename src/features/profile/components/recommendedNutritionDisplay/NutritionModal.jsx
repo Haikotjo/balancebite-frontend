@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
-import CustomBox from "../layout/CustomBox.jsx";
-import CustomButton from "../layout/CustomButton.jsx";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import CustomButton from "../../../../components/layout/CustomButton.jsx";
 
 
 /**

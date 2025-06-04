@@ -1,8 +1,9 @@
 import UserDetailsForm from "../../components/userDetailsForm/UserDetailsForm.jsx";
-import RecommendedNutritionDisplay from "../../../../components/recommendedNutritionDisplay/RecommendedNutritionDisplay.jsx";
+import RecommendedNutritionDisplay from "../../components/recommendedNutritionDisplay/RecommendedNutritionDisplay.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import PersonalInfoForm from "../../components/personalInfoForm/PersonalInfoForm.jsx";
+import CustomCard from "../../../../components/layout/CustomCard.jsx";
 
 /**
  * ProfilePage component
@@ -34,16 +35,16 @@ const ProfilePage = () => {
     return (
         <CustomBox className="flex flex-col gap-5 p-5 pb-16 md:pb-10">
             {/* Personal Info & User Details Section */}
-            <CustomBox className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-                {/* Personal Information Form */}
-                <CustomBox className=" rounded shadow p-4">
+            <CustomBox className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full items-start">
+            {/* Personal Information Form */}
+                <CustomCard className="p-4">
                     <PersonalInfoForm onSubmit={handlePersonalInfoSubmit} />
-                </CustomBox>
+                </CustomCard>
 
                 {/* User Details Form */}
-                <CustomBox className="rounded shadow p-4">
+                <CustomCard className="p-4">
                     <UserDetailsForm onSubmit={handleUserDetailsSubmit} />
-                </CustomBox>
+                </CustomCard>
             </CustomBox>
 
             {/* Recommended Nutrition Section */}

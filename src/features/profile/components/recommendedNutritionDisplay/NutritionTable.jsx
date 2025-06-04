@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
-import CustomBox from "../layout/CustomBox.jsx";
-import CustomTypography from "../layout/CustomTypography.jsx";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 
 const NutritionTable = ({ sortedNutrients, useBaseRDI }) => {
     return (

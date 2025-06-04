@@ -69,12 +69,12 @@ function MealPage() {
 
 
     useEffect(() => {
-        const filterParam = searchParams.get("filter");
-        if (filterParam) {
-            // update context zodat MealList weet wat de bron is
-            setActiveOption(filterParam);
+        const optionParam = searchParams.get("option");
+        if (optionParam) {
+            setActiveOption(optionParam.replace("-", " "));
         }
     }, [searchParams, setActiveOption]);
+
 
 
     return (
@@ -84,7 +84,13 @@ function MealPage() {
             <FilterSidebar filters={filters} onFilter={handleFiltersChange} />
 
             {/* SubMenu */}
-            <SubMenu  />
+            <SubMenu
+                onSelect={(label) => {
+                    setActiveOption(label);
+                    const optionParam = label.toLowerCase().replace(" ", "-");
+                    navigate(`/meals?option=${optionParam}`);
+                }}
+            />
 
             {/* Nutrient Sort Options */}
             <NutrientSortOptionsHorizontal onSort={handleSort} />

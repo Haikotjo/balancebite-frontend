@@ -4,9 +4,9 @@ import {useConsumeMeal} from "../../../../hooks/useConsumeMeal.js";
 import {useRequireAuthDialog} from "../../../../hooks/useRequireAuthDialog.js";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 import RequireAuthUI from "../../../../components/layout/RequireAuthUI.jsx";
-import NutritionModal from "../../../../components/recommendedNutritionDisplay/NutritionModal.jsx";
+import NutritionModal from "../../../profile/components/recommendedNutritionDisplay/NutritionModal.jsx";
 import RecommendedNutritionDisplay
-    from "../../../../components/recommendedNutritionDisplay/RecommendedNutritionDisplay.jsx";
+    from "../../../profile/components/recommendedNutritionDisplay/RecommendedNutritionDisplay.jsx";
 
 const EatButton = ({ meal, refetchRecommendedNutrition }) => {
     const {
