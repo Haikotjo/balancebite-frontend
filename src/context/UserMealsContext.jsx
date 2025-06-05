@@ -128,6 +128,7 @@ export const UserMealsProvider = ({ children }) => {
                 addMealToUserMeals,
                 removeMealFromMeals,
                 replaceMealInMeals,
+                setMeals,
                 page,
                 setPage,
                 totalPages,

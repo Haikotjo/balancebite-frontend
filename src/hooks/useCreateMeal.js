@@ -9,7 +9,7 @@ import {buildMealFormData} from "../features/meals/utils/helpers/buildMealFormDa
 
 export const useCreateMeal = () => {
     const navigate = useNavigate();
-    const { fetchUserMealsData } = useContext(UserMealsContext);
+    const { fetchUserMealsData, addMealToUserMeals, setMeals } = useContext(UserMealsContext);
     const { setError, setSuccess, clear, renderDialogs } = useFormMessages();
 
     // Alleen de state die we écht nodig hebben in de hook:
@@ -61,9 +61,12 @@ export const useCreateMeal = () => {
             // 3) API call
             const response = await createMealApi(formData);
 
+            addMealToUserMeals(response);
+            setMeals((prev) => [response, ...prev]);
+
             // 4) Success afhandelen
             setSuccess(`Meal created: ${response.name || "Unknown meal"}`);
-            await refreshMealsList(fetchUserMealsData);
+            // await refreshMealsList(fetchUserMealsData);
             navigate(`/meal/${response.id}`);
         } catch (error) {
             setError(getReadableApiError(error));

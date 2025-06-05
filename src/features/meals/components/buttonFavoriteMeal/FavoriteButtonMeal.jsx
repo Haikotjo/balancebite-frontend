@@ -92,7 +92,7 @@ const ButtonFavorite = ({ meal }) => {
                         <CustomBox className="flex items-center gap-2 text-error  font-medium">
                             <AlertTriangle size={18} />
                             <CustomTypography variant="h5">
-                                This meal is still used in one or more diets
+                                This meal is used in one or more diets
                             </CustomTypography>
                         </CustomBox>
 
@@ -112,7 +112,7 @@ const ButtonFavorite = ({ meal }) => {
                             onClick={handleForceUnlink}
                             className="text-red-600 underline hover:text-red-800 block text-left font-semibold"
                         >
-                            Remove from my meals and all diets
+                            Remove from all diets and my meals.
                         </CustomButton>
                     </CustomBox>
                 )}
