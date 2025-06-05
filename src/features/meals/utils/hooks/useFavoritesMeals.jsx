@@ -25,6 +25,8 @@ export const useFavoritesMeals = () => {
 
         addMealToUserMeals(newMeal);
         replaceMealInMeals(meal.id, newMeal);
+
+        return newMeal;
     };
 
     const removeMealFromFavorites = async (meal) => {

@@ -3,13 +3,12 @@ import { useContext, useState } from "react";
 import { useFormMessages } from "./useFormMessages.jsx";
 import { UserMealsContext } from "../context/UserMealsContext.jsx";
 import { createMealApi } from "../services/apiService.js";
-import { refreshMealsList } from "../utils/helpers/refreshMealsList.js";
 import { getReadableApiError } from "../utils/helpers/getReadableApiError.js";
 import {buildMealFormData} from "../features/meals/utils/helpers/buildMealFormData.js";
 
 export const useCreateMeal = () => {
     const navigate = useNavigate();
-    const { fetchUserMealsData, addMealToUserMeals, setMeals } = useContext(UserMealsContext);
+    const { addMealToUserMeals, setMeals } = useContext(UserMealsContext);
     const { setError, setSuccess, clear, renderDialogs } = useFormMessages();
 
     // Alleen de state die we écht nodig hebben in de hook:
@@ -66,7 +65,6 @@ export const useCreateMeal = () => {
 
             // 4) Success afhandelen
             setSuccess(`Meal created: ${response.name || "Unknown meal"}`);
-            // await refreshMealsList(fetchUserMealsData);
             navigate(`/meal/${response.id}`);
         } catch (error) {
             setError(getReadableApiError(error));

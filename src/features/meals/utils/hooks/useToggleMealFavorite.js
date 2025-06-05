@@ -34,7 +34,7 @@ export const useToggleMealFavorite = (meal, onAuthRequired, onError, onSuccess) 
         try {
             if (alreadyFavorited) {
                 await removeMealFromFavorites(meal);
-                onSuccess?.(`${meal.name} removed from favorites`);
+                onSuccess?.(`${meal.name} added to favorites`, meal);
             } else {
                 await addMealToFavorites(meal);
                 onSuccess?.(`${meal.name} added to favorites`);
