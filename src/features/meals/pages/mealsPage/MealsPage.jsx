@@ -78,7 +78,7 @@ function MealPage() {
 
 
     return (
-        <CustomBox className="flex flex-col items-center pt-5 gap-4 pb-20 sm:pb-0">
+        <CustomBox className="flex flex-col items-center pt-6 sm:pt-10 px-4 pb-24 sm:pb-10">
 
             {/* Filter Sidebar */}
             <FilterSidebar filters={filters} onFilter={handleFiltersChange} />
