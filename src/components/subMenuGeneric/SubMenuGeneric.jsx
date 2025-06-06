@@ -15,12 +15,13 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
             if (onSelect) {
                 onSelect(label);
             } else {
-                navigate(`${basePath}?filter=${label}`);
+                navigate(`${basePath}?option=${label.replace(/\s+/g, "-")}`);
             }
         } else {
             setActiveOption(label);
         }
     };
+
 
     return (
         <CustomBox className="flex justify-center items-center gap-4">

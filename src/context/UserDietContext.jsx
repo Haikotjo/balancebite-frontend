@@ -117,7 +117,7 @@ export const UserDietsProvider = ({ children }) => {
     const getDietById = useCallback(async (dietId) => {
         try {
             return await getUserDietPlanByIdApi(dietId);
-        } catch (e) {
+        } catch {
             try {
                 return await getPublicDietPlanByIdApi(dietId);
             } catch {
@@ -125,7 +125,6 @@ export const UserDietsProvider = ({ children }) => {
             }
         }
     }, []);
-
 
     useEffect(() => {
         const currentParams = {

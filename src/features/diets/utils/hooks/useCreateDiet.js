@@ -9,7 +9,7 @@ import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
 export function useCreateDiet(onSuccess, append, remove) {
     const navigate = useNavigate();
     const { setError, setSuccess, clear, renderDialogs } = useFormMessages();
-    const { fetchUserDietsData } = useContext(UserDietsContext);
+    const { fetchUserDietsData, fetchDietsData } = useContext(UserDietsContext);
     const { addMealToUserMeals } = useContext(UserMealsContext);
 
 
@@ -91,6 +91,7 @@ export function useCreateDiet(onSuccess, append, remove) {
             const newDiet = await createDietPlanApi({ ...payload, diets: [] });
             setSuccess(`Diet created: ${newDiet.name || "Unknown diet"}`);
             await fetchUserDietsData();
+            await fetchDietsData();
 
             newDiet.dietDays?.forEach(day => {
                 day.meals?.forEach(meal => {
