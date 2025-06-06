@@ -36,15 +36,6 @@ const DietsPage = () => {
     const location = useLocation();
 
     useEffect(() => {
-        console.log("Filters changed:", filters);
-    }, [filters]);
-
-    useEffect(() => {
-        console.log("Creator ID filter changed:", creatorIdFilter);
-    }, [creatorIdFilter]);
-
-
-    useEffect(() => {
         if (creatorIdFilter) {
             const match = diets.find((d) => d.createdBy?.id === creatorIdFilter);
             setCreatorName(match ? match.createdBy.userName : null);
@@ -63,16 +54,6 @@ const DietsPage = () => {
     }, [error]);
 
     useEffect(() => {
-        console.log("Page changed:", page);
-    }, [page]);
-
-
-    useEffect(() => {
-        console.log("Diets list updated (after filters/sorting):", diets);
-    }, [diets]);
-
-
-    useEffect(() => {
         const params = new URLSearchParams(location.search);
         const option = params.get("option");
         if (option) {
@@ -85,6 +66,26 @@ const DietsPage = () => {
             setActiveOption(formatted);
         }
     }, [location.search, setActiveOption]);
+
+
+
+    // DEBUG ONLY – logging effects (verwijderen voor productie)
+    useEffect(() => {
+        console.log("Page changed:", page);
+    }, [page]);
+
+
+    useEffect(() => {
+        console.log("Diets list updated (after filters/sorting):", diets);
+    }, [diets]);
+
+    useEffect(() => {
+        console.log("Filters changed:", filters);
+    }, [filters]);
+
+    useEffect(() => {
+        console.log("Creator ID filter changed:", creatorIdFilter);
+    }, [creatorIdFilter]);
 
     useEffect(() => {
         if (!diets || diets.length === 0) return;
@@ -101,6 +102,8 @@ const DietsPage = () => {
             console.log(`${index + 1}. ${diet.name} - ${macroValue ?? value ?? "?"}`);
         });
     }, [diets, sortKey, sortOrder]);
+
+
 
 
     return (

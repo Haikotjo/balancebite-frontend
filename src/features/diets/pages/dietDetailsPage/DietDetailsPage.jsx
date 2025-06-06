@@ -17,18 +17,15 @@ const DietDetailsPage = () => {
     useEffect(() => {
         if (!dietId) return;
         setLoading(true);
-
         getDietById(dietId)
             .then(result => {
                 if (!result) {
                     setError(true);
                 } else {
                     setDiet(result);
-                    console.log("[🔍 DietDetailsPage] Loaded diet:", result);
                 }
             })
-            .catch(err => {
-                console.error("❌ Error in getDietById:", err);
+            .catch(() => {
                 setError(true);
             })
             .finally(() => setLoading(false));

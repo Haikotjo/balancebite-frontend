@@ -11,7 +11,6 @@ import HorizontalScrollSection from "../../../../components/horizontalScrollSect
 import MacroSummary from "../macroSummary/MacroSummary.jsx";
 
 const DietDayCard = ({ day }) => {
-    const totalNutrients = day.totalNutrients || {};
 
     return (
         <CustomBox className="mb-4 p-4 rounded-xl border border-border bg-muted dark:bg-mutedDark">
@@ -44,9 +43,9 @@ const DietDayCard = ({ day }) => {
 
 
             {day.meals?.length > 0 ? (
-                day.meals.map((meal) => (
-                    <CustomBox key={meal.id} className="mb-4">
-                    <AccordionItem key={meal.id} title={meal.name}>
+                day.meals.map((meal, index) => (
+                    <CustomBox key={`${meal.id}-${index}`} className="mb-4">
+                        <AccordionItem key={`${meal.id}-${index}`} title={meal.name}>
                         <CustomBox className="space-y-2">
                             <AccordionItem title="Description" defaultOpen={true}>
                                 <BulletText showBullet={false}>{meal.mealDescription}</BulletText>

@@ -1,5 +1,3 @@
-// src/components/meal/MealCardActionButtons.jsx
-
 import PropTypes from "prop-types";
 import { useContext } from "react";
 import EatButton from "../buttonEat/EatButton.jsx";
@@ -7,6 +5,8 @@ import ButtonOpenMeal from "../buttonOpenMeal/ButtonOpenMeal.jsx";
 import {RecommendedNutritionContext} from "../../../../context/RecommendedNutritionContext.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import ButtonFavorite from "../buttonFavoriteMeal/FavoriteButtonMeal.jsx";
+import ButtonUpdateMeal from "../buttonUpdateMeal/ButtonUpdateMeal.jsx";
+import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
 
 /**
  * Displays a horizontal group of meal-related action buttons.
@@ -20,7 +20,8 @@ import ButtonFavorite from "../buttonFavoriteMeal/FavoriteButtonMeal.jsx";
  */
 const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page",  onMealClick }) => {
     const { refetchRecommendedNutrition } = useContext(RecommendedNutritionContext);
-
+    const { userMeals } = useContext(UserMealsContext);
+    const isSavedByUser = userMeals.some((m) => m.id === meal.id);
     const sharedClasses = `
         flex items-center justify-center text-white
         transition-transform duration-200 ease-in-out hover:scale-[1.2]
@@ -38,6 +39,12 @@ const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page",  onMeal
                     refetchRecommendedNutrition={refetchRecommendedNutrition}
                 />
             </CustomBox>
+
+            {isSavedByUser && (
+                <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
+                    <ButtonUpdateMeal mealId={meal.id} />
+                </CustomBox>
+            )}
 
             {viewMode !== "page" && (
                 <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
