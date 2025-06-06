@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { AuthContext } from "./AuthContext";
 import {
     getAllPublicDietPlans,
-    getAllUserDietPlans
+    getAllUserDietPlans, getPublicDietPlanByIdApi
 } from "../services/ApiService";
 
 export const UserDietsContext = createContext();
@@ -114,6 +114,19 @@ export const UserDietsProvider = ({ children }) => {
             setLoadingUserDiets(false);
         }
     }, []);
+
+    const getDietById = async (dietId) => {
+        const local = userDiets.find(d => String(d.id) === String(dietId));
+        if (local) return local;
+
+        try {
+            return await getPublicDietPlanByIdApi(dietId);
+        } catch (err) {
+            console.error("Failed to fetch diet:", err);
+            return null;
+        }
+    };
+
 
     useEffect(() => {
         const currentParams = {
@@ -228,6 +241,7 @@ export const UserDietsProvider = ({ children }) => {
                 setCreatorIdFilter,
                 fetchUserDietsData,
                 fetchDietsData,
+                getDietById,
                 addDietToUserDiets,
                 removeDietFromUserDiets,
                 replaceDietInDiets,

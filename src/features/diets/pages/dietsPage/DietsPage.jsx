@@ -36,6 +36,15 @@ const DietsPage = () => {
     const location = useLocation();
 
     useEffect(() => {
+        console.log("Filters changed:", filters);
+    }, [filters]);
+
+    useEffect(() => {
+        console.log("Creator ID filter changed:", creatorIdFilter);
+    }, [creatorIdFilter]);
+
+
+    useEffect(() => {
         if (creatorIdFilter) {
             const match = diets.find((d) => d.createdBy?.id === creatorIdFilter);
             setCreatorName(match ? match.createdBy.userName : null);
@@ -45,12 +54,23 @@ const DietsPage = () => {
     }, [creatorIdFilter, diets]);
 
     useEffect(() => {
+        console.log("Sorting changed:", { sortKey, sortOrder });
         setPage(1);
     }, [sortKey, sortOrder]);
 
     useEffect(() => {
         if (error) setShowErrorDialog(true);
     }, [error]);
+
+    useEffect(() => {
+        console.log("Page changed:", page);
+    }, [page]);
+
+
+    useEffect(() => {
+        console.log("Diets list updated (after filters/sorting):", diets);
+    }, [diets]);
+
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
@@ -66,6 +86,23 @@ const DietsPage = () => {
         }
     }, [location.search, setActiveOption]);
 
+    useEffect(() => {
+        if (!diets || diets.length === 0) return;
+
+        console.log(`Diets sorted by ${sortKey} (${sortOrder}):`);
+        diets.forEach((diet, index) => {
+            const value = sortKey === 'name'
+                ? diet.name
+                : diet[sortKey]; // werkt alleen als sortKey direct op diet zit
+
+            // Voor nested velden zoals macros
+            const macroValue = diet?.averageMacros?.[sortKey];
+
+            console.log(`${index + 1}. ${diet.name} - ${macroValue ?? value ?? "?"}`);
+        });
+    }, [diets, sortKey, sortOrder]);
+
+
     return (
         <CustomBox className="pt-6 sm:pt-10 px-4 pb-20 sm:pb-10">
             <DietSubMenu
@@ -77,7 +114,7 @@ const DietsPage = () => {
             <ActiveFilterChips
                 filters={filters}
                 setFilters={setFilters}
-                creatorIdFilter={creatorIdFilter}
+                creatorIdFilter={creatorIdFilter?.toString() ?? null}
                 setCreatorIdFilter={setCreatorIdFilter}
                 creatorName={creatorName}
                 sortKey={sortKey}
