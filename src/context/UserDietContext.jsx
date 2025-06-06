@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { AuthContext } from "./AuthContext";
 import {
     getAllPublicDietPlans,
-    getAllUserDietPlans, getPublicDietPlanByIdApi
+    getAllUserDietPlans, getPublicDietPlanByIdApi, getUserDietPlanByIdApi
 } from "../services/ApiService";
 
 export const UserDietsContext = createContext();
@@ -50,7 +50,7 @@ export const UserDietsProvider = ({ children }) => {
 
             const safeSortKey = validSortKeys.includes(sortKey) ? sortKey : "createdAt";
 
-            const defaultParams = {
+            const baseParams = {
                 page: page - 1,
                 size: 12,
                 sortBy: safeSortKey,
@@ -61,18 +61,16 @@ export const UserDietsProvider = ({ children }) => {
                 ...(creatorIdFilter ? { createdByUserId: creatorIdFilter } : {})
             };
 
-            const params = defaultParams;
+            const params = overrideParams || baseParams;
 
             let data;
 
             if (activeOption === "Created Diets") {
                 data = await getAllUserDietPlans(token, { ...params, mode: "created" });
-                const content = data.content || [];
-                setDiets(content);
+                setDiets(data.content || []);
             } else if (activeOption === "My Diets") {
                 data = await getAllUserDietPlans(token, { ...params, mode: "saved" });
-                const content = data.content || [];
-                setDiets(content);
+                setDiets(data.content || []);
             } else {
                 data = await getAllPublicDietPlans(params);
                 const content = data.content || [];
@@ -88,6 +86,7 @@ export const UserDietsProvider = ({ children }) => {
             setLoadingDiets(false);
         }
     }, [activeOption, filters, page, sortKey, sortOrder, creatorIdFilter, applyUserCopies]);
+
 
 
     const fetchUserDietsData = useCallback(async () => {
@@ -115,17 +114,17 @@ export const UserDietsProvider = ({ children }) => {
         }
     }, []);
 
-    const getDietById = async (dietId) => {
-        const local = userDiets.find(d => String(d.id) === String(dietId));
-        if (local) return local;
-
+    const getDietById = useCallback(async (dietId) => {
         try {
-            return await getPublicDietPlanByIdApi(dietId);
-        } catch (err) {
-            console.error("Failed to fetch diet:", err);
-            return null;
+            return await getUserDietPlanByIdApi(dietId);
+        } catch (e) {
+            try {
+                return await getPublicDietPlanByIdApi(dietId);
+            } catch {
+                return null;
+            }
         }
-    };
+    }, []);
 
 
     useEffect(() => {

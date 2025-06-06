@@ -4,7 +4,6 @@ import DietCard from "../../components/dietCard/DietCard.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import Spinner from "../../../../components/layout/Spinner.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
-import SubMenu from "../../components/subMenu/DietsSubMenu.jsx";
 import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
 import DietSubMenu from "../../components/subMenu/DietsSubMenu.jsx";
 
@@ -59,7 +58,7 @@ const DietDetailsPage = () => {
     return (
         <CustomBox className="pt-6 sm:pt-10 pb-20 sm:pb-10 px-4">
             <CustomBox className="max-w-screen-xl mx-auto">
-                <SubMenu isDetailPage />
+                <DietSubMenu isDetailPage />
                 <CustomBox className="flex justify-center">
                     <DietCard diet={diet} />
                 </CustomBox>

@@ -22,7 +22,6 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
         }
     };
 
-
     return (
         <CustomBox className="flex justify-center items-center gap-4">
             {options.map(({ label, icon: Icon }) => {
