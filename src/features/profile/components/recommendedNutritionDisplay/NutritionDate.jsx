@@ -6,7 +6,7 @@ const NutritionDate = ({ createdAt }) => {
         <CustomTypography
             variant="small"
             as="p"
-            className="text-gray-500 italic mt-2 text-right"
+            className="italic mt-2 text-right"
         >
             {createdAt || "N/A"}
         </CustomTypography>

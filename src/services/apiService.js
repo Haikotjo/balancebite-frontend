@@ -200,6 +200,8 @@ export const updateUserDetails = async (data) => {
     }
 };
 
+
+// RDI services
 export const fetchRecommendedNutritionApi = async (token) => {
     const endpoint = import.meta.env.VITE_DAILY_RDI_ENDPOINT;
 
@@ -241,6 +243,39 @@ export const fetchBaseNutritionApi = async () => {
     }
 };
 
+export const fetchWeeklyRdiApi = async (userId) => {
+    const endpoint = `${import.meta.env.VITE_WEEKLY_RDI_ENDPOINT}/${userId}/week`;
+    try {
+        const response = await Interceptor.get(endpoint);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+export const fetchMonthlyRdiApi = async (userId) => {
+    const endpoint = `${import.meta.env.VITE_MONTHLY_RDI_ENDPOINT}/${userId}/month`;
+    try {
+        const response = await Interceptor.get(endpoint);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+export const fetchDailyRdiByDateApi = async (userId, date) => {
+    const endpoint = `${import.meta.env.VITE_DAILY_RDI_BY_DATE_ENDPOINT}/${userId}/date?date=${date}`;
+    try {
+        const response = await Interceptor.get(endpoint);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
 export const consumeMealApi = async (mealId) => {
     const endpoint = `${import.meta.env.VITE_CONSUME_MEAL_ENDPOINT}/${mealId}`;
     try {
@@ -252,6 +287,8 @@ export const consumeMealApi = async (mealId) => {
     }
 };
 
+
+// UserInfo
 export const updateUserInfoApi = async (data) => {
     const endpoint = import.meta.env.VITE_UPDATE_USER_INFO_ENDPOINT;
 
@@ -264,6 +301,8 @@ export const updateUserInfoApi = async (data) => {
     }
 };
 
+
+// Meals services
 export const fetchMealEnums = async () => {
     const endpoint = import.meta.env.VITE_MEAL_ENUMS_ENDPOINT;
     try {
@@ -320,6 +359,8 @@ export const updateMealApi = async (mealId, formData) => {
     }
 };
 
+
+// Fooditem services
 export const createFoodItemApi = async (data) => {
     const endpoint = import.meta.env.VITE_CREATE_FOODITEM_ENDPOINT;
     const token = localStorage.getItem("accessToken");
@@ -376,6 +417,7 @@ export const fetchFoodItemsBulkApi = async (fdcIds) => {
 };
 
 
+// Admin services
 export const getAllUsersApi = async (token) => {
     const endpoint = import.meta.env.VITE_GET_ALL_USERS_ENDPOINT;
     try {
@@ -440,6 +482,7 @@ export const createUserAsAdminApi = async (data, token) => {
     }
 };
 
+// Meals services
 export const getAllMealsApi = async (token) => {
     const endpoint = import.meta.env.VITE_GET_ALL_MEALS_ENDPOINT;
     try {

@@ -9,21 +9,108 @@ import CustomTypography from "../../../../components/layout/CustomTypography.jsx
 import Spinner from "../../../../components/layout/Spinner.jsx";
 import NutritionTable from "./NutritionTable.jsx";
 
-const RecommendedNutritionDisplay = ({ useBaseRDI = false }) => {
-    const { recommendedNutrition, baseNutrition, loading, setRecommendedNutrition } = useContext(RecommendedNutritionContext);
+const RecommendedNutritionDisplay = ({ variant = "today", data = null }) => {
+    const {
+        recommendedNutrition,
+        baseNutrition,
+        weeklyRdi,
+        monthlyRdi,
+        loading,
+        setRecommendedNutrition,
+    } = useContext(RecommendedNutritionContext);
     const { token } = useContext(AuthContext);
 
+    const getRemainingDays = (period) => {
+        const today = new Date();
+
+        if (period === "week") {
+            const daysLeft = 7 - today.getDay(); // zondag = 0 → 7
+            return daysLeft <= 1 ? 1 : daysLeft; // op zaterdag: 1 dag over
+        }
+
+        if (period === "month") {
+            const year = today.getFullYear();
+            const month = today.getMonth();
+            const lastDay = new Date(year, month + 1, 0).getDate();
+            const daysLeft = lastDay - today.getDate() + 1;
+            return daysLeft <= 1 ? 1 : daysLeft;
+        }
+
+        return 1;
+    };
+
+
     useEffect(() => {
-        if (!token) {
+        if (!token && variant === "today") {
             setRecommendedNutrition(null);
         }
-    }, [token]);
+    }, [token, variant]);
 
-    if (loading) {
+    if (loading && variant === "today") {
         return <Spinner className="mx-auto my-4" />;
     }
 
-    const { sortedNutrients, message, createdAt } = getSortedNutritionData(useBaseRDI, baseNutrition, recommendedNutrition);
+    const labelMap = {
+        base: "Recommended Intake",
+        today: "Today's Intake",
+        week: "Weekly Summary",
+        month: "Monthly Summary",
+        weekAverage: "Avg per Day (This Week)",
+        monthAverage: "Avg per Day (This Month)",
+
+    };
+
+
+    let source;
+    switch (variant) {
+        case "base":
+            source = baseNutrition;
+            break;
+        case "today":
+            source = recommendedNutrition;
+            break;
+        case "week":
+            source = weeklyRdi;
+            break;
+        case "month":
+            source = monthlyRdi;
+            break;
+        case "date":
+            source = data;
+            break;
+        case "weekAverage": {
+            const daysLeftWeek = getRemainingDays("week");
+            source = {
+                ...weeklyRdi,
+                nutrients: (weeklyRdi?.nutrients || []).map(n => ({
+                    ...n,
+                    value: n.value / daysLeftWeek
+                }))
+            };
+            break;
+        }
+        case "monthAverage": {
+            const daysLeftMonth = getRemainingDays("month");
+            source = {
+                ...monthlyRdi,
+                nutrients: (monthlyRdi?.nutrients || []).map(n => ({
+                    ...n,
+                    value: n.value / daysLeftMonth
+                }))
+            };
+            break;
+        }
+
+        default:
+            return null;
+
+    }
+
+    const { sortedNutrients, message, createdAt } = getSortedNutritionData(
+        variant === "base",
+        baseNutrition,
+        source
+    );
 
     if (!sortedNutrients) {
         return (
@@ -37,7 +124,7 @@ const RecommendedNutritionDisplay = ({ useBaseRDI = false }) => {
         <CustomCard className="max-w-xl mx-auto p-6">
             <CustomBox className="flex flex-col gap-4">
                 <CustomTypography variant="h2" className="text-center">
-                    {useBaseRDI ? "Recommended" : "Today"}
+                    {labelMap[variant]}
                 </CustomTypography>
 
                 <NutritionTable
@@ -45,19 +132,22 @@ const RecommendedNutritionDisplay = ({ useBaseRDI = false }) => {
                         n.name !== "Saturated and Trans fats" &&
                         n.name !== "Mono- and Polyunsaturated fats"
                     )}
-                    useBaseRDI={useBaseRDI}
+                    useBaseRDI={variant === "base"}
                 />
 
-                <CustomTypography variant="xsmallCard" className="text-right text-friendlyGray mt-2">
-                    {createdAt}
-                </CustomTypography>
+                {createdAt && (
+                    <CustomTypography variant="xsmallCard" className="text-right mt-2">
+                        {createdAt}
+                    </CustomTypography>
+                )}
             </CustomBox>
         </CustomCard>
     );
 };
 
 RecommendedNutritionDisplay.propTypes = {
-    useBaseRDI: PropTypes.bool,
+    variant: PropTypes.oneOf(["today", "base", "week", "month", "date", "weekAverage", "monthAverage"]),
+    data: PropTypes.object,
 };
 
 export default RecommendedNutritionDisplay;

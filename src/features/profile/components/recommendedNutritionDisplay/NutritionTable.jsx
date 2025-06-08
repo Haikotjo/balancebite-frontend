@@ -12,12 +12,7 @@ const NutritionTable = ({ sortedNutrients, useBaseRDI }) => {
                 ].includes(nutrient.name);
 
                 const hasValue = typeof nutrient.value === "number";
-                const value = hasValue ? nutrient.value : "N/A";
-
-                let valueColor = "";
-                if (!useBaseRDI && hasValue) {
-                    valueColor = value < 0 ? "text-error" : "text-success";
-                }
+                const value = hasValue ? Math.round(nutrient.value) : "N/A";
 
                 return (
                     <CustomBox
@@ -33,7 +28,13 @@ const NutritionTable = ({ sortedNutrients, useBaseRDI }) => {
 
                         <CustomTypography
                             variant="small"
-                            className={`text-right ${valueColor}`}
+                            className={`text-right ${
+                                !useBaseRDI && hasValue
+                                    ? value < 0
+                                        ? "text-error dark:text-error"
+                                        : "text-primary dark:text-primary"
+                                    : ""
+                            }`}
                         >
                             {value}
                         </CustomTypography>
