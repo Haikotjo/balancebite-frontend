@@ -57,6 +57,7 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
         { label: "Meals", icon: Soup, path: "/meals" },
         { label: "Diets", icon: Apple, path: "/diets" },
         isAdmin && { label: "Admin", icon: Settings, path: "/admin" },
+        user && { label: "Dashboard", icon: Settings, path: "/dashboard" },
         !user && { label: "Login", icon: LogIn, action: onLoginClick },
         !user && { label: "Register", icon: UserPlus, action: onRegisterClick },
         user && { label: "Logout", icon: LogOut, action: onLogout },

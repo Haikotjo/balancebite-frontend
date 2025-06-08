@@ -34,8 +34,21 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                     <Home className="w-5 h-5 md:hidden" />
                     Home
                 </CustomBox>
-            </CustomBox>
 
+            </CustomBox>
+            {user && (
+                <CustomBox>
+                    <CustomBox
+                        onClick={() => navigate("/dashboard")}
+                        className={clsx(
+                            "cursor-pointer pb-2 pl-2 rounded-md transition-all hover:bg-white/10",
+                            isActive("/dashboard") ? "text-primary" : "text-white"
+                        )}
+                    >
+                        Dashboard
+                    </CustomBox>
+                </CustomBox>
+            )}
             <CustomDivider className="bg-white my-2" />
 
             {/* Nav‐links */}
@@ -56,6 +69,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
             })}
 
             <CustomDivider className="bg-white my-2" />
+
 
             {/* Admin */}
             {isAdmin && (

@@ -28,16 +28,17 @@ const NutritionTable = ({ sortedNutrients, useBaseRDI }) => {
 
                         <CustomTypography
                             variant="small"
-                            className={`text-right ${
-                                !useBaseRDI && hasValue
+                            style={{
+                                color: !useBaseRDI && hasValue
                                     ? value < 0
-                                        ? "text-error dark:text-error"
-                                        : "text-primary dark:text-primary"
-                                    : ""
-                            }`}
+                                        ? "#DD1155"
+                                        : "#41D3BD"
+                                    : undefined
+                            }}
                         >
                             {value}
                         </CustomTypography>
+
                     </CustomBox>
                 );
             })}
