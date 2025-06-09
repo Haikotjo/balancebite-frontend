@@ -7,6 +7,7 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import DietCardActionButtons from "../dietCardActionButtons/DietCardActionButtons.jsx";
 import {getAverageNutrients} from "../../utils/helpers/getAverageNutrients.js";
 import AverageNutrientSummary from "../averageNutrientSummary/AverageNutrientSummary.jsx";
+import { Users, UserPen } from "lucide-react";
 
 const DietCard = ({ diet }) => {
     const averages = getAverageNutrients(diet.dietDays);
@@ -24,11 +25,19 @@ const DietCard = ({ diet }) => {
                 <DietCardActionButtons diet={diet} />
             </CustomBox>
 
-            {diet.createdBy?.userName && (
-                <CustomTypography variant="paragraphCard" className="italic mb-2">
-                    Created by: {diet.createdBy.userName}
-                </CustomTypography>
-            )}
+            <CustomBox className="flex sm:flex-row gap-4 mb-2">
+                {diet.createdBy?.userName && (
+                    <CustomTypography variant="paragraphCard" className="italic flex items-center gap-2">
+                        <UserPen size={16} /> {diet.createdBy.userName}
+                    </CustomTypography>
+                )}
+                {diet.saveCount !== undefined && (
+                    <CustomTypography variant="paragraphCard" className="italic flex items-center gap-2">
+                        <Users size={16} /> {diet.saveCount}
+                    </CustomTypography>
+                )}
+            </CustomBox>
+
             {diet.dietDescription && (
                 <CustomBox>
                     <AccordionItem title="Description" defaultOpen={true}>

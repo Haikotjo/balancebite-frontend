@@ -5,7 +5,6 @@ import AccordionItem from "../accordionItem/AccordionItem.jsx";
 import DietDayAccordion from "../dietDayAccordion/DietDayAccordion.jsx";
 import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
-import { UserPen } from "lucide-react";
 import {getAverageNutrients} from "../../utils/helpers/getAverageNutrients.js";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
@@ -16,6 +15,7 @@ import AverageNutrientSummary from "../averageNutrientSummary/AverageNutrientSum
 import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
 import {useContext} from "react";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
+import { Users, UserPen } from "lucide-react";
 
 const DietListCard = ({ diet, compact = false }) => {
     const averages = getAverageNutrients(diet.dietDays);
@@ -85,21 +85,34 @@ const DietListCard = ({ diet, compact = false }) => {
             )}
 
             {/* Creator info (if available) */}
-            {diet.createdBy?.userName && (
-                <CustomButton
-                    type="button"
-                    onClick={() => {
-                        setCreatorIdFilter(diet.createdBy.id);
-                        setActiveOption("All Diets");
-                        if (!window.location.pathname.includes("/diets")) {
-                            navigate("/diets");
-                        }
-                    }}
-                    className="flex items-center gap-1 mt-1 bg-transparent text-inherit hover:text-primary"
-                >
-                    <UserPen size={14} />
-                    {diet.createdBy.userName}
-                </CustomButton>
+            {(diet.createdBy?.userName || diet.saveCount !== undefined) && (
+                <CustomBox className="flex flex-wrap items-center gap-4 mt-2">
+                    {diet.createdBy?.userName && (
+                        <CustomButton
+                            type="button"
+                            onClick={() => {
+                                setCreatorIdFilter(diet.createdBy.id);
+                                setActiveOption("All Diets");
+                                if (!window.location.pathname.includes("/diets")) {
+                                    navigate("/diets");
+                                }
+                            }}
+                            className="flex items-center gap-1 bg-transparent text-inherit hover:text-primary"
+                        >
+                            <UserPen size={14} />
+                            {diet.createdBy.userName}
+                        </CustomButton>
+                    )}
+                    {diet.saveCount !== undefined && (
+                        <CustomTypography
+                            variant="paragraphCard"
+                            className="italic flex items-center gap-1"
+                        >
+                            <Users size={14} />
+                            {diet.saveCount}
+                        </CustomTypography>
+                    )}
+                </CustomBox>
             )}
 
 
@@ -117,6 +130,7 @@ DietListCard.propTypes = {
             userName: PropTypes.string.isRequired,
         }),
         dietDays: PropTypes.array.isRequired,
+        saveCount: PropTypes.number
     }).isRequired,
     compact: PropTypes.bool,
 };

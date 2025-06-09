@@ -24,20 +24,19 @@ const RecommendedNutritionDisplay = ({ variant = "today", data = null }) => {
         const today = new Date();
 
         if (period === "week") {
-            const daysLeft = 7 - today.getDay(); // zondag = 0 → 7
-            return daysLeft <= 1 ? 1 : daysLeft; // op zaterdag: 1 dag over
+            return 7 - today.getDay(); // incl. vandaag
         }
 
         if (period === "month") {
             const year = today.getFullYear();
             const month = today.getMonth();
             const lastDay = new Date(year, month + 1, 0).getDate();
-            const daysLeft = lastDay - today.getDate() + 1;
-            return daysLeft <= 1 ? 1 : daysLeft;
+            return lastDay - today.getDate(); // incl. vandaag
         }
 
         return 1;
     };
+
 
 
     useEffect(() => {
