@@ -10,20 +10,13 @@ const NEGATIVE_COLOR = "#DD1155";
 const NutritionPieChart = ({ chartData, sortedNutrients }) => {
     const allNegative = chartData?.every(entry => entry.value < 0);
 
-    let filteredChartData = [];
+    const filteredChartData = allNegative
+        ? [{ name: "Goals reached", value: 1 }]
+        : chartData?.map(entry => ({
+        ...entry,
+        value: Math.max(entry.value, 0),
+    })) || [];
 
-    if (allNegative) {
-        const total = Math.abs(chartData.reduce((sum, e) => sum + e.value, 0)) || 1;
-        filteredChartData = [{
-            name: "Goals reached",
-            value: 1,
-        }];
-    } else {
-        filteredChartData = chartData?.map(entry => ({
-            ...entry,
-            value: Math.max(entry.value, 0),
-        })) || [];
-    }
 
     const energy = sortedNutrients?.find(n => n.name === "Energy kcal")?.value ?? 0;
 

@@ -72,10 +72,6 @@ const DashboardPage = () => {
 
     return (
         <CustomBox className="flex flex-col items-center gap-6 pt-6 sm:pt-10 px-4 pb-24 sm:pb-10">
-            <CustomTypography variant="h2" className="text-center">
-                Dashboard
-            </CustomTypography>
-
             {/* Submenus */}
             <CustomBox className="flex flex-col md:flex-row gap-12 justify-center">
                 <DietSubMenu

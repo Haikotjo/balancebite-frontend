@@ -121,9 +121,9 @@ const RecommendedNutritionDisplay = ({ variant = "today", data = null }) => {
     }
 
     return (
-        <CustomCard className="max-w-xl mx-auto p-6">
+        <CustomCard className="max-w-xl mx-auto p-4">
             <CustomBox className="flex flex-col gap-4">
-                <CustomTypography variant="h2" className="text-center">
+                <CustomTypography variant="h4" className="text-center">
                     {labelMap[variant]}
                 </CustomTypography>
 
