@@ -40,7 +40,7 @@ const NutritionPieChart = ({ chartData, sortedNutrients }) => {
                             nameKey="name"
                             cx="50%"
                             cy="45%"
-                            outerRadius={120}
+                            outerRadius={100}
                             label
                         >
                             {filteredChartData.map((entry, index) => (

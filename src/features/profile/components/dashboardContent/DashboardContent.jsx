@@ -28,11 +28,14 @@ const DashboardContent = ({
                     <CustomBox className="flex flex-col gap-4">
                         <NutritionPieChart chartData={chartData} sortedNutrients={sortedNutrients} />
 
-                        {dailyRdiList.map(({ date, data }) => (
-                            <CustomCard key={date} className="w-full p-4">
-                                <RecommendedNutritionDisplay variant="date" data={data} />
-                            </CustomCard>
-                        ))}
+                        {[...dailyRdiList]
+                            .sort((a, b) => new Date(b.date) - new Date(a.date))
+                            .map(({ date, data }) => (
+                                <CustomCard key={date} className="w-full p-4">
+                                    <RecommendedNutritionDisplay variant="date" data={data} />
+                                </CustomCard>
+                            ))}
+
                     </CustomBox>
 
                     {/* Voedingsaanbeveling */}
