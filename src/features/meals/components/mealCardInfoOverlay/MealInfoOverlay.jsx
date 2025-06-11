@@ -38,7 +38,7 @@ const MealInfoOverlay = ({ meal, fontSize = "0.7rem" }) => {
             {meal.isTemplate && (
                 <CustomTypography as="span" className="flex items-center gap-1 text-white" style={{ fontSize }}>
                     <Users size={14} />
-                    {meal.userCount}
+                    {meal.saveCount}
                 </CustomTypography>
             )}
         </CustomBox>
@@ -53,6 +53,7 @@ MealInfoOverlay.propTypes = {
         userCount: PropTypes.number,
         isTemplate: PropTypes.bool,
         version: PropTypes.string,
+        saveCount: PropTypes.number,
     }).isRequired,
     fontSize: PropTypes.string,
 };
