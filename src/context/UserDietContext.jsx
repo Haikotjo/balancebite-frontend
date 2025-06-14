@@ -45,7 +45,8 @@ export const UserDietsProvider = ({ children }) => {
             const validSortKeys = [
                 "avgProtein", "avgCarbs", "avgFat", "avgCalories",
                 "totalProtein", "totalCarbs", "totalFat", "totalCalories",
-                "createdAt", "name"
+                "createdAt", "name",
+                "saveCount", "weeklySaveCount", "monthlySaveCount"
             ];
 
             const safeSortKey = validSortKeys.includes(sortKey) ? sortKey : "createdAt";
@@ -53,7 +54,6 @@ export const UserDietsProvider = ({ children }) => {
             const baseParams = {
                 page: page - 1,
                 size: 12,
-                sortBy: safeSortKey,
                 sortOrder,
                 ...filters,
                 ...(filters.requiredDiets ? { requiredDiets: filters.requiredDiets } : {}),
@@ -61,7 +61,10 @@ export const UserDietsProvider = ({ children }) => {
                 ...(creatorIdFilter ? { createdByUserId: creatorIdFilter } : {})
             };
 
-            const params = overrideParams || baseParams;
+            const params = overrideParams || {
+                ...baseParams,
+                sortBy: safeSortKey // <-- force hier de juiste key
+            };
 
             let data;
 
@@ -74,8 +77,34 @@ export const UserDietsProvider = ({ children }) => {
             } else {
                 data = await getAllPublicDietPlans(params);
                 const content = data.content || [];
-                const replaced = applyUserCopies(content, userCreatedDiets);
+                let originals = content.filter(diet =>
+                    !userCreatedDiets.find(copy => String(copy.originalDietId) === String(diet.id))
+                );
+
+                let replacements = content
+                    .map(diet => {
+                        const copy = userCreatedDiets.find(
+                            (d) => String(d.originalDietId) === String(diet.id)
+                        );
+                        return copy || null;
+                    })
+                    .filter(Boolean);
+
+// Sorteer alleen de originele diets
+                if (["saveCount", "weeklySaveCount", "monthlySaveCount"].includes(safeSortKey)) {
+                    originals.sort((a, b) => {
+                        const aVal = a[safeSortKey] ?? 0;
+                        const bVal = b[safeSortKey] ?? 0;
+                        return sortOrder === "asc" ? aVal - bVal : bVal - aVal;
+                    });
+                }
+
+// Voeg de kopieën onderaan toe
+                let replaced = [...originals, ...replacements];
+
                 setDiets(replaced);
+
+
             }
 
             setTotalPages(data.totalPages || 1);

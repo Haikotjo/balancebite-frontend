@@ -78,7 +78,6 @@ export const forceUnlinkMealFromUserApi = async (mealId, token) => {
 };
 
 export const fetchMeals = async (path) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${path}`;
     try {
         const token = localStorage.getItem("accessToken");
 
@@ -86,7 +85,7 @@ export const fetchMeals = async (path) => {
             ? { Authorization: `Bearer ${token}` }
             : {};
 
-        const response = await Interceptor.get(endpoint, { headers });
+        const response = await Interceptor.get(path, { headers });
 
         return response.data;
     } catch (error) {

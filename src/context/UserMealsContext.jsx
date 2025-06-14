@@ -2,6 +2,8 @@ import { createContext, useContext, useState, useEffect, useCallback } from "rea
 import PropTypes from "prop-types";
 import { AuthContext } from "./AuthContext";
 import { fetchMeals, fetchUserMeals } from "../services/apiService";
+import { useRef } from "react";
+
 
 export const UserMealsContext = createContext();
 
@@ -18,23 +20,55 @@ export const UserMealsProvider = ({ children }) => {
     const [sortBy, setSortBy] = useState(null);
     const [activeOption, setActiveOption] = useState("All Meals");
     const [currentListEndpoint, setCurrentListEndpoint] = useState("");
+    const userMealsRef = useRef(userMeals);
+    useEffect(() => {
+        userMealsRef.current = userMeals;
+    }, [userMeals]);
 
-    const fetchMealsData = useCallback(async () => {
-        if (!currentListEndpoint) return;
+    const applyUserCopies = useCallback((publicMeals, userCopies) => {
+        return publicMeals.map(meal => {
+            const copy = userCopies.find(
+                (m) => String(m.originalMealId) === String(meal.id)
+            );
+            return copy || meal;
+        });
+    }, []);
 
-        setLoadingMeals(true);
-        try {
-            const mealsData = await fetchMeals(currentListEndpoint);
-            setMeals(mealsData.content || []);
-            setTotalPages(mealsData.totalPages || 1);
-            setError(null);
-        } catch (err) {
-            console.error("❌ Error fetching meals:", err);
-            setError(err.message);
-        } finally {
-            setLoadingMeals(false);
-        }
-    }, [currentListEndpoint]);
+
+    // const fetchMealsData = useCallback(async () => {
+    //     if (!currentListEndpoint) return;
+    //
+    //     setLoadingMeals(true);
+    //     try {
+    //         const mealsData = await fetchMeals(currentListEndpoint);
+    //
+    //         console.log("📦 Fetched mealsData:", mealsData);
+    //         console.log("📥 Ingested sortBy:", sortBy);
+    //         console.log("🧾 Request URL:", currentListEndpoint);
+    //         console.log(
+    //             "🧮 Sorted meals overview:",
+    //             mealsData.content?.map(meal => ({
+    //                 id: meal.id,
+    //                 name: meal.name,
+    //                 saveCount: meal.saveCount,
+    //                 weeklySaveCount: meal.weeklySaveCount,
+    //                 monthlySaveCount: meal.monthlySaveCount,
+    //             }))
+    //         );
+    //
+    //         const content = mealsData.content || [];
+    //         const finalMeals = applyUserCopies(content, userMealsRef.current);
+    //         setMeals(finalMeals);
+    //         setTotalPages(mealsData.totalPages || 1);
+    //         setError(null);
+    //     } catch (err) {
+    //         console.error("❌ Error fetching meals:", err);
+    //         setError(err.message);
+    //     } finally {
+    //         setLoadingMeals(false);
+    //     }
+    // }, [currentListEndpoint, sortBy]);
+
 
     const fetchUserMealsData = useCallback(async () => {
         setLoadingUserMeals(true);
@@ -42,11 +76,14 @@ export const UserMealsProvider = ({ children }) => {
             const token = localStorage.getItem("accessToken");
             if (token) {
                 const userMealsData = await fetchUserMeals(token);
-                setUserMeals(Array.isArray(userMealsData.content) ? userMealsData.content : []);
+                const validData = Array.isArray(userMealsData.content) ? userMealsData.content : [];
+                setUserMeals(validData);
+                userMealsRef.current = validData;
             }
         } catch (error) {
             console.error("⚠️ Failed to fetch user meals:", error.message);
             setUserMeals([]);
+            userMealsRef.current = [];
         } finally {
             setLoadingUserMeals(false);
         }
@@ -75,19 +112,97 @@ export const UserMealsProvider = ({ children }) => {
     }, [activeOption, filters, sortBy, page]);
 
     useEffect(() => {
-        fetchMealsData();
+        const run = async () => {
+            if (!currentListEndpoint) return;
 
-        if (activeOption === "My Meals" && user) {
-            fetchUserMealsData();
-        }
-    }, [activeOption, user, fetchMealsData]);
+            const token = localStorage.getItem("accessToken");
+            let userCopies = [];
+
+            if (user && token) {
+                try {
+                    const userMealsData = await fetchUserMeals(token);
+                    userCopies = Array.isArray(userMealsData.content) ? userMealsData.content : [];
+                    setUserMeals(userCopies);
+                    console.log("👤 User meals binnen (volledig):");
+                    userCopies.forEach((meal, i) => {
+                        console.log(`UserMeal ${i + 1}:`, meal);
+                    });
+                } catch (e) {
+                    console.error("⚠️ Failed to fetch user meals:", e.message);
+                    setUserMeals([]);
+                    userCopies = [];
+                }
+            }
+
+            try {
+                const mealsData = await fetchMeals(currentListEndpoint);
+                const publicMeals = mealsData.content || [];
+
+                console.log("📦 Alle meals volledig:");
+                publicMeals.forEach((meal, index) => {
+                    console.log(`Meal ${index + 1}:`, {
+                        id: meal.id,
+                        name: meal.name,
+                        saveCount: meal.saveCount,
+                        weeklySaveCount: meal.weeklySaveCount,
+                        monthlySaveCount: meal.monthlySaveCount,
+                        originalMealId: meal.originalMealId, // alleen aanwezig bij user copy
+                    });
+                });
+
+                const finalMeals = user && userCopies.length > 0
+                    ? applyUserCopies(publicMeals, userCopies)
+                    : publicMeals;
+
+// ⬇️ HIER sortering toevoegen
+                if (sortBy?.sortKey === "saveCount") {
+                    finalMeals.sort((a, b) => {
+                        const aIsCopy = !!a.originalMealId;
+                        const bIsCopy = !!b.originalMealId;
+
+                        if (aIsCopy && !bIsCopy) return 1;
+                        if (!aIsCopy && bIsCopy) return -1;
+
+                        const aVal = a.saveCount ?? 0;
+                        const bVal = b.saveCount ?? 0;
+                        return sortBy.sortOrder === "asc" ? aVal - bVal : bVal - aVal;
+                    });
+                }
+
+// ⬇️ Logging behouden
+                console.log("🔁 Final meals after applyUserCopies:");
+                finalMeals.forEach((m, i) => {
+                    console.log(`Meal ${i + 1}:`, {
+                        id: m.id,
+                        name: m.name,
+                        originalMealId: m.originalMealId,
+                        saveCount: m.saveCount,
+                        weeklySaveCount: m.weeklySaveCount,
+                        monthlySaveCount: m.monthlySaveCount,
+                    });
+                });
+
+                setMeals(finalMeals);
 
 
-    useEffect(() => {
-        if (user) {
-            fetchUserMealsData();
-        }
-    }, [user]);
+
+                setMeals(finalMeals);
+                setTotalPages(mealsData.totalPages || 1);
+                setError(null);
+            } catch (err) {
+                console.error("❌ Error fetching meals:", err);
+                setError(err.message);
+            } finally {
+                setLoadingMeals(false);
+            }
+        };
+
+        run().catch(console.error);
+    }, [activeOption, user, currentListEndpoint, sortBy]);
+
+
+
+
 
     const replaceMealInMeals = (originalMealId, newMeal) => {
         setMeals((prevMeals) =>
@@ -123,7 +238,6 @@ export const UserMealsProvider = ({ children }) => {
                 sortBy,
                 setSortBy,
                 fetchUserMealsData,
-                fetchMealsData,
                 removeMealFromUserMeals,
                 addMealToUserMeals,
                 removeMealFromMeals,

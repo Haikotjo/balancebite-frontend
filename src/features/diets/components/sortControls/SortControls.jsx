@@ -11,7 +11,11 @@ const sortOptions = [
     { label: "Carbs", field: "avgCarbs" },
     { label: "Fat", field: "avgFat" },
     { label: "Calories", field: "avgCalories" },
+    { label: "Popular (All Time)", field: "saveCount" },
+    { label: "Popular (Last Week)", field: "weeklySaveCount" },
+    { label: "Popular (Last Month)", field: "monthlySaveCount" },
 ];
+
 
 const SortControls = ({ className = "", sortKey, sortOrder, onSortChange, filters, setFilters }) => {
     const handleSort = (field) => {

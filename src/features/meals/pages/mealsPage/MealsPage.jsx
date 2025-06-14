@@ -35,6 +35,7 @@ function MealPage() {
     };
 
     const handleSort = (sortKey, sortOrder) => {
+        console.log("🔀 Sorting by:", sortKey, "| Order:", sortOrder);
         setSortBy({ sortKey, sortOrder });
     };
 
@@ -87,8 +88,6 @@ function MealPage() {
             <SubMenu
                 onSelect={(label) => {
                     setActiveOption(label);
-                    const optionParam = label.toLowerCase().replace(" ", "-");
-                    navigate(`/meals?option=${optionParam}`);
                 }}
             />
 
@@ -98,7 +97,7 @@ function MealPage() {
             {/* Search Bar */}
             <CustomBox
                 ref={searchRef}
-                className="w-[300px] md:w-[350px] mt-2"
+                className="w-[300px] md:w-[350px] my-6"
             >
                 <SearchBar
                     onSearch={getAllMealNames}
@@ -111,9 +110,19 @@ function MealPage() {
             </CustomBox>
 
             {/* Active Filters */}
-            {filters && Object.keys(filters).length > 0 && (
-                <ActiveFilters filters={filters} onFilterClick={handleRemoveFilter} />
-            )}
+            {(filters && Object.keys(filters).length > 0) || sortBy ? (
+                <ActiveFilters
+                    filters={{
+                        ...filters,
+                        ...(sortBy ? { sort: `${sortBy.sortKey} (${sortBy.sortOrder})` } : {})
+                    }}
+                    onFilterClick={(key) => {
+                        if (key === "sort") setSortBy(null);
+                        else handleRemoveFilter(key);
+                    }}
+                />
+            ) : null}
+
 
             {/* Meal List */}
             <MealList

@@ -7,10 +7,15 @@ import {
     ArrowDownUp,
     ArrowUpNarrowWide,
     ArrowDownNarrowWide,
+    ChartNoAxesColumnDecreasing,
+    TrendingUp,
+    ChartNoAxesColumnIncreasing,
+    TrendingDown,
 } from "lucide-react";
 import PropTypes from "prop-types";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomChip from "../../../../components/layout/CustomChip.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 
 /**
  * NutrientSortOptionsHorizontal
@@ -43,19 +48,21 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
         { name: "Protein", label: "Protein", icon: <Dumbbell className="w-5 h-5 sm:w-6 sm:h-6 md:w-6 md:h-6 m-1" />, sortKey: "protein" },
         { name: "Carbs", label: "Carbs", icon: <ChartColumnIncreasing className="w-5 h-5 sm:w-6 sm:h-6 md:w-6 md:h-6 m-1" />, sortKey: "carbs" },
         { name: "Fat", label: "Fat", icon: <Droplet className="w-5 h-5 sm:w-6 sm:h-6 md:w-6 md:h-6 m-1" />, sortKey: "fat" },
+        { name: "All Time", label: "All Time", icon: <ChartNoAxesColumnIncreasing />,   sortKey: "saveCount" },
+        { name: "This Week", label: "This Week", icon: <TrendingUp  />, sortKey: "weeklySaveCount" },
+        { name: "This Month", label: "This Month", icon: <TrendingDown />, sortKey: "monthlySaveCount" },
     ];
 
     // Called when a nutrient chip is clicked
     const handleSort = (sortKey) => {
         let newOrder = "asc";
 
-        // Special case: Protein defaults to "desc" on first click
-        if (sortKey === "protein" && currentSort.key !== "protein") {
+        // Force descending order for save-based sorts
+        if (["saveCount", "weeklySaveCount", "monthlySaveCount"].includes(sortKey)) {
             newOrder = "desc";
-        }
-
-        // Toggle direction if same sortKey is clicked again
-        if (currentSort.key === sortKey) {
+        } else if (sortKey === "protein" && currentSort.key !== "protein") {
+            newOrder = "desc";
+        } else if (currentSort.key === sortKey) {
             newOrder = currentSort.order === "asc" ? "desc" : "asc";
         }
 
@@ -67,6 +74,9 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
     const handleSortOrderClick = () => {
         if (!currentSort.key) return;
 
+        // Skip toggle if fixed descending
+        if (["saveCount", "weeklySaveCount", "monthlySaveCount"].includes(currentSort.key)) return;
+
         const newOrder = currentSort.order === "asc" ? "desc" : "asc";
         setCurrentSort((prevSort) => ({
             key: prevSort.key,
@@ -76,36 +86,70 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
         onSort(currentSort.key, newOrder);
     };
 
+
     return (
-        <CustomBox className="flex flex-wrap flex-row justify-center gap-2 w-full mt-2 max-w-full">
-            {nutrients.map((nutrient) => (
+        <CustomBox className="flex flex-col items-center w-full mt-2 gap-2 mb-4 mt-4">
+            <CustomTypography
+                variant="small"
+                bold
+            >
+                Sort by:
+            </CustomTypography>
+            <CustomBox className="flex flex-wrap justify-center gap-3 w-full max-w-full">
+
+                {nutrients.slice(0, 4).map((nutrient) => (
+                    <CustomChip
+                        key={nutrient.label}
+                        icon={nutrient.icon}
+                        label={nutrient.label}
+                        selected={currentSort.key === nutrient.sortKey}
+                        onClick={() => handleSort(nutrient.sortKey)}
+                        labelFontSize="text-[0.6rem] sm:text-[0.65rem] md:text-[0.7rem]"
+                        labelPosition="bottom"
+                    />
+                ))}
                 <CustomChip
-                    key={nutrient.label}
-                    icon={nutrient.icon}
-                    label={nutrient.label}
-                    selected={currentSort.key === nutrient.sortKey}
-                    onClick={() => handleSort(nutrient.sortKey)}
+                    icon={getSortIcon(currentSort.key)}
+                    label={
+                        !currentSort.key
+                            ? "Direction"
+                            : currentSort.order === "asc"
+                                ? "Low > High"
+                                : "High > Low"
+                    }
+                    selected={!!currentSort.key}
+                    onClick={handleSortOrderClick}
                     labelFontSize="text-[0.6rem] sm:text-[0.65rem] md:text-[0.7rem]"
                     labelPosition="bottom"
                 />
-            ))}
+            </CustomBox>
 
-            <CustomChip
-                icon={getSortIcon(currentSort.key)}
-                label={
-                    !currentSort.key
-                        ? "Direction"
-                        : currentSort.order === "asc"
-                            ? "Low > High"
-                            : "High > Low"
-                }
-                selected={!!currentSort.key}
-                onClick={handleSortOrderClick}
-                labelFontSize="text-[0.6rem] sm:text-[0.65rem] md:text-[0.7rem]"
-                labelPosition="bottom"
-            />
+            <CustomTypography
+                variant="small"
+                bold
+            >
+                Trending:
+            </CustomTypography>
+            <CustomBox className="flex items-center gap-6 w-full justify-center flex-wrap mt-1">
+
+                <CustomBox className="flex flex-wrap justify-center gap-6">
+                    {nutrients.slice(4).map((nutrient) => (
+                        <CustomChip
+                            key={nutrient.label}
+                            icon={nutrient.icon}
+                            label={nutrient.label}
+                            selected={currentSort.key === nutrient.sortKey}
+                            onClick={() => handleSort(nutrient.sortKey)}
+                            labelFontSize="text-[0.6rem] sm:text-[0.65rem] md:text-[0.7rem]"
+                            labelPosition="bottom"
+                        />
+                    ))}
+                </CustomBox>
+            </CustomBox>
+
         </CustomBox>
     );
+
 };
 
 NutrientSortOptionsHorizontal.propTypes = {

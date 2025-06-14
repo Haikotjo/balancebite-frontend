@@ -82,22 +82,15 @@ function MealList({ filters, sortBy, selectedMeal, onMealClick }) {
     // Render filtered meals in a grid
     return (
         <CustomGrid>
-            {filteredMeals.map((meal) => {
-                const userMealMatch = userMeals.find(userMeal =>
-                    String(userMeal.originalMealId) === String(meal.id)
-                );
-                const mealToRender = userMealMatch || meal;
-
-                return (
-                    <CustomBox key={mealToRender.id} className="mb-4 break-inside-avoid">
-                        <MealDetailCard
-                            meal={mealToRender}
-                            viewMode="list"
-                            onMealClick={onMealClick}
-                        />
-                    </CustomBox>
-                );
-            })}
+            {filteredMeals.map((meal) => (
+                <CustomBox key={meal.id} className="mb-4 break-inside-avoid">
+                    <MealDetailCard
+                        meal={meal}
+                        viewMode="list"
+                        onMealClick={onMealClick}
+                    />
+                </CustomBox>
+            ))}
         </CustomGrid>
     );
 }
