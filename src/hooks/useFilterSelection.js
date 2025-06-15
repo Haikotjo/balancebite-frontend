@@ -18,6 +18,12 @@ import { useEffect, useState } from "react";
 const useFilterSelection = (initialFilters, onFilter) => {
     const [selectedFilters, setSelectedFilters] = useState(initialFilters);
 
+    // Sync local state with external changes
+    useEffect(() => {
+        setSelectedFilters(initialFilters);
+    }, [initialFilters]);
+
+
     // Notify parent only when filters have changed
     useEffect(() => {
         if (JSON.stringify(selectedFilters) !== JSON.stringify(initialFilters)) {
