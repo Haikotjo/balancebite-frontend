@@ -16,6 +16,8 @@ import PropTypes from "prop-types";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomChip from "../../../../components/layout/CustomChip.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import { useContext } from "react";
+import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 
 /**
  * NutrientSortOptionsHorizontal
@@ -31,6 +33,7 @@ import CustomTypography from "../../../../components/layout/CustomTypography.jsx
  * @param {Function} props.onSort - Callback invoked with (sortKey, order) when sorting is triggered.
  */
 const NutrientSortOptionsHorizontal = ({ onSort }) => {
+    const { activeOption } = useContext(UserMealsContext);
     const [currentSort, setCurrentSort] = useState({ key: null, order: "asc" });
 
     // Returns appropriate sort direction icon based on current state
@@ -124,28 +127,28 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
                 />
             </CustomBox>
 
-            <CustomTypography
-                variant="small"
-                bold
-            >
-                Trending:
-            </CustomTypography>
-            <CustomBox className="flex items-center gap-6 w-full justify-center flex-wrap mt-1">
-
-                <CustomBox className="flex flex-wrap justify-center gap-6">
-                    {nutrients.slice(4).map((nutrient) => (
-                        <CustomChip
-                            key={nutrient.label}
-                            icon={nutrient.icon}
-                            label={nutrient.label}
-                            selected={currentSort.key === nutrient.sortKey}
-                            onClick={() => handleSort(nutrient.sortKey)}
-                            labelFontSize="text-[0.6rem] sm:text-[0.65rem] md:text-[0.7rem]"
-                            labelPosition="bottom"
-                        />
-                    ))}
-                </CustomBox>
-            </CustomBox>
+            {activeOption !== "My Meals" && (
+                <>
+                    <CustomTypography variant="small" bold>
+                        Trending:
+                    </CustomTypography>
+                    <CustomBox className="flex items-center gap-6 w-full justify-center flex-wrap mt-1">
+                        <CustomBox className="flex flex-wrap justify-center gap-6">
+                            {nutrients.slice(4).map((nutrient) => (
+                                <CustomChip
+                                    key={nutrient.label}
+                                    icon={nutrient.icon}
+                                    label={nutrient.label}
+                                    selected={currentSort.key === nutrient.sortKey}
+                                    onClick={() => handleSort(nutrient.sortKey)}
+                                    labelFontSize="text-[0.6rem] sm:text-[0.65rem] md:text-[0.7rem]"
+                                    labelPosition="bottom"
+                                />
+                            ))}
+                        </CustomBox>
+                    </CustomBox>
+                </>
+            )}
 
         </CustomBox>
     );
