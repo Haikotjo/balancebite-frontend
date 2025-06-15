@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 /**
  * Custom hook to manage the state of a sidebar (open/close).
@@ -13,14 +13,15 @@ import { useState } from "react";
  *   - `toggleSidebar` {Function} - Function to toggle the sidebar open/closed.
  */
 const useSidebarState = (initialState) => {
-    // State to track whether the sidebar is open
     const [open, setOpen] = useState(initialState);
 
-    /**
-     * Toggles the sidebar's open/closed state.
-     */
+    // If initialState changes after first render, update internal state safely
+    useEffect(() => {
+        setOpen(initialState);
+    }, [initialState]);
+
     const toggleSidebar = () => {
-        setOpen(!open);
+        setOpen((prev) => !prev);
     };
 
     return { open, toggleSidebar };

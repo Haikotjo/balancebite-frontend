@@ -34,42 +34,6 @@ export const UserMealsProvider = ({ children }) => {
         });
     }, []);
 
-
-    // const fetchMealsData = useCallback(async () => {
-    //     if (!currentListEndpoint) return;
-    //
-    //     setLoadingMeals(true);
-    //     try {
-    //         const mealsData = await fetchMeals(currentListEndpoint);
-    //
-    //         console.log("📦 Fetched mealsData:", mealsData);
-    //         console.log("📥 Ingested sortBy:", sortBy);
-    //         console.log("🧾 Request URL:", currentListEndpoint);
-    //         console.log(
-    //             "🧮 Sorted meals overview:",
-    //             mealsData.content?.map(meal => ({
-    //                 id: meal.id,
-    //                 name: meal.name,
-    //                 saveCount: meal.saveCount,
-    //                 weeklySaveCount: meal.weeklySaveCount,
-    //                 monthlySaveCount: meal.monthlySaveCount,
-    //             }))
-    //         );
-    //
-    //         const content = mealsData.content || [];
-    //         const finalMeals = applyUserCopies(content, userMealsRef.current);
-    //         setMeals(finalMeals);
-    //         setTotalPages(mealsData.totalPages || 1);
-    //         setError(null);
-    //     } catch (err) {
-    //         console.error("❌ Error fetching meals:", err);
-    //         setError(err.message);
-    //     } finally {
-    //         setLoadingMeals(false);
-    //     }
-    // }, [currentListEndpoint, sortBy]);
-
-
     const fetchUserMealsData = useCallback(async () => {
         setLoadingUserMeals(true);
         try {

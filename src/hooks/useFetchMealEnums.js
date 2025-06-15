@@ -21,24 +21,28 @@ const useFetchMealEnums = (isOpen) => {
     const [diets, setDiets] = useState([]);
     const [cuisines, setCuisines] = useState([]);
     const [mealTypes, setMealTypes] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (isOpen) {
-            setLoading(true);
+        // Only fetch if sidebar or related UI is open
+        if (!isOpen) return;
 
-            // Fetch enums from the API
-            fetchMealEnums()
-                .then(response => {
-                    setDiets(response.diets || []);
-                    setCuisines(response.cuisines || []);
-                    setMealTypes(response.mealTypes || []);
-                })
-                .catch(error => {
-                    console.error("Error fetching enums:", error);
-                })
-                .finally(() => setLoading(false)); // Set loading to false when fetch completes
-        }
+        const fetchData = async () => {
+            setLoading(true); // Set loading before fetching
+
+            try {
+                const response = await fetchMealEnums();
+                setDiets(response.diets || []);
+                setCuisines(response.cuisines || []);
+                setMealTypes(response.mealTypes || []);
+            } catch (error) {
+                console.error("Error fetching enums:", error);
+            } finally {
+                setLoading(false); // Always end loading state
+            }
+        };
+
+        fetchData();
     }, [isOpen]);
 
     return { diets, cuisines, mealTypes, loading };

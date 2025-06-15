@@ -1,51 +1,47 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 /**
  * Custom hook to manage filter selection logic.
  *
  * This hook:
- * - Stores selected filters in state.
- * - Handles adding or removing filters when a user selects/deselects an option.
- * - Calls the `onFilter` callback to propagate changes to the parent component.
+ * - Stores selected filters in local state.
+ * - Handles adding or removing filters when the user interacts with a filter option.
+ * - Calls the `onFilter` callback only after the state has updated.
  *
- * @param {Object} initialFilters - The initial set of selected filters.
- * @param {Function} onFilter - Callback function to update filters in the parent component.
+ * @param {Object} initialFilters - The initial set of filters from the parent component.
+ * @param {Function} onFilter - Callback to notify the parent of filter changes.
  * @returns {Object} An object containing:
  *   - `selectedFilters` {Object} - The current state of selected filters.
- *   - `setSelectedFilters` {Function} - Function to manually update filter state.
- *   - `handleFilterClick` {Function} - Function to handle filter selection/deselection.
+ *   - `setSelectedFilters` {Function} - Function to manually update the filter state.
+ *   - `handleFilterClick` {Function} - Function to toggle a filter on or off.
  */
 const useFilterSelection = (initialFilters, onFilter) => {
-    // State to store the selected filters
     const [selectedFilters, setSelectedFilters] = useState(initialFilters);
 
+    // Notify parent only when filters have changed
+    useEffect(() => {
+        if (JSON.stringify(selectedFilters) !== JSON.stringify(initialFilters)) {
+            onFilter(selectedFilters);
+        }
+    }, [selectedFilters]);
+
     /**
-     * Handles user interaction with filters.
+     * Toggles a filter in the specified category.
      *
-     * - If the filter is already selected, it is removed.
-     * - If the filter is not selected, it is added.
-     * - Updates the parent component by calling `onFilter`.
-     *
-     * @param {string} category - The filter category (e.g., "mealTypes", "diets", "cuisines").
-     * @param {string} value - The selected filter value.
+     * @param {string} category - The filter category (e.g., "mealTypes", "diets").
+     * @param {string} value - The selected filter value to toggle.
      */
     const handleFilterClick = (category, value) => {
         setSelectedFilters((prevFilters) => {
-            // Create a copy of the previous filters
-            const newFilters = { ...prevFilters };
+            const updated = { ...prevFilters };
 
-            if (newFilters[category] === value) {
-                // If the filter is already selected, remove it
-                delete newFilters[category];
+            if (updated[category] === value) {
+                delete updated[category]; // Remove filter
             } else {
-                // Otherwise, select the new filter
-                newFilters[category] = value;
+                updated[category] = value; // Add/replace filter
             }
 
-            // Update the parent component with the new filter state
-            onFilter(newFilters);
-
-            return newFilters;
+            return updated;
         });
     };
 
