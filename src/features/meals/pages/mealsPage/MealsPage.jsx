@@ -3,7 +3,7 @@ import {useSearchParams} from "react-router-dom";
 import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import SearchBar from "../../../../components/searchBar/SearchBar.jsx";
-import {getAllMealNames} from "../../../../services/apiService.js";
+import {getAllMealNames, getStickyItems} from "../../../../services/apiService.js";
 import FilterSidebar from "../../../../components/filterSidebar/FilterSidebar.jsx";
 import NutrientSortOptionsHorizontal from "../../components/nutrientSortOptions/NutrientSortOptionsHorizontal.jsx";
 import ActiveFilters from "../../components/activeFilters/ActiveFilters.jsx";
@@ -13,16 +13,21 @@ import ScrollToTopButton from "../../../../components/scrollToTopButton/ScrollTo
 import SubMenu from "../../components/subMenu/SubMenu.jsx";
 import MealModal from "../../components/mealModal/MealModal.jsx";
 import useIsSmallScreen from "../../../../hooks/useIsSmallScreen.js";
+import fetchStickyItemDetails from "../../../../utils/helpers/fetchStickyItemDetails.js";
+
 
 function MealPage() {
     const [sortBy, setSortBy] = useState(null);
     const [filters, setFilters] = useState({});
-    const { page, setPage, totalPages, setActiveOption } = useContext(UserMealsContext);
+    const { page, setPage, totalPages, activeOption, setActiveOption } = useContext(UserMealsContext);
+
     const [searchParams] = useSearchParams();
     const searchRef = useRef(null);
     const [selectedMeal, setSelectedMeal] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const isSmallScreen = useIsSmallScreen();
+    const [pinnedMeals, setPinnedMeals] = useState([]);
+
 
     const handleOpenModal = (meal) => {
         setSelectedMeal(meal);
@@ -76,6 +81,25 @@ function MealPage() {
         }
     }, [searchParams, setActiveOption]);
 
+    useEffect(() => {
+        const shouldLoadPinned = activeOption === "All Meals" && Object.keys(filters).length === 0 && !sortBy;
+        if (!shouldLoadPinned) {
+            setPinnedMeals([]);
+            return;
+        }
+
+        const loadPinnedMeals = async () => {
+            try {
+                const stickyItems = await getStickyItems(); // haalt alle sticky items op
+                const { meals } = await fetchStickyItemDetails(stickyItems);
+                setPinnedMeals(meals.length > 0 ? [meals[0]] : []);
+            } catch (err) {
+                console.error("❌ Failed to load pinned meals", err);
+            }
+        };
+
+        loadPinnedMeals();
+    }, [activeOption, filters, sortBy]);
 
 
     return (
@@ -131,6 +155,7 @@ function MealPage() {
                 selectedMeal={selectedMeal}
                 onFiltersChange={handleFiltersChange}
                 onMealClick={isSmallScreen ? undefined : handleOpenModal}
+                pinnedMeals={pinnedMeals}
             />
 
             {totalPages > 1 && (

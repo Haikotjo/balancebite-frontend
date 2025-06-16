@@ -110,7 +110,7 @@ export const UserMealsProvider = ({ children }) => {
                         saveCount: meal.saveCount,
                         weeklySaveCount: meal.weeklySaveCount,
                         monthlySaveCount: meal.monthlySaveCount,
-                        originalMealId: meal.originalMealId, // alleen aanwezig bij user copy
+                        originalMealId: meal.originalMealId,
                     });
                 });
 
@@ -118,7 +118,6 @@ export const UserMealsProvider = ({ children }) => {
                     ? applyUserCopies(publicMeals, userCopies)
                     : publicMeals;
 
-// ⬇️ HIER sortering toevoegen
                 if (sortBy?.sortKey === "saveCount") {
                     finalMeals.sort((a, b) => {
                         const aIsCopy = !!a.originalMealId;
@@ -133,7 +132,6 @@ export const UserMealsProvider = ({ children }) => {
                     });
                 }
 
-// ⬇️ Logging behouden
                 console.log("🔁 Final meals after applyUserCopies:");
                 finalMeals.forEach((m, i) => {
                     console.log(`Meal ${i + 1}:`, {
@@ -148,8 +146,6 @@ export const UserMealsProvider = ({ children }) => {
 
                 setMeals(finalMeals);
 
-
-
                 setMeals(finalMeals);
                 setTotalPages(mealsData.totalPages || 1);
                 setError(null);
@@ -163,9 +159,6 @@ export const UserMealsProvider = ({ children }) => {
 
         run().catch(console.error);
     }, [activeOption, user, currentListEndpoint, sortBy]);
-
-
-
 
 
     const replaceMealInMeals = (originalMealId, newMeal) => {

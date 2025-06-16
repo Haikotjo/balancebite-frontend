@@ -3,7 +3,8 @@ import {
     PlusSquare,
     Utensils,
     Settings,
-    Apple
+    Apple,
+    StickyNote
 } from "lucide-react";
 
 // Form components
@@ -26,6 +27,7 @@ import clsx from "clsx";
 import CustomSelect from "../../../components/layout/CustomSelect.jsx";
 import RegisterForm from "../../navigation/components/authRegisterForm/RegisterForm.jsx";
 import DeleteDietPlanForm from "../components/deleteDietForm/DeleteMealForm.jsx";
+import CreateStickyItemForm from "../components/createStickyItemForm/CreateStickyItemForm.jsx";
 
 /**
  * AdminPage – Central admin dashboard to manage food items, meals, users and future settings.
@@ -44,6 +46,7 @@ const AdminPage = () => {
         { label: "Meals", icon: <Utensils className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
         { label: "Users", icon: <Settings className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
         { label: "Diets", icon: <Apple className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
+        { label: "Sticky", icon: <StickyNote className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
         { label: "Settings", icon: <Settings className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
     ];
 
@@ -147,6 +150,14 @@ const AdminPage = () => {
                 >
                     Admin settings coming soon...
                 </CustomTypography>
+            );
+        }
+
+        if (activeOption === "Sticky") {
+            return (
+                <CustomBox>
+                    <CreateStickyItemForm />
+                </CustomBox>
             );
         }
 

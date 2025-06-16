@@ -9,11 +9,14 @@ import MealDetailCard from "../../features/meals/components/mealCardLarge/MealDe
 import DietListCard from "../../features/diets/components/dietListCard/DietListCard.jsx";
 import Interceptor from "../../services/authInterceptor.js";
 import { UserDietsContext } from "../../context/UserDietContext.jsx";
+import {getAllStickyItems} from "../../services/apiService.js";
+import fetchStickyItemDetails from "../../utils/helpers/fetchStickyItemDetails.js";
 
 function HomePage() {
     const navigate = useNavigate();
     const [vegetarianMeals, setVegetarianMeals] = useState([]);
     const [allMeals, setAllMeals] = useState([]);
+    const [stickyItems, setStickyItems] = useState([]);
 
     const {
         diets,
@@ -47,7 +50,33 @@ function HomePage() {
     };
 
     useEffect(() => {
-        fetchDietsData(); // gebruik context
+        const loadStickyData = async () => {
+            try {
+                const rawStickyItems = await getAllStickyItems();
+                const { meals, diets } = await fetchStickyItemDetails(rawStickyItems);
+
+                // Voeg reference toe aan elk item
+                const enriched = rawStickyItems.map((item) => {
+                    const reference =
+                        item.type === "MEAL"
+                            ? meals.find((m) => m.id === item.referenceId)
+                            : diets.find((d) => d.id === item.referenceId);
+
+                    return { ...item, reference };
+                });
+
+                setStickyItems(enriched);
+            } catch (err) {
+                console.error("Failed to fetch sticky items:", err);
+            }
+        };
+
+        loadStickyData();
+    }, []);
+
+
+    useEffect(() => {
+        fetchDietsData();
         fetchVegetarianMeals().then(data =>
             setVegetarianMeals(data.sort(() => 0.5 - Math.random()).slice(0, 12))
         );
@@ -61,6 +90,30 @@ function HomePage() {
             <CustomAnimatedBox animation="fadeIn" className="animated-logo p-2 mb-2 mt-6">
                 <Logo size={100} />
             </CustomAnimatedBox>
+
+            <HorizontalScrollSection
+                title="Pinned Items"
+                items={stickyItems}
+                onTitleClick={() => navigate("/pinned")}
+                renderItem={(item) => {
+                    if (item.type === "MEAL") {
+                        return (
+                            <CustomBox className="w-full max-w-[300px]">
+                                <MealDetailCard meal={item.reference} viewMode="list" hideAfterTitle isPinned />
+                            </CustomBox>
+                        );
+                    }
+                    if (item.type === "DIET_PLAN") {
+                        return (
+                            <CustomBox className="w-full max-w-[280px]">
+                                <DietListCard diet={item.reference} compact isPinned />
+                            </CustomBox>
+                        );
+                    }
+                    return null;
+                }}
+            />
+
 
             <HorizontalScrollSection
                 title="Vegetarian Meals"

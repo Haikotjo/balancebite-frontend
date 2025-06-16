@@ -18,7 +18,7 @@ export const UserDietsProvider = ({ children }) => {
     const { user } = useContext(AuthContext);
     const [error, setError] = useState(null);
     const [filters, setFilters] = useState({});
-    const [sortKey, setSortKey] = useState("name");
+    const [sortKey, setSortKey] = useState(null);
     const [sortOrder, setSortOrder] = useState("asc");
     const [activeOption, setActiveOption] = useState("All Diets");
     const [favoriteDiets, setFavoriteDiets] = useState([]);
@@ -210,17 +210,26 @@ export const UserDietsProvider = ({ children }) => {
 
     const replaceDietInDiets = (originalDietId, newDiet) => {
         setDiets(prev => [
-            ...prev.filter(d => String(d.id) !== String(originalDietId)),
+            ...prev.filter(d =>
+                String(d.id) !== String(originalDietId) &&
+                String(d.id) !== String(newDiet.id)
+            ),
             newDiet
         ]);
 
         setUserDiets(prev => [
-            ...prev.filter(d => String(d.id) !== String(originalDietId)),
+            ...prev.filter(d =>
+                String(d.id) !== String(originalDietId) &&
+                String(d.id) !== String(newDiet.id)
+            ),
             newDiet
         ]);
 
         setFavoriteDiets(prev => [
-            ...prev.filter(d => String(d.id) !== String(originalDietId)),
+            ...prev.filter(d =>
+                String(d.id) !== String(originalDietId) &&
+                String(d.id) !== String(newDiet.id)
+            ),
             newDiet
         ]);
     };

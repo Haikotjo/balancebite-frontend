@@ -18,8 +18,8 @@ const ActiveFilterChips = ({
     const showClearAll =
         Object.keys(filters).length > 0 ||
         creatorIdFilter ||
-        sortKey !== "name" ||
-        sortOrder !== "asc";
+        sortKey !== null;
+
 
     return (
         showClearAll && (
@@ -38,17 +38,18 @@ const ActiveFilterChips = ({
                     onRemove={() => {
                         setFilters({});
                         setCreatorIdFilter(null);
-                        setSortKey("name");
+                        setSortKey(null);
                         setSortOrder("asc");
                     }}
                 />
 
-                {(sortKey !== "name" || sortOrder !== "asc") && (
+                {sortKey && (
+
                     <DietsFilterChip
                         label={`Sort: ${sortKey} (${sortOrder})`}
                         colorClass="chip-yellow"
                         onRemove={() => {
-                            setSortKey("name");
+                            setSortKey(null);
                             setSortOrder("asc");
                         }}
                     />

@@ -15,7 +15,8 @@ import CustomCard from "../../../../components/layout/CustomCard.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 
-const MealDetailCard = ({ meal, viewMode = "page", onMealClick  }) => {
+const MealDetailCard = ({ meal, viewMode = "page", onMealClick, isPinned = false }) => {
+
     const { userMeals } = useContext(UserMealsContext);
     const userMealMatch = userMeals.find(m => String(m.originalMealId) === String(meal.id));
     const mealToRender = userMealMatch || meal;
@@ -43,7 +44,7 @@ const MealDetailCard = ({ meal, viewMode = "page", onMealClick  }) => {
     const macros = buildMacrosObject(meal, calculatedMacros);
 
     return (
-        <CustomCard className="flex w-full box-border" >
+        <CustomCard isPinned={isPinned} className="flex w-full box-border">
 
             {/* Image Section */}
 
@@ -136,6 +137,7 @@ MealDetailCard.propTypes = {
     meal: PropTypes.object.isRequired,
     viewMode: PropTypes.oneOf(["page", "list", "mobile"]),
     onMealClick: PropTypes.func,
+    isPinned: PropTypes.bool,
 };
 
 export default MealDetailCard;

@@ -4,15 +4,18 @@ import DietListCard from "../dietListCard/DietListCard.jsx";
 import {useContext} from "react";
 import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
 
-const DietsList = ({ diets, onItemClick }) => {
+const DietsList = ({ diets, pinnedDiets = [], onItemClick }) => {
     const { userDiets } = useContext(UserDietsContext);
+    const pinnedDietIds = new Set(pinnedDiets.map(d => String(d.id)));
 
+    const combinedDiets = [
+        ...pinnedDiets,
+        ...diets.filter(d => !pinnedDietIds.has(String(d.id)))
+    ];
 
     return (
-
         <CustomBox className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
-
-            {diets.map((diet) => {
+            {combinedDiets.map((diet) => {
                 const userDietMatch = userDiets.find(userDiet =>
                     String(userDiet.originalDietId) === String(diet.id)
                 );
@@ -20,7 +23,11 @@ const DietsList = ({ diets, onItemClick }) => {
 
                 return (
                     <CustomBox key={dietToRender.id} className="break-inside-avoid">
-                        <DietListCard diet={dietToRender} onClick={() => onItemClick(dietToRender.id)} />
+                        <DietListCard
+                            diet={dietToRender}
+                            onClick={() => onItemClick(dietToRender.id)}
+                            isPinned={pinnedDietIds.has(String(dietToRender.id))}
+                        />
                     </CustomBox>
                 );
             })}
@@ -29,14 +36,10 @@ const DietsList = ({ diets, onItemClick }) => {
 };
 
 DietsList.propTypes = {
-    diets: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.number.isRequired,
-            name: PropTypes.string.isRequired,
-            dietDays: PropTypes.array.isRequired,
-        })
-    ).isRequired,
+    diets: PropTypes.array.isRequired,
+    pinnedDiets: PropTypes.array,
     onItemClick: PropTypes.func.isRequired,
 };
+
 
 export default DietsList;

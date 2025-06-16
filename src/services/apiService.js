@@ -706,5 +706,35 @@ export const deleteAdminDietPlanApi = async (dietPlanId, token) => {
     }
 };
 
+export const getStickyItems = async (type) => {
+    const endpoint = import.meta.env.VITE_GET_STICKY_ITEMS_ENDPOINT;
+    const response = await Interceptor.get(endpoint, {
+        params: type ? { type } : {},
+    });
+    return response.data;
+};
+
+export const getLatestStickyItems = async (limit = 5) => {
+    const endpoint = `${import.meta.env.VITE_GET_LATEST_STICKY_ITEMS_ENDPOINT}?limit=${limit}`;
+    const response = await Interceptor.get(endpoint);
+    return response.data;
+};
+
+export const getAllStickyItems = async () => {
+    const endpoint = import.meta.env.VITE_GET_ALL_STICKY_ITEMS_ENDPOINT;
+    const response = await Interceptor.get(endpoint);
+    return response.data;
+};
 
 
+
+export const createStickyItemApi = async (data, token) => {
+    const endpoint = import.meta.env.VITE_CREATE_STICKY_ITEM_ENDPOINT;
+    const response = await Interceptor.post(endpoint, data, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+        },
+    });
+    return response.data;
+};

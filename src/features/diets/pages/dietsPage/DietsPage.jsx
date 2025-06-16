@@ -10,6 +10,9 @@ import CustomPagination from "../../../../components/customPagination/CustomPagi
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import SortControls from "../../components/sortControls/SortControls.jsx";
 import ActiveFilterChips from "../../components/activeFilterChips/ActiveFilterChips.jsx";
+import fetchStickyItemDetails from "../../../../utils/helpers/fetchStickyItemDetails.js";
+import {getStickyItems} from "../../../../services/apiService.js";
+
 
 const DietsPage = () => {
     const {
@@ -28,12 +31,14 @@ const DietsPage = () => {
         creatorIdFilter,
         setCreatorIdFilter,
         setActiveOption,
+        activeOption,
     } = useContext(UserDietsContext);
 
     const [showErrorDialog, setShowErrorDialog] = useState(false);
     const navigate = useNavigate();
     const [creatorName, setCreatorName] = useState(null);
     const location = useLocation();
+    const [pinnedDiets, setPinnedDiets] = useState([]);
 
     useEffect(() => {
         if (creatorIdFilter) {
@@ -67,7 +72,30 @@ const DietsPage = () => {
         }
     }, [location.search, setActiveOption]);
 
+    useEffect(() => {
+        const shouldLoadPinned =
+            activeOption === "All Diets" &&
+            !creatorIdFilter &&
+            Object.keys(filters).length === 0 &&
+            !sortKey;
 
+        if (!shouldLoadPinned) {
+            setPinnedDiets([]);
+            return;
+        }
+
+        const loadPinnedDiets = async () => {
+            try {
+                const stickyItems = await getStickyItems();
+                const { diets } = await fetchStickyItemDetails(stickyItems);
+                setPinnedDiets(diets.length > 0 ? [diets[0]] : []);
+            } catch (err) {
+                console.error("❌ Failed to load pinned diets", err);
+            }
+        };
+
+        loadPinnedDiets();
+    }, [filters, sortKey, creatorIdFilter, activeOption]);
 
     // DEBUG ONLY – logging effects (verwijderen voor productie)
     useEffect(() => {
@@ -148,7 +176,8 @@ const DietsPage = () => {
             {loading ? (
                 <Spinner className="mx-auto my-10" />
             ) : (
-                <DietsList diets={diets} onItemClick={(id) => navigate(`/diet/${id}`)} />
+                <DietsList diets={diets} pinnedDiets={pinnedDiets} onItemClick={(id) => navigate(`/diet/${id}`)} />
+
             )}
 
             {totalPages > 1 && (

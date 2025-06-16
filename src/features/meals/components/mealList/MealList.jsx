@@ -18,19 +18,23 @@ import CustomGrid from "../../../../components/layout/CustomGrid.jsx";
  * @param {Object} [props.selectedMeal] - If present, only this meal is shown.
  * @returns {JSX.Element}
  */
-function MealList({ filters, sortBy, selectedMeal, onMealClick }) {
-    const { meals, loading, error, userMeals, setFilters, setSortBy  } = useContext(UserMealsContext);
+function MealList({ filters, sortBy, selectedMeal, onMealClick, pinnedMeals = [] }) {
+    const { meals, loading, error, setFilters, setSortBy  } = useContext(UserMealsContext);
     const location = useLocation();
 
     // Apply name filter or selected meal override
     const filteredMeals = selectedMeal
         ? [selectedMeal]
         : meals.filter((m) => {
+
             if (filters.name) {
                 return m.name.toLowerCase().includes(filters.name.toLowerCase());
             }
             return true;
         });
+
+    const pinnedMealIds = new Set(pinnedMeals.map(m => String(m.id)));
+    const combinedMeals = [...pinnedMeals, ...filteredMeals.filter(m => !pinnedMealIds.has(String(m.id)))];
 
     // Update filters/sortBy from props or redirect state
     useEffect(() => {
@@ -82,17 +86,19 @@ function MealList({ filters, sortBy, selectedMeal, onMealClick }) {
     // Render filtered meals in a grid
     return (
         <CustomGrid>
-            {filteredMeals.map((meal) => (
+            {combinedMeals.map((meal) => (
                 <CustomBox key={meal.id} className="mb-4 break-inside-avoid">
                     <MealDetailCard
                         meal={meal}
                         viewMode="list"
                         onMealClick={onMealClick}
+                        isPinned={pinnedMealIds.has(String(meal.id))}
                     />
                 </CustomBox>
             ))}
         </CustomGrid>
     );
+
 }
 
 MealList.propTypes = {
@@ -102,7 +108,8 @@ MealList.propTypes = {
         sortOrder: PropTypes.string
     }),
     onMealClick: PropTypes.func,
-    selectedMeal: PropTypes.object
+    selectedMeal: PropTypes.object,
+    pinnedMeals: PropTypes.array,
 };
 
 export default MealList;
