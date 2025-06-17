@@ -3,7 +3,6 @@ import { Pencil } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 
-
 /**
  * A small icon button that navigates to the diet update page.
  * Navigates to `/update-diet/:id`.

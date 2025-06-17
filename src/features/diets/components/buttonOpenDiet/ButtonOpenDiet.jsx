@@ -1,41 +1,41 @@
 import PropTypes from "prop-types";
 import { ExternalLink } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
+import DietModal from "../dietmodal/DietModal.jsx";
 
 /**
- * Icon button to navigate to a diet's detail view.
- * If no onClick is provided, navigates to `/diet/:id`.
- *
- * @component
- * @param {Object} props
- * @param {string|number} props.dietId - ID of the diet to navigate to.
- * @param {Function} [props.onClick] - Optional custom click handler.
- * @returns {JSX.Element}
+ * Icon button to open a diet in a modal (always modal, all screens).
  */
-const ButtonOpenDiet = ({ dietId, onClick }) => {
-    const navigate = useNavigate();
+const ButtonOpenDiet = ({ diet }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleClick = () => {
-        if (onClick) {
-            onClick();
-        } else {
-            navigate(`/diet/${dietId}`);
-        }
+        if (!diet || !diet.id) return;
+        setIsModalOpen(true);
     };
 
     return (
-        <CustomIconButton
-            onClick={handleClick}
-            icon={<ExternalLink size={20} color="white" />}
-            size={35}
-        />
+        <>
+            <CustomIconButton
+                onClick={handleClick}
+                icon={<ExternalLink size={20} color="white" />}
+                size={35}
+            />
+
+            {isModalOpen && (
+                <DietModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    diet={diet}
+                />
+            )}
+        </>
     );
 };
 
 ButtonOpenDiet.propTypes = {
-    dietId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    onClick: PropTypes.func,
+    diet: PropTypes.object.isRequired,
 };
 
 export default ButtonOpenDiet;

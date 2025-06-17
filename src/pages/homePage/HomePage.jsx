@@ -11,12 +11,21 @@ import Interceptor from "../../services/authInterceptor.js";
 import { UserDietsContext } from "../../context/UserDietContext.jsx";
 import {getAllStickyItems} from "../../services/apiService.js";
 import fetchStickyItemDetails from "../../utils/helpers/fetchStickyItemDetails.js";
+import MealModal from "../../features/meals/components/mealModal/MealModal.jsx";
+import useIsSmallScreen from "../../hooks/useIsSmallScreen.js";
+import DietModal from "../../features/diets/components/dietmodal/DietModal.jsx";
 
 function HomePage() {
     const navigate = useNavigate();
     const [vegetarianMeals, setVegetarianMeals] = useState([]);
     const [allMeals, setAllMeals] = useState([]);
     const [stickyItems, setStickyItems] = useState([]);
+    const [selectedMeal, setSelectedMeal] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const isSmallScreen = useIsSmallScreen();
+    const [selectedDiet, setSelectedDiet] = useState(null);
+    const [showDietModal, setShowDietModal] = useState(false);
+
 
     const {
         diets,
@@ -48,6 +57,26 @@ function HomePage() {
             return [];
         }
     };
+
+    const handleOpenModal = (meal) => {
+        setSelectedMeal(meal);
+        setShowModal(true);
+    };
+    const handleCloseModal = () => {
+        setSelectedMeal(null);
+        setShowModal(false);
+    };
+
+    const handleOpenDietModal = (diet) => {
+        setSelectedDiet(diet);
+        setShowDietModal(true);
+    };
+
+    const handleCloseDietModal = () => {
+        setSelectedDiet(null);
+        setShowDietModal(false);
+    };
+
 
     useEffect(() => {
         const loadStickyData = async () => {
@@ -99,7 +128,13 @@ function HomePage() {
                     if (item.type === "MEAL") {
                         return (
                             <CustomBox className="w-full max-w-[300px]">
-                                <MealDetailCard meal={item.reference} viewMode="list" hideAfterTitle isPinned />
+                                <MealDetailCard
+                                    meal={item.reference}
+                                    viewMode="list"
+                                    hideAfterTitle
+                                    isPinned
+                                    onMealClick={isSmallScreen ? undefined : handleOpenModal}
+                                />
                             </CustomBox>
                         );
                     }
@@ -119,7 +154,7 @@ function HomePage() {
                 title="Vegetarian Meals"
                 items={vegetarianMeals}
                 onTitleClick={() => navigate("/meals?diets=VEGETARIAN")}
-                renderItem={(meal) => <MealCardCompact meal={meal} />}
+                renderItem={(meal) => <MealCardCompact meal={meal} onMealClick={isSmallScreen ? undefined : handleOpenModal}/>}
             />
 
             <HorizontalScrollSection
@@ -128,7 +163,7 @@ function HomePage() {
                 onTitleClick={() => navigate("/meals", { state: { filtersFromRedirect: {} } })}
                 renderItem={(meal) => (
                     <CustomBox className="w-full max-w-[300px]">
-                        <MealDetailCard meal={meal} viewMode="list" hideAfterTitle />
+                        <MealDetailCard meal={meal} viewMode="list" hideAfterTitle      onMealClick={isSmallScreen ? undefined : handleOpenModal} />
                     </CustomBox>
                 )}
             />
@@ -142,12 +177,18 @@ function HomePage() {
                         <DietListCard
                             diet={diet}
                             compact
+                            onClick={() => handleOpenDietModal(diet)}
                             onAdd={(newDiet) => replaceDietInDiets(diet.id, newDiet)}
                             onRemove={() => removeDietFromUserDiets(diet.id)}
                         />
                     </CustomBox>
                 )}
             />
+
+
+            <MealModal isOpen={showModal} onClose={handleCloseModal} meal={selectedMeal} />
+            <DietModal isOpen={showDietModal} onClose={handleCloseDietModal} diet={selectedDiet} />
+
         </CustomBox>
     );
 }

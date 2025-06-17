@@ -12,6 +12,7 @@ import SortControls from "../../components/sortControls/SortControls.jsx";
 import ActiveFilterChips from "../../components/activeFilterChips/ActiveFilterChips.jsx";
 import fetchStickyItemDetails from "../../../../utils/helpers/fetchStickyItemDetails.js";
 import {getStickyItems} from "../../../../services/apiService.js";
+import DietModal from "../../components/dietmodal/DietModal.jsx";
 
 
 const DietsPage = () => {
@@ -39,6 +40,7 @@ const DietsPage = () => {
     const [creatorName, setCreatorName] = useState(null);
     const location = useLocation();
     const [pinnedDiets, setPinnedDiets] = useState([]);
+    const [selectedDiet, setSelectedDiet] = useState(null);
 
     useEffect(() => {
         if (creatorIdFilter) {
@@ -176,8 +178,11 @@ const DietsPage = () => {
             {loading ? (
                 <Spinner className="mx-auto my-10" />
             ) : (
-                <DietsList diets={diets} pinnedDiets={pinnedDiets} onItemClick={(id) => navigate(`/diet/${id}`)} />
-
+                <DietsList
+                    diets={diets}
+                    pinnedDiets={pinnedDiets}
+                    onItemClick={(diet) => setSelectedDiet(diet)}
+                />
             )}
 
             {totalPages > 1 && (
@@ -190,7 +195,15 @@ const DietsPage = () => {
                 </CustomBox>
             )}
             <ScrollToTopButton />
+            {selectedDiet && (
+                <DietModal
+                    isOpen={!!selectedDiet}
+                    onClose={() => setSelectedDiet(null)}
+                    diet={selectedDiet}
+                />
+            )}
         </CustomBox>
+
     );
 };
 

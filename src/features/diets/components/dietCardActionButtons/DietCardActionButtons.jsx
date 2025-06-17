@@ -38,7 +38,7 @@ const DietCardActionButtons = ({ diet, iconSize = 35, viewMode = "page" }) => {
 
             {viewMode !== "page" && (
                 <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
-                    <ButtonOpenDiet dietId={diet.id} />
+                    <ButtonOpenDiet diet={diet} />
                 </CustomBox>
             )}
 

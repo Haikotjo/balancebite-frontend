@@ -14,7 +14,7 @@ const DietsList = ({ diets, pinnedDiets = [], onItemClick }) => {
     ];
 
     return (
-        <CustomBox className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
+        <CustomBox className="columns-1 sm:columns-2 lg:columns-4 gap-4 space-y-4">
             {combinedDiets.map((diet) => {
                 const userDietMatch = userDiets.find(userDiet =>
                     String(userDiet.originalDietId) === String(diet.id)
@@ -25,7 +25,7 @@ const DietsList = ({ diets, pinnedDiets = [], onItemClick }) => {
                     <CustomBox key={dietToRender.id} className="break-inside-avoid">
                         <DietListCard
                             diet={dietToRender}
-                            onClick={() => onItemClick(dietToRender.id)}
+                            onClick={() => onItemClick(dietToRender)}
                             isPinned={pinnedDietIds.has(String(dietToRender.id))}
                         />
                     </CustomBox>

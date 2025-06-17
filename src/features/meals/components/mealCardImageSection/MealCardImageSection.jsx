@@ -7,6 +7,7 @@ import PreparationTimeIcon from "../mealCardPreparationTimeIcon/PreparationTimeI
 import {getImageSrc} from "../../utils/helpers/getImageSrc.js";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomImage from "../../../../components/layout/CustomImage.jsx";
+import useIsSmallScreen from "../../../../hooks/useIsSmallScreen.js";
 
 const MealCardImageSection = ({
                                   meal,
@@ -16,22 +17,26 @@ const MealCardImageSection = ({
                               }) => {
     const imageSrc = getImageSrc(meal);
     const navigate = useNavigate();
+    const isSmallScreen = useIsSmallScreen();
+
+    const handleImageClick = () => {
+        if (viewMode === "list") {
+            if (typeof onMealClick === "function" && !isSmallScreen) {
+                onMealClick(meal);
+            } else {
+                navigate(`/meal/${meal.id}`);
+            }
+        }
+    };
 
     return (
         <CustomBox className="w-full flex flex-col justify-start shrink-0 gap-2">
             <CustomBox
                 className={clsx(
                     "relative aspect-[4/3] w-full shadow-[8px_8px_12px_rgba(0,0,0,0.8)] overflow-hidden rounded-md",
-                    viewMode === "list" && "cursor-pointer",
+                    viewMode === "list" && "cursor-pointer"
                 )}
-                onClick={
-                    viewMode === "list" && !onMealClick
-                        ? () => {
-                            console.log("➡️ fallback navigate naar meal-page:", meal.id);
-                            navigate(`/meal/${meal.id}`);
-                        }
-                        : undefined
-                }
+                onClick={handleImageClick}
             >
                 {/* IMAGE */}
                 <CustomImage
@@ -58,7 +63,6 @@ const MealCardImageSection = ({
                     </CustomBox>
                 </CustomBox>
 
-
                 {/* OVERLAY BOTTOM */}
                 <CustomBox
                     className="absolute bottom-0 left-0 w-full z-0 pointer-events-auto cursor-default"
@@ -66,10 +70,8 @@ const MealCardImageSection = ({
                 >
                     <MealInfoOverlay meal={meal} fontSize="0.8rem" />
                 </CustomBox>
-
             </CustomBox>
         </CustomBox>
-
     );
 };
 

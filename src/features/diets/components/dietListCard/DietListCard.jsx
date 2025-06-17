@@ -17,7 +17,7 @@ import {useContext} from "react";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import { Users, UserPen } from "lucide-react";
 
-const DietListCard = ({ diet, compact = false, isPinned }) => {
+const DietListCard = ({ diet, compact = false, isPinned, onClick }) => {
     const averages = getAverageNutrients(diet.dietDays);
     const navigate = useNavigate();
     const allMeals = diet.dietDays.flatMap((day) => day.meals || []);
@@ -30,7 +30,7 @@ const DietListCard = ({ diet, compact = false, isPinned }) => {
             </CustomBox>
             {/* Diet title with navigation link */}
             <CustomBox
-                onClick={() => navigate(`/diet/${diet.id}`)}
+                onClick={typeof onClick === "function" ? () => onClick(diet) : () => navigate(`/diet/${diet.id}`)}
                 className="mb-2 cursor-pointer flex items-center gap-2 max-w-full min-w-0"
             >
             <CustomTypography variant="h4" className="hover:text-primary break-words truncate max-w-full">
@@ -85,8 +85,9 @@ const DietListCard = ({ diet, compact = false, isPinned }) => {
             )}
 
             {/* Creator info (if available) */}
-            {(diet.createdBy?.userName || diet.saveCount !== undefined) && (
-                <CustomBox className="flex flex-wrap items-center gap-4 mt-2">
+            <CustomBox className="flex items-center justify-between w-full mt-2">
+                {/* Left side: creator + updatedAt */}
+                <CustomBox className="flex items-center gap-4">
                     {diet.createdBy?.userName && (
                         <CustomButton
                             type="button"
@@ -100,20 +101,31 @@ const DietListCard = ({ diet, compact = false, isPinned }) => {
                             className="flex items-center gap-1 bg-transparent text-inherit hover:text-primary"
                         >
                             <UserPen size={14} />
-                            {diet.createdBy.userName}
+                            <CustomTypography variant="small" className="italic">
+                                {diet.createdBy.userName}
+                            </CustomTypography>
                         </CustomButton>
                     )}
-                    {diet.saveCount !== undefined && (
-                        <CustomTypography
-                            variant="paragraphCard"
-                            className="italic flex items-center gap-1"
-                        >
-                            <Users size={14} />
-                            {diet.saveCount}
+
+                    {diet.updatedAt && (
+                        <CustomTypography variant="xsmallCard" className="italic">
+                            {new Date(diet.updatedAt).toLocaleDateString()}
                         </CustomTypography>
                     )}
                 </CustomBox>
-            )}
+
+                {/* Right side: save count */}
+                {diet.template && diet.saveCount !== undefined && (
+                    <CustomTypography
+                        variant="xsmallCard"
+                        className="italic flex items-center gap-1"
+                    >
+                        <Users size={14} />
+                        {diet.saveCount}
+                    </CustomTypography>
+                )}
+            </CustomBox>
+
 
 
         </CustomCard>
@@ -125,6 +137,8 @@ DietListCard.propTypes = {
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
         dietDescription: PropTypes.string,
+        template: PropTypes.bool,
+        updatedAt: PropTypes.string,
         createdBy: PropTypes.shape({
             id: PropTypes.number.isRequired,
             userName: PropTypes.string.isRequired,
@@ -134,6 +148,7 @@ DietListCard.propTypes = {
     }).isRequired,
     compact: PropTypes.bool,
     isPinned: PropTypes.bool,
+    onClick: PropTypes.func,
 };
 
 
