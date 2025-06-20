@@ -2,12 +2,10 @@ import PropTypes from "prop-types";
 import clsx from "clsx";
 import MealCardActionButtons from "../mealCardActionButtons/MealCardActionButtons.jsx";
 import MealInfoOverlay from "../mealCardInfoOverlay/MealInfoOverlay.jsx";
-import {useNavigate} from "react-router-dom";
 import PreparationTimeIcon from "../mealCardPreparationTimeIcon/PreparationTimeIcon.jsx";
-import {getImageSrc} from "../../utils/helpers/getImageSrc.js";
+import { getImageSrc } from "../../utils/helpers/getImageSrc.js";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomImage from "../../../../components/layout/CustomImage.jsx";
-import useIsSmallScreen from "../../../../hooks/useIsSmallScreen.js";
 
 const MealCardImageSection = ({
                                   meal,
@@ -16,16 +14,10 @@ const MealCardImageSection = ({
                                   onMealClick,
                               }) => {
     const imageSrc = getImageSrc(meal);
-    const navigate = useNavigate();
-    const isSmallScreen = useIsSmallScreen();
 
     const handleImageClick = () => {
-        if (viewMode === "list") {
-            if (typeof onMealClick === "function" && !isSmallScreen) {
-                onMealClick(meal);
-            } else {
-                navigate(`/meal/${meal.id}`);
-            }
+        if (typeof onMealClick === "function") {
+            onMealClick(meal);
         }
     };
 
@@ -34,7 +26,7 @@ const MealCardImageSection = ({
             <CustomBox
                 className={clsx(
                     "relative aspect-[4/3] w-full shadow-[8px_8px_12px_rgba(0,0,0,0.8)] overflow-hidden rounded-md",
-                    viewMode === "list" && "cursor-pointer"
+                    onMealClick ? "cursor-pointer" : ""
                 )}
                 onClick={handleImageClick}
             >
@@ -57,7 +49,7 @@ const MealCardImageSection = ({
                         <MealCardActionButtons
                             meal={meal}
                             showUpdateButton={showUpdateButton}
-                            viewMode="list"
+                            viewMode={viewMode}
                             onMealClick={onMealClick}
                         />
                     </CustomBox>
@@ -74,7 +66,6 @@ const MealCardImageSection = ({
         </CustomBox>
     );
 };
-
 
 MealCardImageSection.propTypes = {
     meal: PropTypes.object.isRequired,

@@ -137,7 +137,7 @@ function MealPage() {
                 filters={filters}
                 selectedMeal={selectedMeal}
                 onFiltersChange={handleFiltersChange}
-                onMealClick={isSmallScreen ? undefined : handleOpenModal}
+                onMealClick={handleOpenModal}
                 pinnedMeals={pinnedMeals}
             />
             {totalPages > 1 && (

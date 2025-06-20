@@ -52,7 +52,7 @@ const MealDetailCard = ({ meal, viewMode = "page", onMealClick, isPinned = false
                     meal={mealToRender}
                     showUpdateButton={showUpdateButton}
                     viewMode={viewMode}
-                    onMealClick={typeof onMealClick === "function" ? onMealClick : undefined}
+                    onMealClick={onMealClick}
                 />
 
             {/* Details Section */}
