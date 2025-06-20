@@ -34,7 +34,7 @@ const MealModal = ({ isOpen, onClose, meal }) => {
 
 
                 {/* Meal content */}
-                <MealCard meal={meal} viewMode="page" onNameClick={onClose}/>
+                <MealCard meal={meal} viewMode="page" onNameClick={onClose} onClose={onClose} />
             </CustomBox>
         </CustomBox>,
         document.body
