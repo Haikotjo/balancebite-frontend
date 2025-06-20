@@ -64,6 +64,7 @@ MealCardActionButtons.propTypes = {
     iconSize: PropTypes.number,
     viewMode: PropTypes.oneOf(["page", "list", "modal"]),
     onMealClick: PropTypes.func,
+    onClose: PropTypes.func,
 };
 
 export default MealCardActionButtons;
