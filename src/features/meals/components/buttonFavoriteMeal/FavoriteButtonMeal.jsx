@@ -15,7 +15,7 @@ import CustomTypography from "../../../../components/layout/CustomTypography.jsx
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import { useDialog } from "../../../../context/NotificationContext.jsx";
 
-const ButtonFavorite = ({ meal }) => {
+const ButtonFavorite = ({ meal, onClose }) => {
     const navigate = useNavigate();
     const { showDialog } = useDialog();
     const { removeMealFromUserMeals } = useContext(UserMealsContext);
@@ -61,6 +61,7 @@ const ButtonFavorite = ({ meal }) => {
                 message,
                 type: "success",
             });
+            if (onClose) onClose();
         }
     );
 
@@ -130,6 +131,7 @@ const ButtonFavorite = ({ meal }) => {
 
 ButtonFavorite.propTypes = {
     meal: PropTypes.object.isRequired,
+    onClose: PropTypes.func,
 };
 
 export default ButtonFavorite;

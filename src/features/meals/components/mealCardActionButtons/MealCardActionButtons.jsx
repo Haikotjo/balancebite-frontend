@@ -18,7 +18,7 @@ import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
  * @param {string} [props.viewMode="page"] - Controls visibility of open button.
  * @returns {JSX.Element}
  */
-const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page",  onMealClick }) => {
+const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page",  onMealClick, onClose }) => {
     const { refetchRecommendedNutrition } = useContext(RecommendedNutritionContext);
     const { userMeals } = useContext(UserMealsContext);
     const isSavedByUser = userMeals.some((m) => m.id === meal.id);
@@ -30,7 +30,7 @@ const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page",  onMeal
     return (
         <CustomBox className="flex flex-row items-center gap-2">
             <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
-                <ButtonFavorite meal={meal} />
+                <ButtonFavorite meal={meal} onClose={onClose} />
             </CustomBox>
 
             <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>

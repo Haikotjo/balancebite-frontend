@@ -59,6 +59,7 @@ const MealCard = ({ meal, viewMode = "page", onClose }) => {
                             meal={meal}
                             showUpdateButton={true}
                             viewMode={viewMode}
+                            onClose={onClose}
                         />
                     </CustomBox>
                 </CustomBox>
