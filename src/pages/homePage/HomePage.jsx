@@ -177,7 +177,10 @@ function HomePage() {
                         <DietListCard
                             diet={diet}
                             compact
-                            onClick={() => handleOpenDietModal(diet)}
+                            onClick={() => {
+                                handleOpenDietModal(diet);
+                            }}
+                            onClose={handleCloseDietModal}
                             onAdd={(newDiet) => replaceDietInDiets(diet.id, newDiet)}
                             onRemove={() => removeDietFromUserDiets(diet.id)}
                         />

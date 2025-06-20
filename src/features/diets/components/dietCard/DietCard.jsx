@@ -28,7 +28,7 @@ const DietCard = ({ diet, onClose }) => {
                 >
                     {diet.name}
                 </CustomTypography>
-                <DietCardActionButtons diet={diet} />
+                <DietCardActionButtons diet={diet} onClose={onClose} />
             </CustomBox>
 
             <CustomBox className="flex items-center gap-4 mb-2">

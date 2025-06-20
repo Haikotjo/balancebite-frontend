@@ -18,7 +18,7 @@ import ButtonOpenShoppingCart from "../buttonOpenShoppingCart/ButtonOpenShopping
  * @param {string} [props.viewMode="page"] - Controls visibility of open button.
  * @returns {JSX.Element}
  */
-const DietCardActionButtons = ({ diet, iconSize = 35, viewMode = "page" }) => {
+const DietCardActionButtons = ({ diet, iconSize = 35, viewMode = "page", onClose }) => {
     const { userDiets } = useContext(UserDietsContext);
 
     const isUserDiet = userDiets.some((userDiet) =>
@@ -33,7 +33,7 @@ const DietCardActionButtons = ({ diet, iconSize = 35, viewMode = "page" }) => {
     return (
         <CustomBox className="flex flex-row items-center gap-2">
             <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
-                <ButtonFavoriteDiet diet={diet} />
+                <ButtonFavoriteDiet diet={diet} onClose={onClose} />
             </CustomBox>
 
             {viewMode !== "page" && (

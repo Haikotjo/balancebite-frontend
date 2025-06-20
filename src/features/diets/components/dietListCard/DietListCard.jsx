@@ -17,7 +17,7 @@ import {useContext} from "react";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import { Users, UserPen } from "lucide-react";
 
-const DietListCard = ({ diet, compact = false, isPinned, onClick }) => {
+const DietListCard = ({ diet, compact = false, isPinned, onClick, onClose }) => {
     const averages = getAverageNutrients(diet.dietDays);
     const navigate = useNavigate();
     const allMeals = diet.dietDays.flatMap((day) => day.meals || []);
@@ -26,7 +26,7 @@ const DietListCard = ({ diet, compact = false, isPinned, onClick }) => {
     return (
         <CustomCard className="p-4" isPinned={isPinned}>
             <CustomBox className="mb-2 flex gap-2 justify-end">
-                <DietCardActionButtons diet={diet} viewMode="list" />
+                <DietCardActionButtons diet={diet} viewMode="list" onClose={onClose} />
             </CustomBox>
             {/* Diet title with navigation link */}
             <CustomBox
