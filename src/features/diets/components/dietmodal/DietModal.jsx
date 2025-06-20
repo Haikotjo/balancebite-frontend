@@ -32,7 +32,7 @@ const DietModal = ({ isOpen, onClose, diet }) => {
                 </button>
 
                 {/* Diet content */}
-                <DietCard diet={diet} viewMode="page" />
+                <DietCard diet={diet} onClose={onClose} viewMode="page" />
             </CustomBox>
         </CustomBox>,
         document.body

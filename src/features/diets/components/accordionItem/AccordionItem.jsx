@@ -3,6 +3,7 @@ import { ChevronDown } from "lucide-react";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import PropTypes from "prop-types";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 
 const AccordionItem = ({ title, children, defaultOpen = false, headerClassName }) => {
     const [isOpen, setIsOpen] = useState(defaultOpen);
@@ -14,11 +15,11 @@ const AccordionItem = ({ title, children, defaultOpen = false, headerClassName }
                 className={`w-full flex items-center justify-between font-medium text-left transition ${
                     headerClassName || "bg-gray-50 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-900"
                 }`}
-
             >
-                <CustomBox className="flex-1">
+                <CustomTypography variant="small" as="span" className="flex-1">
                     {title}
-                </CustomBox>
+                </CustomTypography>
+
                 <ChevronDown
                     className={`w-4 h-4 transition-transform ${isOpen ? "rotate-180" : ""}`}
                 />

@@ -21,6 +21,7 @@ export const UserMealsProvider = ({ children }) => {
     const [activeOption, setActiveOption] = useState("All Meals");
     const [currentListEndpoint, setCurrentListEndpoint] = useState("");
     const userMealsRef = useRef(userMeals);
+
     useEffect(() => {
         userMealsRef.current = userMeals;
     }, [userMeals]);

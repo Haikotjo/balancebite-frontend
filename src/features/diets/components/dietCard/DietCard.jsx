@@ -8,9 +8,15 @@ import DietCardActionButtons from "../dietCardActionButtons/DietCardActionButton
 import {getAverageNutrients} from "../../utils/helpers/getAverageNutrients.js";
 import AverageNutrientSummary from "../averageNutrientSummary/AverageNutrientSummary.jsx";
 import { Users, UserPen } from "lucide-react";
+import CustomButton from "../../../../components/layout/CustomButton.jsx";
+import {useContext} from "react";
+import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
+import {useNavigate} from "react-router-dom";
 
-const DietCard = ({ diet }) => {
+const DietCard = ({ diet, onClose }) => {
     const averages = getAverageNutrients(diet.dietDays);
+    const { setCreatorIdFilter, setActiveOption } = useContext(UserDietsContext);
+    const navigate = useNavigate();
 
     return (
         <CustomBox className="w-full p-4 rounded-xl shadow-md bg-cardLight dark:bg-cardDark">
@@ -25,18 +31,32 @@ const DietCard = ({ diet }) => {
                 <DietCardActionButtons diet={diet} />
             </CustomBox>
 
-            <CustomBox className="flex sm:flex-row gap-4 mb-2">
-                {diet.createdBy?.userName && (
-                    <CustomTypography variant="paragraphCard" className="italic flex items-center gap-2">
-                        <UserPen size={16} /> {diet.createdBy.userName}
+            <CustomBox className="flex items-center gap-4 mb-2">
+                <CustomButton
+                    type="button"
+                    onClick={() => {
+                        onClose?.();
+                        setCreatorIdFilter(diet.createdBy.id);
+                        setActiveOption("All Diets");
+                        if (!window.location.pathname.includes("/diets")) {
+                            navigate("/diets");
+                        }
+                    }}
+                    className="bg-transparent hover:text-primary p-0 flex items-center gap-2"
+                >
+                    <UserPen size={16} color="currentColor" className="text-lightText dark:text-darkText" />
+                    <CustomTypography variant="paragraphCard" className="italic">
+                        {diet.createdBy.userName}
                     </CustomTypography>
-                )}
+                </CustomButton>
+
                 {diet.saveCount !== undefined && (
                     <CustomTypography variant="paragraphCard" className="italic flex items-center gap-2">
                         <Users size={16} /> {diet.saveCount}
                     </CustomTypography>
                 )}
             </CustomBox>
+
 
             {diet.dietDescription && (
                 <CustomBox>
@@ -88,6 +108,7 @@ const DietCard = ({ diet }) => {
 
 DietCard.propTypes = {
     diet: PropTypes.object.isRequired,
+    onClose: PropTypes.func,
 };
 
 export default DietCard;

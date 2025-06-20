@@ -1,4 +1,3 @@
-// src/themes/ThemeModeProvider.jsx
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { ThemeModeContext } from "./ThemeModeContext";

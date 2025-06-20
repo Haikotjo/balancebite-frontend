@@ -18,8 +18,9 @@ import fetchStickyItemDetails from "../../../../utils/helpers/fetchStickyItemDet
 
 function MealPage() {
     const [sortBy, setSortBy] = useState(null);
-    const [filters, setFilters] = useState({});
-    const { page, setPage, totalPages, activeOption, setActiveOption } = useContext(UserMealsContext);
+    const { filters, setFilters, page, setPage, totalPages, activeOption, setActiveOption } =
+        useContext(UserMealsContext);
+
 
     const [searchParams] = useSearchParams();
     const searchRef = useRef(null);
