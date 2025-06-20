@@ -5,19 +5,13 @@ import { getImageSrc } from "../../utils/helpers/getImageSrc.js";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomImage from "../../../../components/layout/CustomImage.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
-import { useNavigate } from "react-router-dom";
-import useIsSmallScreen from "../../../../hooks/useIsSmallScreen.js";
 
 const MealCardCompact = ({ meal, onMealClick }) => {
     const imageSrc = getImageSrc(meal);
-    const navigate = useNavigate();
-    const isSmallScreen = useIsSmallScreen();
 
     const handleOpen = () => {
-        if (typeof onMealClick === "function" && !isSmallScreen) {
+        if (typeof onMealClick === "function") {
             onMealClick(meal);
-        } else {
-            navigate(`/meal/${meal.id}`);
         }
     };
 

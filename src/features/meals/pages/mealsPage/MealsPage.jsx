@@ -1,9 +1,9 @@
-import {useContext, useEffect, useRef, useState} from "react";
-import {useSearchParams} from "react-router-dom";
-import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
+import { useContext, useEffect, useRef, useState } from "react";
+import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
+import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import SearchBar from "../../../../components/searchBar/SearchBar.jsx";
-import {getAllMealNames, getStickyItems} from "../../../../services/apiService.js";
+import { getAllMealNames, getStickyItems } from "../../../../services/apiService.js";
 import FilterSidebar from "../../../../components/filterSidebar/FilterSidebar.jsx";
 import NutrientSortOptionsHorizontal from "../../components/nutrientSortOptions/NutrientSortOptionsHorizontal.jsx";
 import ActiveFilters from "../../components/activeFilters/ActiveFilters.jsx";
@@ -11,24 +11,38 @@ import MealList from "../../components/mealList/MealList.jsx";
 import CustomPagination from "../../../../components/customPagination/CustomPagination.jsx";
 import ScrollToTopButton from "../../../../components/scrollToTopButton/ScrollToTopButton.jsx";
 import SubMenu from "../../components/subMenu/SubMenu.jsx";
-import MealModal from "../../components/mealModal/MealModal.jsx";
 import useIsSmallScreen from "../../../../hooks/useIsSmallScreen.js";
 import fetchStickyItemDetails from "../../../../utils/helpers/fetchStickyItemDetails.js";
-
+import MealModal from "../../components/mealModal/MealModal.jsx";
 
 function MealPage() {
-    const [sortBy, setSortBy] = useState(null);
-    const { filters, setFilters, page, setPage, totalPages, activeOption, setActiveOption } =
-        useContext(UserMealsContext);
-
-
+    const location = useLocation();
+    const navigate = useNavigate();
     const [searchParams] = useSearchParams();
+    const {
+        filters,
+        setFilters,
+        page,
+        setPage,
+        totalPages,
+        activeOption,
+        setActiveOption,
+    } = useContext(UserMealsContext);
+    const [sortBy, setSortBy] = useState(null);
     const searchRef = useRef(null);
     const [selectedMeal, setSelectedMeal] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const isSmallScreen = useIsSmallScreen();
     const [pinnedMeals, setPinnedMeals] = useState([]);
 
+    // Apply and clear filters from homepage redirect
+    useEffect(() => {
+        if (location.state?.filtersFromRedirect) {
+            setFilters(location.state.filtersFromRedirect);
+            setPage(1);
+            navigate(location.pathname, { replace: true, state: {} });
+        }
+    }, [location.state, navigate, setFilters, setPage, location.pathname]);
 
     const handleOpenModal = (meal) => {
         setSelectedMeal(meal);
@@ -41,115 +55,83 @@ function MealPage() {
     };
 
     const handleSort = (sortKey, sortOrder) => {
-        console.log("🔀 Sorting by:", sortKey, "| Order:", sortOrder);
         setSortBy({ sortKey, sortOrder });
     };
 
     const handleFiltersChange = (newFilters) => {
-        console.log("🎯 Received filters in MealPage:", newFilters);
         setFilters(newFilters);
     };
 
-    const handleRemoveFilter = (category) => {
-        setFilters((prevFilters) => {
-            const updatedFilters = { ...prevFilters };
-            delete updatedFilters[category];
-            console.log("🗑️ Removed filter:", category, "Updated filters:", updatedFilters);
-            return updatedFilters;
+    const handleRemoveFilter = (key) => {
+        setFilters((prev) => {
+            const updated = { ...prev };
+            delete updated[key];
+            return updated;
         });
     };
 
+    // Support URL query filters
     useEffect(() => {
-        const newFilters = {};
-        if (searchParams.get("mealTypes")) newFilters.mealTypes = searchParams.get("mealTypes");
-        if (searchParams.get("diets")) newFilters.diets = searchParams.get("diets");
-        if (searchParams.get("cuisines")) newFilters.cuisines = searchParams.get("cuisines");
-
-        if (Object.keys(newFilters).length > 0) {
-            setFilters(newFilters);
+        const urlFilters = {};
+        ["mealTypes", "diets", "cuisines"].forEach((param) => {
+            const value = searchParams.get(param);
+            if (value) urlFilters[param] = value;
+        });
+        if (Object.keys(urlFilters).length) {
+            setFilters(urlFilters);
         }
-    }, [searchParams]);
+    }, [searchParams, setFilters]);
 
+    // Reset page on filter or sort change
     useEffect(() => {
         setPage(1);
     }, [filters, sortBy, setPage]);
 
-
+    // Active option from URL
     useEffect(() => {
-        const optionParam = searchParams.get("option");
-        if (optionParam) {
-            setActiveOption(optionParam.replace("-", " "));
-        }
+        const option = searchParams.get("option");
+        if (option) setActiveOption(option.replace("-", " "));
     }, [searchParams, setActiveOption]);
 
+    // Load pinned meals
     useEffect(() => {
-        const shouldLoadPinned = activeOption === "All Meals" && Object.keys(filters).length === 0 && !sortBy;
-        if (!shouldLoadPinned) {
-            setPinnedMeals([]);
-            return;
-        }
-
-        const loadPinnedMeals = async () => {
+        const load = async () => {
             try {
-                const stickyItems = await getStickyItems(); // haalt alle sticky items op
-                const { meals } = await fetchStickyItemDetails(stickyItems);
-                setPinnedMeals(meals.length > 0 ? [meals[0]] : []);
-            } catch (err) {
-                console.error("❌ Failed to load pinned meals", err);
+                const sticky = await getStickyItems();
+                const { meals } = await fetchStickyItemDetails(sticky);
+                setPinnedMeals(meals.length ? [meals[0]] : []);
+            } catch {
+                setPinnedMeals([]);
             }
         };
-
-        loadPinnedMeals();
+        if (activeOption === "All Meals" && !Object.keys(filters).length && !sortBy) {
+            load();
+        } else {
+            setPinnedMeals([]);
+        }
     }, [activeOption, filters, sortBy]);
-
 
     return (
         <CustomBox className="flex flex-col items-center pt-6 sm:pt-10 px-4 pb-24 sm:pb-10">
-
-            {/* Filter Sidebar */}
             <FilterSidebar filters={filters} onFilter={handleFiltersChange} />
-
-            {/* SubMenu */}
-            <SubMenu
-                onSelect={(label) => {
-                    setActiveOption(label);
-                }}
-            />
-
-            {/* Nutrient Sort Options */}
+            <SubMenu onSelect={setActiveOption} />
             <NutrientSortOptionsHorizontal onSort={handleSort} />
-
-            {/* Search Bar */}
-            <CustomBox
-                ref={searchRef}
-                className="w-[300px] md:w-[350px] my-6"
-            >
+            <CustomBox ref={searchRef} className="w-[300px] md:w-[350px] my-6">
                 <SearchBar
                     onSearch={getAllMealNames}
-                    onQuerySubmit={(query) => {
-                        setSelectedMeal(null);
-                        setFilters({ name: query });
-                    }}
+                    onQuerySubmit={(q) => { setSelectedMeal(null); setFilters({ name: q }); }}
                     placeholder="Search for a meal..."
                 />
             </CustomBox>
-
-            {/* Active Filters */}
-            {(filters && Object.keys(filters).length > 0) || sortBy ? (
+            {(Object.keys(filters).length > 0 || sortBy) && (
                 <ActiveFilters
                     filters={{
                         ...filters,
-                        ...(sortBy ? { sort: `${sortBy.sortKey} (${sortBy.sortOrder})` } : {})
+                        ...(sortBy ? { sort: `${sortBy.sortKey} (${sortBy.sortOrder})` } : {}),
                     }}
-                    onFilterClick={(key) => {
-                        if (key === "sort") setSortBy(null);
-                        else handleRemoveFilter(key);
-                    }}
+                    onFilterClick={(key) => key === "sort" ? setSortBy(null) : handleRemoveFilter(key)}
                 />
-            ) : null}
-
-
-            {/* Meal List */}
+            )}
             <MealList
                 sortBy={sortBy}
                 filters={filters}
@@ -158,20 +140,12 @@ function MealPage() {
                 onMealClick={isSmallScreen ? undefined : handleOpenModal}
                 pinnedMeals={pinnedMeals}
             />
-
             {totalPages > 1 && (
                 <CustomBox className="mt-2 mb-20 sm:mb-8">
-                    <CustomPagination
-                        currentPage={page}
-                        totalPages={totalPages}
-                        onPageChange={(newPage) => setPage(newPage)}
-                    />
+                    <CustomPagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
                 </CustomBox>
             )}
-
-            {/* Back to Top */}
             <ScrollToTopButton />
-            {/* Modal met MealDetailCard */}
             <MealModal isOpen={showModal} onClose={handleCloseModal} meal={selectedMeal} />
         </CustomBox>
     );

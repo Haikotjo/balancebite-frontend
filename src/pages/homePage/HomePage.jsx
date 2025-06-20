@@ -154,7 +154,7 @@ function HomePage() {
                 title="Vegetarian Meals"
                 items={vegetarianMeals}
                 onTitleClick={() => navigate("/meals?diets=VEGETARIAN")}
-                renderItem={(meal) => <MealCardCompact meal={meal} onMealClick={isSmallScreen ? undefined : handleOpenModal}/>}
+                renderItem={(meal) => <MealCardCompact meal={meal} onMealClick={handleOpenModal}/>}
             />
 
             <HorizontalScrollSection
@@ -163,7 +163,7 @@ function HomePage() {
                 onTitleClick={() => navigate("/meals", { state: { filtersFromRedirect: {} } })}
                 renderItem={(meal) => (
                     <CustomBox className="w-full max-w-[300px]">
-                        <MealDetailCard meal={meal} viewMode="list" hideAfterTitle      onMealClick={isSmallScreen ? undefined : handleOpenModal} />
+                        <MealDetailCard meal={meal} viewMode="list" hideAfterTitle        onMealClick={handleOpenModal} />
                     </CustomBox>
                 )}
             />

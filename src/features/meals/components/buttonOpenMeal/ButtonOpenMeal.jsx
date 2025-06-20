@@ -1,38 +1,22 @@
 import PropTypes from "prop-types";
 import { ExternalLink } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 
 /**
- * A small, animated icon button that navigates to a meal's detail view.
- * Can be customized with an optional onClick handler.
+ * Icon button to trigger meal-related actions (e.g. open modal).
+ * Navigation is no longer handled here; use `onClick` to define behavior.
  *
- * Designed for easy adaptation to React Native by using CustomIconButton
- * instead of browser-specific components.
+ * This component is designed to work in both web and React Native
+ * by using CustomIconButton as a wrapper.
  *
  * @component
- * @param {Object} props
- * @param {string|number} props.mealId - ID of the meal to navigate to.
- * @param {Function} [props.onClick] - Optional click handler; if not provided, navigates to `/meal/:id`.
+ * @param {Function} props.onClick - Click handler to trigger modal or other custom logic.
  * @returns {JSX.Element}
  */
-const ButtonOpenMeal = ({ mealId, onClick }) => {
-    const navigate = useNavigate();
-
-    const handleClick = () => {
-        if (onClick !== undefined) {
-            console.log("➡️ onClick aanwezig, uitvoeren");
-            onClick();
-        } else {
-            console.log("➡️ Geen onClick, navigeren naar meal page");
-            navigate(`/meal/${mealId}`);
-        }
-    };
-
-
+const ButtonOpenMeal = ({ onClick }) => {
     return (
         <CustomIconButton
-            onClick={handleClick}
+            onClick={onClick}
             className="bg-[rgba(0,0,0,0.4)]"
             icon={<ExternalLink size={20} color="white" />}
             size={35}
@@ -41,8 +25,7 @@ const ButtonOpenMeal = ({ mealId, onClick }) => {
 };
 
 ButtonOpenMeal.propTypes = {
-    mealId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    onClick: PropTypes.func,
+    onClick: PropTypes.func.isRequired,
 };
 
 export default ButtonOpenMeal;

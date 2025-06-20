@@ -14,7 +14,7 @@ import CustomImage from "../../../../components/layout/CustomImage.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 
-const MealCard = ({ meal, viewMode = "page", onNameClick }) => {
+const MealCard = ({ meal, viewMode = "page"  }) => {
     const imageSrc = getImageSrc(meal);
     const navigate = useNavigate();
 
@@ -68,7 +68,7 @@ const MealCard = ({ meal, viewMode = "page", onNameClick }) => {
                     className="absolute bottom-0 left-0 w-full z-10 pointer-events-auto cursor-default"
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <MealInfoOverlay onNameClick={onNameClick} meal={meal} fontSize="0.8rem" />
+                    <MealInfoOverlay meal={meal} fontSize="0.8rem" />
                 </CustomBox>
             </CustomBox>
 
@@ -108,7 +108,6 @@ const MealCard = ({ meal, viewMode = "page", onNameClick }) => {
 MealCard.propTypes = {
     meal: PropTypes.object.isRequired,
     viewMode: PropTypes.oneOf(["page", "list", "modal"]),
-    onNameClick: PropTypes.func,
 };
 
 export default MealCard;
