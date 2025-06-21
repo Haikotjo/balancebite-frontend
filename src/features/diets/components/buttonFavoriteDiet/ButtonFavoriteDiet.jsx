@@ -7,14 +7,16 @@ import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx
 import RequireAuthUI from "../../../../components/layout/RequireAuthUI.jsx";
 import { useRequireAuthDialog } from "../../../../hooks/useRequireAuthDialog.js";
 import { useDialog } from "../../../../context/NotificationContext.jsx";
+import { useModal } from "../../../../context/useModal.js";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 
-const ButtonFavoriteDiet = ({ diet, onClose }) => {
+const ButtonFavoriteDiet = ({ diet }) => {
     const navigate = useNavigate();
     const { showDialog } = useDialog();
+    const { closeModal } = useModal();
 
     const {
         dialogOpen,
@@ -28,7 +30,7 @@ const ButtonFavoriteDiet = ({ diet, onClose }) => {
 
     const [errorDialogOpen, setErrorDialogOpen] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const [relatedMeals, setRelatedMeals] = useState([]); // stel dat diets fout geven met meals
+    const [relatedMeals, setRelatedMeals] = useState([]);
 
     const { toggleFavorite, alreadyFavorited } = useToggleDietFavorite(
         diet,
@@ -45,8 +47,7 @@ const ButtonFavoriteDiet = ({ diet, onClose }) => {
                 : `${diet.name} removed from your diets`;
 
             showDialog({ message: msg, type: "success" });
-
-            if (onClose) onClose();
+            closeModal(); // sluit modal via context
         }
     );
 
@@ -108,7 +109,6 @@ const ButtonFavoriteDiet = ({ diet, onClose }) => {
 
 ButtonFavoriteDiet.propTypes = {
     diet: PropTypes.object.isRequired,
-    onClose: PropTypes.func,
 };
 
 export default ButtonFavoriteDiet;

@@ -20,7 +20,7 @@ const LoginRegisterForm = ({ onLogin, onRegister, onClose, startInRegisterMode }
 
 
     return (
-        <CustomModal isOpen={true} onClose={onClose}>
+        <CustomModal isOpen={true} onClose={onClose} zIndex="z-[150]">
             {isRegistering ? (
                 <RegisterForm
                     onClose={onClose}

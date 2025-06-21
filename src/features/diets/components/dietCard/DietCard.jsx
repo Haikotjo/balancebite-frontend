@@ -13,7 +13,7 @@ import {useContext} from "react";
 import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
 import {useNavigate} from "react-router-dom";
 
-const DietCard = ({ diet, onClose }) => {
+const DietCard = ({ diet, viewMode = "card" }) => {
     const averages = getAverageNutrients(diet.dietDays);
     const { setCreatorIdFilter, setActiveOption } = useContext(UserDietsContext);
     const navigate = useNavigate();
@@ -28,14 +28,13 @@ const DietCard = ({ diet, onClose }) => {
                 >
                     {diet.name}
                 </CustomTypography>
-                <DietCardActionButtons diet={diet} onClose={onClose} />
+                <DietCardActionButtons diet={diet} viewMode={viewMode} />
             </CustomBox>
 
             <CustomBox className="flex items-center gap-4 mb-2">
                 <CustomButton
                     type="button"
                     onClick={() => {
-                        onClose?.();
                         setCreatorIdFilter(diet.createdBy.id);
                         setActiveOption("All Diets");
                         if (!window.location.pathname.includes("/diets")) {
@@ -108,7 +107,7 @@ const DietCard = ({ diet, onClose }) => {
 
 DietCard.propTypes = {
     diet: PropTypes.object.isRequired,
-    onClose: PropTypes.func,
+    viewMode: PropTypes.oneOf(["page", "modal", "card"]),
 };
 
 export default DietCard;

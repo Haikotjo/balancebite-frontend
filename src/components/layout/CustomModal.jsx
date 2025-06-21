@@ -13,7 +13,7 @@ import CustomBox from './CustomBox.jsx';
  *
  * @returns {ReactNode|null} The modal JSX, or null if `isOpen` is false.
  */
-const CustomModal = ({ isOpen, onClose, children }) => {
+const CustomModal = ({ isOpen, onClose, children, zIndex = "z-50" }) => {
     // Always apply the effect, even if the modal is not open
     useEffect(() => {
         if (isOpen) {
@@ -40,11 +40,11 @@ const CustomModal = ({ isOpen, onClose, children }) => {
 
     return ReactDOM.createPortal(
         <CustomBox
-            className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
-            onClick={handleOverlayClick} // Close modal when clicking on overlay
+            className={`fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center ${zIndex}`}
+            onClick={handleOverlayClick}
         >
             <CustomBox
-                className="bg-lightBackground dark:bg-darkBackground rounded-lg shadow-lg max-w-sm w-full mx-4"
+                className="bg-lightBackground dark:bg-darkBackground rounded-lg shadow-lg max-w-sm w-full"
                 onClick={(e) => e.stopPropagation()} // Prevent closing the modal when clicking inside the modal content
             >
                 <CustomBox >{children}</CustomBox> {/* Modal content passed as children */}
@@ -59,6 +59,7 @@ CustomModal.propTypes = {
     isOpen: PropTypes.bool.isRequired, // Boolean value to control modal visibility
     onClose: PropTypes.func.isRequired, // Callback function to handle modal close
     children: PropTypes.node.isRequired, // Content to display inside the modal
+    zIndex: PropTypes.string,
 };
 
 export default CustomModal;

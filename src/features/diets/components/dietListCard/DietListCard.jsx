@@ -7,37 +7,38 @@ import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import {getAverageNutrients} from "../../utils/helpers/getAverageNutrients.js";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
 import HorizontalScrollSection from "../../../../components/horizontalScrollSection/HorizontalScrollSection.jsx";
 import MealCardCompact from "../../../meals/components/mealCardCompact/MealCardCompact.jsx";
 import DietCardActionButtons from "../dietCardActionButtons/DietCardActionButtons.jsx";
 import AverageNutrientSummary from "../averageNutrientSummary/AverageNutrientSummary.jsx";
 import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
-import {useContext} from "react";
+import {useContext, useState} from "react";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
-import { Users, UserPen } from "lucide-react";
+import { Users, UserPen, ExternalLink  } from "lucide-react";
 
-const DietListCard = ({ diet, compact = false, isPinned, onClick, onClose }) => {
+const DietListCard = ({ diet, compact = false, isPinned }) => {
     const averages = getAverageNutrients(diet.dietDays);
     const navigate = useNavigate();
     const allMeals = diet.dietDays.flatMap((day) => day.meals || []);
     const { setCreatorIdFilter, setActiveOption } = useContext(UserDietsContext);
+    const [showFullDescription, setShowFullDescription] = useState(false);
 
     return (
         <CustomCard className="p-4" isPinned={isPinned}>
             <CustomBox className="mb-2 flex gap-2 justify-end">
-                <DietCardActionButtons diet={diet} viewMode="list" onClose={onClose} />
+                <DietCardActionButtons diet={diet} viewMode="list" />
             </CustomBox>
             {/* Diet title with navigation link */}
             <CustomBox
-                onClick={typeof onClick === "function" ? () => onClick(diet) : () => navigate(`/diet/${diet.id}`)}
-                className="mb-2 cursor-pointer flex items-center gap-2 max-w-full min-w-0"
+                className="mb-2 flex items-center gap-2 max-w-full min-w-0 cursor-pointer hover:text-primary"
+                onClick={() => window.open(`/diet/${diet.id}`, "_blank")}
             >
-            <CustomTypography variant="h4" className="hover:text-primary break-words truncate max-w-full">
+                <CustomTypography variant="h4" className="break-words truncate max-w-full">
                     {diet.name}
                 </CustomTypography>
-                <ChevronRight size={18} />
+                <ExternalLink size={18} className="shrink-0" />
             </CustomBox>
+
 
             <CustomDivider className="my-2" />
 
@@ -45,11 +46,41 @@ const DietListCard = ({ diet, compact = false, isPinned, onClick, onClose }) => 
             {diet.dietDescription && (
                 <>
                     <CustomTypography variant="paragraph" className="mb-4 italic">
-                        {diet.dietDescription}
+                        {showFullDescription ? (
+                            <>
+                                {diet.dietDescription}
+                                {' '}
+                                <CustomBox
+                                    as="span"
+                                    onClick={() => setShowFullDescription(false)}
+                                    className="text-primary underline cursor-pointer"
+                                >
+                                    Show less
+                                </CustomBox>
+                            </>
+                        ) : (
+                            <>
+                                {diet.dietDescription.slice(0, 100)}
+                                {diet.dietDescription.length > 100 && (
+                                    <>
+                                        {' '}
+                                        <CustomBox
+                                            as="span"
+                                            onClick={() => setShowFullDescription(true)}
+                                            className="text-primary underline cursor-pointer"
+                                        >
+                                            Show more...
+                                        </CustomBox>
+                                    </>
+                                )}
+                            </>
+                        )}
                     </CustomTypography>
+
                     <CustomDivider className="mb-2" />
                 </>
             )}
+
 
             {/* Average daily macro breakdown */}
             {averages && (

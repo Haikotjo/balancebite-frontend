@@ -40,7 +40,6 @@ const DietsPage = () => {
     const [creatorName, setCreatorName] = useState(null);
     const location = useLocation();
     const [pinnedDiets, setPinnedDiets] = useState([]);
-    const [selectedDiet, setSelectedDiet] = useState(null);
 
     useEffect(() => {
         if (creatorIdFilter) {
@@ -181,7 +180,6 @@ const DietsPage = () => {
                 <DietsList
                     diets={diets}
                     pinnedDiets={pinnedDiets}
-                    onItemClick={(diet) => setSelectedDiet(diet)}
                 />
             )}
 
@@ -195,13 +193,6 @@ const DietsPage = () => {
                 </CustomBox>
             )}
             <ScrollToTopButton />
-            {selectedDiet && (
-                <DietModal
-                    isOpen={!!selectedDiet}
-                    onClose={() => setSelectedDiet(null)}
-                    diet={selectedDiet}
-                />
-            )}
         </CustomBox>
 
     );

@@ -23,9 +23,6 @@ function HomePage() {
     const [selectedMeal, setSelectedMeal] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const isSmallScreen = useIsSmallScreen();
-    const [selectedDiet, setSelectedDiet] = useState(null);
-    const [showDietModal, setShowDietModal] = useState(false);
-
 
     const {
         diets,
@@ -65,16 +62,6 @@ function HomePage() {
     const handleCloseModal = () => {
         setSelectedMeal(null);
         setShowModal(false);
-    };
-
-    const handleOpenDietModal = (diet) => {
-        setSelectedDiet(diet);
-        setShowDietModal(true);
-    };
-
-    const handleCloseDietModal = () => {
-        setSelectedDiet(null);
-        setShowDietModal(false);
     };
 
 
@@ -177,10 +164,6 @@ function HomePage() {
                         <DietListCard
                             diet={diet}
                             compact
-                            onClick={() => {
-                                handleOpenDietModal(diet);
-                            }}
-                            onClose={handleCloseDietModal}
                             onAdd={(newDiet) => replaceDietInDiets(diet.id, newDiet)}
                             onRemove={() => removeDietFromUserDiets(diet.id)}
                         />
@@ -190,7 +173,7 @@ function HomePage() {
 
 
             <MealModal isOpen={showModal} onClose={handleCloseModal} meal={selectedMeal} />
-            <DietModal isOpen={showDietModal} onClose={handleCloseDietModal} diet={selectedDiet} />
+
 
         </CustomBox>
     );

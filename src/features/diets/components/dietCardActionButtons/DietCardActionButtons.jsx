@@ -2,11 +2,10 @@ import PropTypes from "prop-types";
 import { useContext } from "react";
 import ButtonOpenDiet from "../buttonOpenDiet/ButtonOpenDiet.jsx";
 import ButtonUpdateDiet from "../buttonUpdateDiet/ButtonUpdateDiet.jsx";
-import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
+import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import ButtonFavoriteDiet from "../buttonFavoriteDiet/ButtonFavoriteDiet.jsx";
 import ButtonOpenShoppingCart from "../buttonOpenShoppingCart/ButtonOpenShoppingCart.jsx";
-
 
 /**
  * Displays a horizontal group of diet-related action buttons.
@@ -15,10 +14,9 @@ import ButtonOpenShoppingCart from "../buttonOpenShoppingCart/ButtonOpenShopping
  * @param {Object} props
  * @param {Object} props.diet - The diet object for which actions apply.
  * @param {number} [props.iconSize=35] - Diameter of each button container.
- * @param {string} [props.viewMode="page"] - Controls visibility of open button.
  * @returns {JSX.Element}
  */
-const DietCardActionButtons = ({ diet, iconSize = 35, viewMode = "page", onClose }) => {
+const DietCardActionButtons = ({ diet, iconSize = 35, viewMode = "card" }) => {
     const { userDiets } = useContext(UserDietsContext);
 
     const isUserDiet = userDiets.some((userDiet) =>
@@ -33,7 +31,7 @@ const DietCardActionButtons = ({ diet, iconSize = 35, viewMode = "page", onClose
     return (
         <CustomBox className="flex flex-row items-center gap-2">
             <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
-                <ButtonFavoriteDiet diet={diet} onClose={onClose} />
+                <ButtonFavoriteDiet diet={diet} />
             </CustomBox>
 
             {viewMode !== "page" && (
@@ -60,7 +58,7 @@ const DietCardActionButtons = ({ diet, iconSize = 35, viewMode = "page", onClose
 DietCardActionButtons.propTypes = {
     diet: PropTypes.object.isRequired,
     iconSize: PropTypes.number,
-    viewMode: PropTypes.oneOf(["page", "list", "modal"]),
+    viewMode: PropTypes.oneOf(["page", "modal", "card"]),
 };
 
 export default DietCardActionButtons;

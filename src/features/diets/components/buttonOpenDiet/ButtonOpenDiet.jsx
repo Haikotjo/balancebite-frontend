@@ -1,36 +1,25 @@
 import PropTypes from "prop-types";
-import { ExternalLink } from "lucide-react";
-import { useState } from "react";
+import { Maximize, Minimize  } from "lucide-react";
+import { useModal } from "../../../../context/useModal.js";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 import DietModal from "../dietmodal/DietModal.jsx";
 
-/**
- * Icon button to open a diet in a modal (always modal, all screens).
- */
 const ButtonOpenDiet = ({ diet }) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const { openModal, closeModal, modalType } = useModal(); // 🆕
+
+    const isOpen = modalType === "diet"; // 🆕
 
     const handleClick = () => {
         if (!diet || !diet.id) return;
-        setIsModalOpen(true);
+        isOpen ? closeModal() : openModal(<DietModal diet={diet} />, "diet"); // 🆕
     };
 
     return (
-        <>
-            <CustomIconButton
-                onClick={handleClick}
-                icon={<ExternalLink size={20} color="white" />}
-                size={35}
-            />
-
-            {isModalOpen && (
-                <DietModal
-                    isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                    diet={diet}
-                />
-            )}
-        </>
+        <CustomIconButton
+            onClick={handleClick}
+            icon={isOpen ? <Minimize  size={20} color="white" /> : <Maximize size={20} color="white" />} // 🆕
+            size={35}
+        />
     );
 };
 

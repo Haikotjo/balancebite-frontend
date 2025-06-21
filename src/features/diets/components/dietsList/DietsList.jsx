@@ -4,7 +4,7 @@ import DietListCard from "../dietListCard/DietListCard.jsx";
 import {useContext} from "react";
 import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
 
-const DietsList = ({ diets, pinnedDiets = [], onItemClick }) => {
+const DietsList = ({ diets, pinnedDiets = [] }) => {
     const { userDiets } = useContext(UserDietsContext);
     const pinnedDietIds = new Set(pinnedDiets.map(d => String(d.id)));
 
@@ -25,7 +25,6 @@ const DietsList = ({ diets, pinnedDiets = [], onItemClick }) => {
                     <CustomBox key={dietToRender.id} className="break-inside-avoid">
                         <DietListCard
                             diet={dietToRender}
-                            onClick={() => onItemClick(dietToRender)}
                             isPinned={pinnedDietIds.has(String(dietToRender.id))}
                         />
                     </CustomBox>
@@ -38,7 +37,6 @@ const DietsList = ({ diets, pinnedDiets = [], onItemClick }) => {
 DietsList.propTypes = {
     diets: PropTypes.array.isRequired,
     pinnedDiets: PropTypes.array,
-    onItemClick: PropTypes.func.isRequired,
 };
 
 

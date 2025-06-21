@@ -60,7 +60,7 @@ const DietDetailsPage = () => {
             <CustomBox className="max-w-screen-xl mx-auto">
                 <DietSubMenu isDetailPage />
                 <CustomBox className="flex justify-center">
-                    <DietCard diet={diet} />
+                    <DietCard diet={diet} viewMode="page" />
                 </CustomBox>
             </CustomBox>
         </CustomBox>
