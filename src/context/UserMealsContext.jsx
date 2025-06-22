@@ -187,6 +187,7 @@ export const UserMealsProvider = ({ children }) => {
             value={{
                 meals,
                 userMeals,
+                applyUserCopies,
                 loading: loadingMeals || loadingUserMeals,
                 error,
                 activeOption,

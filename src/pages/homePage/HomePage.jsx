@@ -11,14 +11,14 @@ import Interceptor from "../../services/authInterceptor.js";
 import { UserDietsContext } from "../../context/UserDietContext.jsx";
 import {getAllStickyItems} from "../../services/apiService.js";
 import fetchStickyItemDetails from "../../utils/helpers/fetchStickyItemDetails.js";
-import useIsSmallScreen from "../../hooks/useIsSmallScreen.js";
+import {UserMealsContext} from "../../context/UserMealsContext.jsx";
 
 function HomePage() {
     const navigate = useNavigate();
     const [vegetarianMeals, setVegetarianMeals] = useState([]);
     const [allMeals, setAllMeals] = useState([]);
     const [stickyItems, setStickyItems] = useState([]);
-    const isSmallScreen = useIsSmallScreen();
+    const { userMeals, applyUserCopies } = useContext(UserMealsContext);
 
     const {
         diets,
@@ -80,13 +80,18 @@ function HomePage() {
 
     useEffect(() => {
         fetchDietsData();
-        fetchVegetarianMeals().then(data =>
-            setVegetarianMeals(data.sort(() => 0.5 - Math.random()).slice(0, 12))
-        );
-        fetchAllMeals().then(data =>
-            setAllMeals(data.sort(() => 0.5 - Math.random()).slice(0, 12))
-        );
-    }, [fetchDietsData]);
+
+        fetchVegetarianMeals().then(data => {
+            const enriched = applyUserCopies(data, userMeals);
+            setVegetarianMeals(enriched.sort(() => 0.5 - Math.random()).slice(0, 12));
+        });
+
+        fetchAllMeals().then(data => {
+            const enriched = applyUserCopies(data, userMeals);
+            setAllMeals(enriched.sort(() => 0.5 - Math.random()).slice(0, 12));
+        });
+    }, [fetchDietsData, userMeals]);
+
 
     return (
         <CustomBox className="flex flex-col items-center justify-center min-h-screen w-full max-w-full mx-auto px-2 text-center ">

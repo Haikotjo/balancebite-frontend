@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { Heart, AlertTriangle } from "lucide-react";
-import { useState } from "react";
+import {useContext, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import { useToggleDietFavorite } from "../../utils/hooks/useToggleDietFavorite.js";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
@@ -12,11 +12,14 @@ import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
+import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
+import {fetchMealById} from "../../../../services/apiService.js";
 
 const ButtonFavoriteDiet = ({ diet }) => {
     const navigate = useNavigate();
     const { showDialog } = useDialog();
     const { closeModal } = useModal();
+    const { replaceMealInMeals } = useContext(UserMealsContext);
 
     const {
         dialogOpen,
@@ -47,7 +50,22 @@ const ButtonFavoriteDiet = ({ diet }) => {
                 : `${diet.name} removed from your diets`;
 
             showDialog({ message: msg, type: "success" });
-            closeModal(); // sluit modal via context
+
+            // 🔄 Haal de meals opnieuw op en vervang ze in de context
+            if (nowFavorited && diet.meals?.length > 0) {
+                diet.meals.forEach(async (mealRef) => {
+                    try {
+                        const updatedMeal = await fetchMealById(mealRef.id);
+                        if (updatedMeal) {
+                            replaceMealInMeals(mealRef.id, updatedMeal);
+                        }
+                    } catch (err) {
+                        console.warn(`❌ Failed to update meal ${mealRef.id}`, err);
+                    }
+                });
+            }
+
+            closeModal();
         }
     );
 

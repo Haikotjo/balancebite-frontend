@@ -15,6 +15,7 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import { useDialog } from "../../../../context/NotificationContext.jsx";
+import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
 
 const ButtonFavorite = ({ meal, onClose }) => {
     const navigate = useNavigate();
@@ -22,6 +23,7 @@ const ButtonFavorite = ({ meal, onClose }) => {
     const { removeMealFromUserMeals } = useContext(UserMealsContext);
     const { token } = useContext(AuthContext);
     const { closeModal } = useContext(ModalContext);
+    const { replaceDietInDiets, getDietById } = useContext(UserDietsContext);
 
     const {
         dialogOpen,
@@ -42,10 +44,29 @@ const ButtonFavorite = ({ meal, onClose }) => {
             await forceUnlinkMealFromUserApi(meal.id, token);
             removeMealFromUserMeals(meal.id);
             setErrorDialogOpen(false);
+
+            // Update de betrokken diets
+            for (const diet of errorDiets) {
+                try {
+                    const updatedDiet = await getDietById(diet.id);
+                    if (updatedDiet) {
+                        replaceDietInDiets(diet.id, updatedDiet);
+                    }
+                } catch (e) {
+                    console.warn(`⚠️ Kon diet ${diet.id} niet updaten`, e);
+                }
+            }
+
+            if (onClose) {
+                onClose();
+            } else {
+                closeModal();
+            }
         } catch (e) {
             console.error("Force unlink failed", e);
         }
     };
+
 
     const { toggleFavorite, alreadyFavorited } = useToggleMealFavorite(
         meal,
