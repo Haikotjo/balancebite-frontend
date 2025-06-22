@@ -5,6 +5,7 @@ import CustomTypography from "../../../../components/layout/CustomTypography.jsx
 import {useLocation, useNavigate} from "react-router-dom";
 import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
 import {useContext} from "react";
+import {ModalContext} from "../../../../context/ModalContext.jsx";
 
 /**
  * Displays metadata below the meal image, including creator and user count.
@@ -20,6 +21,7 @@ const MealInfoOverlay = ({ meal, fontSize = "0.7rem", onNameClick }) => {
     const location = useLocation();
     const navigate = useNavigate();
     const { setFilters, setPage } = useContext(UserMealsContext);
+    const { closeModal } = useContext(ModalContext);
 
     const handleClick = () => {
         if (!meal?.createdBy?.id) return;
@@ -35,6 +37,8 @@ const MealInfoOverlay = ({ meal, fontSize = "0.7rem", onNameClick }) => {
             setFilters(filters);
             setPage(1);
         }
+
+        closeModal?.();
 
         if (onNameClick) {
             onNameClick();
@@ -74,7 +78,10 @@ const MealInfoOverlay = ({ meal, fontSize = "0.7rem", onNameClick }) => {
 
 MealInfoOverlay.propTypes = {
     meal: PropTypes.shape({
-        createdBy: PropTypes.shape({ userName: PropTypes.string }),
+        createdBy: PropTypes.shape({
+            id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+            userName: PropTypes.string,
+        }),
         id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         userCount: PropTypes.number,
         isTemplate: PropTypes.bool,
