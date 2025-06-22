@@ -22,7 +22,7 @@ const DietModal = ({ diet }) => {
                 onClick={(e) => e.stopPropagation()}
             >
 
-                <DietCard diet={diet} />
+                <DietCard diet={diet} viewMode="modal"/>
             </CustomBox>
         </CustomBox>,
         document.body

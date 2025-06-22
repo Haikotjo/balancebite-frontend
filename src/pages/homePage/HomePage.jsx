@@ -11,17 +11,13 @@ import Interceptor from "../../services/authInterceptor.js";
 import { UserDietsContext } from "../../context/UserDietContext.jsx";
 import {getAllStickyItems} from "../../services/apiService.js";
 import fetchStickyItemDetails from "../../utils/helpers/fetchStickyItemDetails.js";
-import MealModal from "../../features/meals/components/mealModal/MealModal.jsx";
 import useIsSmallScreen from "../../hooks/useIsSmallScreen.js";
-import DietModal from "../../features/diets/components/dietmodal/DietModal.jsx";
 
 function HomePage() {
     const navigate = useNavigate();
     const [vegetarianMeals, setVegetarianMeals] = useState([]);
     const [allMeals, setAllMeals] = useState([]);
     const [stickyItems, setStickyItems] = useState([]);
-    const [selectedMeal, setSelectedMeal] = useState(null);
-    const [showModal, setShowModal] = useState(false);
     const isSmallScreen = useIsSmallScreen();
 
     const {
@@ -53,15 +49,6 @@ function HomePage() {
             console.error("❌ Failed to fetch all meals:", err);
             return [];
         }
-    };
-
-    const handleOpenModal = (meal) => {
-        setSelectedMeal(meal);
-        setShowModal(true);
-    };
-    const handleCloseModal = () => {
-        setSelectedMeal(null);
-        setShowModal(false);
     };
 
 
@@ -120,7 +107,6 @@ function HomePage() {
                                     viewMode="list"
                                     hideAfterTitle
                                     isPinned
-                                    onMealClick={isSmallScreen ? undefined : handleOpenModal}
                                 />
                             </CustomBox>
                         );
@@ -141,7 +127,7 @@ function HomePage() {
                 title="Vegetarian Meals"
                 items={vegetarianMeals}
                 onTitleClick={() => navigate("/meals?diets=VEGETARIAN")}
-                renderItem={(meal) => <MealCardCompact meal={meal} onMealClick={handleOpenModal}/>}
+                renderItem={(meal) => <MealCardCompact meal={meal}/>}
             />
 
             <HorizontalScrollSection
@@ -150,7 +136,7 @@ function HomePage() {
                 onTitleClick={() => navigate("/meals", { state: { filtersFromRedirect: {} } })}
                 renderItem={(meal) => (
                     <CustomBox className="w-full max-w-[300px]">
-                        <MealDetailCard meal={meal} viewMode="list" hideAfterTitle        onMealClick={handleOpenModal} />
+                        <MealDetailCard meal={meal} viewMode="list" hideAfterTitle />
                     </CustomBox>
                 )}
             />
@@ -170,9 +156,6 @@ function HomePage() {
                     </CustomBox>
                 )}
             />
-
-
-            <MealModal isOpen={showModal} onClose={handleCloseModal} meal={selectedMeal} />
 
 
         </CustomBox>

@@ -15,7 +15,7 @@ import CustomCard from "../../../../components/layout/CustomCard.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 
-const MealDetailCard = ({ meal, viewMode = "page", onMealClick, isPinned = false }) => {
+const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
 
     const { userMeals } = useContext(UserMealsContext);
     const userMealMatch = userMeals.find(m => String(m.originalMealId) === String(meal.id));
@@ -52,7 +52,6 @@ const MealDetailCard = ({ meal, viewMode = "page", onMealClick, isPinned = false
                     meal={mealToRender}
                     showUpdateButton={showUpdateButton}
                     viewMode={viewMode}
-                    onMealClick={onMealClick}
                 />
 
             {/* Details Section */}

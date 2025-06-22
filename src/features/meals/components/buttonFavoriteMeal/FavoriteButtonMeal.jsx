@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import { forceUnlinkMealFromUserApi } from "../../../../services/apiService.js";
 import { AuthContext } from "../../../../context/AuthContext.jsx";
+import { ModalContext } from "../../../../context/ModalContext.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
@@ -20,6 +21,7 @@ const ButtonFavorite = ({ meal, onClose }) => {
     const { showDialog } = useDialog();
     const { removeMealFromUserMeals } = useContext(UserMealsContext);
     const { token } = useContext(AuthContext);
+    const { closeModal } = useContext(ModalContext);
 
     const {
         dialogOpen,
@@ -57,11 +59,12 @@ const ButtonFavorite = ({ meal, onClose }) => {
             const message = alreadyFavorited
                 ? `${meal.name} removed from your meals`
                 : `${meal.name} added to your meals`;
-            showDialog({
-                message,
-                type: "success",
-            });
-            if (onClose) onClose();
+            showDialog({ message, type: "success" });
+            if (onClose) {
+                onClose();
+            } else {
+                closeModal();
+            }
         }
     );
 

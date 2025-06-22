@@ -11,9 +11,7 @@ import MealList from "../../components/mealList/MealList.jsx";
 import CustomPagination from "../../../../components/customPagination/CustomPagination.jsx";
 import ScrollToTopButton from "../../../../components/scrollToTopButton/ScrollToTopButton.jsx";
 import SubMenu from "../../components/subMenu/SubMenu.jsx";
-import useIsSmallScreen from "../../../../hooks/useIsSmallScreen.js";
 import fetchStickyItemDetails from "../../../../utils/helpers/fetchStickyItemDetails.js";
-import MealModal from "../../components/mealModal/MealModal.jsx";
 
 function MealPage() {
     const location = useLocation();
@@ -31,8 +29,6 @@ function MealPage() {
     const [sortBy, setSortBy] = useState(null);
     const searchRef = useRef(null);
     const [selectedMeal, setSelectedMeal] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const isSmallScreen = useIsSmallScreen();
     const [pinnedMeals, setPinnedMeals] = useState([]);
 
     // Apply and clear filters from homepage redirect
@@ -43,16 +39,6 @@ function MealPage() {
             navigate(location.pathname, { replace: true, state: {} });
         }
     }, [location.state, navigate, setFilters, setPage, location.pathname]);
-
-    const handleOpenModal = (meal) => {
-        setSelectedMeal(meal);
-        setShowModal(true);
-    };
-
-    const handleCloseModal = () => {
-        setShowModal(false);
-        setSelectedMeal(null);
-    };
 
     const handleSort = (sortKey, sortOrder) => {
         setSortBy({ sortKey, sortOrder });
@@ -137,7 +123,6 @@ function MealPage() {
                 filters={filters}
                 selectedMeal={selectedMeal}
                 onFiltersChange={handleFiltersChange}
-                onMealClick={handleOpenModal}
                 pinnedMeals={pinnedMeals}
             />
             {totalPages > 1 && (
@@ -146,7 +131,6 @@ function MealPage() {
                 </CustomBox>
             )}
             <ScrollToTopButton />
-            <MealModal isOpen={showModal} onClose={handleCloseModal} meal={selectedMeal} />
         </CustomBox>
     );
 }

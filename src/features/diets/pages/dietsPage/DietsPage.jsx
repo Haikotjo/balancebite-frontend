@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
 import ScrollToTopButton from "../../../../components/scrollToTopButton/ScrollToTopButton.jsx";
@@ -12,8 +11,7 @@ import SortControls from "../../components/sortControls/SortControls.jsx";
 import ActiveFilterChips from "../../components/activeFilterChips/ActiveFilterChips.jsx";
 import fetchStickyItemDetails from "../../../../utils/helpers/fetchStickyItemDetails.js";
 import {getStickyItems} from "../../../../services/apiService.js";
-import DietModal from "../../components/dietmodal/DietModal.jsx";
-
+import {useLocation} from "react-router-dom";
 
 const DietsPage = () => {
     const {
@@ -36,7 +34,6 @@ const DietsPage = () => {
     } = useContext(UserDietsContext);
 
     const [showErrorDialog, setShowErrorDialog] = useState(false);
-    const navigate = useNavigate();
     const [creatorName, setCreatorName] = useState(null);
     const location = useLocation();
     const [pinnedDiets, setPinnedDiets] = useState([]);

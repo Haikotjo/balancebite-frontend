@@ -6,20 +6,23 @@ export const ModalContext = createContext();
 
 export const ModalProvider = ({ children }) => {
     const [modalContent, setModalContent] = useState(null);
-    const [modalType, setModalType] = useState(null); // 🆕
+    const [modalType, setModalType] = useState(null);
+    const [modalData, setModalData] = useState(null); // ✅ NIEUW
 
-    const openModal = (content, type = null) => {
+    const openModal = (content, type = null, data = null) => {
         setModalContent(content);
-        setModalType(type); // 🆕
+        setModalType(type);
+        setModalData(data);
     };
 
     const closeModal = () => {
         setModalContent(null);
-        setModalType(null); // 🆕
+        setModalType(null);
+        setModalData(null);
     };
 
     return (
-        <ModalContext.Provider value={{ openModal, closeModal, modalType }}> {/* 🆕 */}
+        <ModalContext.Provider value={{ openModal, closeModal, modalType, modalData }}> {/* ✅ modalData toegevoegd */}
             {children}
             <CustomModal isOpen={!!modalContent} onClose={closeModal}>
                 {modalContent}

@@ -1,31 +1,40 @@
 import PropTypes from "prop-types";
-import { ExternalLink } from "lucide-react";
+import { Maximize, Minimize } from "lucide-react";
+import { useModal } from "../../../../context/useModal.js";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
+import MealModal from "../mealmodal/MealModal.jsx";
 
-/**
- * Icon button to trigger meal-related actions (e.g. open modal).
- * Navigation is no longer handled here; use `onClick` to define behavior.
- *
- * This component is designed to work in both web and React Native
- * by using CustomIconButton as a wrapper.
- *
- * @component
- * @param {Function} props.onClick - Click handler to trigger modal or other custom logic.
- * @returns {JSX.Element}
- */
-const ButtonOpenMeal = ({ onClick }) => {
+const ButtonOpenMeal = ({ meal }) => {
+    const { openModal, closeModal, modalType, modalData } = useModal(); // ✅
+    if (!meal?.id) return null; // ✅
+
+    const isOpen = modalType === "meal" && modalData?.id === meal.id; // ✅
+
+    const handleClick = () => {
+        isOpen
+            ? closeModal()
+            : openModal(<MealModal meal={meal} />, "meal", { id: meal.id }); // ✅
+    };
+
+    // Logging
+    console.log("[ButtonOpenMeal] modalType:", modalType);
+    console.log("[ButtonOpenMeal] modalData:", modalData);
+    console.log("[ButtonOpenMeal] meal.id:", meal?.id);
+    console.log("[ButtonOpenMeal] isOpen:", isOpen);
+    console.log("[ButtonOpenMeal] Icon shown:", isOpen ? "Minimize" : "Maximize");
+
     return (
         <CustomIconButton
-            onClick={onClick}
-            className="bg-[rgba(0,0,0,0.4)]"
-            icon={<ExternalLink size={20} color="white" />}
+            onClick={handleClick}
+            icon={isOpen ? <Minimize size={20} color="white" /> : <Maximize size={20} color="white" />}
             size={35}
         />
     );
 };
 
+
 ButtonOpenMeal.propTypes = {
-    onClick: PropTypes.func.isRequired,
+    meal: PropTypes.object.isRequired,
 };
 
 export default ButtonOpenMeal;

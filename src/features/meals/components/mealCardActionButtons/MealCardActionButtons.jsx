@@ -2,26 +2,21 @@ import PropTypes from "prop-types";
 import { useContext } from "react";
 import EatButton from "../buttonEat/EatButton.jsx";
 import ButtonOpenMeal from "../buttonOpenMeal/ButtonOpenMeal.jsx";
-import {RecommendedNutritionContext} from "../../../../context/RecommendedNutritionContext.jsx";
+import { RecommendedNutritionContext } from "../../../../context/RecommendedNutritionContext.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import ButtonFavorite from "../buttonFavoriteMeal/FavoriteButtonMeal.jsx";
 import ButtonUpdateMeal from "../buttonUpdateMeal/ButtonUpdateMeal.jsx";
-import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
+import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
+import ViewMealButton from "../viewmealbutton/ViewMealButton.jsx";
 
 /**
  * Displays a horizontal group of meal-related action buttons.
- *
- * @component
- * @param {Object} props
- * @param {Object} props.meal - The meal object for which actions apply.
- * @param {number} [props.iconSize=35] - Diameter of each button container.
- * @param {string} [props.viewMode="page"] - Controls visibility of open button.
- * @returns {JSX.Element}
  */
-const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page",  onMealClick, onClose }) => {
+const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page", onClose }) => {
     const { refetchRecommendedNutrition } = useContext(RecommendedNutritionContext);
     const { userMeals } = useContext(UserMealsContext);
-    const isSavedByUser = userMeals.some((m) => m.id === meal.id);
+    const isUserMeal = userMeals.some((m) => m.id === meal.id);
+
     const sharedClasses = `
         flex items-center justify-center text-white
         transition-transform duration-200 ease-in-out hover:scale-[1.2]
@@ -40,7 +35,15 @@ const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page",  onMeal
                 />
             </CustomBox>
 
-            {isSavedByUser && (
+            {viewMode === "modal" && (
+                <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
+                    <ViewMealButton mealId={meal.id} iconSize={iconSize} />
+                </CustomBox>
+            )}
+
+
+
+            {isUserMeal && (
                 <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
                     <ButtonUpdateMeal mealId={meal.id} />
                 </CustomBox>
@@ -48,10 +51,7 @@ const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page",  onMeal
 
             {viewMode !== "page" && (
                 <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
-                    <ButtonOpenMeal
-                        mealId={meal.id}
-                        onClick={onMealClick ? () => onMealClick(meal) : undefined}
-                    />
+                    <ButtonOpenMeal meal={meal} />
                 </CustomBox>
             )}
 

@@ -18,7 +18,7 @@ import CustomGrid from "../../../../components/layout/CustomGrid.jsx";
  * @param {Object} [props.selectedMeal] - If present, only this meal is shown.
  * @returns {JSX.Element}
  */
-function MealList({ filters, sortBy, selectedMeal, onMealClick, pinnedMeals = [] }) {
+function MealList({ filters, sortBy, selectedMeal, pinnedMeals = [] }) {
     const { meals, loading, error, setFilters, setSortBy  } = useContext(UserMealsContext);
     const location = useLocation();
 
@@ -91,7 +91,6 @@ function MealList({ filters, sortBy, selectedMeal, onMealClick, pinnedMeals = []
                     <MealDetailCard
                         meal={meal}
                         viewMode="list"
-                        onMealClick={onMealClick}
                         isPinned={pinnedMealIds.has(String(meal.id))}
                     />
                 </CustomBox>

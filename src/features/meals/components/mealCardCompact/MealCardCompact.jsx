@@ -1,4 +1,6 @@
 import PropTypes from "prop-types";
+import { useModal } from "../../../../context/useModal.js";
+import MealModal from "../mealmodal/MealModal.jsx";
 import ButtonOpenMeal from "../buttonOpenMeal/ButtonOpenMeal.jsx";
 import PreparationTimeIcon from "../mealCardPreparationTimeIcon/PreparationTimeIcon.jsx";
 import { getImageSrc } from "../../utils/helpers/getImageSrc.js";
@@ -6,13 +8,12 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomImage from "../../../../components/layout/CustomImage.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 
-const MealCardCompact = ({ meal, onMealClick }) => {
+const MealCardCompact = ({ meal }) => {
     const imageSrc = getImageSrc(meal);
+    const { openModal } = useModal();
 
     const handleOpen = () => {
-        if (typeof onMealClick === "function") {
-            onMealClick(meal);
-        }
+        openModal(<MealModal meal={meal} />, "meal", { id: meal.id });
     };
 
     return (
@@ -39,7 +40,7 @@ const MealCardCompact = ({ meal, onMealClick }) => {
                             <PreparationTimeIcon preparationTime={meal.preparationTime} layout="inline" />
                         )}
                     </CustomBox>
-                    <ButtonOpenMeal mealId={meal.id} onClick={handleOpen} />
+                    <ButtonOpenMeal meal={meal} />
                 </CustomBox>
             </CustomBox>
 
@@ -58,7 +59,6 @@ const MealCardCompact = ({ meal, onMealClick }) => {
 
 MealCardCompact.propTypes = {
     meal: PropTypes.object.isRequired,
-    onMealClick: PropTypes.func,
 };
 
 export default MealCardCompact;

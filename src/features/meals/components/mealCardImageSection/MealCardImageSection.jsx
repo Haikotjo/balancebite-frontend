@@ -1,32 +1,32 @@
 import PropTypes from "prop-types";
 import clsx from "clsx";
+import { useContext } from "react";
 import MealCardActionButtons from "../mealCardActionButtons/MealCardActionButtons.jsx";
 import MealInfoOverlay from "../mealCardInfoOverlay/MealInfoOverlay.jsx";
 import PreparationTimeIcon from "../mealCardPreparationTimeIcon/PreparationTimeIcon.jsx";
 import { getImageSrc } from "../../utils/helpers/getImageSrc.js";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomImage from "../../../../components/layout/CustomImage.jsx";
+import { ModalContext } from "../../../../context/ModalContext.jsx";
+import MealModal from "../mealModal/MealModal.jsx";
 
 const MealCardImageSection = ({
                                   meal,
                                   viewMode = "page",
                                   showUpdateButton = true,
-                                  onMealClick,
                               }) => {
     const imageSrc = getImageSrc(meal);
+    const { openModal } = useContext(ModalContext);
 
     const handleImageClick = () => {
-        if (typeof onMealClick === "function") {
-            onMealClick(meal);
-        }
+        openModal(<MealModal meal={meal} />, "meal", meal);
     };
 
     return (
         <CustomBox className="w-full flex flex-col justify-start shrink-0 gap-2">
             <CustomBox
                 className={clsx(
-                    "relative aspect-[4/3] w-full shadow-[8px_8px_12px_rgba(0,0,0,0.8)] overflow-hidden rounded-md",
-                    onMealClick ? "cursor-pointer" : ""
+                    "relative aspect-[4/3] w-full shadow-[8px_8px_12px_rgba(0,0,0,0.8)] overflow-hidden rounded-md cursor-pointer"
                 )}
                 onClick={handleImageClick}
             >
@@ -50,7 +50,6 @@ const MealCardImageSection = ({
                             meal={meal}
                             showUpdateButton={showUpdateButton}
                             viewMode={viewMode}
-                            onMealClick={onMealClick}
                         />
                     </CustomBox>
                 </CustomBox>
@@ -71,8 +70,6 @@ MealCardImageSection.propTypes = {
     meal: PropTypes.object.isRequired,
     showUpdateButton: PropTypes.bool,
     viewMode: PropTypes.oneOf(["page", "list", "mobile"]),
-    variant: PropTypes.oneOf(["overlay", "inline"]),
-    onMealClick: PropTypes.func,
 };
 
 export default MealCardImageSection;
