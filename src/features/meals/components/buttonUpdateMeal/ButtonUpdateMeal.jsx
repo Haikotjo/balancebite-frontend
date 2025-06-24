@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import { Pencil } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
+import {useModal} from "../../../../context/useModal.js";
 
 /**
  * A small, animated icon button that navigates to the meal update page.
@@ -16,9 +17,11 @@ import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx
  */
 const ButtonUpdateMeal = ({ mealId }) => {
     const navigate = useNavigate();
+    const { closeModal } = useModal();       // haal closeModal uit de hook
 
     const handleClick = () => {
-        navigate(`/update-meal/${mealId}`);
+        closeModal();                          // sluit de modal (no-op als je niet in een modal bent)
+        navigate(`/update-meal/${mealId}`);    // navigeer daarna pas
     };
 
     return (

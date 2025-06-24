@@ -24,7 +24,7 @@ export const useToggleDietFavorite = (diet, onAuthRequired, onError, onSuccess) 
         removeDietFromFavoritesInContext
     } = useContext(UserDietsContext);
 
-    const { addMealToUserMealsContext } = useContext(UserMealsContext); // ✅ toegevoegd
+    const { addMealToUserMealsContext } = useContext(UserMealsContext);
     const { user } = useContext(AuthContext);
     const { addDietToFavorites, removeDietFromFavorites } = useFavoritesDiets();
     const [isProcessing, setIsProcessing] = useState(false);

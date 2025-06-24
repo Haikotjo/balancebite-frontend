@@ -9,11 +9,16 @@ import MealDetailCard from "../../features/meals/components/mealCardLarge/MealDe
 import DietListCard from "../../features/diets/components/dietListCard/DietListCard.jsx";
 import Interceptor from "../../services/authInterceptor.js";
 import { UserDietsContext } from "../../context/UserDietContext.jsx";
+import {getAllStickyItems} from "../../services/apiService.js";
+import fetchStickyItemDetails from "../../utils/helpers/fetchStickyItemDetails.js";
+import {UserMealsContext} from "../../context/UserMealsContext.jsx";
 
 function HomePage() {
     const navigate = useNavigate();
     const [vegetarianMeals, setVegetarianMeals] = useState([]);
     const [allMeals, setAllMeals] = useState([]);
+    const [stickyItems, setStickyItems] = useState([]);
+    const { userMeals, applyUserCopies } = useContext(UserMealsContext);
 
     const {
         diets,
@@ -46,15 +51,47 @@ function HomePage() {
         }
     };
 
+
     useEffect(() => {
-        fetchDietsData(); // gebruik context
-        fetchVegetarianMeals().then(data =>
-            setVegetarianMeals(data.sort(() => 0.5 - Math.random()).slice(0, 12))
-        );
-        fetchAllMeals().then(data =>
-            setAllMeals(data.sort(() => 0.5 - Math.random()).slice(0, 12))
-        );
-    }, [fetchDietsData]);
+        const loadStickyData = async () => {
+            try {
+                const rawStickyItems = await getAllStickyItems();
+                const { meals, diets } = await fetchStickyItemDetails(rawStickyItems);
+
+                // Voeg reference toe aan elk item
+                const enriched = rawStickyItems.map((item) => {
+                    const reference =
+                        item.type === "MEAL"
+                            ? meals.find((m) => m.id === item.referenceId)
+                            : diets.find((d) => d.id === item.referenceId);
+
+                    return { ...item, reference };
+                });
+
+                setStickyItems(enriched);
+            } catch (err) {
+                console.error("Failed to fetch sticky items:", err);
+            }
+        };
+
+        loadStickyData();
+    }, []);
+
+
+    useEffect(() => {
+        fetchDietsData();
+
+        fetchVegetarianMeals().then(data => {
+            const enriched = applyUserCopies(data, userMeals);
+            setVegetarianMeals(enriched.sort(() => 0.5 - Math.random()).slice(0, 12));
+        });
+
+        fetchAllMeals().then(data => {
+            const enriched = applyUserCopies(data, userMeals);
+            setAllMeals(enriched.sort(() => 0.5 - Math.random()).slice(0, 12));
+        });
+    }, [fetchDietsData, userMeals]);
+
 
     return (
         <CustomBox className="flex flex-col items-center justify-center min-h-screen w-full max-w-full mx-auto px-2 text-center ">
@@ -63,10 +100,39 @@ function HomePage() {
             </CustomAnimatedBox>
 
             <HorizontalScrollSection
+                title="Pinned Items"
+                items={stickyItems}
+                onTitleClick={() => navigate("/pinned")}
+                renderItem={(item) => {
+                    if (item.type === "MEAL") {
+                        return (
+                            <CustomBox className="w-full max-w-[300px]">
+                                <MealDetailCard
+                                    meal={item.reference}
+                                    viewMode="list"
+                                    hideAfterTitle
+                                    isPinned
+                                />
+                            </CustomBox>
+                        );
+                    }
+                    if (item.type === "DIET_PLAN") {
+                        return (
+                            <CustomBox className="w-full max-w-[280px]">
+                                <DietListCard diet={item.reference} compact isPinned />
+                            </CustomBox>
+                        );
+                    }
+                    return null;
+                }}
+            />
+
+
+            <HorizontalScrollSection
                 title="Vegetarian Meals"
                 items={vegetarianMeals}
                 onTitleClick={() => navigate("/meals?diets=VEGETARIAN")}
-                renderItem={(meal) => <MealCardCompact meal={meal} />}
+                renderItem={(meal) => <MealCardCompact meal={meal}/>}
             />
 
             <HorizontalScrollSection
@@ -95,6 +161,8 @@ function HomePage() {
                     </CustomBox>
                 )}
             />
+
+
         </CustomBox>
     );
 }

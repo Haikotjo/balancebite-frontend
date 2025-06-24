@@ -18,7 +18,7 @@ export const UserDietsProvider = ({ children }) => {
     const { user } = useContext(AuthContext);
     const [error, setError] = useState(null);
     const [filters, setFilters] = useState({});
-    const [sortKey, setSortKey] = useState("name");
+    const [sortKey, setSortKey] = useState(null);
     const [sortOrder, setSortOrder] = useState("asc");
     const [activeOption, setActiveOption] = useState("All Diets");
     const [favoriteDiets, setFavoriteDiets] = useState([]);
@@ -45,7 +45,8 @@ export const UserDietsProvider = ({ children }) => {
             const validSortKeys = [
                 "avgProtein", "avgCarbs", "avgFat", "avgCalories",
                 "totalProtein", "totalCarbs", "totalFat", "totalCalories",
-                "createdAt", "name"
+                "createdAt", "name",
+                "saveCount", "weeklySaveCount", "monthlySaveCount"
             ];
 
             const safeSortKey = validSortKeys.includes(sortKey) ? sortKey : "createdAt";
@@ -53,7 +54,6 @@ export const UserDietsProvider = ({ children }) => {
             const baseParams = {
                 page: page - 1,
                 size: 12,
-                sortBy: safeSortKey,
                 sortOrder,
                 ...filters,
                 ...(filters.requiredDiets ? { requiredDiets: filters.requiredDiets } : {}),
@@ -61,7 +61,10 @@ export const UserDietsProvider = ({ children }) => {
                 ...(creatorIdFilter ? { createdByUserId: creatorIdFilter } : {})
             };
 
-            const params = overrideParams || baseParams;
+            const params = overrideParams || {
+                ...baseParams,
+                sortBy: safeSortKey // <-- force hier de juiste key
+            };
 
             let data;
 
@@ -74,8 +77,32 @@ export const UserDietsProvider = ({ children }) => {
             } else {
                 data = await getAllPublicDietPlans(params);
                 const content = data.content || [];
-                const replaced = applyUserCopies(content, userCreatedDiets);
+                let originals = content.filter(diet =>
+                    !userCreatedDiets.find(copy => String(copy.originalDietId) === String(diet.id))
+                );
+
+                let replacements = content
+                    .map(diet => {
+                        const copy = userCreatedDiets.find(
+                            (d) => String(d.originalDietId) === String(diet.id)
+                        );
+                        return copy || null;
+                    })
+                    .filter(Boolean);
+
+                if (["saveCount", "weeklySaveCount", "monthlySaveCount"].includes(safeSortKey)) {
+                    originals.sort((a, b) => {
+                        const aVal = a[safeSortKey] ?? 0;
+                        const bVal = b[safeSortKey] ?? 0;
+                        return sortOrder === "asc" ? aVal - bVal : bVal - aVal;
+                    });
+                }
+
+                let replaced = [...originals, ...replacements];
+
                 setDiets(replaced);
+
+
             }
 
             setTotalPages(data.totalPages || 1);
@@ -138,7 +165,6 @@ export const UserDietsProvider = ({ children }) => {
 
         const run = async () => {
             if (!user) {
-                // Niet ingelogd → alleen public diets (géén user copies)
                 await fetchDietsData([], currentParams);
                 return;
             }
@@ -181,17 +207,26 @@ export const UserDietsProvider = ({ children }) => {
 
     const replaceDietInDiets = (originalDietId, newDiet) => {
         setDiets(prev => [
-            ...prev.filter(d => String(d.id) !== String(originalDietId)),
+            ...prev.filter(d =>
+                String(d.id) !== String(originalDietId) &&
+                String(d.id) !== String(newDiet.id)
+            ),
             newDiet
         ]);
 
         setUserDiets(prev => [
-            ...prev.filter(d => String(d.id) !== String(originalDietId)),
+            ...prev.filter(d =>
+                String(d.id) !== String(originalDietId) &&
+                String(d.id) !== String(newDiet.id)
+            ),
             newDiet
         ]);
 
         setFavoriteDiets(prev => [
-            ...prev.filter(d => String(d.id) !== String(originalDietId)),
+            ...prev.filter(d =>
+                String(d.id) !== String(originalDietId) &&
+                String(d.id) !== String(newDiet.id)
+            ),
             newDiet
         ]);
     };

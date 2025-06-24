@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import {useContext, useState} from "react";
 import {buildMealTags} from "../../utils/helpers/buildMealTags.js";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import clsx from "clsx";
@@ -7,6 +7,7 @@ import CustomCardChip from "../../../../components/layout/customCardChip.jsx";
 import {formatEnum} from "../../../../utils/helpers/formatEnum.js";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import {ModalContext} from "../../../../context/ModalContext.jsx";
 
 /**
  * MealCardMealTags component displays tags for cuisines, diets, and meal types.
@@ -34,10 +35,12 @@ const MealCardMealTags = ({
                               onExpandRequest,
                           }) => {
     const [expanded, setExpanded] = useState(false);
+    const { closeModal } = useContext(ModalContext);
 
     const handleFilterClick = (category, value) => {
         if (onFilter && value) {
             onFilter(category, value);
+            closeModal?.();
         }
     };
 

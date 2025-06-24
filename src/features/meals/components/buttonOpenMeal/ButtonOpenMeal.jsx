@@ -1,48 +1,33 @@
 import PropTypes from "prop-types";
-import { ExternalLink } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Maximize, Minimize } from "lucide-react";
+import { useModal } from "../../../../context/useModal.js";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
+import MealModal from "../mealmodal/MealModal.jsx";
 
-/**
- * A small, animated icon button that navigates to a meal's detail view.
- * Can be customized with an optional onClick handler.
- *
- * Designed for easy adaptation to React Native by using CustomIconButton
- * instead of browser-specific components.
- *
- * @component
- * @param {Object} props
- * @param {string|number} props.mealId - ID of the meal to navigate to.
- * @param {Function} [props.onClick] - Optional click handler; if not provided, navigates to `/meal/:id`.
- * @returns {JSX.Element}
- */
-const ButtonOpenMeal = ({ mealId, onClick }) => {
-    const navigate = useNavigate();
+const ButtonOpenMeal = ({ meal }) => {
+    const { openModal, closeModal, modalType, modalData } = useModal(); // ✅
+    if (!meal?.id) return null; // ✅
+
+    const isOpen = modalType === "meal" && modalData?.id === meal.id; // ✅
 
     const handleClick = () => {
-        if (onClick !== undefined) {
-            console.log("➡️ onClick aanwezig, uitvoeren");
-            onClick();
-        } else {
-            console.log("➡️ Geen onClick, navigeren naar meal page");
-            navigate(`/meal/${mealId}`);
-        }
+        isOpen
+            ? closeModal()
+            : openModal(<MealModal meal={meal} />, "meal", { id: meal.id }); // ✅
     };
-
 
     return (
         <CustomIconButton
             onClick={handleClick}
-            className="bg-[rgba(0,0,0,0.4)]"
-            icon={<ExternalLink size={20} color="white" />}
+            icon={isOpen ? <Minimize size={20} color="white" /> : <Maximize size={20} color="white" />}
             size={35}
         />
     );
 };
 
+
 ButtonOpenMeal.propTypes = {
-    mealId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    onClick: PropTypes.func,
+    meal: PropTypes.object.isRequired,
 };
 
 export default ButtonOpenMeal;

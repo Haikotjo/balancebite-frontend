@@ -14,7 +14,7 @@ import CustomImage from "../../../../components/layout/CustomImage.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 
-const MealCard = ({ meal, viewMode = "page"  }) => {
+const MealCard = ({ meal, viewMode = "page", onClose }) => {
     const imageSrc = getImageSrc(meal);
     const navigate = useNavigate();
 
@@ -59,6 +59,7 @@ const MealCard = ({ meal, viewMode = "page"  }) => {
                             meal={meal}
                             showUpdateButton={true}
                             viewMode={viewMode}
+                            onClose={onClose}
                         />
                     </CustomBox>
                 </CustomBox>
@@ -89,14 +90,17 @@ const MealCard = ({ meal, viewMode = "page"  }) => {
                     <CustomDivider className="my-6" />
                     <MealCardMacrosSection macros={macros} />
                     <CustomDivider className="my-6" />
-                    <CustomBox className="hidden md:flex px-2 py-1 mt-2">
-                    <MealCardMealTags
-                        cuisines={meal.cuisines}
-                        diets={meal.diets}
-                        mealTypes={meal.mealTypes}
-                        onFilter={handleFilterRedirect}
-                        forceExpand
-                    />
+                    <CustomBox className="flex px-2 py-1 mt-2">
+                        <MealCardMealTags
+                            cuisines={meal.cuisines}
+                            diets={meal.diets}
+                            mealTypes={meal.mealTypes}
+                            onFilter={(category, value) => {
+                                handleFilterRedirect(category, value);
+                                if (viewMode === "page" && onClose) onClose();
+                            }}
+                            forceExpand
+                        />
                 </CustomBox>
                 </CustomBox>
 
@@ -108,6 +112,7 @@ const MealCard = ({ meal, viewMode = "page"  }) => {
 MealCard.propTypes = {
     meal: PropTypes.object.isRequired,
     viewMode: PropTypes.oneOf(["page", "list", "modal"]),
+    onClose: PropTypes.func,
 };
 
 export default MealCard;

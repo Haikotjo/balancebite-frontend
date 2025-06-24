@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
 import ScrollToTopButton from "../../../../components/scrollToTopButton/ScrollToTopButton.jsx";
@@ -10,6 +9,9 @@ import CustomPagination from "../../../../components/customPagination/CustomPagi
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import SortControls from "../../components/sortControls/SortControls.jsx";
 import ActiveFilterChips from "../../components/activeFilterChips/ActiveFilterChips.jsx";
+import fetchStickyItemDetails from "../../../../utils/helpers/fetchStickyItemDetails.js";
+import {getStickyItems} from "../../../../services/apiService.js";
+import {useLocation} from "react-router-dom";
 
 const DietsPage = () => {
     const {
@@ -28,21 +30,13 @@ const DietsPage = () => {
         creatorIdFilter,
         setCreatorIdFilter,
         setActiveOption,
+        activeOption,
     } = useContext(UserDietsContext);
 
     const [showErrorDialog, setShowErrorDialog] = useState(false);
-    const navigate = useNavigate();
     const [creatorName, setCreatorName] = useState(null);
     const location = useLocation();
-
-    useEffect(() => {
-        console.log("Filters changed:", filters);
-    }, [filters]);
-
-    useEffect(() => {
-        console.log("Creator ID filter changed:", creatorIdFilter);
-    }, [creatorIdFilter]);
-
+    const [pinnedDiets, setPinnedDiets] = useState([]);
 
     useEffect(() => {
         if (creatorIdFilter) {
@@ -63,16 +57,6 @@ const DietsPage = () => {
     }, [error]);
 
     useEffect(() => {
-        console.log("Page changed:", page);
-    }, [page]);
-
-
-    useEffect(() => {
-        console.log("Diets list updated (after filters/sorting):", diets);
-    }, [diets]);
-
-
-    useEffect(() => {
         const params = new URLSearchParams(location.search);
         const option = params.get("option");
         if (option) {
@@ -85,6 +69,49 @@ const DietsPage = () => {
             setActiveOption(formatted);
         }
     }, [location.search, setActiveOption]);
+
+    useEffect(() => {
+        const shouldLoadPinned =
+            activeOption === "All Diets" &&
+            !creatorIdFilter &&
+            Object.keys(filters).length === 0 &&
+            !sortKey;
+
+        if (!shouldLoadPinned) {
+            setPinnedDiets([]);
+            return;
+        }
+
+        const loadPinnedDiets = async () => {
+            try {
+                const stickyItems = await getStickyItems();
+                const { diets } = await fetchStickyItemDetails(stickyItems);
+                setPinnedDiets(diets.length > 0 ? [diets[0]] : []);
+            } catch (err) {
+                console.error("❌ Failed to load pinned diets", err);
+            }
+        };
+
+        loadPinnedDiets();
+    }, [filters, sortKey, creatorIdFilter, activeOption]);
+
+    // DEBUG ONLY – logging effects (verwijderen voor productie)
+    useEffect(() => {
+        console.log("Page changed:", page);
+    }, [page]);
+
+
+    useEffect(() => {
+        console.log("Diets list updated (after filters/sorting):", diets);
+    }, [diets]);
+
+    useEffect(() => {
+        console.log("Filters changed:", filters);
+    }, [filters]);
+
+    useEffect(() => {
+        console.log("Creator ID filter changed:", creatorIdFilter);
+    }, [creatorIdFilter]);
 
     useEffect(() => {
         if (!diets || diets.length === 0) return;
@@ -103,24 +130,14 @@ const DietsPage = () => {
     }, [diets, sortKey, sortOrder]);
 
 
+
+
     return (
-        <CustomBox className="pt-6 sm:pt-10 px-4 pb-20 sm:pb-10">
+        <CustomBox className="pt-6 sm:pt-10 px-4 pb-24 sm:pb-10">
             <DietSubMenu
                 isDetailPage={false}
                 onSelect={() => {
                 }}
-            />
-
-            <ActiveFilterChips
-                filters={filters}
-                setFilters={setFilters}
-                creatorIdFilter={creatorIdFilter?.toString() ?? null}
-                setCreatorIdFilter={setCreatorIdFilter}
-                creatorName={creatorName}
-                sortKey={sortKey}
-                setSortKey={setSortKey}
-                sortOrder={sortOrder}
-                setSortOrder={setSortOrder}
             />
 
             <SortControls
@@ -135,6 +152,18 @@ const DietsPage = () => {
                 setFilters={setFilters}
             />
 
+            <ActiveFilterChips
+                filters={filters}
+                setFilters={setFilters}
+                creatorIdFilter={creatorIdFilter?.toString() ?? null}
+                setCreatorIdFilter={setCreatorIdFilter}
+                creatorName={creatorName}
+                sortKey={sortKey}
+                setSortKey={setSortKey}
+                sortOrder={sortOrder}
+                setSortOrder={setSortOrder}
+            />
+
             <ErrorDialog
                 open={showErrorDialog}
                 onClose={() => setShowErrorDialog(false)}
@@ -145,7 +174,10 @@ const DietsPage = () => {
             {loading ? (
                 <Spinner className="mx-auto my-10" />
             ) : (
-                <DietsList diets={diets} onItemClick={(id) => navigate(`/diet/${id}`)} />
+                <DietsList
+                    diets={diets}
+                    pinnedDiets={pinnedDiets}
+                />
             )}
 
             {totalPages > 1 && (
@@ -159,6 +191,7 @@ const DietsPage = () => {
             )}
             <ScrollToTopButton />
         </CustomBox>
+
     );
 };
 

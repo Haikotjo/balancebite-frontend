@@ -78,7 +78,6 @@ export const forceUnlinkMealFromUserApi = async (mealId, token) => {
 };
 
 export const fetchMeals = async (path) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${path}`;
     try {
         const token = localStorage.getItem("accessToken");
 
@@ -86,7 +85,7 @@ export const fetchMeals = async (path) => {
             ? { Authorization: `Bearer ${token}` }
             : {};
 
-        const response = await Interceptor.get(endpoint, { headers });
+        const response = await Interceptor.get(path, { headers });
 
         return response.data;
     } catch (error) {
@@ -200,6 +199,8 @@ export const updateUserDetails = async (data) => {
     }
 };
 
+
+// RDI services
 export const fetchRecommendedNutritionApi = async (token) => {
     const endpoint = import.meta.env.VITE_DAILY_RDI_ENDPOINT;
 
@@ -241,6 +242,39 @@ export const fetchBaseNutritionApi = async () => {
     }
 };
 
+export const fetchWeeklyRdiApi = async (userId) => {
+    const endpoint = `${import.meta.env.VITE_WEEKLY_RDI_ENDPOINT}/${userId}/week`;
+    try {
+        const response = await Interceptor.get(endpoint);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+export const fetchMonthlyRdiApi = async (userId) => {
+    const endpoint = `${import.meta.env.VITE_MONTHLY_RDI_ENDPOINT}/${userId}/month`;
+    try {
+        const response = await Interceptor.get(endpoint);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+export const fetchDailyRdiByDateApi = async (userId, date) => {
+    const endpoint = `${import.meta.env.VITE_DAILY_RDI_BY_DATE_ENDPOINT}/${userId}/date?date=${date}`;
+    try {
+        const response = await Interceptor.get(endpoint);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
 export const consumeMealApi = async (mealId) => {
     const endpoint = `${import.meta.env.VITE_CONSUME_MEAL_ENDPOINT}/${mealId}`;
     try {
@@ -252,6 +286,8 @@ export const consumeMealApi = async (mealId) => {
     }
 };
 
+
+// UserInfo
 export const updateUserInfoApi = async (data) => {
     const endpoint = import.meta.env.VITE_UPDATE_USER_INFO_ENDPOINT;
 
@@ -264,6 +300,8 @@ export const updateUserInfoApi = async (data) => {
     }
 };
 
+
+// Meals services
 export const fetchMealEnums = async () => {
     const endpoint = import.meta.env.VITE_MEAL_ENUMS_ENDPOINT;
     try {
@@ -320,6 +358,8 @@ export const updateMealApi = async (mealId, formData) => {
     }
 };
 
+
+// Fooditem services
 export const createFoodItemApi = async (data) => {
     const endpoint = import.meta.env.VITE_CREATE_FOODITEM_ENDPOINT;
     const token = localStorage.getItem("accessToken");
@@ -376,6 +416,7 @@ export const fetchFoodItemsBulkApi = async (fdcIds) => {
 };
 
 
+// Admin services
 export const getAllUsersApi = async (token) => {
     const endpoint = import.meta.env.VITE_GET_ALL_USERS_ENDPOINT;
     try {
@@ -440,13 +481,14 @@ export const createUserAsAdminApi = async (data, token) => {
     }
 };
 
-export const getAllMealsApi = async (token) => {
+export const getAllMealsApi = async (token, filters = {}) => {
     const endpoint = import.meta.env.VITE_GET_ALL_MEALS_ENDPOINT;
     try {
         const response = await Interceptor.get(endpoint, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
+            params: filters,
         });
         return response.data;
     } catch (error) {
@@ -454,6 +496,7 @@ export const getAllMealsApi = async (token) => {
         throw error;
     }
 };
+
 
 export const deleteMealApi = async (mealId, token) => {
     const endpoint = `${import.meta.env.VITE_DELETE_MEAL_ENDPOINT}/${mealId}`;
@@ -664,5 +707,51 @@ export const deleteAdminDietPlanApi = async (dietPlanId, token) => {
     }
 };
 
+export const getStickyItems = async (type) => {
+    const endpoint = import.meta.env.VITE_GET_STICKY_ITEMS_ENDPOINT;
+    const response = await Interceptor.get(endpoint, {
+        params: type ? { type } : {},
+    });
+    return response.data;
+};
+
+export const getLatestStickyItems = async (limit = 5) => {
+    const endpoint = `${import.meta.env.VITE_GET_LATEST_STICKY_ITEMS_ENDPOINT}?limit=${limit}`;
+    const response = await Interceptor.get(endpoint);
+    return response.data;
+};
+
+export const getAllStickyItems = async () => {
+    const endpoint = import.meta.env.VITE_GET_ALL_STICKY_ITEMS_ENDPOINT;
+    const response = await Interceptor.get(endpoint);
+    return response.data;
+};
 
 
+
+export const createStickyItemApi = async (data, token) => {
+    const endpoint = import.meta.env.VITE_CREATE_STICKY_ITEM_ENDPOINT;
+    const response = await Interceptor.post(endpoint, data, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+        },
+    });
+    return response.data;
+};
+
+export const updateMealPrivacyApi = async (mealId, isPrivate, token) => {
+    const endpoint = `${import.meta.env.VITE_UPDATE_MEAL_PRIVACY_ENDPOINT.replace("{mealId}", mealId)}?isPrivate=${isPrivate}`;
+    const response = await Interceptor.patch(endpoint, null, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+};
+
+export const updateDietPlanPrivacyApi = async (dietPlanId, isPrivate, token) => {
+    const endpoint = `${import.meta.env.VITE_UPDATE_DIETPLAN_PRIVACY_ENDPOINT.replace("{dietPlanId}", dietPlanId)}?isPrivate=${isPrivate}`;
+    const response = await Interceptor.patch(endpoint, null, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+};

@@ -10,16 +10,20 @@ import { useNavigate } from "react-router-dom";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import { forceUnlinkMealFromUserApi } from "../../../../services/apiService.js";
 import { AuthContext } from "../../../../context/AuthContext.jsx";
+import { ModalContext } from "../../../../context/ModalContext.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import { useDialog } from "../../../../context/NotificationContext.jsx";
+import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
 
-const ButtonFavorite = ({ meal }) => {
+const ButtonFavorite = ({ meal, onClose }) => {
     const navigate = useNavigate();
     const { showDialog } = useDialog();
     const { removeMealFromUserMeals } = useContext(UserMealsContext);
     const { token } = useContext(AuthContext);
+    const { closeModal } = useContext(ModalContext);
+    const { replaceDietInDiets, getDietById } = useContext(UserDietsContext);
 
     const {
         dialogOpen,
@@ -40,10 +44,29 @@ const ButtonFavorite = ({ meal }) => {
             await forceUnlinkMealFromUserApi(meal.id, token);
             removeMealFromUserMeals(meal.id);
             setErrorDialogOpen(false);
+
+            // Update de betrokken diets
+            for (const diet of errorDiets) {
+                try {
+                    const updatedDiet = await getDietById(diet.id);
+                    if (updatedDiet) {
+                        replaceDietInDiets(diet.id, updatedDiet);
+                    }
+                } catch (e) {
+                    console.warn(`⚠️ Kon diet ${diet.id} niet updaten`, e);
+                }
+            }
+
+            if (onClose) {
+                onClose();
+            } else {
+                closeModal();
+            }
         } catch (e) {
             console.error("Force unlink failed", e);
         }
     };
+
 
     const { toggleFavorite, alreadyFavorited } = useToggleMealFavorite(
         meal,
@@ -57,10 +80,12 @@ const ButtonFavorite = ({ meal }) => {
             const message = alreadyFavorited
                 ? `${meal.name} removed from your meals`
                 : `${meal.name} added to your meals`;
-            showDialog({
-                message,
-                type: "success",
-            });
+            showDialog({ message, type: "success" });
+            if (onClose) {
+                onClose();
+            } else {
+                closeModal();
+            }
         }
     );
 
@@ -130,6 +155,7 @@ const ButtonFavorite = ({ meal }) => {
 
 ButtonFavorite.propTypes = {
     meal: PropTypes.object.isRequired,
+    onClose: PropTypes.func,
 };
 
 export default ButtonFavorite;

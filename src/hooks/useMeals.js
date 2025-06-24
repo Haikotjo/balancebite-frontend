@@ -15,7 +15,7 @@ const useMeals = () => {
             const response = await getAllMealsApi(token);
             const enriched = response.map(meal => ({
                 value: meal.id.toString(),
-                label: `${meal.name} (Created by: ${meal.createdBy?.email || 'unknown'}, Added by: ${meal.adjustedBy?.email || 'unknown'}) - ${meal.userCount ?? 0} users`,
+                label: `${meal.name} (Created by: ${meal.createdBy?.email || 'unknown'}, Added by: ${meal.adjustedBy?.email || 'unknown'}) - ${meal.saveCount ?? 0} users`,
                 id: meal.id
             }));
             setMeals(enriched);

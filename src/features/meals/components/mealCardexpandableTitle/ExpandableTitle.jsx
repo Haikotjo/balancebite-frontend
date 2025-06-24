@@ -1,12 +1,11 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 
 /**
  * ExpandableTitle shows a short or full version of a title with a toggle.
- * The title itself is clickable and navigates to the meal detail page.
+ * The title itself is clickable and opens the meal detail page in a new window.
  *
  * @component
  * @param {object} props
@@ -17,10 +16,10 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 const ExpandableTitle = ({ title, mealId }) => {
     const [expanded, setExpanded] = useState(false);
     const isLongText = title.length > 50;
-    const navigate = useNavigate();
 
     const handleNavigate = () => {
-        navigate(`/meal/${mealId}`);
+        const url = `${window.location.origin}/meal/${mealId}`;
+        window.open(url, '_blank');
     };
 
     return (
@@ -31,7 +30,7 @@ const ExpandableTitle = ({ title, mealId }) => {
             >
                 {expanded || !isLongText ? (
                     <>
-                        {title}{" "}
+                        {title}{' '}
                         {isLongText && (
                             <CustomTypography
                                 as="span"
@@ -48,7 +47,7 @@ const ExpandableTitle = ({ title, mealId }) => {
                     </>
                 ) : (
                     <>
-                        {title.substring(0, 50)}{" "}
+                        {title.substring(0, 50)}{' '}
                         <CustomTypography
                             as="span"
                             color="text-primary"
