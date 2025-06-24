@@ -8,6 +8,8 @@ import ButtonFavorite from "../buttonFavoriteMeal/FavoriteButtonMeal.jsx";
 import ButtonUpdateMeal from "../buttonUpdateMeal/ButtonUpdateMeal.jsx";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import ViewMealButton from "../viewmealbutton/ViewMealButton.jsx";
+import PrivacyToggles from "../../../../components/privacytoggles/PrivacyToggles.jsx";
+import {AuthContext} from "../../../../context/AuthContext.jsx";
 
 /**
  * Displays a horizontal group of meal-related action buttons.
@@ -16,6 +18,9 @@ const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page", onClose
     const { refetchRecommendedNutrition } = useContext(RecommendedNutritionContext);
     const { userMeals } = useContext(UserMealsContext);
     const isUserMeal = userMeals.some((m) => m.id === meal.id);
+    const { user } = useContext(AuthContext);
+    const isCreatedByUser = String(meal.createdBy?.id) === String(user?.id);
+
 
     const sharedClasses = `
         flex items-center justify-center text-white
@@ -23,40 +28,49 @@ const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page", onClose
     `;
 
     return (
-        <CustomBox className="flex flex-row items-center gap-2">
-            <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
-                <ButtonFavorite meal={meal} onClose={onClose} />
+        <CustomBox className="flex flex-row items-center justify-between w-full">
+            <CustomBox className="flex flex-row items-center gap-2">
+                <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
+                    <ButtonFavorite meal={meal} onClose={onClose} />
+                </CustomBox>
+
+                <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
+                    <EatButton
+                        meal={meal}
+                        refetchRecommendedNutrition={refetchRecommendedNutrition}
+                    />
+                </CustomBox>
+
+                {viewMode === "modal" && (
+                    <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
+                        <ViewMealButton mealId={meal.id} iconSize={iconSize} />
+                    </CustomBox>
+                )}
+
+                {isUserMeal && (
+                    <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
+                        <ButtonUpdateMeal mealId={meal.id} />
+                    </CustomBox>
+                )}
+
+                {viewMode !== "page" && (
+                    <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
+                        <ButtonOpenMeal meal={meal} />
+                    </CustomBox>
+                )}
             </CustomBox>
 
-            <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
-                <EatButton
-                    meal={meal}
-                    refetchRecommendedNutrition={refetchRecommendedNutrition}
-                />
-            </CustomBox>
-
-            {viewMode === "modal" && (
-                <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
-                    <ViewMealButton mealId={meal.id} iconSize={iconSize} />
+            {viewMode === "page" && isCreatedByUser && (
+                <CustomBox className="ml-auto">
+                    <PrivacyToggles
+                        mealId={meal.id}
+                        initialMealPrivate={!!meal.isPrivate}
+                    />
                 </CustomBox>
             )}
-
-
-
-            {isUserMeal && (
-                <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
-                    <ButtonUpdateMeal mealId={meal.id} />
-                </CustomBox>
-            )}
-
-            {viewMode !== "page" && (
-                <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
-                    <ButtonOpenMeal meal={meal} />
-                </CustomBox>
-            )}
-
         </CustomBox>
     );
+
 };
 
 MealCardActionButtons.propTypes = {

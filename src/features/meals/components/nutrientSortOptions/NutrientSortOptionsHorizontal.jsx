@@ -7,7 +7,6 @@ import {
     ArrowDownUp,
     ArrowUpNarrowWide,
     ArrowDownNarrowWide,
-    ChartNoAxesColumnDecreasing,
     TrendingUp,
     ChartNoAxesColumnIncreasing,
     TrendingDown,
@@ -92,12 +91,6 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
 
     return (
         <CustomBox className="flex flex-col items-center w-full mt-2 gap-2 mb-4 mt-4">
-            <CustomTypography
-                variant="small"
-                bold
-            >
-                Sort by:
-            </CustomTypography>
             <CustomBox className="flex flex-wrap justify-center gap-3 w-full max-w-full">
 
                 {nutrients.slice(0, 4).map((nutrient) => (
@@ -129,9 +122,6 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
 
             {activeOption !== "My Meals" && (
                 <>
-                    <CustomTypography variant="small" bold>
-                        Trending:
-                    </CustomTypography>
                     <CustomBox className="flex items-center gap-6 w-full justify-center flex-wrap mt-1">
                         <CustomBox className="flex flex-wrap justify-center gap-6">
                             {nutrients.slice(4).map((nutrient) => (

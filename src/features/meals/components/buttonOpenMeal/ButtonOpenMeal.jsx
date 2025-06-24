@@ -16,13 +16,6 @@ const ButtonOpenMeal = ({ meal }) => {
             : openModal(<MealModal meal={meal} />, "meal", { id: meal.id }); // ✅
     };
 
-    // Logging
-    console.log("[ButtonOpenMeal] modalType:", modalType);
-    console.log("[ButtonOpenMeal] modalData:", modalData);
-    console.log("[ButtonOpenMeal] meal.id:", meal?.id);
-    console.log("[ButtonOpenMeal] isOpen:", isOpen);
-    console.log("[ButtonOpenMeal] Icon shown:", isOpen ? "Minimize" : "Maximize");
-
     return (
         <CustomIconButton
             onClick={handleClick}

@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { AuthContext } from "./AuthContext";
-import { fetchMeals, fetchUserMeals } from "../services/apiService";
+import {fetchMealById, fetchMeals, fetchUserMeals} from "../services/apiService";
 import { useRef } from "react";
 
 
@@ -25,6 +25,21 @@ export const UserMealsProvider = ({ children }) => {
     useEffect(() => {
         userMealsRef.current = userMeals;
     }, [userMeals]);
+
+    const getMealById = useCallback(async (mealId) => {
+        const fromContext = [...userMealsRef.current, ...meals].find(
+            (m) => String(m.id) === String(mealId)
+        );
+        if (fromContext) return fromContext;
+
+        try {
+            const fetched = await fetchMealById(mealId);
+            return fetched;
+        } catch (err) {
+            console.error("❌ Could not fetch meal by ID:", err.message);
+            return null;
+        }
+    }, [meals]);
 
     const applyUserCopies = useCallback((publicMeals, userCopies) => {
         return publicMeals.map(meal => {
@@ -88,12 +103,7 @@ export const UserMealsProvider = ({ children }) => {
                     const userMealsData = await fetchUserMeals(token);
                     userCopies = Array.isArray(userMealsData.content) ? userMealsData.content : [];
                     setUserMeals(userCopies);
-                    console.log("👤 User meals binnen (volledig):");
-                    userCopies.forEach((meal, i) => {
-                        console.log(`UserMeal ${i + 1}:`, meal);
-                    });
                 } catch (e) {
-                    console.error("⚠️ Failed to fetch user meals:", e.message);
                     setUserMeals([]);
                     userCopies = [];
                 }
@@ -102,18 +112,6 @@ export const UserMealsProvider = ({ children }) => {
             try {
                 const mealsData = await fetchMeals(currentListEndpoint);
                 const publicMeals = mealsData.content || [];
-
-                console.log("📦 Alle meals volledig:");
-                publicMeals.forEach((meal, index) => {
-                    console.log(`Meal ${index + 1}:`, {
-                        id: meal.id,
-                        name: meal.name,
-                        saveCount: meal.saveCount,
-                        weeklySaveCount: meal.weeklySaveCount,
-                        monthlySaveCount: meal.monthlySaveCount,
-                        originalMealId: meal.originalMealId,
-                    });
-                });
 
                 const finalMeals = user && userCopies.length > 0
                     ? applyUserCopies(publicMeals, userCopies)
@@ -133,25 +131,10 @@ export const UserMealsProvider = ({ children }) => {
                     });
                 }
 
-                console.log("🔁 Final meals after applyUserCopies:");
-                finalMeals.forEach((m, i) => {
-                    console.log(`Meal ${i + 1}:`, {
-                        id: m.id,
-                        name: m.name,
-                        originalMealId: m.originalMealId,
-                        saveCount: m.saveCount,
-                        weeklySaveCount: m.weeklySaveCount,
-                        monthlySaveCount: m.monthlySaveCount,
-                    });
-                });
-
-                setMeals(finalMeals);
-
                 setMeals(finalMeals);
                 setTotalPages(mealsData.totalPages || 1);
                 setError(null);
             } catch (err) {
-                console.error("❌ Error fetching meals:", err);
                 setError(err.message);
             } finally {
                 setLoadingMeals(false);
@@ -160,6 +143,7 @@ export const UserMealsProvider = ({ children }) => {
 
         run().catch(console.error);
     }, [activeOption, user, currentListEndpoint, sortBy]);
+
 
 
     const replaceMealInMeals = (originalMealId, newMeal) => {
@@ -188,6 +172,7 @@ export const UserMealsProvider = ({ children }) => {
                 meals,
                 userMeals,
                 applyUserCopies,
+                getMealById,
                 loading: loadingMeals || loadingUserMeals,
                 error,
                 activeOption,

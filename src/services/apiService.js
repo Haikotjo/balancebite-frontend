@@ -481,14 +481,14 @@ export const createUserAsAdminApi = async (data, token) => {
     }
 };
 
-// Meals services
-export const getAllMealsApi = async (token) => {
+export const getAllMealsApi = async (token, filters = {}) => {
     const endpoint = import.meta.env.VITE_GET_ALL_MEALS_ENDPOINT;
     try {
         const response = await Interceptor.get(endpoint, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
+            params: filters,
         });
         return response.data;
     } catch (error) {
@@ -496,6 +496,7 @@ export const getAllMealsApi = async (token) => {
         throw error;
     }
 };
+
 
 export const deleteMealApi = async (mealId, token) => {
     const endpoint = `${import.meta.env.VITE_DELETE_MEAL_ENDPOINT}/${mealId}`;
@@ -735,6 +736,22 @@ export const createStickyItemApi = async (data, token) => {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
         },
+    });
+    return response.data;
+};
+
+export const updateMealPrivacyApi = async (mealId, isPrivate, token) => {
+    const endpoint = `${import.meta.env.VITE_UPDATE_MEAL_PRIVACY_ENDPOINT.replace("{mealId}", mealId)}?isPrivate=${isPrivate}`;
+    const response = await Interceptor.patch(endpoint, null, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+};
+
+export const updateDietPlanPrivacyApi = async (dietPlanId, isPrivate, token) => {
+    const endpoint = `${import.meta.env.VITE_UPDATE_DIETPLAN_PRIVACY_ENDPOINT.replace("{dietPlanId}", dietPlanId)}?isPrivate=${isPrivate}`;
+    const response = await Interceptor.patch(endpoint, null, {
+        headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
 };

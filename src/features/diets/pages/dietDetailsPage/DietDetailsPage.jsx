@@ -20,7 +20,6 @@ const DietDetailsPage = () => {
         getDietById(dietId)
             .then(result => {
                 console.log("📦 Received diet from getDietById:", result);
-                console.log("🔢 saveCount:", result.saveCount, "📅 weeklySaveCount:", result.weeklySaveCount, "📅 monthlySaveCount:", result.monthlySaveCount);
 
                 if (!result) {
                     setError(true);

@@ -140,18 +140,6 @@ const DietsPage = () => {
                 }}
             />
 
-            <ActiveFilterChips
-                filters={filters}
-                setFilters={setFilters}
-                creatorIdFilter={creatorIdFilter?.toString() ?? null}
-                setCreatorIdFilter={setCreatorIdFilter}
-                creatorName={creatorName}
-                sortKey={sortKey}
-                setSortKey={setSortKey}
-                sortOrder={sortOrder}
-                setSortOrder={setSortOrder}
-            />
-
             <SortControls
                 className="mt-6"
                 sortKey={sortKey}
@@ -162,6 +150,18 @@ const DietsPage = () => {
                 }}
                 filters={filters}
                 setFilters={setFilters}
+            />
+
+            <ActiveFilterChips
+                filters={filters}
+                setFilters={setFilters}
+                creatorIdFilter={creatorIdFilter?.toString() ?? null}
+                setCreatorIdFilter={setCreatorIdFilter}
+                creatorName={creatorName}
+                sortKey={sortKey}
+                setSortKey={setSortKey}
+                sortOrder={sortOrder}
+                setSortOrder={setSortOrder}
             />
 
             <ErrorDialog

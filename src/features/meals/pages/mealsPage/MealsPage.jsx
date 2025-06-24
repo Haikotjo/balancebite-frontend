@@ -12,6 +12,8 @@ import CustomPagination from "../../../../components/customPagination/CustomPagi
 import ScrollToTopButton from "../../../../components/scrollToTopButton/ScrollToTopButton.jsx";
 import SubMenu from "../../components/subMenu/SubMenu.jsx";
 import fetchStickyItemDetails from "../../../../utils/helpers/fetchStickyItemDetails.js";
+import MealFilterContent from "../../components/mealfiltercontent/MealFilterContent.jsx";
+import ActiveFilterChips from "../../../diets/components/activeFilterChips/ActiveFilterChips.jsx";
 
 function MealPage() {
     const location = useLocation();
@@ -46,14 +48,6 @@ function MealPage() {
 
     const handleFiltersChange = (newFilters) => {
         setFilters(newFilters);
-    };
-
-    const handleRemoveFilter = (key) => {
-        setFilters((prev) => {
-            const updated = { ...prev };
-            delete updated[key];
-            return updated;
-        });
     };
 
     // Support URL query filters
@@ -102,6 +96,7 @@ function MealPage() {
             <FilterSidebar filters={filters} onFilter={handleFiltersChange} />
             <SubMenu onSelect={setActiveOption} />
             <NutrientSortOptionsHorizontal onSort={handleSort} />
+            <MealFilterContent filters={filters} setFilters={setFilters} />
             <CustomBox ref={searchRef} className="w-[300px] md:w-[350px] my-6">
                 <SearchBar
                     onSearch={getAllMealNames}
@@ -110,14 +105,30 @@ function MealPage() {
                 />
             </CustomBox>
             {(Object.keys(filters).length > 0 || sortBy) && (
-                <ActiveFilters
-                    filters={{
-                        ...filters,
-                        ...(sortBy ? { sort: `${sortBy.sortKey} (${sortBy.sortOrder})` } : {}),
-                    }}
-                    onFilterClick={(key) => key === "sort" ? setSortBy(null) : handleRemoveFilter(key)}
+                <ActiveFilterChips
+                    filters={filters}
+                    setFilters={setFilters}
+                    creatorIdFilter={filters.creatorId?.toString() ?? null}
+                    setCreatorIdFilter={(val) =>
+                        setFilters((prev) => {
+                            const newFilters = { ...prev };
+                            if (val) {
+                                newFilters.creatorId = val;
+                            } else {
+                                delete newFilters.creatorId;
+                            }
+                            return newFilters;
+                        })
+                    }
+                    creatorName={filters.creatorUserName ?? null}
+                    sortKey={sortBy?.sortKey ?? null}
+                    setSortKey={(key) => setSortBy((prev) => ({ ...prev, sortKey: key }))}
+                    sortOrder={sortBy?.sortOrder ?? null}
+                    setSortOrder={(order) => setSortBy((prev) => ({ ...prev, sortOrder: order }))}
                 />
+
             )}
+
             <MealList
                 sortBy={sortBy}
                 filters={filters}

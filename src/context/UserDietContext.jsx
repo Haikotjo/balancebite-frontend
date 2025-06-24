@@ -90,7 +90,6 @@ export const UserDietsProvider = ({ children }) => {
                     })
                     .filter(Boolean);
 
-// Sorteer alleen de originele diets
                 if (["saveCount", "weeklySaveCount", "monthlySaveCount"].includes(safeSortKey)) {
                     originals.sort((a, b) => {
                         const aVal = a[safeSortKey] ?? 0;
@@ -99,7 +98,6 @@ export const UserDietsProvider = ({ children }) => {
                     });
                 }
 
-// Voeg de kopieën onderaan toe
                 let replaced = [...originals, ...replacements];
 
                 setDiets(replaced);
@@ -167,7 +165,6 @@ export const UserDietsProvider = ({ children }) => {
 
         const run = async () => {
             if (!user) {
-                // Niet ingelogd → alleen public diets (géén user copies)
                 await fetchDietsData([], currentParams);
                 return;
             }

@@ -1,52 +1,45 @@
 import PropTypes from "prop-types";
+import { Check } from "lucide-react";
+import CustomBox from "./CustomBox.jsx";
+import CustomTypography from "./CustomTypography.jsx";
 
 const CustomCheckbox = ({
                             checked,
                             onChange,
                             label = "",
                             id,
-                            name,
                             disabled = false,
                             className = "",
                             labelClassName = "",
                         }) => {
+    const handleClick = (e) => {
+        e.preventDefault();
+        if (!disabled) onChange(e);
+    };
+
     return (
         <label
             htmlFor={id}
-            className={`flex items-center cursor-pointer gap-2 select-none ${labelClassName}`}
+            className={`flex items-center gap-2 cursor-pointer select-none ${labelClassName}`}
+            onClick={handleClick}
         >
-            <input
+            {label && (
+                <CustomTypography variant="small" as="span">
+                    {label}
+                </CustomTypography>
+            )}
+            <CustomBox
                 id={id}
-                name={name}
-                type="checkbox"
-                checked={checked}
-                onChange={onChange}
-                disabled={disabled}
-                className="sr-only peer"
-            />
-            <div
-                className={`w-5 h-5 border-2 rounded-sm border-primary 
-          peer-checked:bg-primary peer-checked:border-primary 
-          flex items-center justify-center transition 
-          ${disabled ? "opacity-50 cursor-not-allowed" : ""} ${className}`}
+                className={`
+                    w-5 h-5 border-2 rounded-sm flex items-center justify-center transition 
+                    ${checked ? "bg-primary border-primary" : "border-primary bg-transparent"}
+                    ${disabled ? "opacity-50 cursor-not-allowed" : ""}
+                    ${className}
+                `}
             >
-                {checked && (
-                    <svg
-                        className="w-4 h-4 text-white"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="3"
-                            d="M5 13l4 4L19 7"
-                        />
-                    </svg>
-                )}
-            </div>
-            {label && <span className="text-sm">{label}</span>}
+                {checked && <Check className="w-4 h-4 text-white" />}
+            </CustomBox>
+
         </label>
     );
 };
@@ -56,7 +49,6 @@ CustomCheckbox.propTypes = {
     onChange: PropTypes.func.isRequired,
     label: PropTypes.string,
     id: PropTypes.string,
-    name: PropTypes.string,
     disabled: PropTypes.bool,
     className: PropTypes.string,
     labelClassName: PropTypes.string,
