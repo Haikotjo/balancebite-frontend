@@ -4,6 +4,7 @@ import {updateDietPlanPrivacyApi, updateMealPrivacyApi} from "../../services/api
 import CustomCheckbox from "../layout/CustomCheckbox.jsx";
 import {UserDietsContext} from "../../context/UserDietContext.jsx";
 import CustomBox from "../layout/CustomBox.jsx";
+import ErrorDialog from "../layout/ErrorDialog.jsx";
 
 
 const PrivacyToggles = ({ mealId, dietPlanId, initialMealPrivate, initialDietPrivate }) => {
@@ -16,16 +17,25 @@ const PrivacyToggles = ({ mealId, dietPlanId, initialMealPrivate, initialDietPri
 
     const [loading, setLoading] = useState(false);
 
+    const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+
     const handleMealToggle = async () => {
         try {
             setLoading(true);
             const newShared = !mealShared;
-            console.log(`[Privacy] Updating meal (${mealId}) privacy to`, !newShared);
             await updateMealPrivacyApi(mealId, !newShared, token);
             setMealShared(newShared);
         } catch (err) {
             console.error("❌ Failed to update meal privacy", err);
-        } finally {
+            const error = err?.response?.data;
+            const msg = error?.diets?.length
+                ? `${error.error}\nIn diets: ${error.diets.join(", ")}`
+                : error?.error || "Failed to update privacy.";
+            setErrorMessage(msg);
+            setErrorDialogOpen(true);
+        }
+        finally {
             setLoading(false);
         }
     };
@@ -83,6 +93,13 @@ const PrivacyToggles = ({ mealId, dietPlanId, initialMealPrivate, initialDietPri
                     className={dietShared ? "border-primary" : "border-[#DD1155]"}
                 />
             )}
+
+            <ErrorDialog
+                open={errorDialogOpen}
+                onClose={() => setErrorDialogOpen(false)}
+                message={errorMessage}
+                type="error"
+            />
         </CustomBox>
     );
 };
