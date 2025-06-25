@@ -52,6 +52,7 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
                     meal={mealToRender}
                     showUpdateButton={showUpdateButton}
                     viewMode={viewMode}
+                    isPinned={isPinned}
                 />
 
             {/* Details Section */}

@@ -13,13 +13,17 @@ import {useContext} from "react";
 import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
 import {useNavigate} from "react-router-dom";
 
-const DietCard = ({ diet, viewMode = "card" }) => {
+const DietCard = ({ diet, viewMode = "card", isPinned = false }) => {
     const averages = getAverageNutrients(diet.dietDays);
     const { setCreatorIdFilter, setActiveOption } = useContext(UserDietsContext);
     const navigate = useNavigate();
 
     return (
-        <CustomBox className="w-full p-4 rounded-xl shadow-md bg-cardLight dark:bg-cardDark">
+        <CustomBox
+            className={`w-full p-4 rounded-xl shadow-md bg-cardLight dark:bg-cardDark ${
+                isPinned ? "border-2 border-yellow-500" : ""
+            }`}
+        >
             <CustomBox className="flex flex-wrap justify-between items-start gap-y-2 mb-2">
                 <CustomTypography
                     variant="h1"
@@ -108,6 +112,7 @@ const DietCard = ({ diet, viewMode = "card" }) => {
 DietCard.propTypes = {
     diet: PropTypes.object.isRequired,
     viewMode: PropTypes.oneOf(["page", "modal", "card"]),
+    isPinned: PropTypes.bool,
 };
 
 export default DietCard;

@@ -4,20 +4,20 @@ import { useModal } from "../../../../context/useModal.js";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 import DietModal from "../dietmodal/DietModal.jsx";
 
-const ButtonOpenDiet = ({ diet }) => {
-    const { openModal, closeModal, modalType } = useModal(); // 🆕
+const ButtonOpenDiet = ({ diet, isPinned = false }) => {
+    const { openModal, closeModal, modalType } = useModal();
 
     const isOpen = modalType === "diet"; // 🆕
 
     const handleClick = () => {
         if (!diet || !diet.id) return;
-        isOpen ? closeModal() : openModal(<DietModal diet={diet} />, "diet"); // 🆕
+        isOpen ? closeModal() : openModal(<DietModal diet={diet} isPinned={isPinned} />, "diet");
     };
 
     return (
         <CustomIconButton
             onClick={handleClick}
-            icon={isOpen ? <Minimize  size={20} color="white" /> : <Maximize size={20} color="white" />} // 🆕
+            icon={isOpen ? <Minimize  size={20} color="white" /> : <Maximize size={20} color="white" />}
             size={35}
         />
     );
@@ -25,6 +25,7 @@ const ButtonOpenDiet = ({ diet }) => {
 
 ButtonOpenDiet.propTypes = {
     diet: PropTypes.object.isRequired,
+    isPinned: PropTypes.bool,
 };
 
 export default ButtonOpenDiet;

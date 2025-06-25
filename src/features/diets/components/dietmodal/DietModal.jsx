@@ -4,7 +4,7 @@ import { useModal } from "../../../../context/useModal.js";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import DietCard from "../dietCard/DietCard.jsx";
 
-const DietModal = ({ diet }) => {
+const DietModal = ({ diet, isPinned = false }) => {
     const { closeModal } = useModal();
     if (!diet) return null;
 
@@ -22,7 +22,7 @@ const DietModal = ({ diet }) => {
                 onClick={(e) => e.stopPropagation()}
             >
 
-                <DietCard diet={diet} viewMode="modal"/>
+                <DietCard diet={diet} isPinned={isPinned} viewMode="modal" />
             </CustomBox>
         </CustomBox>,
         document.body
@@ -31,6 +31,7 @@ const DietModal = ({ diet }) => {
 
 DietModal.propTypes = {
     diet: PropTypes.object.isRequired,
+    isPinned: PropTypes.bool,
 };
 
 export default DietModal;

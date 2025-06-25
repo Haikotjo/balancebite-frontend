@@ -14,6 +14,7 @@ const MealCardImageSection = ({
                                   meal,
                                   viewMode = "page",
                                   showUpdateButton = true,
+                                  isPinned = false,
                               }) => {
     const imageSrc = getImageSrc(meal);
     const { openModal } = useContext(ModalContext);
@@ -50,6 +51,7 @@ const MealCardImageSection = ({
                             meal={meal}
                             showUpdateButton={showUpdateButton}
                             viewMode={viewMode}
+                            isPinned={isPinned}
                         />
                     </CustomBox>
                 </CustomBox>
@@ -70,6 +72,7 @@ MealCardImageSection.propTypes = {
     meal: PropTypes.object.isRequired,
     showUpdateButton: PropTypes.bool,
     viewMode: PropTypes.oneOf(["page", "list", "mobile"]),
+    isPinned: PropTypes.bool,
 };
 
 export default MealCardImageSection;

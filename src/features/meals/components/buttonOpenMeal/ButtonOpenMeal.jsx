@@ -4,16 +4,16 @@ import { useModal } from "../../../../context/useModal.js";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 import MealModal from "../mealmodal/MealModal.jsx";
 
-const ButtonOpenMeal = ({ meal }) => {
-    const { openModal, closeModal, modalType, modalData } = useModal(); // ✅
-    if (!meal?.id) return null; // ✅
+const ButtonOpenMeal = ({ meal, isPinned = false }) => {
+    const { openModal, closeModal, modalType, modalData } = useModal();
+    if (!meal?.id) return null;
 
-    const isOpen = modalType === "meal" && modalData?.id === meal.id; // ✅
+    const isOpen = modalType === "meal" && modalData?.id === meal.id;
 
     const handleClick = () => {
         isOpen
             ? closeModal()
-            : openModal(<MealModal meal={meal} />, "meal", { id: meal.id }); // ✅
+            : openModal(<MealModal meal={meal} isPinned={isPinned} />, "meal", { id: meal.id });
     };
 
     return (
@@ -28,6 +28,7 @@ const ButtonOpenMeal = ({ meal }) => {
 
 ButtonOpenMeal.propTypes = {
     meal: PropTypes.object.isRequired,
+    isPinned: PropTypes.bool,
 };
 
 export default ButtonOpenMeal;

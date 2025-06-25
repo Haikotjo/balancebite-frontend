@@ -2,7 +2,6 @@ import {useEffect, useState} from "react";
 import { getAccessToken } from "../../../../utils/helpers/getAccessToken.js";
 import {
     createStickyItemApi, fetchMeals,
-    getAllMealsApi,
     getAllPublicDietPlans
 } from "../../../../services/apiService.js";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";

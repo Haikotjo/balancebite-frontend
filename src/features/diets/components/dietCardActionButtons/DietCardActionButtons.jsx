@@ -18,7 +18,8 @@ import {AuthContext} from "../../../../context/AuthContext.jsx";
  * @param {number} [props.iconSize=35] - Diameter of each button container.
  * @returns {JSX.Element}
  */
-const DietCardActionButtons = ({ diet, iconSize = 35, viewMode = "card" }) => {
+const DietCardActionButtons = ({ diet, iconSize = 35, viewMode = "card", isPinned = false }) => {
+
     const { userDiets } = useContext(UserDietsContext);
     const { user } = useContext(AuthContext);
     const isUserDiet = userDiets.some((userDiet) =>
@@ -40,7 +41,7 @@ const DietCardActionButtons = ({ diet, iconSize = 35, viewMode = "card" }) => {
 
                 {viewMode !== "page" && (
                     <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
-                        <ButtonOpenDiet diet={diet} />
+                        <ButtonOpenDiet diet={diet} isPinned={isPinned} />
                     </CustomBox>
                 )}
 
@@ -74,6 +75,7 @@ DietCardActionButtons.propTypes = {
     diet: PropTypes.object.isRequired,
     iconSize: PropTypes.number,
     viewMode: PropTypes.oneOf(["page", "modal", "card"]),
+    isPinned: PropTypes.bool,
 };
 
 export default DietCardActionButtons;

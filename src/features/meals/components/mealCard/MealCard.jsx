@@ -14,7 +14,7 @@ import CustomImage from "../../../../components/layout/CustomImage.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 
-const MealCard = ({ meal, viewMode = "page", onClose }) => {
+const MealCard = ({ meal, viewMode = "page", onClose, isPinned = false }) => {
     const imageSrc = getImageSrc(meal);
     const navigate = useNavigate();
 
@@ -35,7 +35,11 @@ const MealCard = ({ meal, viewMode = "page", onClose }) => {
 
 
     return (
-        <CustomBox className="max-w-4xl w-full lg:flex bg-cardLight dark:bg-cardDark rounded-xl shadow-md overflow-hidden border border-border">
+        <CustomBox
+            className={`max-w-4xl w-full lg:flex bg-cardLight dark:bg-cardDark rounded-xl shadow-md overflow-hidden border ${
+                isPinned ? "border-yellow-500" : "border-border"
+            }`}
+        >
             {/* Image section */}
             <CustomBox className="h-48 lg:h-auto lg:w-[50%] flex-none relative">
                 {/* Afbeelding */}
@@ -113,6 +117,7 @@ MealCard.propTypes = {
     meal: PropTypes.object.isRequired,
     viewMode: PropTypes.oneOf(["page", "list", "modal"]),
     onClose: PropTypes.func,
+    isPinned: PropTypes.bool,
 };
 
 export default MealCard;

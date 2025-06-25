@@ -14,7 +14,7 @@ import {AuthContext} from "../../../../context/AuthContext.jsx";
 /**
  * Displays a horizontal group of meal-related action buttons.
  */
-const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page", onClose }) => {
+const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page", onClose, isPinned = false }) => {
     const { refetchRecommendedNutrition } = useContext(RecommendedNutritionContext);
     const { userMeals } = useContext(UserMealsContext);
     const isUserMeal = userMeals.some((m) => m.id === meal.id);
@@ -55,7 +55,7 @@ const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page", onClose
 
                 {viewMode !== "page" && (
                     <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
-                        <ButtonOpenMeal meal={meal} />
+                        <ButtonOpenMeal meal={meal} isPinned={isPinned} />
                     </CustomBox>
                 )}
             </CustomBox>
@@ -79,6 +79,7 @@ MealCardActionButtons.propTypes = {
     viewMode: PropTypes.oneOf(["page", "list", "modal"]),
     onMealClick: PropTypes.func,
     onClose: PropTypes.func,
+    isPinned: PropTypes.bool,
 };
 
 export default MealCardActionButtons;

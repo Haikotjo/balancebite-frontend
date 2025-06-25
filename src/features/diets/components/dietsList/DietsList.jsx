@@ -26,7 +26,7 @@ const DietsList = ({ diets, pinnedDiets = [] }) => {
                     <CustomBox key={`${source}-${dietToRender.id}`} className="break-inside-avoid">
                         <DietListCard
                             diet={dietToRender}
-                            isPinned={pinnedDietIds.has(String(dietToRender.id))}
+                            isPinned={pinnedDietIds.has(String(diet.id))}
                         />
                     </CustomBox>
                 );

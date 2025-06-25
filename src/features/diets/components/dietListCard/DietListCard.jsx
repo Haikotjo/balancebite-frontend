@@ -26,7 +26,7 @@ const DietListCard = ({ diet, compact = false, isPinned }) => {
     return (
         <CustomCard className="p-4" isPinned={isPinned}>
             <CustomBox className="mb-2 flex gap-2 justify-end">
-                <DietCardActionButtons diet={diet} viewMode="card" />
+                <DietCardActionButtons diet={diet} viewMode="card" isPinned={isPinned} />
             </CustomBox>
             {/* Diet title with navigation link */}
             <CustomBox
@@ -156,9 +156,6 @@ const DietListCard = ({ diet, compact = false, isPinned }) => {
                     </CustomTypography>
                 )}
             </CustomBox>
-
-
-
         </CustomCard>
     );
 };

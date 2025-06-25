@@ -37,7 +37,6 @@ const DietsPage = () => {
     const [creatorName, setCreatorName] = useState(null);
     const location = useLocation();
     const [pinnedDiets, setPinnedDiets] = useState([]);
-    const effectiveSortKey = sortKey || "createdAt";
 
     useEffect(() => {
         if (creatorIdFilter) {

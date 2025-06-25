@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
@@ -28,7 +28,6 @@ function MealPage() {
         setActiveOption,
     } = useContext(UserMealsContext);
     const [sortBy, setSortBy] = useState(null);
-    const searchRef = useRef(null);
     const [selectedMeal, setSelectedMeal] = useState(null);
     const [pinnedMeals, setPinnedMeals] = useState([]);
 
@@ -97,7 +96,7 @@ function MealPage() {
             <SubMenu onSelect={setActiveOption} />
             <NutrientSortOptionsHorizontal onSort={handleSort} />
             <MealFilterContent filters={filters} setFilters={setFilters} />
-            <CustomBox ref={searchRef} className="w-[300px] md:w-[350px] my-6">
+            <CustomBox className="w-[300px] md:w-[350px] my-6">
                 <SearchBar
                     onSearch={getAllMealNames}
                     onQuerySubmit={(q) => { setSelectedMeal(null); setFilters({ name: q }); }}

@@ -5,7 +5,7 @@ import { useModal } from "../../../../context/useModal.js";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import MealCard from "../mealCard/MealCard.jsx";
 
-const MealModal = ({ meal }) => {
+const MealModal = ({ meal, isPinned = false }) => {
     const { closeModal } = useModal();
     if (!meal) return null;
 
@@ -22,7 +22,7 @@ const MealModal = ({ meal }) => {
                 className="relative z-10 w-[90%] max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl shadow-lg bg-lightBackground dark:bg-darkBackground"
                 onClick={(e) => e.stopPropagation()}
             >
-                <MealCard meal={meal} viewMode="modal" />
+                <MealCard meal={meal} viewMode="modal" isPinned={isPinned} />
             </CustomBox>
         </CustomBox>,
         document.body
@@ -31,6 +31,7 @@ const MealModal = ({ meal }) => {
 
 MealModal.propTypes = {
     meal: PropTypes.object.isRequired,
+    isPinned: PropTypes.bool,
 };
 
 export default MealModal;
