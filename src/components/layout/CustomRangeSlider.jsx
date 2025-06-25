@@ -60,19 +60,34 @@ const CustomDualSlider = ({
     return (
         <CustomBox className={clsx("w-full max-w-md", className)}>
             {label && (
-                <CustomTypography as="label" variant="small" className="mb-2 block italic text-center">
+                <CustomTypography
+                    as="label"
+                    variant="small"
+                    font="body"
+                    className="block text-center"
+                >
                     {label}
                 </CustomTypography>
+
             )}
-            <div
-                ref={sliderRef}
-                className={clsx(
-                    "nouislider-target h-2 rounded bg-gray-200 dark:bg-neutral-700",
-                    "custom-slider"
-                )}
-            />
+
+            {/* min-label boven de slider */}
+            <CustomBox className="flex justify-between text-xs px-3 mb-1">
+                <CustomTypography font="body" variant="xsmallCard" className="text-white">min</CustomTypography>
+                <CustomBox />
+            </CustomBox>
+
+            {/* slider */}
+            <div ref={sliderRef} />
+
+            {/* max-label onder de slider */}
+            <CustomBox className="flex justify-between text-xs px-3 mt-1">
+                <CustomBox />
+                <CustomTypography variant="xsmallCard" className="text-white">max</CustomTypography>
+            </CustomBox>
         </CustomBox>
     );
+
 };
 
 CustomDualSlider.propTypes = {

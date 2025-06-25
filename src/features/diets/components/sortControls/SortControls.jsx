@@ -83,7 +83,7 @@ const SortControls = ({ className = "", sortKey, sortOrder, onSortChange, filter
 
 SortControls.propTypes = {
     className: PropTypes.string,
-    sortKey: PropTypes.string.isRequired,
+    sortKey: PropTypes.string,
     sortOrder: PropTypes.oneOf(["asc", "desc"]).isRequired,
     onSortChange: PropTypes.func.isRequired,
     filters: PropTypes.object.isRequired,

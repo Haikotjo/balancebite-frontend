@@ -37,6 +37,7 @@ const DietsPage = () => {
     const [creatorName, setCreatorName] = useState(null);
     const location = useLocation();
     const [pinnedDiets, setPinnedDiets] = useState([]);
+    const effectiveSortKey = sortKey || "createdAt";
 
     useEffect(() => {
         if (creatorIdFilter) {
@@ -48,9 +49,9 @@ const DietsPage = () => {
     }, [creatorIdFilter, diets]);
 
     useEffect(() => {
-        console.log("Sorting changed:", { sortKey, sortOrder });
         setPage(1);
     }, [sortKey, sortOrder]);
+
 
     useEffect(() => {
         if (error) setShowErrorDialog(true);
@@ -94,42 +95,6 @@ const DietsPage = () => {
 
         loadPinnedDiets();
     }, [filters, sortKey, creatorIdFilter, activeOption]);
-
-    // DEBUG ONLY – logging effects (verwijderen voor productie)
-    useEffect(() => {
-        console.log("Page changed:", page);
-    }, [page]);
-
-
-    useEffect(() => {
-        console.log("Diets list updated (after filters/sorting):", diets);
-    }, [diets]);
-
-    useEffect(() => {
-        console.log("Filters changed:", filters);
-    }, [filters]);
-
-    useEffect(() => {
-        console.log("Creator ID filter changed:", creatorIdFilter);
-    }, [creatorIdFilter]);
-
-    useEffect(() => {
-        if (!diets || diets.length === 0) return;
-
-        console.log(`Diets sorted by ${sortKey} (${sortOrder}):`);
-        diets.forEach((diet, index) => {
-            const value = sortKey === 'name'
-                ? diet.name
-                : diet[sortKey]; // werkt alleen als sortKey direct op diet zit
-
-            // Voor nested velden zoals macros
-            const macroValue = diet?.averageMacros?.[sortKey];
-
-            console.log(`${index + 1}. ${diet.name} - ${macroValue ?? value ?? "?"}`);
-        });
-    }, [diets, sortKey, sortOrder]);
-
-
 
 
     return (

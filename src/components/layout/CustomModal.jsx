@@ -58,7 +58,7 @@ const CustomModal = ({ isOpen, onClose, children, zIndex = "z-50" }) => {
 CustomModal.propTypes = {
     isOpen: PropTypes.bool.isRequired, // Boolean value to control modal visibility
     onClose: PropTypes.func.isRequired, // Callback function to handle modal close
-    children: PropTypes.node.isRequired, // Content to display inside the modal
+    children: PropTypes.node, // Content to display inside the modal
     zIndex: PropTypes.string,
 };
 

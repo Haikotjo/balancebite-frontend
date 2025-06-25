@@ -21,7 +21,6 @@ import {AuthContext} from "../../../../context/AuthContext.jsx";
 const DietCardActionButtons = ({ diet, iconSize = 35, viewMode = "card" }) => {
     const { userDiets } = useContext(UserDietsContext);
     const { user } = useContext(AuthContext);
-    console.log("🚀 diet.private =", diet.isPrivate);
     const isUserDiet = userDiets.some((userDiet) =>
         String(userDiet.id) === String(diet.id)
     );

@@ -91,7 +91,7 @@ ActiveFilterChips.propTypes = {
     creatorIdFilter: PropTypes.string,
     setCreatorIdFilter: PropTypes.func.isRequired,
     creatorName: PropTypes.string,
-    sortKey: PropTypes.string.isRequired,
+    sortKey: PropTypes.string,
     setSortKey: PropTypes.func.isRequired,
     sortOrder: PropTypes.string.isRequired,
     setSortOrder: PropTypes.func.isRequired,
