@@ -26,6 +26,7 @@ import clsx from "clsx";
 import CustomSelect from "../../../components/layout/CustomSelect.jsx";
 import RegisterForm from "../../navigation/components/authRegisterForm/RegisterForm.jsx";
 import DeleteDietPlanForm from "../components/deleteDietForm/DeleteMealForm.jsx";
+import CreateStickyItemForm from "../components/createStickyItemForm/CreateStickyItemForm.jsx";
 
 /**
  * AdminPage – Central admin dashboard to manage food items, meals, users and future settings.
@@ -141,12 +142,16 @@ const AdminPage = () => {
 
         if (activeOption === "Settings") {
             return (
-                <CustomTypography
-                    variant="paragraph"
-                    className="text-center text-gray-700 dark:text-gray-300"
-                >
-                    Admin settings coming soon...
-                </CustomTypography>
+                <CustomBox>
+                    <CustomTypography
+                        variant="h4"
+                        className="text-center text-gray-700 dark:text-gray-300 mb-4"
+                    >
+                        Sticky Items
+                    </CustomTypography>
+                    <CreateStickyItemForm />
+                </CustomBox>
+
             );
         }
 

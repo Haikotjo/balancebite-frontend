@@ -14,7 +14,6 @@ import {
 import PropTypes from "prop-types";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomChip from "../../../../components/layout/CustomChip.jsx";
-import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import { useContext } from "react";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 
@@ -90,7 +89,7 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
 
 
     return (
-        <CustomBox className="flex flex-col items-center w-full mt-2 gap-2 mb-4 mt-4">
+        <CustomBox className="flex flex-col items-center w-full gap-2 mb-4 mt-4">
             <CustomBox className="flex flex-wrap justify-center gap-3 w-full max-w-full">
 
                 {nutrients.slice(0, 4).map((nutrient) => (

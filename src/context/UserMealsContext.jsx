@@ -33,13 +33,13 @@ export const UserMealsProvider = ({ children }) => {
         if (fromContext) return fromContext;
 
         try {
-            const fetched = await fetchMealById(mealId);
-            return fetched;
+            return fetchMealById(mealId);
         } catch (err) {
             console.error("❌ Could not fetch meal by ID:", err.message);
             return null;
         }
     }, [meals]);
+
 
     const applyUserCopies = useCallback((publicMeals, userCopies) => {
         return publicMeals.map(meal => {
@@ -103,7 +103,8 @@ export const UserMealsProvider = ({ children }) => {
                     const userMealsData = await fetchUserMeals(token);
                     userCopies = Array.isArray(userMealsData.content) ? userMealsData.content : [];
                     setUserMeals(userCopies);
-                } catch (e) {
+                } catch (err) {
+                    setError(err.message);
                     setUserMeals([]);
                     userCopies = [];
                 }
@@ -143,7 +144,6 @@ export const UserMealsProvider = ({ children }) => {
 
         run().catch(console.error);
     }, [activeOption, user, currentListEndpoint, sortBy]);
-
 
 
     const replaceMealInMeals = (originalMealId, newMeal) => {

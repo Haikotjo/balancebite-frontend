@@ -6,7 +6,6 @@ import SearchBar from "../../../../components/searchBar/SearchBar.jsx";
 import { getAllMealNames, getStickyItems } from "../../../../services/apiService.js";
 import FilterSidebar from "../../../../components/filterSidebar/FilterSidebar.jsx";
 import NutrientSortOptionsHorizontal from "../../components/nutrientSortOptions/NutrientSortOptionsHorizontal.jsx";
-import ActiveFilters from "../../components/activeFilters/ActiveFilters.jsx";
 import MealList from "../../components/mealList/MealList.jsx";
 import CustomPagination from "../../../../components/customPagination/CustomPagination.jsx";
 import ScrollToTopButton from "../../../../components/scrollToTopButton/ScrollToTopButton.jsx";
@@ -85,11 +84,12 @@ function MealPage() {
             }
         };
         if (activeOption === "All Meals" && !Object.keys(filters).length && !sortBy) {
-            load();
+            load().catch(console.error);
         } else {
             setPinnedMeals([]);
         }
     }, [activeOption, filters, sortBy]);
+
 
     return (
         <CustomBox className="flex flex-col items-center pt-6 sm:pt-10 px-4 pb-24 sm:pb-10">

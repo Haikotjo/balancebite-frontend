@@ -19,7 +19,7 @@ const CreateStickyItemForm = () => {
     const [type, setType] = useState("MEAL");
     const [referenceId, setReferenceId] = useState("");
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
+    const [error] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const [options, setOptions] = useState([]);
     const [errorMessage, setErrorMessage] = useState("");
