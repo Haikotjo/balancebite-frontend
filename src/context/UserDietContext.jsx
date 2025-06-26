@@ -23,6 +23,7 @@ export const UserDietsProvider = ({ children }) => {
     const [activeOption, setActiveOption] = useState("All Diets");
     const [favoriteDiets, setFavoriteDiets] = useState([]);
     const [creatorIdFilter, setCreatorIdFilter] = useState(null);
+    const [itemsPerPage] = useState(6);
 
 
     const userDietsRef = useRef(userDiets);
@@ -53,7 +54,7 @@ export const UserDietsProvider = ({ children }) => {
 
             const baseParams = {
                 page: page - 1,
-                size: 12,
+                size: itemsPerPage,
                 sortOrder,
                 ...filters,
                 ...(filters.requiredDiets ? { requiredDiets: filters.requiredDiets } : {}),
@@ -156,7 +157,7 @@ export const UserDietsProvider = ({ children }) => {
     useEffect(() => {
         const currentParams = {
             page: page - 1,
-            size: 12,
+            size: itemsPerPage,
             sortBy: sortKey,
             sortOrder,
             ...filters,

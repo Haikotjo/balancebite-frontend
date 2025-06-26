@@ -21,6 +21,7 @@ export const UserMealsProvider = ({ children }) => {
     const [activeOption, setActiveOption] = useState("All Meals");
     const [currentListEndpoint, setCurrentListEndpoint] = useState("");
     const userMealsRef = useRef(userMeals);
+    const [itemsPerPage] = useState(6);
 
     useEffect(() => {
         userMealsRef.current = userMeals;
@@ -73,10 +74,10 @@ export const UserMealsProvider = ({ children }) => {
     useEffect(() => {
         let baseUrl =
             activeOption === "My Meals"
-                ? `/users/meals?page=${page - 1}&size=12`
+                ? `/users/meals?page=${page - 1}&size=${itemsPerPage}`
                 : activeOption === "Created Meals"
-                    ? `/users/created-meals?page=${page - 1}&size=12`
-                    : `/meals?page=${page - 1}&size=12`;
+                    ? `/users/created-meals?page=${page - 1}&size=${itemsPerPage}`
+                    : `/meals?page=${page - 1}&size=${itemsPerPage}`;
 
         Object.entries(filters).forEach(([key, value]) => {
             baseUrl += `&${key}=${encodeURIComponent(value)}`;

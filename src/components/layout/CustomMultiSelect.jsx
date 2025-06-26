@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import CustomButton from "./CustomButton.jsx";
 import clsx from "clsx";
 import CustomTypography from "./CustomTypography.jsx";
+import {createPortal} from "react-dom";
 
 /**
  * CustomMultiSelect component – A reusable multiselect dropdown using only custom layout components.
@@ -94,27 +95,42 @@ const CustomMultiSelect = ({
             </CustomButton>
 
             {/* Dropdown panel */}
-            {isOpen && (
-                <CustomBox className="absolute z-30 mt-1 w-full max-h-60 overflow-auto rounded bg-lightBackground dark:bg-darkBackground  shadow-lg border border-gray-400 dark:border-gray-300">
-                    {options.map((option) => (
-                        <CustomBox
-                            key={option.value}
-                            onClick={() => toggleOption(option.value)}
-                            className="cursor-pointer flex items-center px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-                        >
-                            <input
-                                type="checkbox"
-                                checked={selectedValues.includes(option.value)}
-                                onChange={() => toggleOption(option.value)}
-                                className="mr-2"
-                            />
-                            <CustomTypography as="span">
-                                {option.label}
-                            </CustomTypography>
-                        </CustomBox>
-                    ))}
-                </CustomBox>
-            )}
+            {isOpen &&
+                createPortal(
+                    <CustomBox
+                        className="absolute z-30 mt-1 w-full max-h-60 overflow-auto rounded bg-lightBackground dark:bg-darkBackground shadow-lg border border-gray-400 dark:border-gray-300"
+                        style={{
+                            top: dropdownRef.current?.getBoundingClientRect().bottom + window.scrollY,
+                            left: dropdownRef.current?.getBoundingClientRect().left,
+                            width: dropdownRef.current?.offsetWidth,
+                            position: "absolute"
+                        }}
+                    >
+                        {options.map((option) => (
+                            <CustomBox
+                                key={option.value}
+                                onMouseDown={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    toggleOption(option.value);
+                                }}
+                                className="cursor-pointer flex items-center px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                            >
+                                <input
+                                    type="checkbox"
+                                    checked={selectedValues.includes(option.value)}
+                                    readOnly
+                                    className="mr-2 pointer-events-none"
+                                />
+                                <CustomTypography as="span">{option.label}</CustomTypography>
+                            </CustomBox>
+                        ))}
+
+                    </CustomBox>,
+                    document.body
+                )
+            }
+
         </CustomBox>
     );
 };
