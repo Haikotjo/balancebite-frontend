@@ -1,10 +1,16 @@
 import PropTypes from "prop-types";
 import CustomBox from "./CustomBox.jsx";
 
-const CustomCard = ({ children, className = "", isPinned = false }) => {
-    const borderClass = isPinned
-        ? "border-2 border-yellow-400"
-        : "border-borderLight dark:border-borderDark";
+const CustomCard = ({ children, className = "", isPinned = false, createdByRole }) => {
+    let borderClass = "border-borderLight dark:border-borderDark";
+
+    if (isPinned) {
+        borderClass = "border-2 border-yellow-400";
+    } else if (createdByRole === "ADMIN") {
+        borderClass = "border-2 border-[#DD1155]"; // error-kleur
+    } else if (createdByRole === "CHEF") {
+        borderClass = "border-2 border-[#71f175]"; // success-kleur
+    }
 
     return (
         <CustomBox
@@ -22,6 +28,8 @@ CustomCard.propTypes = {
     children: PropTypes.node.isRequired,
     className: PropTypes.string,
     isPinned: PropTypes.bool,
+    createdByRole: PropTypes.string,
 };
+
 
 export default CustomCard;

@@ -22,6 +22,7 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
     const mealToRender = userMealMatch || meal;
     const showUpdateButton = userMeals.some((m) => m.id === meal.id);
     const navigate = useNavigate();
+    const role = mealToRender.createdBy?.roles?.[0]?.roleName?.toUpperCase();
 
     const isPage = viewMode === "page";
     const isListItem = viewMode === "list";
@@ -43,8 +44,11 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
     const calculatedMacros = calculateMacrosPer100g(mealToRender);
     const macros = buildMacrosObject(meal, calculatedMacros);
 
+    console.log("Meal created by:", mealToRender.createdBy);
+
+
     return (
-        <CustomCard isPinned={isPinned} className="flex w-full box-border">
+        <CustomCard isPinned={isPinned} createdByRole={role} className="flex w-full box-border">
 
             {/* Image Section */}
 

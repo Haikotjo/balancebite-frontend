@@ -62,7 +62,7 @@ const CustomDualSlider = ({
             {label && (
                 <CustomTypography
                     as="label"
-                    variant="small"
+                    variant="paragraph"
                     font="body"
                     className="block text-center"
                 >
@@ -73,7 +73,7 @@ const CustomDualSlider = ({
 
             {/* min-label boven de slider */}
             <CustomBox className="flex justify-between text-xs px-3 mb-1">
-                <CustomTypography font="body" variant="xsmallCard" className="text-white">min</CustomTypography>
+                <CustomTypography variant="paragraph" className="text-white">min</CustomTypography>
                 <CustomBox />
             </CustomBox>
 
@@ -83,7 +83,7 @@ const CustomDualSlider = ({
             {/* max-label onder de slider */}
             <CustomBox className="flex justify-between text-xs px-3 mt-1">
                 <CustomBox />
-                <CustomTypography variant="xsmallCard" className="text-white">max</CustomTypography>
+                <CustomTypography variant="paragraph" className="text-white">max</CustomTypography>
             </CustomBox>
         </CustomBox>
     );

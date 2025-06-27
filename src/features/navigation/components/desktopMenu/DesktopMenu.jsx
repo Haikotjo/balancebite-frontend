@@ -7,9 +7,9 @@ import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 import clsx from "clsx";
 
 const navItems = [
-    { label: "About", path: "/about" },
     { label: "All Meals", path: "/meals" },
     { label: "All Diets", path: "/diets" },
+    { label: "About", path: "/about" },
 ];
 
 const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
@@ -21,7 +21,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
         path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
 
     return (
-        <CustomBox className="flex flex-col space-y-2 w-full font-body font-bold text-white">
+        <CustomBox className="flex flex-col gap-y-2 w-full font-body font-bold text-white">
             {/* Home */}
             <CustomBox
                 onClick={() => navigate("/")}
@@ -35,7 +35,17 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                     Home
                 </CustomBox>
             </CustomBox>
-
+            {user && (
+                <CustomBox
+                    onClick={() => navigate("/dashboard")}
+                    className={clsx(
+                        "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
+                        isActive("/dashboard") ? "text-primary" : "text-white"
+                    )}
+                >
+                    Dashboard
+                </CustomBox>
+            )}
             <CustomDivider className="bg-white my-2" />
 
             {/* Nav‐links */}

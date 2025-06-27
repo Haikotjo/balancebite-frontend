@@ -22,9 +22,10 @@ const DietListCard = ({ diet, compact = false, isPinned }) => {
     const allMeals = diet.dietDays.flatMap((day) => day.meals || []);
     const { setCreatorIdFilter, setActiveOption } = useContext(UserDietsContext);
     const [showFullDescription, setShowFullDescription] = useState(false);
+    const role = diet.createdBy?.roles?.[0]?.roleName?.toUpperCase();
 
     return (
-        <CustomCard className="p-4" isPinned={isPinned}>
+        <CustomCard className="p-4" isPinned={isPinned} createdByRole={role}>
             <CustomBox className="mb-2 flex gap-2 justify-end">
                 <DietCardActionButtons diet={diet} viewMode="card" isPinned={isPinned} />
             </CustomBox>
@@ -170,9 +171,14 @@ DietListCard.propTypes = {
         createdBy: PropTypes.shape({
             id: PropTypes.number.isRequired,
             userName: PropTypes.string.isRequired,
+            roles: PropTypes.arrayOf(
+                PropTypes.shape({
+                    roleName: PropTypes.string.isRequired,
+                })
+            ),
         }),
         dietDays: PropTypes.array.isRequired,
-        saveCount: PropTypes.number
+        saveCount: PropTypes.number,
     }).isRequired,
     compact: PropTypes.bool,
     isPinned: PropTypes.bool,

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router-dom";
-import { MenuIcon, Home, Info, LogIn, LogOut, UserPlus, Settings, Soup, Apple   } from "lucide-react";
+import { MenuIcon, Home, Info, LogIn, LogOut, UserPlus, Settings, Soup, Apple, Gauge} from "lucide-react";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
@@ -53,6 +53,7 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
     // Menu item configuration
     const menuItems = [
         { label: "Home", icon: Home, path: "/" },
+        { label: "Dashboard", icon: Gauge, path: "/dashboard" },
         { label: "About", icon: Info, path: "/about" },
         { label: "Meals", icon: Soup, path: "/meals" },
         { label: "Diets", icon: Apple, path: "/diets" },

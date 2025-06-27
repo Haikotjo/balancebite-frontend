@@ -24,7 +24,7 @@ const getMinMaxKeys = (field) => {
 const FilterContent = ({ filters, setFilters }) => {
     return (
         <>
-            <CustomBox className="flex flex-wrap justify-center gap-x-12 gap-y-8 mt-4 ml-3 mr-6 max-w-full">
+            <CustomBox className="flex flex-wrap justify-center gap-x-16 gap-y-2 mt-2 ml-3 mr-6 max-w-full">
                 {avgFields.map(({ label, value }) => {
                     const [minKey, maxKey] = getMinMaxKeys(value);
                     const minValue = filters[minKey] ?? 0;
@@ -50,9 +50,9 @@ const FilterContent = ({ filters, setFilters }) => {
                 })}
             </CustomBox>
 
-            <CustomBox className="flex flex-col sm:flex-row sm:flex-nowrap gap-4 items-center sm:items-end mt-4 mb-8 px-2">
-            <CustomBox className="flex flex-col text-sm w-80">
-                    <CustomMultiSelect
+            <CustomBox className="flex flex-col sm:flex-row sm:flex-nowrap gap-y-2 gap-x-8 items-center sm:items-end sm:justify-center mt-4 mb-2 sm:mb-8 px-2">
+                <CustomBox className="flex flex-col text-sm flex-1 min-w-[250px] max-w-md">
+                <CustomMultiSelect
                         label="All meals must contain"
                         placeholder="e.g. High Protein + Gluten Free"
                         options={dietsOptions}

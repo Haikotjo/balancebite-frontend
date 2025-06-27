@@ -14,10 +14,9 @@ import {ModalContext} from "../../../../context/ModalContext.jsx";
  * @component
  * @param {Object} props
  * @param {Object} props.meal - Meal data with user and version info.
- * @param {string} [props.fontSize="0.6rem"] - Font size for text elements.
  * @returns {JSX.Element}
  */
-const MealInfoOverlay = ({ meal, fontSize = "0.7rem", onNameClick }) => {
+const MealInfoOverlay = ({ meal, onNameClick }) => {
     const location = useLocation();
     const navigate = useNavigate();
     const { setFilters, setPage } = useContext(UserMealsContext);
@@ -50,23 +49,19 @@ const MealInfoOverlay = ({ meal, fontSize = "0.7rem", onNameClick }) => {
             <CustomTypography
                 as="span"
                 className="flex items-center gap-2 cursor-pointer hover:underline"
-                style={{ fontSize }}
                 onClick={handleClick}
             >
+                <CustomTypography as="span" variant="xsmallCard" className="text-xs text-white">
                 {meal.createdBy?.userName}
+                </CustomTypography>
                 <UserPen size={14} />
-                {meal.version && (
-                    <CustomTypography as="span" className="text-xs text-white">
-                        {meal.version.slice(0, 10)}
-                    </CustomTypography>
-                )}
             </CustomTypography>
 
             {meal.isTemplate && (
                 <CustomTypography
                     as="span"
+                    variant="xsmallCard"
                     className="flex items-center gap-1 text-white"
-                    style={{ fontSize }}
                 >
                     <Users size={14} />
                     {meal.saveCount}
@@ -85,7 +80,6 @@ MealInfoOverlay.propTypes = {
         id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         userCount: PropTypes.number,
         isTemplate: PropTypes.bool,
-        version: PropTypes.string,
         saveCount: PropTypes.number,
     }).isRequired,
     fontSize: PropTypes.string,
