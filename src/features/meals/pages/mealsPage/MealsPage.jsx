@@ -13,6 +13,7 @@ import SubMenu from "../../components/subMenu/SubMenu.jsx";
 import fetchStickyItemDetails from "../../../../utils/helpers/fetchStickyItemDetails.js";
 import MealFilterContent from "../../components/mealfiltercontent/MealFilterContent.jsx";
 import ActiveFilterChips from "../../../diets/components/activeFilterChips/ActiveFilterChips.jsx";
+import AccordionItem from "../../../diets/components/accordionItem/AccordionItem.jsx";
 
 function MealPage() {
     const location = useLocation();
@@ -92,14 +93,27 @@ function MealPage() {
 
     return (
         <CustomBox className="flex flex-col items-center pt-6 sm:pt-10 px-4 pb-24 sm:pb-10">
-            <FilterSidebar filters={filters} onFilter={handleFiltersChange} />
-            <SubMenu onSelect={setActiveOption} />
-            <NutrientSortOptionsHorizontal onSort={handleSort} />
-            <MealFilterContent filters={filters} setFilters={setFilters} />
+            <FilterSidebar filters={filters} onFilter={handleFiltersChange}/>
+            <SubMenu onSelect={setActiveOption}/>
+            <NutrientSortOptionsHorizontal onSort={handleSort}/>
+
+            <CustomBox className="block md:hidden w-full">
+                <AccordionItem title="Nutrient range filter">
+                    <MealFilterContent filters={filters} setFilters={setFilters}/>
+                </AccordionItem>
+            </CustomBox>
+
+            <CustomBox className="hidden md:block w-full">
+                <MealFilterContent filters={filters} setFilters={setFilters}/>
+            </CustomBox>
+
             <CustomBox className="w-[300px] md:w-[350px] my-6">
                 <SearchBar
                     onSearch={getAllMealNames}
-                    onQuerySubmit={(q) => { setSelectedMeal(null); setFilters({ name: q }); }}
+                    onQuerySubmit={(q) => {
+                        setSelectedMeal(null);
+                        setFilters({name: q});
+                    }}
                     placeholder="Search for a meal..."
                 />
             </CustomBox>
@@ -110,7 +124,7 @@ function MealPage() {
                     creatorIdFilter={filters.creatorId?.toString() ?? null}
                     setCreatorIdFilter={(val) =>
                         setFilters((prev) => {
-                            const newFilters = { ...prev };
+                            const newFilters = {...prev};
                             if (val) {
                                 newFilters.creatorId = val;
                             } else {
@@ -121,9 +135,9 @@ function MealPage() {
                     }
                     creatorName={filters.creatorUserName ?? null}
                     sortKey={sortBy?.sortKey ?? null}
-                    setSortKey={(key) => setSortBy((prev) => ({ ...prev, sortKey: key }))}
+                    setSortKey={(key) => setSortBy((prev) => ({...prev, sortKey: key}))}
                     sortOrder={sortBy?.sortOrder ?? null}
-                    setSortOrder={(order) => setSortBy((prev) => ({ ...prev, sortOrder: order }))}
+                    setSortOrder={(order) => setSortBy((prev) => ({...prev, sortOrder: order}))}
                 />
 
             )}
@@ -137,10 +151,10 @@ function MealPage() {
             />
             {totalPages > 1 && (
                 <CustomBox className="mt-2 mb-20 sm:mb-8">
-                    <CustomPagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+                    <CustomPagination currentPage={page} totalPages={totalPages} onPageChange={setPage}/>
                 </CustomBox>
             )}
-            <ScrollToTopButton />
+            <ScrollToTopButton/>
         </CustomBox>
     );
 }
