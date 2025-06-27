@@ -3,7 +3,7 @@ import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import SearchBar from "../../../../components/searchBar/SearchBar.jsx";
-import { getAllMealNames, getStickyItems } from "../../../../services/apiService.js";
+import {getAllMealNames, getStickyItems, searchUsersApi} from "../../../../services/apiService.js";
 import FilterSidebar from "../../../../components/filterSidebar/FilterSidebar.jsx";
 import NutrientSortOptionsHorizontal from "../../components/nutrientSortOptions/NutrientSortOptionsHorizontal.jsx";
 import MealList from "../../components/mealList/MealList.jsx";
@@ -31,6 +31,19 @@ function MealPage() {
     const [sortBy, setSortBy] = useState(null);
     const [selectedMeal, setSelectedMeal] = useState(null);
     const [pinnedMeals, setPinnedMeals] = useState([]);
+
+    const handleCombinedSearch = async (query) => {
+        const [meals, users] = await Promise.all([
+            getAllMealNames(query),
+            searchUsersApi(query)
+        ]);
+
+        const mealOptions = meals.map(m => ({ type: "meal", ...m }));
+        const userOptions = users.map(u => ({ type: "user", id: u.id, name: u.userName }));
+
+        return [...mealOptions, ...userOptions];
+    };
+
 
     // Apply and clear filters from homepage redirect
     useEffect(() => {
@@ -109,13 +122,18 @@ function MealPage() {
 
             <CustomBox className="w-[300px] md:w-[350px] my-6">
                 <SearchBar
-                    onSearch={getAllMealNames}
-                    onQuerySubmit={(q) => {
+                    onSearch={handleCombinedSearch}
+                    onQuerySubmit={(val) => {
                         setSelectedMeal(null);
-                        setFilters({name: q});
+                        if (typeof val === "string") {
+                            setFilters({ name: val });
+                        } else if (typeof val === "object" && val.creatorId) {
+                            setFilters({ creatorId: val.creatorId, creatorUserName: val.creatorUserName });
+                        }
                     }}
-                    placeholder="Search for a meal..."
+                    placeholder="Search for a meal or user..."
                 />
+
             </CustomBox>
             {(Object.keys(filters).length > 0 || sortBy) && (
                 <ActiveFilterChips

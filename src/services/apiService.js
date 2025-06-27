@@ -755,3 +755,15 @@ export const updateDietPlanPrivacyApi = async (dietPlanId, isPrivate, token) => 
     });
     return response.data;
 };
+
+export const searchUsersApi = async (query) => {
+    const endpoint = `${import.meta.env.VITE_SEARCH_USERS_ENDPOINT}?query=${encodeURIComponent(query)}`;
+    try {
+        const response = await Interceptor.get(endpoint);
+        return response.data;
+    } catch (error) {
+        console.error("[API Error] Failed to search users:", error);
+        throw error;
+    }
+};
+
