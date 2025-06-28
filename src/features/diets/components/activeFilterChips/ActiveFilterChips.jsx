@@ -80,6 +80,19 @@ const ActiveFilterChips = ({
                         onRemove={() => setFilters(prev => ({ ...prev, excludedDiets: undefined }))}
                     />
                 )}
+
+                {filters.name && (
+                    <DietsFilterChip
+                        label={`Search: ${filters.name}`}
+                        colorClass="chip-purple"
+                        onRemove={() => setFilters(prev => {
+                            const updated = { ...prev };
+                            delete updated.name;
+                            return updated;
+                        })}
+                    />
+                )}
+
             </CustomBox>
         )
     );

@@ -2,7 +2,7 @@
 import PropTypes from "prop-types";
 import useDebouncedSearch from "../../hooks/useDebouncedSearch.js";
 import CustomAutocomplete from "../layout/CustomAutocomplete.jsx";
-import { Soup, User } from "lucide-react";
+import { Apple, Soup, User } from "lucide-react";
 import CustomBox from "../layout/CustomBox.jsx";
 import CustomTypography from "../layout/CustomTypography.jsx";
 
@@ -13,10 +13,8 @@ import CustomTypography from "../layout/CustomTypography.jsx";
 const SearchBar = ({ onSearch, onQuerySubmit, placeholder = "Search..." }) => {
     const [options, , searchQuery, setSearchQuery] = useDebouncedSearch(onSearch, 500);
 
-    // Ensure meals come first
-    const sortedOptions = [...options].sort((a, b) =>
-        a.type === b.type ? 0 : a.type === "meal" ? -1 : 1
-    );
+    const typeOrder = { meal: 0, diet: 1, user: 2 };
+    const sortedOptions = [...options].sort((a, b) => typeOrder[a.type] - typeOrder[b.type]);
 
     return (
         <CustomBox className="self-stretch w-full">
@@ -26,18 +24,24 @@ const SearchBar = ({ onSearch, onQuerySubmit, placeholder = "Search..." }) => {
                 onInputChange={setSearchQuery}
                 onChange={(opt) => {
                     if (!opt) return;
+
+                    let payload;
                     if (opt.type === "user") {
-                        onQuerySubmit({ creatorId: opt.id, creatorUserName: opt.name });
+                        payload = { creatorId: opt.id, creatorUserName: opt.name };
                     } else {
-                        onQuerySubmit(opt.name);
+                        payload = opt.name;
                     }
+
+                    console.log("SearchBar submission payload:", payload);
+                    onQuerySubmit(payload);
                     setSearchQuery("");
                 }}
+
                 getOptionLabel={(opt) => (typeof opt === "string" ? opt : opt.name)}
                 placeholder={placeholder}
                 freeSolo={true}
                 renderOption={(opt) => {
-                    const Icon = opt.type === "user" ? User : Soup;
+                    const Icon = opt.type === "user" ? User : opt.type === "diet" ? Apple : Soup;
                     return (
                         <CustomBox className="flex items-center gap-2 px-2 py-1">
                             <Icon className="w-4 h-4 text-primary" />
@@ -46,30 +50,33 @@ const SearchBar = ({ onSearch, onQuerySubmit, placeholder = "Search..." }) => {
                     );
                 }}
                 groupBy={(opt) => opt.type}
-                renderGroup={({ key, group, children }) => (
-                    <CustomBox key={key} className="mt-1">
-                        <CustomBox className="flex items-center gap-2 py-1 px-2">
-                            <div className="flex-1 h-px bg-borderLight dark:bg-borderDark" />
-                            {group === "meal" ? (
-                                <>
-                                    <Soup className="w-5 h-5 text-primary" />
-                                    <CustomTypography variant="h5" bold>
-                                        Meals
-                                    </CustomTypography>
-                                </>
-                            ) : (
-                                <>
-                                    <User className="w-5 h-5 text-primary" />
-                                    <CustomTypography variant="h5" bold>
-                                        Users
-                                    </CustomTypography>
-                                </>
-                            )}
-                            <div className="flex-1 h-px bg-borderLight dark:bg-borderDark" />
+                renderGroup={({ key, group, children }) => {
+                    let Icon, label;
+                    if (group === "meal") {
+                        Icon = Soup;
+                        label = "Meals";
+                    } else if (group === "diet") {
+                        Icon = Apple;
+                        label = "Diets";
+                    } else {
+                        Icon = User;
+                        label = "Users";
+                    }
+
+                    return (
+                        <CustomBox key={key} className="mt-1">
+                            <CustomBox className="flex items-center gap-2 py-1 px-2">
+                                <div className="flex-1 h-px bg-borderLight dark:bg-borderDark" />
+                                <Icon className="w-5 h-5 text-primary" />
+                                <CustomTypography variant="h5" bold>
+                                    {label}
+                                </CustomTypography>
+                                <div className="flex-1 h-px bg-borderLight dark:bg-borderDark" />
+                            </CustomBox>
+                            <ul className="list-none m-0 p-0">{children}</ul>
                         </CustomBox>
-                        <ul className="list-none m-0 p-0">{children}</ul>
-                    </CustomBox>
-                )}
+                    );
+                }}
                 classNames={{
                     container: "relative w-full",
                     inputWrapper:

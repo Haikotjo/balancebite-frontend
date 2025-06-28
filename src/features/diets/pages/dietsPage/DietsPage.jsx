@@ -10,8 +10,9 @@ import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import SortControls from "../../components/sortControls/SortControls.jsx";
 import ActiveFilterChips from "../../components/activeFilterChips/ActiveFilterChips.jsx";
 import fetchStickyItemDetails from "../../../../utils/helpers/fetchStickyItemDetails.js";
-import {getStickyItems} from "../../../../services/apiService.js";
+import {getAllPublicDietPlanNames, getStickyItems, searchUsersApi} from "../../../../services/apiService.js";
 import {useLocation} from "react-router-dom";
+import SearchBar from "../../../../components/searchBar/SearchBar.jsx";
 
 const DietsPage = () => {
     const {
@@ -37,6 +38,22 @@ const DietsPage = () => {
     const [creatorName, setCreatorName] = useState(null);
     const location = useLocation();
     const [pinnedDiets, setPinnedDiets] = useState([]);
+
+    const handleCombinedSearch = async (query) => {
+        const [diets, users] = await Promise.all([
+            getAllPublicDietPlanNames(),
+            searchUsersApi(query),
+        ]);
+
+        const dietOptions = diets
+            .filter(d => d.name.toLowerCase().includes(query.toLowerCase()))
+            .map(d => ({ type: "diet", id: d.id, name: d.name }));
+
+        const userOptions = users.map(u => ({ type: "user", id: u.id, name: u.userName }));
+
+        return [...dietOptions, ...userOptions];
+    };
+
 
     useEffect(() => {
         if (creatorIdFilter) {
@@ -115,6 +132,29 @@ const DietsPage = () => {
                 filters={filters}
                 setFilters={setFilters}
             />
+
+            <CustomBox className="w-[300px] md:w-[350px] my-6 mx-auto">
+                <SearchBar
+                    onSearch={handleCombinedSearch}
+                    onQuerySubmit={(val) => {
+                        if (typeof val === "string") {
+                            // Gekozen op naam (meal of diet)
+                            setFilters((prev) => ({ ...prev, name: val }));
+                            setCreatorIdFilter(null);
+                        } else if (val.creatorId) {
+                            // Gekozen op user
+                            setCreatorIdFilter(val.creatorId);
+                            setFilters((prev) => {
+                                const { name, ...rest } = prev;
+                                return rest;
+                            });
+                        }
+                        setPage(1);
+                    }}
+
+                />
+            </CustomBox>
+
 
             <ActiveFilterChips
                 filters={filters}

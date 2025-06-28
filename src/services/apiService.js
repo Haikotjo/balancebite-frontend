@@ -767,3 +767,16 @@ export const searchUsersApi = async (query) => {
     }
 };
 
+export const getAllPublicDietPlanNames = async () => {
+    const endpoint = import.meta.env.VITE_PUBLIC_DIETPLAN_NAMES_ENDPOINT;
+
+    try {
+        const response = await Interceptor.get(endpoint);
+        return response.data;
+    } catch (error) {
+        console.error("[API Error] Failed to fetch public diet plan names:", error);
+        return [];
+    }
+};
+
+
