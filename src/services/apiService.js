@@ -779,4 +779,36 @@ export const getAllPublicDietPlanNames = async () => {
     }
 };
 
+// Create promotion (admin only)
+export const createPromotionApi = async (data, token) => {
+    const endpoint = import.meta.env.VITE_CREATE_PROMOTION_ENDPOINT;
+    try {
+        const response = await Interceptor.post(endpoint, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("[API Error] Failed to create promotion:", error);
+        throw error;
+    }
+};
+
+// Delete promotion by ID (admin only)
+export const deletePromotionApi = async (promotionId, token) => {
+    const endpoint = `${import.meta.env.VITE_DELETE_PROMOTION_ENDPOINT}/${promotionId}`;
+    try {
+        const response = await Interceptor.delete(endpoint, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return response;
+    } catch (error) {
+        console.error("[API Error] Failed to delete promotion:", error);
+        throw error;
+    }
+};
+
+
 

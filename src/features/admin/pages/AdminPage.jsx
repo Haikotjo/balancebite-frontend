@@ -27,6 +27,7 @@ import CustomSelect from "../../../components/layout/CustomSelect.jsx";
 import RegisterForm from "../../navigation/components/authRegisterForm/RegisterForm.jsx";
 import DeleteDietPlanForm from "../components/deleteDietForm/DeleteMealForm.jsx";
 import CreateStickyItemForm from "../components/createStickyItemForm/CreateStickyItemForm.jsx";
+import PromoteFoodItemForm from "../components/promotefoodItemform/PromoteFoodItemForm.jsx";
 
 /**
  * AdminPage – Central admin dashboard to manage food items, meals, users and future settings.
@@ -64,12 +65,15 @@ const AdminPage = () => {
                             { value: "Create", label: "Create Food Item" },
                             { value: "Delete", label: "Delete Food Item" },
                             { value: "Fetch",  label: "Fetch Food Item(s)" },
+                            { value: "Promote", label: "Promote Food Item" },
                         ]}
                         className="py-2 sm:py-3"
                     />
                     {foodItemAction === "Create" && <CreateFoodItemForm />}
                     {foodItemAction === "Delete" && <DeleteFoodItemForm />}
                     {foodItemAction === "Fetch" && <FetchFoodItemForm />}
+                    {foodItemAction === "Promote" && <PromoteFoodItemForm />}
+
                 </CustomBox>
             );
         }
