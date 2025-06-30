@@ -99,11 +99,14 @@ export const UserDietsProvider = ({ children }) => {
                     });
                 }
 
-                let replaced = [...originals, ...replacements];
+
+                let replaced = [...originals, ...replacements].sort((a, b) => {
+                    const aVal = a[safeSortKey] ?? 0;
+                    const bVal = b[safeSortKey] ?? 0;
+                    return sortOrder === "asc" ? aVal - bVal : bVal - aVal;
+                });
 
                 setDiets(replaced);
-
-
             }
 
             setTotalPages(data.totalPages || 1);

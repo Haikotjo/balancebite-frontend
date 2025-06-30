@@ -25,17 +25,23 @@ const SearchBar = ({ onSearch, onQuerySubmit, placeholder = "Search..." }) => {
                 onChange={(opt) => {
                     if (!opt) return;
 
-                    let payload;
-                    if (opt.type === "user") {
-                        payload = { creatorId: opt.id, creatorUserName: opt.name };
-                    } else {
-                        payload = opt.name;
+                    // Als het een vrije string is (bijv. "bre")
+                    if (typeof opt === "string") {
+                        onQuerySubmit(opt); // Zoek op meals/diets naam
+                        setSearchQuery("");
+                        return;
                     }
 
-                    console.log("SearchBar submission payload:", payload);
-                    onQuerySubmit(payload);
+                    // Als gebruiker expliciet een user aanklikt
+                    if (opt.type === "user") {
+                        onQuerySubmit({ creatorId: opt.id, creatorUserName: opt.name });
+                    } else {
+                        onQuerySubmit(opt.name); // Gaat om diet of meal
+                    }
+
                     setSearchQuery("");
                 }}
+
 
                 getOptionLabel={(opt) => (typeof opt === "string" ? opt : opt.name)}
                 placeholder={placeholder}

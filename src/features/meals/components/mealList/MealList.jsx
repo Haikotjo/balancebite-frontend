@@ -47,41 +47,6 @@ function MealList({ filters, sortBy, selectedMeal, pinnedMeals = [] }) {
         setSortBy(sortBy);
     }, [filters, sortBy, setFilters, setSortBy, location.state]);
 
-    // Show loading spinner
-    if (loading)
-        return (
-            <CustomBox className="flex justify-center items-center min-h-[50vh]">
-                <Spinner />
-            </CustomBox>
-        );
-
-    // Show error message
-    if (error)
-        return (
-            <CustomBox className="flex justify-center items-center min-h-[50vh]">
-                <CustomTypography
-                    as="p"
-                    variant="paragraph"
-                    className="text-red-600"
-                >
-                    Error: {error}
-                </CustomTypography>
-            </CustomBox>
-        );
-
-    // Show empty state
-    if (meals.length === 0)
-        return (
-            <CustomBox className="flex justify-center items-center min-h-[50vh]">
-                <CustomTypography
-                    as="h6"
-                    variant="h5"
-                    className="mb-4"
-                >
-                    No meals found.
-                </CustomTypography>
-            </CustomBox>
-        );
 
     // Render filtered meals in a grid
     return (

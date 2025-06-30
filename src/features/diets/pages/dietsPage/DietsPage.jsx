@@ -13,6 +13,7 @@ import fetchStickyItemDetails from "../../../../utils/helpers/fetchStickyItemDet
 import {getAllPublicDietPlanNames, getStickyItems, searchUsersApi} from "../../../../services/apiService.js";
 import {useLocation} from "react-router-dom";
 import SearchBar from "../../../../components/searchBar/SearchBar.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 
 const DietsPage = () => {
     const {
@@ -38,6 +39,8 @@ const DietsPage = () => {
     const [creatorName, setCreatorName] = useState(null);
     const location = useLocation();
     const [pinnedDiets, setPinnedDiets] = useState([]);
+    const filtersActive = Object.keys(filters).length > 0 || creatorIdFilter;
+
 
     const handleCombinedSearch = async (query) => {
         const [diets, users] = await Promise.all([
@@ -138,13 +141,12 @@ const DietsPage = () => {
                     onSearch={handleCombinedSearch}
                     onQuerySubmit={(val) => {
                         if (typeof val === "string") {
-                            // Gekozen op naam (meal of diet)
                             setFilters((prev) => ({ ...prev, name: val }));
                             setCreatorIdFilter(null);
                         } else if (val.creatorId) {
-                            // Gekozen op user
                             setCreatorIdFilter(val.creatorId);
                             setFilters((prev) => {
+                                // eslint-disable-next-line no-unused-vars
                                 const { name, ...rest } = prev;
                                 return rest;
                             });
@@ -177,12 +179,30 @@ const DietsPage = () => {
 
             {loading ? (
                 <Spinner className="mx-auto my-10" />
+            ) : diets.length === 0 ? (
+                filtersActive ? (
+                    <CustomTypography
+                        variant="paragraph"
+                        color="text-gray-500"
+                        italic
+                        className="text-center mt-10"
+                    >
+                        No diet plans found matching your filters.
+                    </CustomTypography>
+                ) : (
+                    <CustomTypography
+                        variant="paragraph"
+                        color="text-gray-500"
+                        italic
+                        className="text-center mt-10"
+                    >
+                        No public diet plans available yet.
+                    </CustomTypography>
+                )
             ) : (
-                <DietsList
-                    diets={diets}
-                    pinnedDiets={pinnedDiets}
-                />
+                <DietsList diets={diets} pinnedDiets={pinnedDiets} />
             )}
+
 
             {totalPages > 1 && (
                 <CustomBox className="mt-2 mb-20 sm:mb-8">

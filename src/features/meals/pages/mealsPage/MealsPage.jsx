@@ -14,6 +14,8 @@ import fetchStickyItemDetails from "../../../../utils/helpers/fetchStickyItemDet
 import MealFilterContent from "../../components/mealfiltercontent/MealFilterContent.jsx";
 import ActiveFilterChips from "../../../diets/components/activeFilterChips/ActiveFilterChips.jsx";
 import AccordionItem from "../../../diets/components/accordionItem/AccordionItem.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import Spinner from "../../../../components/layout/Spinner.jsx";
 
 function MealPage() {
     const location = useLocation();
@@ -27,10 +29,15 @@ function MealPage() {
         totalPages,
         activeOption,
         setActiveOption,
+        meals,
+        loading,
+        error
     } = useContext(UserMealsContext);
     const [sortBy, setSortBy] = useState(null);
     const [selectedMeal, setSelectedMeal] = useState(null);
     const [pinnedMeals, setPinnedMeals] = useState([]);
+
+    const filtersActive = Object.keys(filters).length > 0 || sortBy;
 
     const handleCombinedSearch = async (query) => {
         const [meals, users] = await Promise.all([
@@ -160,13 +167,38 @@ function MealPage() {
 
             )}
 
-            <MealList
-                sortBy={sortBy}
-                filters={filters}
-                selectedMeal={selectedMeal}
-                onFiltersChange={handleFiltersChange}
-                pinnedMeals={pinnedMeals}
-            />
+            {loading ? (
+                <Spinner className="mx-auto my-10" />
+            ) : error ? (
+                <CustomTypography
+                    variant="paragraph"
+                    color="text-red-600"
+                    className="text-center mt-10"
+                >
+                    Error: {error}
+                </CustomTypography>
+            ) : meals.length === 0 ? (
+                <CustomTypography
+                    variant="paragraph"
+                    italic
+                    color="text-gray-500"
+                    className="text-center mt-10"
+                >
+                    {filtersActive
+                        ? "No meals found matching your filters."
+                        : "No public meals available yet."}
+                </CustomTypography>
+            ) : (
+                <MealList
+                    sortBy={sortBy}
+                    filters={filters}
+                    selectedMeal={selectedMeal}
+                    onFiltersChange={handleFiltersChange}
+                    pinnedMeals={pinnedMeals}
+                />
+            )}
+
+
             {totalPages > 1 && (
                 <CustomBox className="mt-2 mb-20 sm:mb-8">
                     <CustomPagination currentPage={page} totalPages={totalPages} onPageChange={setPage}/>
