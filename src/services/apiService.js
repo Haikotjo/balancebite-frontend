@@ -810,5 +810,16 @@ export const deletePromotionApi = async (promotionId, token) => {
     }
 };
 
+// Fetch all FoodItems by category
+export const fetchFoodItemsByCategory = async (category) => {
+    const endpoint = `${import.meta.env.VITE_FOODITEMS_BY_CATEGORY_ENDPOINT}?category=${encodeURIComponent(category)}`;
+    try {
+        const response = await Interceptor.get(endpoint);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
 
 

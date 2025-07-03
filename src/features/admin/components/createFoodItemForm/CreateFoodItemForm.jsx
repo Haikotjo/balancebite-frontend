@@ -29,7 +29,7 @@ const CreateFoodItemForm = () => {
     });
 
     const { setError, setSuccess, clear, renderDialogs } = useFormMessages();
-    const { onSubmit: createFoodItem, foodSourceOptions } = useCreateFoodItem(reset);
+    const { onSubmit: createFoodItem, foodSourceOptions,foodCategoryOptions } = useCreateFoodItem(reset);
 
     const onSubmit = async (data) => {
         clear();
@@ -107,6 +107,19 @@ const CreateFoodItemForm = () => {
                 placeholder="https://www.example.com/product"
             />
 
+            <CustomFloatingSelect
+                label="Select category"
+                options={foodCategoryOptions}
+                value={
+                    watch("foodCategory")
+                        ? foodCategoryOptions.find(opt => opt.value === watch("foodCategory"))
+                        : null
+                }
+                onChange={(val) => setValue("foodCategory", val?.value || "")}
+                placeholder="Select food category"
+            />
+
+
             <CustomTextField
                 label="Calories (kcal per 100g)"
                 name="calories"
@@ -150,6 +163,29 @@ const CreateFoodItemForm = () => {
                 step="any"
                 placeholder="e.g. 10"
             />
+
+            <CustomTextField
+                label="Saturated Fat (g per 100g)"
+                name="saturatedFat"
+                {...register("saturatedFat")}
+                error={!!errors.saturatedFat}
+                helperText={errors.saturatedFat?.message}
+                type="text"
+                step="any"
+                placeholder="e.g. 3"
+            />
+
+            <CustomTextField
+                label="Unsaturated Fat (g per 100g)"
+                name="unsaturatedFat"
+                {...register("unsaturatedFat")}
+                error={!!errors.unsaturatedFat}
+                helperText={errors.unsaturatedFat?.message}
+                type="text"
+                step="any"
+                placeholder="e.g. 4"
+            />
+
 
             <CustomButton
                 type="submit"

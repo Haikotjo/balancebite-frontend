@@ -22,6 +22,7 @@ import CreateDietPage from "../features/diets/pages/createDietPage/createDietPag
 import UpdateDietPage from "../features/diets/pages/updateDietPage/UpdateDietPage.jsx";
 import ShoppingCartPage from "../pages/shoppingCart/ShoppingCartPage.jsx";
 import DashboardPage from "../features/profile/pages/dashboardPage/DashboardPage.jsx";
+import IngredientsPage from "../features/fooditem/page/IngredientsPage.jsx";
 
 function AppRoutes() {
     return (
@@ -45,6 +46,7 @@ function AppRoutes() {
                 <Route path="/admin" element={<RequireAdmin><AdminPage /></RequireAdmin>} />
                 <Route path="/meal/:mealId" element={<MealDetailsPage />} />
                 <Route path="/diet/:dietId" element={<DietDetailsPage />} />
+                <Route path="/ingredients" element={<IngredientsPage />} />
             </Routes>
         </>
     );
