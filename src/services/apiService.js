@@ -144,11 +144,6 @@ export const createMealApi = async (formData) => {
     return response.data;
 };
 
-export const getAllFoodItems = async () => {
-    const response = await Interceptor.get("/fooditems");
-    return response.data;
-};
-
 export const getAllFoodItemNames = async () => {
     const endpoint = import.meta.env.VITE_FOODITEM_NAMES_ENDPOINT;
     const response = await Interceptor.get(endpoint);
@@ -821,5 +816,17 @@ export const fetchFoodItemsByCategory = async (category) => {
         throw error;
     }
 };
+
+export const getAllFoodItems = async () => {
+    const endpoint = import.meta.env.VITE_GET_ALL_FOODITEMS_ENDPOINT;
+    try {
+        const response = await Interceptor.get(endpoint);
+        return response.data;
+    } catch (error) {
+        console.error("[API Error] Failed to fetch all food items:", error);
+        throw error;
+    }
+};
+
 
 

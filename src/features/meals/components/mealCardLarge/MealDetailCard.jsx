@@ -16,7 +16,7 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 
 const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
-
+    console.log("MealDetailCard - received meal:", meal);
     const { userMeals } = useContext(UserMealsContext);
     const userMealMatch = userMeals.find(m => String(m.originalMealId) === String(meal.id));
     const mealToRender = userMealMatch || meal;
@@ -71,12 +71,12 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
                 />
 
                 {isPage && (
-                <CustomDivider className="my-6" />
+                <CustomDivider/>
                 )}
                 {isListItem && (
                     <>
                         <CustomDivider className="my-2" />
-                    <CustomBox className="my-3 px-7">
+                    <CustomBox className="my-2 px-4">
                         <MealCardMacrosCompact macros={macros} />
                     </CustomBox>
 
@@ -99,37 +99,37 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
                             />
 
 
-                {!shouldHideContent && (
-                    <>
-                        <CustomDivider className="my-6" />
+                {/*{!shouldHideContent && (*/}
+                {/*    <>*/}
+                {/*        <CustomDivider className="my-6" />*/}
 
-                        {/* Ingredients Section */}
-                        <MealCardIngredients ingredients={mealToRender.mealIngredients} />
-                        <CustomDivider className="my-6" />
+                {/*        /!* Ingredients Section *!/*/}
+                {/*        <MealCardIngredients ingredients={mealToRender.mealIngredients} />*/}
+                {/*        <CustomDivider className="my-6" />*/}
 
-                        {/* MealTags Section*/}
-                        {!isListItem && (
-                            <CustomBox className="px-2 py-1 mt-2">
-                                <MealCardMealTags
-                                    cuisines={mealToRender.cuisines}
-                                    diets={mealToRender.diets}
-                                    mealTypes={mealToRender.mealTypes}
-                                    onFilter={handleFilterRedirect}
-                                    forceExpand
-                                    viewMode={viewMode}
-                                />
-                            </CustomBox>
-                        )}
-                        <CustomDivider className="my-6" />
+                {/*        /!* MealTags Section*!/*/}
+                {/*        {!isListItem && (*/}
+                {/*            <CustomBox className="px-2 py-1 mt-2">*/}
+                {/*                <MealCardMealTags*/}
+                {/*                    cuisines={mealToRender.cuisines}*/}
+                {/*                    diets={mealToRender.diets}*/}
+                {/*                    mealTypes={mealToRender.mealTypes}*/}
+                {/*                    onFilter={handleFilterRedirect}*/}
+                {/*                    forceExpand*/}
+                {/*                    viewMode={viewMode}*/}
+                {/*                />*/}
+                {/*            </CustomBox>*/}
+                {/*        )}*/}
+                {/*        <CustomDivider className="my-6" />*/}
 
-                        {/* Nutrition Section */}
-                        <MealCardNutritionToggle
-                            macros={macros}
-                            viewMode={viewMode}
-                        />
+                {/*        /!* Nutrition Section *!/*/}
+                {/*        <MealCardNutritionToggle*/}
+                {/*            macros={macros}*/}
+                {/*            viewMode={viewMode}*/}
+                {/*        />*/}
 
-                    </>
-                )}
+                {/*    </>*/}
+                {/*)}*/}
             </CustomBox>
 
         </CustomCard>

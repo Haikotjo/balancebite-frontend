@@ -1,6 +1,10 @@
 import PropTypes from "prop-types";
 import AccordionItem from "../accordionItem/AccordionItem.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import CustomButton from "../../../../components/layout/CustomButton.jsx";
+import { ExternalLink } from "lucide-react";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import PromotionInfo from "../../../../components/promotioninfo/PromotionInfo.jsx";
 
 const MealAccordion = ({ meal }) => {
     return (
@@ -38,19 +42,28 @@ const MealAccordion = ({ meal }) => {
             >
                 {meal.mealIngredients?.length > 0 ? (
                     meal.mealIngredients.map((ingredient, idx) => (
-                        <CustomTypography
-                            key={idx}
-                            variant="xsmallCard"
-                            className="mb-1"
-                        >
-                            {ingredient.foodItemName || "Unknown ingredient"} – {ingredient.quantity} g
-                        </CustomTypography>
+                        <CustomBox key={idx}>
+                            <CustomTypography variant="xsmallCard" className="mb-1">
+                                {ingredient.foodItemName || "Unknown ingredient"} – {ingredient.quantity} g
+                            </CustomTypography>
+                            {ingredient.foodItem?.promoted && (
+                                <PromotionInfo
+                                    start={ingredient.foodItem.promotionStartDate}
+                                    end={ingredient.foodItem.promotionEndDate}
+                                    source={ingredient.foodItem.source}
+                                    className="ml-4 -mt-1 mb-1"
+                                />
+                            )}
+
+
+                        </CustomBox>
                     ))
                 ) : (
                     <CustomTypography variant="xsmallCard">
                         No ingredients listed.
                     </CustomTypography>
                 )}
+
             </AccordionItem>
 
             {/* Details */}

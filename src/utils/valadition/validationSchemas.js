@@ -86,12 +86,33 @@ export const foodItemSchema = yup.object().shape({
         .min(0, "Carbohydrates cannot be negative")
         .required("Carbohydrates is required"),
 
+    sugars: yup
+        .number()
+        .transform(transformToNumber)
+        .typeError("Sugars must be a number")
+        .min(0, "Sugars cannot be negative")
+        .nullable(),
+
     fat: yup
         .number()
         .transform(transformToNumber)
         .typeError("Fat must be a number")
         .min(0, "Fat cannot be negative")
         .required("Fat is required"),
+
+    saturatedFat: yup
+        .number()
+        .transform(transformToNumber)
+        .typeError("Saturated Fat must be a number")
+        .min(0, "Saturated Fat cannot be negative")
+        .nullable(),
+
+    unsaturatedFat: yup
+        .number()
+        .transform(transformToNumber)
+        .typeError("Unsaturated Fat must be a number")
+        .min(0, "Unsaturated Fat cannot be negative")
+        .nullable(),
 });
 
 export const fdcIdSchema = yup.object().shape({

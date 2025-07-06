@@ -86,14 +86,18 @@ const MealCard = ({ meal, viewMode = "page", onClose, isPinned = false }) => {
                         {meal.name}
                     </CustomTypography>
                     <CustomDivider className="my-6" />
+
                     <CustomTypography className=" italic">
                         {meal.mealDescription}
                     </CustomTypography>
                     <CustomDivider className="my-6" />
+
                     <MealCardIngredients ingredients={meal.mealIngredients} />
                     <CustomDivider className="my-6" />
+
                     <MealCardMacrosSection macros={macros} />
                     <CustomDivider className="my-6" />
+
                     <CustomBox className="flex px-2 py-1 mt-2">
                         <MealCardMealTags
                             cuisines={meal.cuisines}

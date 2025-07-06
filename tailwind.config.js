@@ -44,6 +44,8 @@ export default {
 
         appBarColor: "#DB324D",
 
+        promote: '#facc15',
+
 
         // 🎨 User-configurable kleuren (via CSS variables)
         userPrimary: "var(--user-primary)",

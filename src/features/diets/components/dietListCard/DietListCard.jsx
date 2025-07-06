@@ -5,7 +5,6 @@ import AccordionItem from "../accordionItem/AccordionItem.jsx";
 import DietDayAccordion from "../dietDayAccordion/DietDayAccordion.jsx";
 import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
-import {getAverageNutrients} from "../../utils/helpers/getAverageNutrients.js";
 import { useNavigate } from "react-router-dom";
 import HorizontalScrollSection from "../../../../components/horizontalScrollSection/HorizontalScrollSection.jsx";
 import MealCardCompact from "../../../meals/components/mealCardCompact/MealCardCompact.jsx";
@@ -17,7 +16,6 @@ import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import { Users, UserPen, ExternalLink  } from "lucide-react";
 
 const DietListCard = ({ diet, compact = false, isPinned }) => {
-    const averages = getAverageNutrients(diet.dietDays);
     const navigate = useNavigate();
     const allMeals = diet.dietDays.flatMap((day) => day.meals || []);
     const { setCreatorIdFilter, setActiveOption } = useContext(UserDietsContext);
@@ -84,31 +82,40 @@ const DietListCard = ({ diet, compact = false, isPinned }) => {
 
 
             {/* Average daily macro breakdown */}
-            {averages && (
-                <AverageNutrientSummary averages={averages} dayCount={diet.dietDays.length} />
-
-            )}
-
+                <AverageNutrientSummary diet={diet} dayCount={diet.dietDays.length} />
 
             {/* All diet days */}
-            {!compact && diet.dietDays.map((day) => (
-                <DietDayAccordion key={day.id} day={day} compact />
-            ))}
-
-            {!compact && <CustomDivider className="my-4" />}
+            {!compact && (
+                diet.dietDays.length > 1 ? (
+                    <AccordionItem
+                        title={(isOpen) =>
+                            isOpen
+                                ? `Hide ${diet.dietDays.length} ${diet.dietDays.length === 1 ? "day" : "days"}`
+                                : `View all ${diet.dietDays.length} ${diet.dietDays.length === 1 ? "day" : "days"}`
+                        }
+                    >
+                    {diet.dietDays.map((day) => (
+                            <DietDayAccordion key={day.id} day={day} compact />
+                        ))}
+                    </AccordionItem>
+                ) : (
+                    diet.dietDays.map((day) => (
+                        <DietDayAccordion key={day.id} day={day} compact />
+                    ))
+                )
+            )}
 
             {/* Scrollable overview of all meals in the diet */}
             {allMeals.length > 0 && (
                 <AccordionItem
-                    title={
-                        <CustomTypography variant="paragraphCard">
-                            All Meals in diet
-                        </CustomTypography>
+                    title={(isOpen) =>
+                        isOpen
+                            ? `Hide meals in diet`
+                            : `Show meals in diet`
                     }
-                    defaultOpen={!compact}
-                    headerClassName="hover:bg-gray-100 dark:hover:bg-gray-800"
+                    defaultOpen={false}
                 >
-                    <HorizontalScrollSection
+                <HorizontalScrollSection
                         items={allMeals}
                         renderItem={(meal) => <MealCardCompact meal={meal} />}
                         className="my-0"

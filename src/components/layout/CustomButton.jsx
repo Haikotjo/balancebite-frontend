@@ -15,27 +15,21 @@ import clsx from "clsx";
  * @param {boolean} [disabled] – Uitschakel‑state.
  * @returns {JSX.Element}
  */
-const CustomButton = React.forwardRef(
-    (
-        {
-            as: Component = "button",
-            children,
-            onClick,
-            className = "",
-            type = "button",
-            disabled = false,
-            ...props
-        },
-        ref
-    ) => (
+const CustomButton = React.forwardRef(function CustomButton(
+    { as: Component = "button", children, onClick, className = "", type = "button", disabled = false, variant = "default", ...props },
+    ref
+) {
+    return (
         <Component
             ref={ref}
             type={type}
             onClick={onClick}
             disabled={disabled}
             className={clsx(
-                "text-sm px-2 py-1 rounded-md transition-all",
-                "hover:bg-accent",
+                "text-sm rounded-md transition-all",
+                variant === "link"
+                    ? "p-0 underline text-primary hover:text-primary/60"
+                    : "px-2 py-1 hover:bg-accent",
                 disabled && "opacity-50 cursor-not-allowed",
                 className
             )}
@@ -43,10 +37,9 @@ const CustomButton = React.forwardRef(
         >
             {children}
         </Component>
-    )
-);
+    );
+});
 
-CustomButton.displayName = "CustomButton";
 
 CustomButton.propTypes = {
     as: PropTypes.elementType,
@@ -55,6 +48,8 @@ CustomButton.propTypes = {
     className: PropTypes.string,
     type: PropTypes.oneOf(["button", "submit", "reset"]),
     disabled: PropTypes.bool,
+    variant: PropTypes.oneOf(["default", "link"]),
 };
+
 
 export default CustomButton;

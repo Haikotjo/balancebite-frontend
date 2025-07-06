@@ -154,6 +154,17 @@ const CreateFoodItemForm = () => {
             />
 
             <CustomTextField
+                label="Sugars (g per 100g)"
+                name="sugars"
+                {...register("sugars")}
+                error={!!errors.sugars}
+                helperText={errors.sugars?.message}
+                type="text"
+                step="any"
+                placeholder="e.g. 15"
+            />
+
+            <CustomTextField
                 label="Fat (g per 100g)"
                 name="fat"
                 {...register("fat")}

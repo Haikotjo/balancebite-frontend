@@ -5,6 +5,9 @@ export const calculateMacrosPer100g = (meal) => {
             proteinPer100g: 0,
             carbsPer100g: 0,
             fatsPer100g: 0,
+            sugarsPer100g: 0,
+            saturatedFatPer100g: 0,
+            unsaturatedFatPer100g: 0,
             totalWeight: 0
         };
     }
@@ -17,20 +20,23 @@ export const calculateMacrosPer100g = (meal) => {
             proteinPer100g: 0,
             carbsPer100g: 0,
             fatsPer100g: 0,
+            sugarsPer100g: 0,
+            saturatedFatPer100g: 0,
+            unsaturatedFatPer100g: 0,
             totalWeight: 0
         };
     }
 
-    const caloriesPer100g = (meal.totalCalories / totalWeight) * 100;
-    const proteinPer100g = (meal.totalProtein / totalWeight) * 100;
-    const carbsPer100g = (meal.totalCarbs / totalWeight) * 100;
-    const fatsPer100g = (meal.totalFat / totalWeight) * 100;
+    const calc = (val) => val ? Math.round((val / totalWeight) * 100) : 0;
 
     return {
-        caloriesPer100g: Math.round(caloriesPer100g),
-        proteinPer100g: Math.round(proteinPer100g),
-        carbsPer100g: Math.round(carbsPer100g),
-        fatsPer100g: Math.round(fatsPer100g),
+        caloriesPer100g: calc(meal.totalCalories),
+        proteinPer100g: calc(meal.totalProtein),
+        carbsPer100g: calc(meal.totalCarbs),
+        fatsPer100g: calc(meal.totalFat),
+        sugarsPer100g: calc(meal.totalSugars),
+        saturatedFatPer100g: calc(meal.totalSaturatedFat),
+        unsaturatedFatPer100g: calc(meal.totalUnsaturatedFat),
         totalWeight
     };
 };

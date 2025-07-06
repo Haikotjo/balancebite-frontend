@@ -11,6 +11,7 @@ const BulletText = ({
                         variant = "paragraphCard",
                         bold = false,
                         italic = false,
+                        font = "sans",
                     }) => {
     return (
         <CustomBox as={as} className="flex items-start gap-2">
@@ -23,6 +24,7 @@ const BulletText = ({
                 variant={variant}
                 bold={bold}
                 italic={italic}
+                font={font}
             >
                 {children}
             </CustomTypography>
@@ -37,6 +39,7 @@ BulletText.propTypes = {
     variant: PropTypes.string,
     bold: PropTypes.bool,
     italic: PropTypes.bool,
+    font: PropTypes.oneOf(["sans", "display", "body"]),
 };
 
 export default BulletText;

@@ -117,8 +117,10 @@ const DietsPage = () => {
 
 
     return (
-        <CustomBox className="pt-6 sm:pt-10 px-4 pb-24 sm:pb-10">
-            <DietSubMenu
+        <CustomBox className="pt-6 sm:pt-10 pb-24 sm:pb-16 px-4 md:pl-[40px] ">
+
+
+        <DietSubMenu
                 isDetailPage={false}
                 onSelect={() => {
                 }}

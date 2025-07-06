@@ -9,6 +9,9 @@ import {macroIconClasses, macroIcons} from "../../../../utils/helpers/macroIcons
 import {formatEnum} from "../../../../utils/helpers/formatEnum.js";
 import HorizontalScrollSection from "../../../../components/horizontalScrollSection/HorizontalScrollSection.jsx";
 import MacroSummary from "../macroSummary/MacroSummary.jsx";
+import CustomButton from "../../../../components/layout/CustomButton.jsx";
+import { ExternalLink } from "lucide-react";
+import PromotionInfo from "../../../../components/promotioninfo/PromotionInfo.jsx";
 
 const DietDayCard = ({ day }) => {
 
@@ -26,7 +29,19 @@ const DietDayCard = ({ day }) => {
                 </AccordionItem>
             )}
 
-            <MacroSummary totalNutrients={day.totalNutrients} className="my-4" />
+            <MacroSummary
+                className="my-4"
+                totalNutrients={{
+                    "Energy kcal": { value: Math.round(day.totalCalories) },
+                    "Protein g": { value: Math.round(day.totalProtein) },
+                    "Carbohydrates g": { value: Math.round(day.totalCarbs) },
+                    "Total lipid (fat) g": { value: Math.round(day.totalFat) },
+                    "Saturated fat g": { value: Math.round(day.totalSaturatedFat) },
+                    "Unsaturated fat g": { value: Math.round(day.totalUnsaturatedFat) },
+                    "Sugars g": { value: Math.round(day.totalSugars) },
+                }}
+            />
+
 
             <AccordionItem title="Meals" defaultOpen={true}>
                 {day.meals?.length > 0 ? (
@@ -64,11 +79,22 @@ const DietDayCard = ({ day }) => {
                                     <AccordionItem title="Ingredients">
                                         <CustomBox className="pl-4 space-y-1">
                                             {meal.mealIngredients?.map((ing) => (
-                                                <BulletText key={ing.id} showBullet={false} italic>
-                                                    {ing.foodItemName} – {ing.quantity} g
-                                                </BulletText>
+                                                <CustomBox key={ing.id}>
+                                                    <BulletText showBullet={false} italic>
+                                                        {ing.foodItemName} – {ing.quantity} g
+                                                    </BulletText>
+                                                    {ing.foodItem?.promoted && (
+                                                        <PromotionInfo
+                                                            start={ing.foodItem.promotionStartDate}
+                                                            end={ing.foodItem.promotionEndDate}
+                                                            source={ing.foodItem.source}
+                                                            className="ml-6 mt-1"
+                                                        />
+                                                    )}
+                                                </CustomBox>
                                             ))}
                                         </CustomBox>
+
                                     </AccordionItem>
                                 </CustomBox>
 
@@ -76,13 +102,20 @@ const DietDayCard = ({ day }) => {
                                     <AccordionItem title="Nutrition">
                                         <CustomBox as="ul" className="pl-4 list-none space-y-1">
                                             {[
-                                                { label: "Calories", value: meal.totalCalories, unit: "kcal" },
-                                                { label: "Protein", value: meal.totalProtein, unit: "g" },
-                                                { label: "Carbs", value: meal.totalCarbs, unit: "g" },
-                                                { label: "Fats", value: meal.totalFat, unit: "g" }
-                                            ].map(({ label, value, unit }) => {
+                                                { label: "Calories", key: "totalCalories", unit: "kcal" },
+                                                { label: "Protein", key: "totalProtein", unit: "g" },
+                                                { label: "Carbs", key: "totalCarbs", unit: "g" },
+                                                { label: "Fats", key: "totalFat", unit: "g" },
+                                                { label: "Sat Fat", key: "totalSaturatedFat", unit: "g" },
+                                                { label: "Unsat Fat", key: "totalUnsaturatedFat", unit: "g" },
+                                                { label: "Sugar", key: "totalSugars", unit: "g" }
+                                            ].map(({ label, key, unit }) => {
+                                                const value = meal[key];
+                                                if (value == null) return null;
+
                                                 const Icon = macroIcons[label];
                                                 const iconClass = macroIconClasses[label];
+
                                                 return (
                                                     <CustomBox key={label} className="flex items-center gap-2">
                                                         {Icon && <Icon size={16} className={iconClass} />}
@@ -95,6 +128,7 @@ const DietDayCard = ({ day }) => {
                                         </CustomBox>
                                     </AccordionItem>
                                 </CustomBox>
+
 
                                 <CustomBox className="w-full md:w-[calc(50%-0.5rem)]">
                                     <AccordionItem title="Type">

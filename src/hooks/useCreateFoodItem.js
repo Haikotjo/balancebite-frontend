@@ -24,6 +24,7 @@ export const useCreateFoodItem = (reset) => {
                 { nutrientName: "Energy", value: parseFloat(data.calories), unitName: "kcal", nutrientId: 1008 },
                 { nutrientName: "Protein", value: parseFloat(data.protein), unitName: "g", nutrientId: 1003 },
                 { nutrientName: "Carbohydrates", value: parseFloat(data.carbohydrates), unitName: "g", nutrientId: 1005 },
+                { nutrientName: "Sugars, total", value: parseFloat(data.sugars), unitName: "g", nutrientId: 2000 },
                 { nutrientName: "Total lipid (fat)", value: parseFloat(data.fat), unitName: "g", nutrientId: 1004 },
                 { nutrientName: "Fatty acids, total saturated", value: parseFloat(data.saturatedFat), unitName: "g", nutrientId: 1258 },
                 { nutrientName: "Fatty acids, total unsaturated", value: parseFloat(data.unsaturatedFat), unitName: "g", nutrientId: 1999 },

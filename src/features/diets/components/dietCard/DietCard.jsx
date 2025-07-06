@@ -5,18 +5,20 @@ import {formatEnum} from "../../../../utils/helpers/formatEnum.js";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import DietCardActionButtons from "../dietCardActionButtons/DietCardActionButtons.jsx";
-import {getAverageNutrients} from "../../utils/helpers/getAverageNutrients.js";
 import AverageNutrientSummary from "../averageNutrientSummary/AverageNutrientSummary.jsx";
 import { Users, UserPen } from "lucide-react";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
-import {useContext} from "react";
+import {useContext, useEffect} from "react";
 import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
 import {useNavigate} from "react-router-dom";
 
 const DietCard = ({ diet, viewMode = "card", isPinned = false }) => {
-    const averages = getAverageNutrients(diet.dietDays);
     const { setCreatorIdFilter, setActiveOption } = useContext(UserDietsContext);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        console.log("Received diet:", diet);
+    }, [diet]);
 
     return (
         <CustomBox
@@ -72,11 +74,9 @@ const DietCard = ({ diet, viewMode = "card", isPinned = false }) => {
             )}
 
             {/* Average daily macro breakdown */}
-            {averages && (
                 <CustomBox className="my-4">
-                    <AverageNutrientSummary averages={averages} dayCount={diet.dietDays.length} showDivider={false} />
+                    <AverageNutrientSummary diet={diet} dayCount={diet.dietDays.length} showDivider={false} />
                 </CustomBox>
-            )}
 
             {diet.diets?.length > 0 && (
                 <CustomBox className="mb-4">

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import BulletText from "../../../../components/layout/BulletText.jsx";
+import PromotionInfo from "../../../../components/promotioninfo/PromotionInfo.jsx";
 
 /**
  * Displays a styled list of meal ingredients with bullet points.
@@ -15,6 +16,8 @@ import BulletText from "../../../../components/layout/BulletText.jsx";
 const MealCardIngredients = ({ ingredients }) => {
     if (!ingredients?.length) return null;
 
+    console.log("MealCardIngredients received:", ingredients);
+
     return (
         <>
             <CustomTypography variant="h4" bold className="mb-2">
@@ -26,8 +29,22 @@ const MealCardIngredients = ({ ingredients }) => {
                     <BulletText key={ingredient.id}>
                         <CustomTypography className="text-sm">
                             {`${ingredient.foodItemName} - `}
-                            <span className="text-[0.7rem] md:text-[0.85rem]">({ingredient.quantity} gram)</span>
+                            <CustomTypography as="span" variant="xsmallCard">
+                                ({ingredient.quantity} gram)
+                            </CustomTypography>
                         </CustomTypography>
+
+                        {ingredient.foodItem?.promoted && (
+                            <PromotionInfo
+                                start={ingredient.foodItem.promotionStartDate}
+                                end={ingredient.foodItem.promotionEndDate}
+                                source={ingredient.foodItem.source}
+                                className="ml-6 mt-1"
+                            />
+                        )}
+
+
+
                     </BulletText>
                 ))}
             </CustomBox>

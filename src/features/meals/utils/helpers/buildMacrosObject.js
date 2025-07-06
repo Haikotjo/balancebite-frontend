@@ -19,4 +19,19 @@ export const buildMacrosObject = (meal, calculatedMacros) => ({
         per100g: Math.round(calculatedMacros.fatsPer100g),
         unit: "g",
     },
+    Sugars: {
+        total: Math.round(meal.totalSugars),
+        per100g: Math.round(calculatedMacros.sugarsPer100g),
+        unit: "g",
+    },
+    SaturatedFat: {
+        total: Math.round(meal.totalSaturatedFat),
+        per100g: Math.round(calculatedMacros.saturatedFatPer100g),
+        unit: "g",
+    },
+    UnsaturatedFat: {
+        total: Math.round(meal.totalUnsaturatedFat),
+        per100g: Math.round(calculatedMacros.unsaturatedFatPer100g),
+        unit: "g",
+    },
 });
