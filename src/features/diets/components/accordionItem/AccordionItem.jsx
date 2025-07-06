@@ -36,10 +36,11 @@ const AccordionItem = ({ title, children, defaultOpen = false, className }) => {
 };
 
 AccordionItem.propTypes = {
-    title: PropTypes.node.isRequired,
+    title: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
     children: PropTypes.node.isRequired,
     defaultOpen: PropTypes.bool,
     className: PropTypes.string,
+
 };
 
 export default AccordionItem;

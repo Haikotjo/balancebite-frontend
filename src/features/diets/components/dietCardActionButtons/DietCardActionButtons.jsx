@@ -8,6 +8,7 @@ import ButtonFavoriteDiet from "../buttonFavoriteDiet/ButtonFavoriteDiet.jsx";
 import ButtonOpenShoppingCart from "../buttonOpenShoppingCart/ButtonOpenShoppingCart.jsx";
 import PrivacyToggles from "../../../../components/privacytoggles/PrivacyToggles.jsx";
 import {AuthContext} from "../../../../context/AuthContext.jsx";
+import ViewDietButton from "../viewdietbutton/ViewDietButton.jsx";
 
 /**
  * Displays a horizontal group of diet-related action buttons.
@@ -55,6 +56,12 @@ const DietCardActionButtons = ({ diet, iconSize = 35, viewMode = "card", isPinne
                             <ButtonOpenShoppingCart dietId={diet.id} />
                         </CustomBox>
                     </>
+                )}
+
+                {viewMode === "modal" && (
+                    <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
+                        <ViewDietButton dietId={diet.id} iconSize={iconSize} />
+                    </CustomBox>
                 )}
             </CustomBox>
 

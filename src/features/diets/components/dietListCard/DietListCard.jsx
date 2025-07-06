@@ -13,156 +13,188 @@ import AverageNutrientSummary from "../averageNutrientSummary/AverageNutrientSum
 import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
 import {useContext, useState} from "react";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
-import { Users, UserPen, ExternalLink  } from "lucide-react";
+import { Users, UserPen, Maximize } from "lucide-react";
+import ImageScrollSection from "../../../../components/imagescrollsection/ImageScrollSection.jsx";
+import {twMerge} from "tailwind-merge";
+import DietModal from "../dietmodal/DietModal.jsx";
+import {useModal} from "../../../../context/useModal.js";
 
-const DietListCard = ({ diet, compact = false, isPinned }) => {
+const DietListCard = ({ diet, compact, isPinned }) => {
     const navigate = useNavigate();
     const allMeals = diet.dietDays.flatMap((day) => day.meals || []);
     const { setCreatorIdFilter, setActiveOption } = useContext(UserDietsContext);
     const [showFullDescription, setShowFullDescription] = useState(false);
     const role = diet.createdBy?.roles?.[0]?.roleName?.toUpperCase();
+    const imageUrls = diet.dietDays.flatMap((day) =>
+        (day.meals || []).map((meal) => meal.imageUrl).filter(Boolean)
+    );
+    const { openModal } = useModal();
 
+    console.log("DietListCard compact:", compact);
     return (
-        <CustomCard className="p-4" isPinned={isPinned} createdByRole={role}>
-            <CustomBox className="mb-2 flex gap-2 justify-end">
-                <DietCardActionButtons diet={diet} viewMode="card" isPinned={isPinned} />
-            </CustomBox>
-            {/* Diet title with navigation link */}
-            <CustomBox
-                className="mb-2 flex items-center gap-2 max-w-full min-w-0 cursor-pointer hover:text-primary"
-                onClick={() => window.open(`/diet/${diet.id}`, "_blank")}
-            >
-                <CustomTypography variant="h4" className="break-words truncate max-w-full">
-                    {diet.name}
-                </CustomTypography>
-                <ExternalLink size={18} className="shrink-0" />
-            </CustomBox>
+        <CustomCard isPinned={isPinned} createdByRole={role} className="overflow-hidden">
 
+            {imageUrls.length > 0 && (
+                <CustomBox className={`-mx-4 -mt-4 ${compact ? "mb-0" : "mb-4"} relative`}>
+                <ImageScrollSection images={imageUrls} scrollSpeed={1} />
 
-            <CustomDivider className="my-2" />
-
-            {/* Diet description (if provided) */}
-            {diet.dietDescription && (
-                <>
-                    <CustomTypography variant="paragraph" className="mb-4 italic">
-                        {showFullDescription ? (
-                            <>
-                                {diet.dietDescription}
-                                {' '}
-                                <CustomBox
-                                    as="span"
-                                    onClick={() => setShowFullDescription(false)}
-                                    className="text-primary underline cursor-pointer"
-                                >
-                                    Show less
-                                </CustomBox>
-                            </>
-                        ) : (
-                            <>
-                                {diet.dietDescription.slice(0, 100)}
-                                {diet.dietDescription.length > 100 && (
-                                    <>
-                                        {' '}
-                                        <CustomBox
-                                            as="span"
-                                            onClick={() => setShowFullDescription(true)}
-                                            className="text-primary underline cursor-pointer"
-                                        >
-                                            Show more...
-                                        </CustomBox>
-                                    </>
-                                )}
-                            </>
-                        )}
-                    </CustomTypography>
-
-                    <CustomDivider className="mb-2" />
-                </>
+                    {/* Achtergrond direct achter de knoppen */}
+                    <CustomBox className="absolute top-4 right-4 z-10 px-2 py-1 bg-black/40 rounded-md">
+                        <DietCardActionButtons diet={diet} viewMode="card" isPinned={isPinned} />
+                    </CustomBox>
+                </CustomBox>
             )}
 
 
-            {/* Average daily macro breakdown */}
-                <AverageNutrientSummary diet={diet} dayCount={diet.dietDays.length} />
 
-            {/* All diet days */}
-            {!compact && (
-                diet.dietDays.length > 1 ? (
+
+            <CustomBox className={twMerge(compact ? "p-4" : "px-4 pb-2")} >
+
+                {/*<DietCardActionButtons diet={diet} viewMode="card" isPinned={isPinned} />*/}
+
+                {/* Diet title with navigation link */}
+                <CustomBox
+                    className="mb-2 flex items-center gap-2 max-w-full min-w-0 cursor-pointer hover:text-primary"
+                    onClick={() => openModal(<DietModal diet={diet} isPinned={isPinned} />, "diet")}
+                >
+                    <CustomTypography variant="h4" className="break-words truncate max-w-full">
+                        {diet.name}
+                    </CustomTypography>
+                    <Maximize size={18} className="shrink-0" />
+                </CustomBox>
+
+
+
+                <CustomDivider className="my-2" />
+
+                {/* Diet description (if provided) */}
+                {diet.dietDescription && (
+                    <>
+                        <CustomTypography variant="paragraph" className="mb-4 italic">
+                            {showFullDescription ? (
+                                <>
+                                    {diet.dietDescription}
+                                    {' '}
+                                    <CustomBox
+                                        as="span"
+                                        onClick={() => setShowFullDescription(false)}
+                                        className="text-primary underline cursor-pointer"
+                                    >
+                                        Show less
+                                    </CustomBox>
+                                </>
+                            ) : (
+                                <>
+                                    {diet.dietDescription.slice(0, 100)}
+                                    {diet.dietDescription.length > 100 && (
+                                        <>
+                                            {' '}
+                                            <CustomBox
+                                                as="span"
+                                                onClick={() => setShowFullDescription(true)}
+                                                className="text-primary underline cursor-pointer"
+                                            >
+                                                Show more...
+                                            </CustomBox>
+                                        </>
+                                    )}
+                                </>
+                            )}
+                        </CustomTypography>
+
+                        <CustomDivider className="mb-2" />
+                    </>
+                )}
+
+
+                {/* Average daily macro breakdown */}
+                <AverageNutrientSummary
+                    diet={diet}
+                    dayCount={diet.dietDays.length}
+                    isListCard
+                    compact={compact}
+                />
+
+                {/* All diet days */}
+                {!compact && (
+                    diet.dietDays.length > 1 ? (
+                        <AccordionItem
+                            title={(isOpen) =>
+                                isOpen
+                                    ? `Hide ${diet.dietDays.length} ${diet.dietDays.length === 1 ? "day" : "days"}`
+                                    : `Show ${diet.dietDays.length} ${diet.dietDays.length === 1 ? "day" : "days"}`
+                            }
+                        >
+                            {diet.dietDays.map((day) => (
+                                <DietDayAccordion key={day.id} day={day} compact />
+                            ))}
+                        </AccordionItem>
+                    ) : (
+                        diet.dietDays.map((day) => (
+                            <DietDayAccordion key={day.id} day={day} compact />
+                        ))
+                    )
+                )}
+
+                {/* Scrollable overview of all meals in the diet */}
+                {allMeals.length > 0 && (
                     <AccordionItem
                         title={(isOpen) =>
                             isOpen
-                                ? `Hide ${diet.dietDays.length} ${diet.dietDays.length === 1 ? "day" : "days"}`
-                                : `View all ${diet.dietDays.length} ${diet.dietDays.length === 1 ? "day" : "days"}`
+                                ? `Hide meals in diet`
+                                : `Show meals in diet`
                         }
+                        defaultOpen={false}
                     >
-                    {diet.dietDays.map((day) => (
-                            <DietDayAccordion key={day.id} day={day} compact />
-                        ))}
+                        <HorizontalScrollSection
+                            items={allMeals}
+                            renderItem={(meal) => <MealCardCompact meal={meal} />}
+                            className="my-0"
+                        />
                     </AccordionItem>
-                ) : (
-                    diet.dietDays.map((day) => (
-                        <DietDayAccordion key={day.id} day={day} compact />
-                    ))
-                )
-            )}
+                )}
 
-            {/* Scrollable overview of all meals in the diet */}
-            {allMeals.length > 0 && (
-                <AccordionItem
-                    title={(isOpen) =>
-                        isOpen
-                            ? `Hide meals in diet`
-                            : `Show meals in diet`
-                    }
-                    defaultOpen={false}
-                >
-                <HorizontalScrollSection
-                        items={allMeals}
-                        renderItem={(meal) => <MealCardCompact meal={meal} />}
-                        className="my-0"
-                    />
-                </AccordionItem>
-            )}
+                {/* Creator info (if available) */}
+                <CustomBox className="flex items-center justify-between w-full mt-2">
+                    {/* Left side: creator + updatedAt */}
+                    <CustomBox className="flex items-center gap-4">
+                        {diet.createdBy?.userName && (
+                            <CustomButton
+                                type="button"
+                                onClick={() => {
+                                    setCreatorIdFilter(diet.createdBy.id);
+                                    setActiveOption("All Diets");
+                                    if (!window.location.pathname.includes("/diets")) {
+                                        navigate("/diets");
+                                    }
+                                }}
+                                className="flex items-center gap-1 bg-transparent text-inherit hover:text-primary"
+                            >
+                                <UserPen size={14} />
+                                <CustomTypography variant="small" className="italic">
+                                    {diet.createdBy.userName}
+                                </CustomTypography>
+                            </CustomButton>
+                        )}
 
-            {/* Creator info (if available) */}
-            <CustomBox className="flex items-center justify-between w-full mt-2">
-                {/* Left side: creator + updatedAt */}
-                <CustomBox className="flex items-center gap-4">
-                    {diet.createdBy?.userName && (
-                        <CustomButton
-                            type="button"
-                            onClick={() => {
-                                setCreatorIdFilter(diet.createdBy.id);
-                                setActiveOption("All Diets");
-                                if (!window.location.pathname.includes("/diets")) {
-                                    navigate("/diets");
-                                }
-                            }}
-                            className="flex items-center gap-1 bg-transparent text-inherit hover:text-primary"
-                        >
-                            <UserPen size={14} />
-                            <CustomTypography variant="small" className="italic">
-                                {diet.createdBy.userName}
+                        {diet.updatedAt && (
+                            <CustomTypography variant="xsmallCard" className="italic">
+                                {new Date(diet.updatedAt).toLocaleDateString()}
                             </CustomTypography>
-                        </CustomButton>
-                    )}
+                        )}
+                    </CustomBox>
 
-                    {diet.updatedAt && (
-                        <CustomTypography variant="xsmallCard" className="italic">
-                            {new Date(diet.updatedAt).toLocaleDateString()}
+                    {/* Right side: save count */}
+                    {diet.template && diet.saveCount !== undefined && (
+                        <CustomTypography
+                            variant="xsmallCard"
+                            className="italic flex items-center gap-1"
+                        >
+                            <Users size={14} />
+                            {diet.saveCount}
                         </CustomTypography>
                     )}
                 </CustomBox>
-
-                {/* Right side: save count */}
-                {diet.template && diet.saveCount !== undefined && (
-                    <CustomTypography
-                        variant="xsmallCard"
-                        className="italic flex items-center gap-1"
-                    >
-                        <Users size={14} />
-                        {diet.saveCount}
-                    </CustomTypography>
-                )}
             </CustomBox>
         </CustomCard>
     );

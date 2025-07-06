@@ -53,8 +53,9 @@ const MacroSummary = ({
     };
 
     return (
-        <CustomBox className={`flex flex-wrap gap-x-4 items-center ${className}`}>
-            {showLabel && (
+        <CustomBox className={`flex flex-wrap gap-x-4 gap-y-2 items-center ${className}`}>
+
+        {showLabel && (
                 <CustomBox className="flex items-center mb-1 w-full sm:w-auto">
                     <CustomTypography
                         variant="xsmallCard"

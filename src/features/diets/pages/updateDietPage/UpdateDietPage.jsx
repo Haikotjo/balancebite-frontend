@@ -22,7 +22,7 @@ const UpdateDietPage = () => {
 
     if (loading) {
         return (
-            <CustomBox className="flex flex-col items-center justify-center h-[calc(100vh-64px)]">
+            <CustomBox className="flex flex-col items-center justify-center ">
                 <Spinner />
                 <CustomTypography
                     as="p"
@@ -36,7 +36,7 @@ const UpdateDietPage = () => {
     }
 
     return (
-        <CustomBox className="max-w-[600px] mx-auto px-2 sm:px-4 pb-[4rem] sm:pb-[2rem] overflow-y-auto h-[calc(100vh-64px)] md:overflow-visible md:h-auto">
+        <CustomBox className="mx-auto px-2 pb-20 pt-10 sm:px-4">
             <UpdateDietForm onSubmit={handleUpdate} />
 
             {showDialog && (

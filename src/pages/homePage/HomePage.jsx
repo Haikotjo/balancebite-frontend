@@ -154,7 +154,7 @@ function HomePage() {
                     <CustomBox className="w-full max-w-[280px]">
                         <DietListCard
                             diet={diet}
-                            compact
+                            compact={true}
                             onAdd={(newDiet) => replaceDietInDiets(diet.id, newDiet)}
                             onRemove={() => removeDietFromUserDiets(diet.id)}
                         />

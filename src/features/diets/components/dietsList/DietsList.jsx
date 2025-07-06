@@ -27,6 +27,7 @@ const DietsList = ({ diets, pinnedDiets = [] }) => {
                         <DietListCard
                             diet={dietToRender}
                             isPinned={pinnedDietIds.has(String(diet.id))}
+                            compact ={false}
                         />
                     </CustomBox>
                 );

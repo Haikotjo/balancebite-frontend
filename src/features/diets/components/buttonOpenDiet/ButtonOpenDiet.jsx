@@ -1,23 +1,26 @@
 import PropTypes from "prop-types";
-import { Maximize, Minimize  } from "lucide-react";
+import { Maximize, Minimize } from "lucide-react";
 import { useModal } from "../../../../context/useModal.js";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 import DietModal from "../dietmodal/DietModal.jsx";
 
 const ButtonOpenDiet = ({ diet, isPinned = false }) => {
-    const { openModal, closeModal, modalType } = useModal();
+    const { openModal, closeModal, modalType, modalData } = useModal();
 
-    const isOpen = modalType === "diet"; // 🆕
+    if (!diet?.id) return null;
+
+    const isOpen = modalType === "diet" && modalData?.id === diet.id;
 
     const handleClick = () => {
-        if (!diet || !diet.id) return;
-        isOpen ? closeModal() : openModal(<DietModal diet={diet} isPinned={isPinned} />, "diet");
+        isOpen
+            ? closeModal()
+            : openModal(<DietModal diet={diet} isPinned={isPinned} />, "diet", { id: diet.id });
     };
 
     return (
         <CustomIconButton
             onClick={handleClick}
-            icon={isOpen ? <Minimize  size={20} color="white" /> : <Maximize size={20} color="white" />}
+            icon={isOpen ? <Minimize size={20} color="white" /> : <Maximize size={20} color="white" />}
             size={35}
         />
     );

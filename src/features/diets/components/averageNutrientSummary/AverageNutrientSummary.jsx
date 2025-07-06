@@ -3,9 +3,12 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 import MacroSummary from "../macroSummary/MacroSummary.jsx";
+import AccordionItem from "../accordionItem/AccordionItem.jsx";
 
-const AverageNutrientSummary = ({ diet, dayCount, showDivider = true }) => {
+const AverageNutrientSummary = ({ diet, dayCount, showDivider = true, isListCard = false, compact = false}) => {
     // Don't render if any required value is missing
+    console.log("AverageNutrientSummary compact:", compact);
+
     if (
         !diet ||
         diet.avgCalories == null ||
@@ -17,31 +20,54 @@ const AverageNutrientSummary = ({ diet, dayCount, showDivider = true }) => {
         diet.avgSugars == null
     ) return null;
 
+    const totalNutrients = {
+        "Energy kcal": { value: Math.round(diet.avgCalories) },
+        "Protein g": { value: Math.round(diet.avgProtein) },
+        "Total lipid (fat) g": { value: Math.round(diet.avgFat) },
+        "Carbohydrates g": { value: Math.round(diet.avgCarbs) },
+    };
+
+    if (!isListCard) {
+        totalNutrients["Saturated fat g"] = { value: Math.round(diet.avgSaturatedFat) };
+        totalNutrients["Unsaturated fat g"] = { value: Math.round(diet.avgUnsaturatedFat) };
+        totalNutrients["Sugars g"] = { value: Math.round(diet.avgSugars) };
+    }
+
+
     return (
         <CustomBox>
-            <CustomTypography variant="small" className="mb-1 italic">
+            <CustomTypography variant="small" className="mb-1 italic" bold>
                 ({dayCount}-day diet)
             </CustomTypography>
 
-            <CustomTypography variant="small" className="mb-2 italic">
-                Average daily intake:
-            </CustomTypography>
+            {compact ? (
+                <AccordionItem
+                    title={(isOpen) => isOpen ? "Hide daily averages" : "View daily averages"}
+                    defaultOpen={false}
+                >
+                    <MacroSummary
+                        showLabel={false}
+                        showDayBreakdown={false}
+                        className="mb-2"
+                        diet={diet}
+                        totalNutrients={totalNutrients}
+                    />
+                </AccordionItem>
+            ) : (
+                <>
+                    <CustomTypography variant="small" className="mb-2 italic" font="body" bold>
+                        Daily averages:
+                    </CustomTypography>
+                    <MacroSummary
+                        showLabel={false}
+                        showDayBreakdown={false}
+                        className="mb-2"
+                        diet={diet}
+                        totalNutrients={totalNutrients}
+                    />
+                </>
+            )}
 
-            <MacroSummary
-                showLabel={false}
-                showDayBreakdown ={false}
-                className="mb-2"
-                diet={diet}
-                totalNutrients={{
-                    "Energy kcal": { value: Math.round(diet.avgCalories) },
-                    "Protein g": { value: Math.round(diet.avgProtein) },
-                    "Total lipid (fat) g": { value: Math.round(diet.avgFat) },
-                    "Carbohydrates g": { value: Math.round(diet.avgCarbs) },
-                    "Saturated fat g": { value: Math.round(diet.avgSaturatedFat) },
-                    "Unsaturated fat g": { value: Math.round(diet.avgUnsaturatedFat) },
-                    "Sugars g": { value: Math.round(diet.avgSugars) },
-                }}
-            />
 
             {showDivider && <CustomDivider className="my-4" />}
         </CustomBox>
@@ -60,6 +86,8 @@ AverageNutrientSummary.propTypes = {
     }).isRequired,
     dayCount: PropTypes.number.isRequired,
     showDivider: PropTypes.bool,
+    isListCard: PropTypes.bool,
+    compact: PropTypes.bool,
 };
 
 export default AverageNutrientSummary;

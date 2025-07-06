@@ -17,8 +17,8 @@ const ViewMealButton = ({ mealId, iconSize = 35 }) => {
     const { closeModal } = useContext(ModalContext);
 
     const handleClick = () => {
-        closeModal();                  // sluit de modal
-        navigate(`/meal/${mealId}`);  // ga naar detailpagina
+        closeModal();               
+        navigate(`/meal/${mealId}`);
     };
 
     return (
