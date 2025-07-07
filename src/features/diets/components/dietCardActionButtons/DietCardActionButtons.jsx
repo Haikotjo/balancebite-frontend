@@ -35,7 +35,7 @@ const DietCardActionButtons = ({ diet, iconSize = 35, viewMode = "card", isPinne
 
     return (
         <CustomBox className="flex flex-row items-center justify-between w-full">
-            <CustomBox className="flex flex-row items-center gap-2">
+            <CustomBox className="flex flex-row items-center gap-4">
                 <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
                     <ButtonFavoriteDiet diet={diet} />
                 </CustomBox>

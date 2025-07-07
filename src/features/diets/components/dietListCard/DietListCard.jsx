@@ -34,16 +34,19 @@ const DietListCard = ({ diet, compact, isPinned }) => {
     return (
         <CustomCard isPinned={isPinned} createdByRole={role} className="overflow-hidden">
 
-            {imageUrls.length > 0 && (
+            {imageUrls.length > 0 ? (
                 <CustomBox className={`-mx-4 -mt-4 ${compact ? "mb-0" : "mb-4"} relative`}>
-                <ImageScrollSection images={imageUrls} scrollSpeed={1} />
-
-                    {/* Achtergrond direct achter de knoppen */}
-                    <CustomBox className="absolute top-4 right-4 z-10 px-2 py-1 bg-black/40 rounded-md">
+                    <ImageScrollSection images={imageUrls} scrollSpeed={1} />
+                    <CustomBox className="absolute top-4 right-4 z-10 px-2 py-2 bg-black/40 rounded-md">
                         <DietCardActionButtons diet={diet} viewMode="card" isPinned={isPinned} />
                     </CustomBox>
                 </CustomBox>
+            ) : (
+                <CustomBox className="mb-2 p-2 flex justify-end">
+                    <DietCardActionButtons diet={diet} viewMode="card" isPinned={isPinned} />
+                </CustomBox>
             )}
+
 
 
 
