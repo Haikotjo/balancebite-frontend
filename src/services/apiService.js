@@ -844,6 +844,98 @@ export const updateDietPlanRestrictionApi = async (dietPlanId, isRestricted, tok
     return response.data;
 };
 
+// ========== USER DIETITIAN SERVICES ==========
 
+export const inviteClientApi = async (email) => {
+    const endpoint = import.meta.env.VITE_INVITE_CLIENT_ENDPOINT;
+    const token = localStorage.getItem("accessToken");
 
+    try {
+        const response = await Interceptor.post(
+            endpoint,
+            { clientEmail: email },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
 
+export const shareMealApi = async (mealId, payload) => {
+    const endpoint = `${import.meta.env.VITE_SHARE_MEAL_ENDPOINT}/${mealId}/share`;
+    const token = localStorage.getItem("accessToken");
+
+    try {
+        const response = await Interceptor.patch(endpoint, payload, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+export const shareDietPlanApi = async (dietPlanId, payload) => {
+    const endpoint = `${import.meta.env.VITE_SHARE_DIETPLAN_ENDPOINT}/${dietPlanId}/share`;
+    const token = localStorage.getItem("accessToken");
+
+    try {
+        const response = await Interceptor.patch(endpoint, payload, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+export const createMealAsDietitianApi = async (formData) => {
+    const endpoint = import.meta.env.VITE_DIETITIAN_CREATE_MEAL_ENDPOINT;
+    const token = localStorage.getItem("accessToken");
+
+    try {
+        const response = await Interceptor.post(endpoint, formData, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            },
+        });
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+export const createDietPlanAsDietitianApi = async (payload) => {
+    const endpoint = import.meta.env.VITE_DIETITIAN_CREATE_DIETPLAN_ENDPOINT;
+    const token = localStorage.getItem("accessToken");
+
+    try {
+        const response = await Interceptor.post(endpoint, payload, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
