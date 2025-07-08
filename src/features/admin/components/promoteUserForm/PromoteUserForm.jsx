@@ -29,7 +29,9 @@ const PromoteUserForm = () => {
     const roleOptions = [
         { value: "USER", label: "USER" },
         { value: "CHEF", label: "CHEF" },
-        { value: "ADMIN", label: "ADMIN" }
+        { value: "ADMIN", label: "ADMIN" },
+        { value: "RESTAURANT", label: "RESTAURANT" },
+        { value: "DIETITIAN", label: "DIETITIAN" }
     ];
 
     const handlePromote = async () => {

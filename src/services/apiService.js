@@ -828,5 +828,22 @@ export const getAllFoodItems = async () => {
     }
 };
 
+export const updateMealRestrictionApi = async (mealId, isRestricted, token) => {
+    const endpoint = `${import.meta.env.VITE_UPDATE_MEAL_RESTRICTION_ENDPOINT.replace("{mealId}", mealId)}?isRestricted=${isRestricted}`;
+    const response = await Interceptor.patch(endpoint, null, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+};
+
+export const updateDietPlanRestrictionApi = async (dietPlanId, isRestricted, token) => {
+    const endpoint = `${import.meta.env.VITE_UPDATE_DIETPLAN_RESTRICTION_ENDPOINT.replace("{dietPlanId}", dietPlanId)}?isRestricted=${isRestricted}`;
+    const response = await Interceptor.patch(endpoint, null, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+};
+
+
 
 

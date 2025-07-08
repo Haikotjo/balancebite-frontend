@@ -30,9 +30,11 @@ const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page", onClose
     return (
         <CustomBox className="flex flex-row items-center justify-between w-full">
             <CustomBox className="flex flex-row items-center gap-2">
-                <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
-                    <ButtonFavorite meal={meal} onClose={onClose} />
-                </CustomBox>
+                {(!meal.isRestricted || isCreatedByUser) && (
+                    <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
+                        <ButtonFavorite meal={meal} onClose={onClose} />
+                    </CustomBox>
+                )}
 
                 <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
                     <EatButton
@@ -65,6 +67,7 @@ const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page", onClose
                     <PrivacyToggles
                         mealId={meal.id}
                         initialMealPrivate={!!meal.isPrivate}
+                        initialMealRestricted={!!meal.isRestricted}
                     />
                 </CustomBox>
             )}

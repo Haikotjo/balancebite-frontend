@@ -36,9 +36,12 @@ const DietCardActionButtons = ({ diet, iconSize = 35, viewMode = "card", isPinne
     return (
         <CustomBox className="flex flex-row items-center justify-between w-full">
             <CustomBox className="flex flex-row items-center gap-4">
-                <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
-                    <ButtonFavoriteDiet diet={diet} />
-                </CustomBox>
+                {(!diet.isRestricted || isCreatedByUser) && (
+                    <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
+                        <ButtonFavoriteDiet diet={diet} />
+                    </CustomBox>
+                )}
+
 
                 {viewMode !== "page" && (
                     <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
@@ -70,6 +73,7 @@ const DietCardActionButtons = ({ diet, iconSize = 35, viewMode = "card", isPinne
                     <PrivacyToggles
                         dietPlanId={diet.id}
                         initialDietPrivate={!!diet.isPrivate}
+                        initialDietRestricted={!!diet.isRestricted}
                     />
                 </CustomBox>
             )}
