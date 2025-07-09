@@ -19,15 +19,21 @@ const MealDetailsPage = () => {
 
     useEffect(() => {
         const fetchMeal = async () => {
-            setLoading(true);
-            const result = await getMealById(mealId);
-            if (result) {
-                setMeal(result);
-                setError(null);
-            } else {
+            try {
+                setLoading(true);
+                const result = await getMealById(mealId);
+                if (result) {
+                    setMeal(result);
+                    setError(null);
+                } else {
+                    setError("Meal not found");
+                }
+            } catch (err) {
+                console.error("Failed to fetch meal:", err);
                 setError("Meal not found");
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         };
 
         if (mealId) {
@@ -35,18 +41,24 @@ const MealDetailsPage = () => {
         }
     }, [mealId, getMealById]);
 
+
     if (loading) {
         return (
-            <CustomBox className="flex justify-center mt-10">
-                <Spinner />
-            </CustomBox>
+            <>
+                <CustomBox className="mb-4 pt-10">
+                    <SubMenu isDetailPage />
+                </CustomBox>
+                <CustomBox className="flex justify-center pt-10">
+                    <Spinner />
+                </CustomBox>
+            </>
         );
     }
 
     if (error || !meal) {
         return (
             <>
-                <CustomBox className="mb-4 mt-10">
+                <CustomBox className="mb-4 pt-10">
                     <SubMenu isDetailPage />
                 </CustomBox>
                 <CustomTypography className="text-2xl font-bold text-center mt-10 text-error">

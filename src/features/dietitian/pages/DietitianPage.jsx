@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {inviteClientApi} from "../../../services/apiService.js";
+import CreateMealAsDietitianForm from "../components/CreateMealAsDietitianForm.jsx";
 
 
 const DietitianPage = () => {
@@ -41,6 +42,10 @@ const DietitianPage = () => {
             </form>
             {message && <p className="mt-4 text-green-600">{message}</p>}
             {error && <p className="mt-4 text-red-600">{error}</p>}
+            <div className="mt-12">
+                <CreateMealAsDietitianForm/>
+            </div>
+
         </div>
     );
 };

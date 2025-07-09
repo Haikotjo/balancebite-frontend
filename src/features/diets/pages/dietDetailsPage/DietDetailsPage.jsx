@@ -35,9 +35,14 @@ const DietDetailsPage = () => {
 
     if (loading) {
         return (
-            <CustomBox className="flex justify-center mt-10">
-                <Spinner />
-            </CustomBox>
+            <>
+                <CustomBox className="pt-6 sm:pt-10 pb-4 sm:pb-4 px-4">
+                    <DietSubMenu isDetailPage />
+                </CustomBox>
+                <CustomBox className="flex justify-center mt-10">
+                    <Spinner />
+                </CustomBox>
+            </>
         );
     }
 

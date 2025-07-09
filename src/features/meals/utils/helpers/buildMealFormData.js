@@ -15,7 +15,7 @@ export const buildMealFormData = async (data, capturedImage, uploadedImage, imag
         preparationTime: data.preparationTime || null,
     };
 
-    formData.append("mealInputDTO", JSON.stringify(mealInputDTO)); // <-- maar één keer!
+    formData.append("mealInputDTO", JSON.stringify(mealInputDTO));
 
     console.log("MealInputDTO before adding files:", mealInputDTO);
 
@@ -33,6 +33,18 @@ export const buildMealFormData = async (data, capturedImage, uploadedImage, imag
         formData.append("imageFile", data.image[0]);
     } else {
         console.log("No image provided.");
+    }
+
+    // Eén optioneel e-mailadres meesturen
+    if (data.email && data.email.trim() !== "") {
+        formData.append("sharedEmails", data.email.trim().toLowerCase());
+    }
+
+    // sharedUserIds eventueel behouden (optioneel)
+    if (Array.isArray(data.sharedUserIds)) {
+        data.sharedUserIds.forEach((id) => {
+            if (id) formData.append("sharedUserIds", id);
+        });
     }
 
     formData.forEach((value, key) => {
