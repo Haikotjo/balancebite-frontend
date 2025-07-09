@@ -31,10 +31,16 @@ export const UserMealsProvider = ({ children }) => {
         const fromContext = [...userMealsRef.current, ...meals].find(
             (m) => String(m.id) === String(mealId)
         );
-        if (fromContext) return fromContext;
+
+        if (fromContext) {
+            console.log("✅ Meal found in context:", fromContext);
+            return fromContext;
+        }
 
         try {
-            return fetchMealById(mealId);
+            const fetchedMeal = await fetchMealById(mealId);
+
+            return fetchedMeal;
         } catch (err) {
             console.error("❌ Could not fetch meal by ID:", err.message);
             return null;

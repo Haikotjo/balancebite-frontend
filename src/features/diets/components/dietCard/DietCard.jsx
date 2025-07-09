@@ -12,13 +12,21 @@ import {useContext, useEffect} from "react";
 import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
 import {useNavigate} from "react-router-dom";
 import ImageScrollSection from "../../../../components/imagescrollsection/ImageScrollSection.jsx";
+import {AuthContext} from "../../../../context/AuthContext.jsx";
+import DietPlanShareForm from "../dietplanshareform/DietPlanShareForm.jsx";
 
+const useAuth = () => useContext(AuthContext);
 const DietCard = ({ diet, viewMode = "card", isPinned = false }) => {
     const { setCreatorIdFilter, setActiveOption } = useContext(UserDietsContext);
     const navigate = useNavigate();
     const imageUrls = diet.dietDays.flatMap((day) =>
         (day.meals || []).map((meal) => meal.imageUrl).filter(Boolean)
     );
+    const { user } = useAuth();
+    const isCreator = String(user?.id) === String(diet?.createdBy?.id);
+    const isDietitian = Array.isArray(user?.roles) && user.roles.includes("DIETITIAN");
+    const canShare = isCreator && isDietitian;
+
 
     useEffect(() => {
         console.log("Received diet:", diet);
@@ -47,8 +55,14 @@ const DietCard = ({ diet, viewMode = "card", isPinned = false }) => {
                     </CustomTypography>
                     <DietCardActionButtons diet={diet} viewMode={viewMode} />
                 </CustomBox>
+                {canShare && (
+                    <CustomBox className="mt-2">
+                        <DietPlanShareForm dietPlanId={diet.id} />
+                    </CustomBox>
+                )}
 
-            <CustomBox className="flex items-center gap-4 mb-2">
+
+                <CustomBox className="flex items-center gap-4 mb-2">
                 <CustomButton
                     type="button"
                     onClick={() => {

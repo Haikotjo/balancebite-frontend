@@ -11,8 +11,6 @@ import MealImageUploader from "../../meals/components/createMealForm/mealImageUp
 import CustomButton from "../../../components/layout/CustomButton.jsx";
 import {mealSchema} from "../../../utils/valadition/validationSchemas.js";
 import {useCreateMealAsDietitian} from "../../../hooks/useCreateMealAsDietitian.js";
-import CustomFloatingSelect from "../../../components/layout/CustomFloatingSelect.jsx";
-import CustomEmailTagInput from "../../../components/layout/CustomEmailTagInput.jsx";
 import {getAccessToken} from "../../../utils/helpers/getAccessToken.js";
 import {getAllUsersApi} from "../../../services/apiService.js";
 import {handleApiError} from "../../../utils/helpers/handleApiError.js";

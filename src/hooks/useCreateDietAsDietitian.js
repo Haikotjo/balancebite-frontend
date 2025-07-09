@@ -1,24 +1,22 @@
 import { useNavigate } from "react-router-dom";
-import {useContext, useState} from "react";
-import { useFormMessages } from "../../../../hooks/useFormMessages.jsx";
-import { createDietPlanApi } from "../../../../services/apiService.js";
-import { getReadableApiError } from "../../../../utils/helpers/getReadableApiError.js";
-import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
-import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
+import { useContext, useState } from "react";
+import {useFormMessages} from "./useFormMessages.jsx";
+import {UserDietsContext} from "../context/UserDietContext.jsx";
+import {UserMealsContext} from "../context/UserMealsContext.jsx";
+import {createDietPlanAsDietitianApi} from "../services/apiService.js";
+import {getReadableApiError} from "../utils/helpers/getReadableApiError.js";
 
-export function useCreateDiet(onSuccess, append, remove) {
+
+export function useCreateDietAsDietitian(onSuccess, append, remove) {
     const navigate = useNavigate();
     const { setError, setSuccess, clear, renderDialogs } = useFormMessages();
     const { fetchUserDietsData, fetchDietsData } = useContext(UserDietsContext);
     const { addMealToUserMeals } = useContext(UserMealsContext);
 
-
-    const [days, setDays] = useState([
-        { mealIds: [""] }
-    ]);
+    const [days, setDays] = useState([{ mealIds: [""] }]);
     const [loading, setLoading] = useState(false);
 
-    const handleChangeMealId = (dayIndex, mealIndex, value, remove) => {
+    const handleChangeMealId = (dayIndex, mealIndex, value) => {
         setDays(prev =>
             prev.map((d, i) => {
                 if (i !== dayIndex) return d;
@@ -54,7 +52,6 @@ export function useCreateDiet(onSuccess, append, remove) {
         append({ dayLabel: "", dietDayDescription: "" });
     };
 
-
     const removeDay = (index) => {
         setDays(prev => prev.filter((_, i) => i !== index));
         remove(index);
@@ -72,20 +69,15 @@ export function useCreateDiet(onSuccess, append, remove) {
                 return {
                     dayLabel: day.dayLabel,
                     dietDayDescription: day.dietDayDescription,
-                    mealIds,
+                    mealIds
                 };
             }),
             sharedUserIds: formData.sharedUserIds || [],
-            sharedEmails:
-                formData.sharedEmails?.length > 0
-                    ? formData.sharedEmails.map(e => e.trim().toLowerCase())
-                    : formData.email
-                        ? [formData.email.trim().toLowerCase()]
-                        : [],
+            sharedEmails: formData.email ? [formData.email.trim().toLowerCase()] : []
         };
 
-        // 👇 DIT BLIJFT STAAN om te checken wat er gebeurt
-        console.log("[onSubmit] Payload dat naar backend gaat:", JSON.stringify(payload, null, 2));
+
+        console.log("🔍 Payload dat verstuurd wordt naar backend:", payload);
 
         const isValid = payload.dietDays.every(day => day.mealIds.length >= 2);
         if (!isValid) {
@@ -95,7 +87,7 @@ export function useCreateDiet(onSuccess, append, remove) {
         }
 
         try {
-            const newDiet = await createDietPlanApi({ ...payload, diets: [] });
+            const newDiet = await createDietPlanAsDietitianApi(payload);
             setSuccess(`Diet created: ${newDiet.name || "Unknown diet"}`);
             await fetchUserDietsData();
             await fetchDietsData();
@@ -107,11 +99,13 @@ export function useCreateDiet(onSuccess, append, remove) {
                     }
                 });
             });
+
             onSuccess?.(newDiet);
             navigate(`/diet/${newDiet.id}`);
         } catch (err) {
-            console.error("❌ Backend error bij createDietPlanApi:", err);
+            console.error("❌ Backend error bij createDietPlanAsDietitianApi:", err);
             setError(getReadableApiError(err));
+        } finally {
             setLoading(false);
         }
     };

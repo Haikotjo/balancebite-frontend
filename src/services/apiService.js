@@ -868,12 +868,12 @@ export const inviteClientApi = async (email) => {
     }
 };
 
-export const shareMealApi = async (mealId, payload) => {
-    const endpoint = `${import.meta.env.VITE_SHARE_MEAL_ENDPOINT}/${mealId}/share`;
+export const shareMealApi = async (payload) => {
+    const endpoint = import.meta.env.VITE_DIETITIAN_ADD_MEAL_ACCESS_ENDPOINT;
     const token = localStorage.getItem("accessToken");
 
     try {
-        const response = await Interceptor.patch(endpoint, payload, {
+        const response = await Interceptor.post(endpoint, payload, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
@@ -886,12 +886,12 @@ export const shareMealApi = async (mealId, payload) => {
     }
 };
 
-export const shareDietPlanApi = async (dietPlanId, payload) => {
-    const endpoint = `${import.meta.env.VITE_SHARE_DIETPLAN_ENDPOINT}/${dietPlanId}/share`;
+export const shareDietPlanApi = async (payload) => {
+    const endpoint = import.meta.env.VITE_DIETITIAN_ADD_DIETPLAN_ACCESS_ENDPOINT;
     const token = localStorage.getItem("accessToken");
 
     try {
-        const response = await Interceptor.patch(endpoint, payload, {
+        const response = await Interceptor.post(endpoint, payload, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
@@ -922,15 +922,34 @@ export const createMealAsDietitianApi = async (formData) => {
     }
 };
 
-export const createDietPlanAsDietitianApi = async (payload) => {
+export const createDietPlanAsDietitianApi = async (input) => {
     const endpoint = import.meta.env.VITE_DIETITIAN_CREATE_DIETPLAN_ENDPOINT;
     const token = localStorage.getItem("accessToken");
 
+    const formData = new FormData();
+
+    // Haal sharedUserIds en sharedEmails eruit zodat ze niet in JSON komen
+    const {
+        sharedUserIds,
+        sharedEmails,
+        ...dietPlanInputDTO
+    } = input;
+
+    formData.append("dietPlanInputDTO", JSON.stringify(dietPlanInputDTO));
+
+    if (sharedUserIds && Array.isArray(sharedUserIds)) {
+        sharedUserIds.forEach((id) => formData.append("sharedUserIds", id));
+    }
+
+    if (sharedEmails && Array.isArray(sharedEmails)) {
+        sharedEmails.forEach((email) => formData.append("sharedEmails", email));
+    }
+
     try {
-        const response = await Interceptor.post(endpoint, payload, {
+        const response = await Interceptor.post(endpoint, formData, {
             headers: {
                 Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
+                "Content-Type": "multipart/form-data",
             },
         });
         return response.data;
@@ -939,3 +958,6 @@ export const createDietPlanAsDietitianApi = async (payload) => {
         throw error;
     }
 };
+
+
+

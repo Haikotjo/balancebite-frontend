@@ -13,10 +13,19 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomImage from "../../../../components/layout/CustomImage.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
+import {AuthContext} from "../../../../context/AuthContext.jsx";
+import {useContext} from "react";
+import MealShareForm from "../mealshareform/MealShareForm.jsx";
 
+const useAuth = () => useContext(AuthContext);
 const MealCard = ({ meal, viewMode = "page", onClose, isPinned = false }) => {
     const imageSrc = getImageSrc(meal);
     const navigate = useNavigate();
+    const { user } = useAuth();
+    const isCreator = String(user?.id) === String(meal?.createdBy?.id);
+    const isDietitian = Array.isArray(user?.roles) && user.roles.includes("DIETITIAN");
+    const canShare = isCreator && isDietitian;
+
 
     const categoryMap = {
         mealTypes: "mealTypes",
@@ -33,6 +42,10 @@ const MealCard = ({ meal, viewMode = "page", onClose, isPinned = false }) => {
     const calculatedMacros = calculateMacrosPer100g(meal);
     const macros = buildMacrosObject(meal, calculatedMacros);
 
+    console.log("Current user in MealCard:", user);
+    console.log("user.id:", user?.id);
+    console.log("meal.createdBy.id:", meal?.createdBy?.id);
+    console.log("canShare:", canShare);
 
     return (
         <CustomBox
@@ -77,15 +90,20 @@ const MealCard = ({ meal, viewMode = "page", onClose, isPinned = false }) => {
                 </CustomBox>
             </CustomBox>
 
-
-
             {/* Content section */}
             <CustomBox className="p-4 flex flex-col justify-between leading-normal">
                 <CustomBox className="mb-4">
                     <CustomTypography className="text-4xl font-bold text-primary mb-2">
                         {meal.name}
                     </CustomTypography>
+
                     <CustomDivider className="my-6" />
+
+                    {canShare && (
+                        <CustomBox className="mt-4">
+                            <MealShareForm mealId={meal.id} />
+                        </CustomBox>
+                    )}
 
                     <CustomTypography className=" italic">
                         {meal.mealDescription}

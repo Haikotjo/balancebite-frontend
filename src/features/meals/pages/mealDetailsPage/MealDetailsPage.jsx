@@ -72,12 +72,13 @@ const MealDetailsPage = () => {
         <CustomBox className="pt-6 sm:pt-10 pb-20 sm:pb-10 px-4">
             <CustomBox className="max-w-screen-xl mx-auto">
                 <SubMenu isDetailPage />
-                <CustomBox className="block md:hidden justify-center">
+                <CustomBox className="block md:hidden justify-center mt-6">
                     <MealDetailCard meal={meal} viewMode="page" />
                 </CustomBox>
-                <CustomBox className="hidden md:flex justify-center">
+                <CustomBox className="hidden md:flex justify-center mt-6">
                     <MealCard meal={meal} />
                 </CustomBox>
+
             </CustomBox>
         </CustomBox>
     );

@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import {useContext} from "react";
+import {useContext, useState} from "react";
 import MealCardImageSection from "../mealCardImageSection/MealCardImageSection.jsx";
 import MealCardExpandableDescription from "../mealCardExpandableDescription/ExpandableDescription.jsx";
 import MealCardIngredients from "../mealCardIngredients/MealCardIngredients.jsx";
@@ -14,7 +14,10 @@ import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
 import CustomCard from "../../../../components/layout/CustomCard.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
+import {AuthContext} from "../../../../context/AuthContext.jsx";
+import MealShareForm from "../mealshareform/MealShareForm.jsx";
 
+const useAuth = () => useContext(AuthContext);
 const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
     console.log("MealDetailCard - received meal:", meal);
     const { userMeals } = useContext(UserMealsContext);
@@ -23,6 +26,10 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
     const showUpdateButton = userMeals.some((m) => m.id === meal.id);
     const navigate = useNavigate();
     const role = mealToRender.createdBy?.roles?.[0]?.roleName?.toUpperCase();
+    const { user } = useAuth();
+    const isCreator = String(user?.id) === String(mealToRender?.createdBy?.id);
+    const isDietitian = Array.isArray(user?.roles) && user.roles.includes("DIETITIAN");
+    const canShare = isCreator && isDietitian;
 
     const isPage = viewMode === "page";
     const isListItem = viewMode === "list";
@@ -43,9 +50,6 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
 
     const calculatedMacros = calculateMacrosPer100g(mealToRender);
     const macros = buildMacrosObject(meal, calculatedMacros);
-
-    console.log("Meal created by:", mealToRender.createdBy);
-
 
     return (
         <CustomCard isPinned={isPinned} createdByRole={role} className="flex w-full box-border">
@@ -69,6 +73,8 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
                     mealId={String(mealToRender.id)}
                     viewMode={viewMode}
                 />
+
+                {canShare && <MealShareForm mealId={mealToRender.id} />}
 
                 {isPage && (
                 <CustomDivider/>
