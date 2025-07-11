@@ -4,7 +4,7 @@ import { AuthContext } from "./AuthContext";
 import {
     getAllPublicDietPlans,
     getAllUserDietPlans, getPublicDietPlanByIdApi, getUserDietPlanByIdApi
-} from "../services/ApiService";
+} from "../services/apiService";
 
 export const UserDietsContext = createContext();
 
