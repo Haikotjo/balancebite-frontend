@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { Maximize, Minimize } from "lucide-react";
 import { useModal } from "../../../../context/useModal.js";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
-import MealModal from "../mealmodal/MealModal.jsx";
+import MealModal from "../mealModal/MealModal.jsx";
 
 const ButtonOpenMeal = ({ meal, isPinned = false }) => {
     const { openModal, closeModal, modalType, modalData } = useModal();
