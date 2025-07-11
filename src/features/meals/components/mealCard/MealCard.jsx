@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import MealCardIngredients from "../mealCardIngredients/MealCardIngredients.jsx";
-import MealCardMacrosSection from "../MealCardMacrosSection/MeaCardlMacrosSection.jsx";
+import MealCardMacrosSection from "../mealCardMacrosSection/MeaCardlMacrosSection.jsx";
 import MealCardActionButtons from "../mealCardActionButtons/MealCardActionButtons.jsx";
 import MealInfoOverlay from "../mealCardInfoOverlay/MealInfoOverlay.jsx";
 import {useNavigate} from "react-router-dom";
