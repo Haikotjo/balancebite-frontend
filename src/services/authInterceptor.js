@@ -4,6 +4,7 @@ import axios from "axios";
 // Create Axios instance
 export const Interceptor = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
+    withCredentials: true,
     headers: {
         "Content-Type": "application/json",
     },
@@ -78,7 +79,10 @@ Interceptor.interceptors.response.use(
                 const { data } = await axios.post(
                     REFRESH_ENDPOINT,
                     { refreshToken },
-                    { headers: { "Content-Type": "application/json" } }
+                    {
+                        headers: { "Content-Type": "application/json" },
+                        withCredentials: true,
+                    }
                 );
 
                 const newAccessToken = data.accessToken;
