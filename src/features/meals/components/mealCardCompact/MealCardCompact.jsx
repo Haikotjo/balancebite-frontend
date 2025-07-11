@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useModal } from "../../../../context/useModal.js";
-import MealModal from "../mealmodal/MealModal.jsx";
+import MealModal from "../mealModal/MealModal.jsx";
 import ButtonOpenMeal from "../buttonOpenMeal/ButtonOpenMeal.jsx";
 import PreparationTimeIcon from "../mealCardPreparationTimeIcon/PreparationTimeIcon.jsx";
 import { getImageSrc } from "../../utils/helpers/getImageSrc.js";
