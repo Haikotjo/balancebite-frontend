@@ -1,15 +1,13 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserMealsContext } from "../context/UserMealsContext";
-import useLogin from "./useLogin";
-import {registerUserApi} from "../services/authService.js";
+import { registerUserApi } from "../services/authService.js";
 
 const useRegister = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const navigate = useNavigate();
     const { fetchUserMealsData } = useContext(UserMealsContext);
-    const { handleLogin } = useLogin();
 
     const handleRegistration = async (formData, onClose, isAdminContext = false) => {
         setErrorMessage("");
@@ -28,23 +26,27 @@ const useRegister = () => {
             localStorage.setItem("refreshToken", refreshToken);
 
             if (!isAdminContext) {
-                await handleLogin(formData.email, formData.password, async () => {
-                    await fetchUserMealsData();
-                    if (onClose) onClose();
-                    navigate("/profile");
-                });
+                await fetchUserMealsData();
+                if (onClose) onClose();
+                navigate("/profile");
             } else {
                 setSuccessMessage("User successfully created.");
                 if (onClose) onClose();
             }
 
         } catch (err) {
-            setErrorMessage(err.message);
+            setErrorMessage(err.message || "Registration failed.");
             console.error("Registration failed:", err);
         }
     };
 
-    return { handleRegistration, errorMessage, successMessage, setErrorMessage, setSuccessMessage };
+    return {
+        handleRegistration,
+        errorMessage,
+        successMessage,
+        setErrorMessage,
+        setSuccessMessage,
+    };
 };
 
 export default useRegister;
