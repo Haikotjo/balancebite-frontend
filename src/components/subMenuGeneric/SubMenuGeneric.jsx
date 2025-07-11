@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import CustomBox from "../layout/CustomBox.jsx";
-import CustomCardChip from "../layout/CustomCardChip.jsx";
+import CustomCardChip from "../layout/CustomChip.jsx";
 import CustomTypography from "../layout/CustomTypography.jsx";
 import { useNavigate } from "react-router-dom";
 
