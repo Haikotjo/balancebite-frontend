@@ -3,6 +3,7 @@ import CustomBox from "../layout/CustomBox.jsx";
 import CustomCardChip from "../layout/CustomChip.jsx";
 import CustomTypography from "../layout/CustomTypography.jsx";
 import { useNavigate } from "react-router-dom";
+import React from "react";
 
 /**
  * Generic SubMenu component for both Meals and Diets.
@@ -25,7 +26,7 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
 
     return (
         <CustomBox className="flex justify-center items-center gap-4">
-            {options.map(({ label, icon: Icon }) => {
+            {options.map(({ label, icon }) => {
                 const selected = label === activeOption;
 
                 return (
@@ -39,7 +40,9 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
                             }`}
                             textClassName="text-xl"
                         >
-                            <Icon className={`${selected ? "text-white" : "text-primary"} w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7`} />
+                            {React.cloneElement(icon, {
+                                className: `${selected ? "text-white" : "text-primary"} w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7`
+                            })}
                         </CustomCardChip>
                         <CustomTypography
                             as="span"
@@ -58,7 +61,7 @@ SubMenuGeneric.propTypes = {
     options: PropTypes.arrayOf(
         PropTypes.shape({
             label: PropTypes.string.isRequired,
-            icon: PropTypes.elementType.isRequired,
+            icon: PropTypes.element.isRequired,
         })
     ).isRequired,
     activeOption: PropTypes.string,

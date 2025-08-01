@@ -17,7 +17,6 @@ const SubMenu = ({ isDetailPage = false, onSelect }) => {
         ]
         : [{ label: "All Meals", icon: <BookOpen /> }];
 
-
     return (
         <SubMenuGeneric
             options={options}
