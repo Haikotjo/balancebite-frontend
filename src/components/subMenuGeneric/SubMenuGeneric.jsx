@@ -1,18 +1,8 @@
 import PropTypes from "prop-types";
-import { Soup, UserPen, BookOpen } from "lucide-react";
 import CustomBox from "../layout/CustomBox.jsx";
 import CustomCardChip from "../layout/CustomChip.jsx";
 import CustomTypography from "../layout/CustomTypography.jsx";
 import { useNavigate } from "react-router-dom";
-
-const iconMap = {
-    "All Meals": BookOpen,
-    "My Meals": Soup,
-    "Created Meals": UserPen,
-    "All Diets": BookOpen,
-    "My Diets": Soup,
-    "Created Diets": UserPen,
-};
 
 /**
  * Generic SubMenu component for both Meals and Diets.
@@ -32,10 +22,10 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
         }
     };
 
+
     return (
         <CustomBox className="flex justify-center items-center gap-4">
-            {options.map((label) => {
-                const Icon = iconMap[label];
+            {options.map(({ label, icon: Icon }) => {
                 const selected = label === activeOption;
 
                 return (
@@ -49,9 +39,7 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
                             }`}
                             textClassName="text-xl"
                         >
-                            {Icon && (
-                                <Icon className={`${selected ? "text-white" : "text-primary"} w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7`} />
-                            )}
+                            <Icon className={`${selected ? "text-white" : "text-primary"} w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7`} />
                         </CustomCardChip>
                         <CustomTypography
                             as="span"
@@ -67,21 +55,17 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
 }
 
 SubMenuGeneric.propTypes = {
-    options: PropTypes.arrayOf(PropTypes.string).isRequired,
+    options: PropTypes.arrayOf(
+        PropTypes.shape({
+            label: PropTypes.string.isRequired,
+            icon: PropTypes.elementType.isRequired,
+        })
+    ).isRequired,
     activeOption: PropTypes.string,
     setActiveOption: PropTypes.func.isRequired,
     basePath: PropTypes.string,
     isDetailPage: PropTypes.bool,
     onSelect: PropTypes.func,
 };
-
-const __forceIconRender = (
-    <div style={{ display: "none" }}>
-        <BookOpen />
-        <Soup />
-        <UserPen />
-    </div>
-);
-
 
 export default SubMenuGeneric;

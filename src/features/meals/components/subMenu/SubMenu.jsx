@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { Soup, UserPen, BookOpen } from "lucide-react";
 import { AuthContext } from "../../../../context/AuthContext.jsx";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import SubMenuGeneric from "../../../../components/subMenuGeneric/SubMenuGeneric.jsx";
@@ -9,8 +10,12 @@ const SubMenu = ({ isDetailPage = false, onSelect }) => {
     const { user } = useContext(AuthContext);
 
     const options = user
-        ? ["All Meals", "My Meals", "Created Meals"]
-        : ["All Meals"];
+        ? [
+            { label: "All Meals", icon: BookOpen },
+            { label: "My Meals", icon: Soup },
+            { label: "Created Meals", icon: UserPen },
+        ]
+        : [{ label: "All Meals", icon: BookOpen }];
 
     return (
         <SubMenuGeneric
