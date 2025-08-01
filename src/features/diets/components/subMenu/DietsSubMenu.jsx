@@ -1,22 +1,24 @@
+// src/components/subMenu/DietSubMenu.jsx
 import { useContext } from "react";
-import { Soup, UserPen, BookOpen } from "lucide-react";
+import { BookOpen, Soup, UserPen } from "lucide-react";
 import { AuthContext } from "../../../../context/AuthContext.jsx";
 import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
 import SubMenuGeneric from "../../../../components/subMenuGeneric/SubMenuGeneric.jsx";
 import PropTypes from "prop-types";
 
-const DietSubMenu = ({ isDetailPage = false, onSelect }) => {
+export default function DietSubMenu({ isDetailPage = false, onSelect }) {
     const { activeOption, setActiveOption } = useContext(UserDietsContext);
     const { user } = useContext(AuthContext);
 
-
     const options = user
         ? [
-            { label: "All Diets", icon: BookOpen },
-            { label: "My Diets", icon: Soup },
-            { label: "Created Diets", icon: UserPen },
+            { label: "All Diets",    icon: <BookOpen    className="w-5 h-5 text-primary" /> },
+            { label: "My Diets",     icon: <Soup        className="w-5 h-5 text-primary" /> },
+            { label: "Created Diets", icon: <UserPen     className="w-5 h-5 text-primary" /> }
         ]
-        : [{ label: "All Diets", icon: BookOpen }];
+        : [
+            { label: "All Diets",    icon: <BookOpen    className="w-5 h-5 text-primary" /> }
+        ];
 
     return (
         <SubMenuGeneric
@@ -28,11 +30,9 @@ const DietSubMenu = ({ isDetailPage = false, onSelect }) => {
             onSelect={onSelect}
         />
     );
-};
+}
 
 DietSubMenu.propTypes = {
     isDetailPage: PropTypes.bool,
-    onSelect: PropTypes.func,
+    onSelect: PropTypes.func
 };
-
-export default DietSubMenu;
