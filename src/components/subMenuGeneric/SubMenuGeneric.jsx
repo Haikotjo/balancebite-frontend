@@ -3,47 +3,47 @@ import CustomBox from "../layout/CustomBox.jsx";
 import CustomCardChip from "../layout/CustomChip.jsx";
 import CustomTypography from "../layout/CustomTypography.jsx";
 import { useNavigate } from "react-router-dom";
-import React from "react";
 
 /**
  * Generic SubMenu component for both Meals and Diets.
  */
-function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "", isDetailPage = false, onSelect }) {
+export default function SubMenuGeneric({
+                                           options,
+                                           activeOption,
+                                           setActiveOption,
+                                           basePath = "",
+                                           isDetailPage = false,
+                                           onSelect,
+                                       }) {
     const navigate = useNavigate();
 
-    const handleChipClick = (label) => {
+    const handleClick = (label) => {
         if (isDetailPage) {
-            if (onSelect) {
-                onSelect(label);
-            } else {
-                navigate(`${basePath}?option=${label.replace(/\s+/g, "-")}`);
-            }
+            onSelect ? onSelect(label) : navigate(`${basePath}?option=${label.replace(/\s+/g, "-")}`);
         } else {
             setActiveOption(label);
         }
     };
 
-
     return (
         <CustomBox className="flex justify-center items-center gap-4">
-            {options.map(({ label, icon }) => {
+            {options.map(({ label, icon: Icon }) => {
                 const selected = label === activeOption;
-
                 return (
                     <CustomBox key={label} className="flex flex-col items-center gap-1 mb-2">
                         <CustomCardChip
-                            onClick={() => handleChipClick(label)}
+                            onClick={() => handleClick(label)}
                             className={`w-16 h-12 flex items-center justify-center border-2 rounded-full transition-colors ${
-                                selected
-                                    ? "bg-primary border-primary"
-                                    : "bg-white dark:bg-gray-800 border-primary"
+                                selected ? "bg-primary border-primary" : "bg-white dark:bg-gray-800 border-primary"
                             }`}
                             textClassName="text-xl"
-                        >
-                            {React.cloneElement(icon, {
-                                className: `${selected ? "text-white" : "text-primary"} w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7`
-                            })}
-                        </CustomCardChip>
+                            icon={Icon}
+                            iconProps={{
+                                className: `${
+                                    selected ? "text-white" : "text-primary"
+                                } w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7`,
+                            }}
+                        />
                         <CustomTypography
                             as="span"
                             className="text-[0.65rem] sm:text-[0.7rem] md:text-[0.8rem] text-center"
@@ -61,7 +61,7 @@ SubMenuGeneric.propTypes = {
     options: PropTypes.arrayOf(
         PropTypes.shape({
             label: PropTypes.string.isRequired,
-            icon: PropTypes.element.isRequired,
+            icon: PropTypes.elementType.isRequired,
         })
     ).isRequired,
     activeOption: PropTypes.string,
@@ -70,5 +70,3 @@ SubMenuGeneric.propTypes = {
     isDetailPage: PropTypes.bool,
     onSelect: PropTypes.func,
 };
-
-export default SubMenuGeneric;

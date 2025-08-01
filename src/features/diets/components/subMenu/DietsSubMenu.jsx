@@ -9,13 +9,14 @@ const DietSubMenu = ({ isDetailPage = false, onSelect }) => {
     const { activeOption, setActiveOption } = useContext(UserDietsContext);
     const { user } = useContext(AuthContext);
 
+
     const options = user
         ? [
-            { label: "All Diets", icon: <BookOpen /> },
-            { label: "My Diets", icon: <Soup /> },
-            { label: "Created Diets", icon: <UserPen /> },
+            { label: "All Diets", icon: BookOpen },
+            { label: "My Diets", icon: Soup },
+            { label: "Created Diets", icon: UserPen },
         ]
-        : [{ label: "All Diets", icon: <BookOpen /> }];
+        : [{ label: "All Diets", icon: BookOpen }];
 
     return (
         <SubMenuGeneric
