@@ -32,7 +32,7 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
         try {
             localStorage.clear();
             sessionStorage.clear();
-            await handleLogin(data.email, data.password, async () => {
+            await handleLogin(data.email.toLowerCase(), data.password, async () => {
                 await fetchUserMealsData();
                 if (onClose) onClose();
             });
