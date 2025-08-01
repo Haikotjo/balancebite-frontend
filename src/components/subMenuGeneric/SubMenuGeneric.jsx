@@ -75,4 +75,6 @@ SubMenuGeneric.propTypes = {
     onSelect: PropTypes.func,
 };
 
+const __forceIcons = [Soup, UserPen, BookOpen];
+
 export default SubMenuGeneric;
