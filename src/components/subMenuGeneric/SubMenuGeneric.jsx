@@ -33,17 +33,13 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
 
                 return (
                     <CustomBox key={label} className="flex flex-col items-center gap-1 mb-2">
-                        <CustomCardChip
+                        <CustomBox
                             onClick={() => handleChipClick(label)}
-                            className={`w-16 h-12 flex items-center justify-center border-2 rounded-full transition-colors ${
-                                selected
-                                    ? "bg-primary border-primary"
-                                    : "bg-white dark:bg-gray-800 border-primary"
-                            }`}
-                            textClassName="text-xl"
+                            className="w-16 h-12 flex items-center justify-center border-2 rounded-full transition-colors bg-white"
                         >
-                            <Icon className={`${selected ? "text-white" : "text-primary"} w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7`} />
-                        </CustomCardChip>
+                            <Icon className="text-black w-6 h-6" />
+                        </CustomBox>
+
                         <CustomTypography
                             as="span"
                             className="text-[0.65rem] sm:text-[0.7rem] md:text-[0.8rem] text-center"
