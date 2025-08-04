@@ -25,7 +25,7 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
 
     return (
         <CustomBox className="flex justify-center items-center gap-4">
-            {options.map(({ label, icon }) => {
+            {options.map(({ label, icon: Icon }) => {
                 const selected = label === activeOption;
 
                 return (
@@ -39,7 +39,7 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
                             }`}
                             textClassName="text-xl"
                         >
-                            {icon}
+                            <Icon className={`${selected ? "text-white" : "text-primary"} w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7`} />
                         </CustomCardChip>
                         <CustomTypography
                             as="span"
@@ -50,7 +50,6 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
                     </CustomBox>
                 );
             })}
-
         </CustomBox>
     );
 }
@@ -59,7 +58,7 @@ SubMenuGeneric.propTypes = {
     options: PropTypes.arrayOf(
         PropTypes.shape({
             label: PropTypes.string.isRequired,
-            icon: PropTypes.node.isRequired,
+            icon: PropTypes.elementType.isRequired,
         })
     ).isRequired,
     activeOption: PropTypes.string,
