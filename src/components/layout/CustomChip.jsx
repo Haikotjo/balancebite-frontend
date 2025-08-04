@@ -28,15 +28,15 @@ const CustomChip = ({
                         onClick,
                         iconMargin = 0,
                         iconSize = 24,
+                        chipSize, // ✅ optional
                         labelPosition = "bottom",
                         labelFontSize = "text-[0.7rem]",
                         className = "",
                         tight = false,
                     }) => {
     const spacingClass = iconMargin ? `px-[${iconMargin}px]` : "px-3";
-    const chipHeight = iconSize + 10;
-    const dimensionClass = `w-[${chipHeight}px] h-[${chipHeight}px]`;
-
+    const finalSize = chipSize || iconSize + 10; // ✅ chipSize overrulet iconSize
+    const dimensionClass = `w-[${finalSize}px] h-[${finalSize}px]`;
 
     return (
         <CustomBox
@@ -48,7 +48,6 @@ const CustomChip = ({
             )}
         >
             {label && (
-
                 <CustomTypography
                     as="span"
                     className={clsx(
@@ -58,9 +57,7 @@ const CustomChip = ({
                         labelPosition === "top"
                             ? tight ? "mb-0.5" : "mb-1"
                             : tight ? "mt-0.5" : "mt-1"
-
                     )}
-
                 >
                     {label}
                 </CustomTypography>
@@ -80,6 +77,20 @@ const CustomChip = ({
             </CustomBox>
         </CustomBox>
     );
+};
+
+CustomChip.propTypes = {
+    icon: PropTypes.element.isRequired,
+    label: PropTypes.string,
+    selected: PropTypes.bool,
+    onClick: PropTypes.func.isRequired,
+    iconMargin: PropTypes.number,
+    iconSize: PropTypes.number,
+    chipSize: PropTypes.number, // ✅ toegevoegd
+    labelPosition: PropTypes.oneOf(["top", "bottom"]),
+    labelFontSize: PropTypes.string,
+    className: PropTypes.string,
+    tight: PropTypes.bool,
 };
 
 CustomChip.propTypes = {
