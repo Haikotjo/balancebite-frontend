@@ -19,6 +19,7 @@ import clsx from "clsx";
  * @param {string} [props.labelPosition="bottom"] - "top" or "bottom" label placement.
  * @param {string} [props.labelFontSize="text-[0.7rem]"] - Font size class for the label.
  * @param {string} [props.className] - Optional outer class.
+ * @param {boolean} [props.tight=false] - Reduce vertical spacing between label and chip.
  */
 const CustomChip = ({
                         icon,
@@ -29,7 +30,8 @@ const CustomChip = ({
                         iconSize = 24,
                         labelPosition = "bottom",
                         labelFontSize = "text-[0.7rem]",
-                        className = ""
+                        className = "",
+                        tight = false,
                     }) => {
     const spacingClass = iconMargin ? `px-[${iconMargin}px]` : "px-3";
     const chipHeight = iconSize + 10;
@@ -53,7 +55,10 @@ const CustomChip = ({
                         labelFontSize,
                         "text-center font-semibold",
                         selected ? "text-primary" : "undefined",
-                        labelPosition === "top" ? "mb-1" : "mt-1"
+                        labelPosition === "top"
+                            ? tight ? "mb-0.5" : "mb-1"
+                            : tight ? "mt-0.5" : "mt-1"
+
                     )}
 
                 >
@@ -87,6 +92,7 @@ CustomChip.propTypes = {
     labelPosition: PropTypes.oneOf(["top", "bottom"]),
     labelFontSize: PropTypes.string,
     className: PropTypes.string,
+    tight: PropTypes.bool,
 };
 
 export default CustomChip;

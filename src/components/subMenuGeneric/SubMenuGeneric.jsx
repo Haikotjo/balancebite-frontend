@@ -28,6 +28,7 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
 
                 return (
                     <CustomChip
+                        tight
                         key={label}
                         icon={
                             <Icon
