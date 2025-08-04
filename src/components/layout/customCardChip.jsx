@@ -26,9 +26,13 @@ const CustomCardChip = ({
                 className
             )}
         >
-            <CustomBox className={textClassName}>
-                {children}
-            </CustomBox>
+            {textClassName ? (
+                <CustomBox className={textClassName}>
+                    {children}
+                </CustomBox>
+            ) : (
+                children
+            )}
         </CustomBox>
     );
 
