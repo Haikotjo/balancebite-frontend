@@ -39,7 +39,8 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
                             }`}
                             textClassName="text-xl"
                         >
-                            <Icon className={`${selected ? "text-white" : "text-primary"} w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7`} />
+                            {icon}
+
                         </CustomCardChip>
                         <CustomTypography
                             as="span"
