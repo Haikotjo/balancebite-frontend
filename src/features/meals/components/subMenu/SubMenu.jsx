@@ -5,6 +5,8 @@ import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import SubMenuGeneric from "../../../../components/subMenuGeneric/SubMenuGeneric.jsx";
 import PropTypes from "prop-types";
 
+const _iconsUsed = [<BookOpen />, <Soup />, <UserPen />];
+
 const SubMenu = ({ isDetailPage = false, onSelect }) => {
     const { activeOption, setActiveOption } = useContext(UserMealsContext);
     const { user } = useContext(AuthContext);

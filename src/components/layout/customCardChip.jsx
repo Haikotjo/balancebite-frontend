@@ -23,16 +23,13 @@ const CustomCardChip = ({
                 className
             )}
         >
-            {/* Direct de children stylen, zonder extra wrapper */}
-            {typeof children === "string" ? (
-                <span className={textClassName}>{children}</span>
-            ) : (
-                children
-            )}
+            <CustomBox className={textClassName}>
+                {children}
+            </CustomBox>
         </CustomBox>
     );
-};
 
+};
 
 CustomCardChip.propTypes = {
     children: PropTypes.node.isRequired,
