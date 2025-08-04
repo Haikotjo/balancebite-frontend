@@ -15,6 +15,9 @@ const CustomCardChip = ({
                             className = "",
                             textClassName = "",
                         }) => {
+
+    console.log("CustomCardChip received children:", children);
+
     return (
         <CustomBox
             onClick={onClick}
