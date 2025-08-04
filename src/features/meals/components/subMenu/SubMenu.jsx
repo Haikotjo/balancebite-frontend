@@ -11,11 +11,11 @@ const SubMenu = ({ isDetailPage = false, onSelect }) => {
 
     const options = user
         ? [
-            { label: "All Meals", icon: LucideIcons.BookOpen },
-            { label: "My Meals", icon: LucideIcons.Soup },
-            { label: "Created Meals", icon: LucideIcons.UserPen },
+            { label: "All Meals", icon: LucideIcons.Home },
+            { label: "My Meals", icon: LucideIcons.Star },
+            { label: "Created Meals", icon: LucideIcons.Pencil },
         ]
-        : [{ label: "All Meals", icon: LucideIcons.BookOpen }];
+        : [{ label: "All Meals", icon: LucideIcons.Home }];
 
     return (
         <SubMenuGeneric
