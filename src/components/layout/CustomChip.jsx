@@ -19,6 +19,7 @@ import clsx from "clsx";
  * @param {string} [props.labelPosition="bottom"] - "top" or "bottom" label placement.
  * @param {string} [props.labelFontSize="text-[0.7rem]"] - Font size class for the label.
  * @param {string} [props.className] - Optional outer class.
+ * @param {number} [props.chipScale=1] - Optional scale factor for chip size (affects padding and border radius only).
  */
 const CustomChip = ({
                         icon,
@@ -29,12 +30,15 @@ const CustomChip = ({
                         iconSize = 24,
                         labelPosition = "bottom",
                         labelFontSize = "text-[0.7rem]",
-                        className = ""
+                        className = "",
+                        chipScale = 1,
                     }) => {
     const spacingClass = iconMargin ? `px-[${iconMargin}px]` : "px-3";
     const chipHeight = iconSize + 10;
     const dimensionClass = `w-[${chipHeight}px] h-[${chipHeight}px]`;
 
+    // Dynamic scaling class for outer chip
+    const scaleClass = `scale-[${chipScale}]`;
 
     return (
         <CustomBox
@@ -46,16 +50,14 @@ const CustomChip = ({
             )}
         >
             {label && (
-
                 <CustomTypography
                     as="span"
                     className={clsx(
                         labelFontSize,
                         "text-center font-semibold",
-                        selected ? "text-primary" : "undefined",
+                        selected ? "text-primary" : "text-gray-700 dark:text-gray-300",
                         labelPosition === "top" ? "mb-1" : "mt-1"
                     )}
-
                 >
                     {label}
                 </CustomTypography>
@@ -66,6 +68,7 @@ const CustomChip = ({
                     "rounded-full border-2 flex items-center justify-center transition-colors duration-200",
                     dimensionClass,
                     spacingClass,
+                    scaleClass,
                     selected
                         ? "bg-primary border-primary text-white"
                         : "bg-white dark:bg-gray-800 border-primary text-primary"
@@ -87,6 +90,7 @@ CustomChip.propTypes = {
     labelPosition: PropTypes.oneOf(["top", "bottom"]),
     labelFontSize: PropTypes.string,
     className: PropTypes.string,
+    chipScale: PropTypes.number,
 };
 
 export default CustomChip;
