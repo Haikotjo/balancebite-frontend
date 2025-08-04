@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
 import CustomBox from "../layout/CustomBox.jsx";
 import CustomChip from "../layout/CustomChip.jsx";
-import CustomTypography from "../layout/CustomTypography.jsx";
 import { useNavigate } from "react-router-dom";
 
 /**
@@ -22,32 +21,25 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
         }
     };
 
-
     return (
         <CustomBox className="flex justify-center items-center gap-4">
             {options.map(({ label, icon: Icon }) => {
                 const selected = label === activeOption;
 
                 return (
-                    <CustomBox key={label} className="flex flex-col items-center gap-1 mb-2">
-                        <CustomChip
-                            onClick={() => handleChipClick(label)}
-                            className={`w-16 h-12 flex items-center justify-center border-2 rounded-full transition-colors ${
-                                selected
-                                    ? "bg-primary border-primary"
-                                    : "bg-white dark:bg-gray-800 border-primary"
-                            }`}
-                            textClassName="text-xl"
-                        >
-                            <Icon className={`${selected ? "text-white" : "text-primary"} w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7`} />
-                        </CustomChip>
-                        <CustomTypography
-                            as="span"
-                            className="text-[0.65rem] sm:text-[0.7rem] md:text-[0.8rem] text-center"
-                        >
-                            {label}
-                        </CustomTypography>
-                    </CustomBox>
+                    <CustomChip
+                        key={label}
+                        icon={
+                            <Icon
+                                className={`${selected ? "text-white" : "text-primary"} w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7`}
+                            />
+                        }
+                        label={label}
+                        selected={selected}
+                        onClick={() => handleChipClick(label)}
+                        labelFontSize="text-[0.65rem] sm:text-[0.7rem] md:text-[0.8rem]"
+                        labelPosition="bottom"
+                    />
                 );
             })}
         </CustomBox>
