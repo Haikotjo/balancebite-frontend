@@ -28,6 +28,9 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
             {options.map(({ label, icon: Icon }) => {
                 const selected = label === activeOption;
 
+                console.log("Rendering icon:", label, Icon);
+
+
                 return (
                     <CustomBox key={label} className="flex flex-col items-center gap-1 mb-2">
                         <CustomCardChip
