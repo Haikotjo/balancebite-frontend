@@ -22,7 +22,7 @@ const CustomCardChip = ({
         <CustomBox
             onClick={onClick}
             className={clsx(
-                "rounded-full border cursor-pointer transition-colors duration-200",
+                "flex items-center justify-center rounded-full border cursor-pointer transition-colors duration-200",
                 className
             )}
         >
