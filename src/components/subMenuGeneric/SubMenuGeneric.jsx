@@ -59,7 +59,7 @@ SubMenuGeneric.propTypes = {
     options: PropTypes.arrayOf(
         PropTypes.shape({
             label: PropTypes.string.isRequired,
-            icon: PropTypes.elementType.isRequired,
+            icon: PropTypes.node.isRequired,
         })
     ).isRequired,
     activeOption: PropTypes.string,
