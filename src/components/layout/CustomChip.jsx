@@ -1,3 +1,4 @@
+// src/components/layout/customChip/CustomChip.jsx
 import PropTypes from "prop-types";
 import CustomBox from "./CustomBox.jsx";
 import CustomTypography from "./CustomTypography.jsx";
@@ -5,6 +6,19 @@ import clsx from "clsx";
 
 /**
  * CustomChip component: A manually styled chip using Tailwind, ready for React Native transition.
+ * Supports icon, label, dynamic sizing, and visual selection.
+ *
+ * @component
+ * @param {object} props
+ * @param {React.ReactElement} props.icon - The icon to render inside the chip.
+ * @param {string} [props.label] - Optional label to display above or below the chip.
+ * @param {boolean} [props.selected=false] - Whether the chip is visually selected.
+ * @param {function} props.onClick - Callback for click events.
+ * @param {number} [props.iconMargin=0] - Extra spacing around the icon.
+ * @param {number} [props.iconSize=24] - Icon size (for wrapper calculation).
+ * @param {string} [props.labelPosition="bottom"] - "top" or "bottom" label placement.
+ * @param {string} [props.labelFontSize="text-[0.7rem]"] - Font size class for the label.
+ * @param {string} [props.className] - Optional outer class.
  */
 const CustomChip = ({
                         icon,
@@ -21,6 +35,7 @@ const CustomChip = ({
     const chipHeight = iconSize + 10;
     const dimensionClass = `w-[${chipHeight}px] h-[${chipHeight}px]`;
 
+
     return (
         <CustomBox
             onClick={onClick}
@@ -31,14 +46,16 @@ const CustomChip = ({
             )}
         >
             {label && (
+
                 <CustomTypography
                     as="span"
                     className={clsx(
                         labelFontSize,
                         "text-center font-semibold",
-                        selected ? "text-primary" : "text-gray-700 dark:text-gray-300",
+                        selected ? "text-primary" : "undefined",
                         labelPosition === "top" ? "mb-1" : "mt-1"
                     )}
+
                 >
                     {label}
                 </CustomTypography>
