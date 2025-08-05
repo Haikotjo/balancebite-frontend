@@ -52,7 +52,6 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                     Dashboard
                 </CustomBox>
             )}
-            <CustomDivider className="bg-white my-2" />
 
             {/* Nav‐links */}
             {/*{navItems.map((item) => {*/}
@@ -85,7 +84,6 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                     >
                         Admin
                     </CustomBox>
-                    <CustomDivider className="bg-white my-2" />
                 </>
             )}
 
