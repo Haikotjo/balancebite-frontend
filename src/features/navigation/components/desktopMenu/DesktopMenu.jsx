@@ -24,7 +24,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
     return (
         <CustomBox className="flex flex-col gap-y-2 w-full font-body font-bold text-white">
             {/* Home */}
-            <CustomTooltip text="Home" position="right">
+
                 <CustomBox
                     onClick={() => navigate("/")}
                     className={clsx(
@@ -32,9 +32,11 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                         isActive("/") ? "text-primary" : "text-white"
                     )}
                 >
+                    <CustomTooltip text="Home" position="right">
                     <Home className="w-8 h-8 mx-auto" />
+                    </CustomTooltip>
                 </CustomBox>
-            </CustomTooltip>
+
 
 
             {/* Dashboard */}
