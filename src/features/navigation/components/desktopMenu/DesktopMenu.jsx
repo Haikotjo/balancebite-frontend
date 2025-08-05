@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Home } from "lucide-react";
+import { Home,LogIn, LogOut  } from "lucide-react";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
@@ -97,18 +97,14 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                         "w-full cursor-pointer p-2 rounded-md transition-all hover:bg-white/10"
                     )}
                 >
-                    <CustomTypography className="text-sm text-white">
-                        Sign In
-                    </CustomTypography>
+                    <LogIn className="w-5 h-5 mx-auto text-white" />
                 </CustomBox>
             ) : (
                 <CustomBox
                     onClick={onLogout}
                     className="w-full cursor-pointer p-2 rounded-md hover:bg-white/10"
                 >
-                    <CustomTypography className="text-sm text-white">
-                        Logout
-                    </CustomTypography>
+                    <LogOut className="w-5 h-5 mx-auto text-white" />
                 </CustomBox>
             )}
         </CustomBox>
