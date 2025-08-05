@@ -52,7 +52,7 @@ const MealsMenu = () => {
                         {/* Button label shown on sm+ screens */}
                         <CustomTypography
                             bold
-                            font="sans"
+                            font="display"
                             className="text-xs sm:text-sm text-white mr-2 md:inline"
                         >
                             MEALS
