@@ -9,8 +9,6 @@ const SubMenu = ({ isDetailPage = false, onSelect }) => {
     const { activeOption, setActiveOption } = useContext(UserMealsContext);
     const { user } = useContext(AuthContext);
 
-    console.log("🟢 SubMenu loaded with activeOption:", activeOption);
-
     const options = user
         ? [
             { label: "All Meals", icon: BookOpen },

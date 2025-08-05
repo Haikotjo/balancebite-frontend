@@ -26,10 +26,6 @@ export const UserMealsProvider = ({ children }) => {
         userMealsRef.current = userMeals;
     }, [userMeals]);
 
-    useEffect(() => {
-        console.log("🟡 activeOption useEffect triggered:", activeOption);
-    }, [activeOption]);
-
     const getMealById = useCallback(async (mealId) => {
         const fromContext = [...userMealsRef.current, ...meals].find(
             (m) => String(m.id) === String(mealId)
