@@ -37,7 +37,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                         isActive("/") ? "text-primary" : "text-white"
                     )}
                 >
-                    <Home className="w-5 h-5" />
+                    <Home className="w-8 h-8 mx-auto" />
                 </CustomBox>
 
             </CustomBox>
