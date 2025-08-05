@@ -22,7 +22,7 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
     };
 
     return (
-        <CustomBox className="flex justify-center items-center gap-4">
+        <CustomBox className="flex justify-center items-center gap-4 flex-wrap">
             {options.map(({ label, icon: Icon }) => {
                 const selected = label === activeOption;
 
@@ -39,8 +39,7 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
                         onClick={() => handleChipClick(label)}
                         labelFontSize="text-[0.65rem] sm:text-[0.7rem] md:text-[0.8rem]"
                         labelPosition="bottom"
-                        chipSize={54}
-                        iconMargin={12}
+                        className="scale-[1.15] p-[3px]" // 👈 alleen hier groter & meer padding
                     />
                 );
             })}
