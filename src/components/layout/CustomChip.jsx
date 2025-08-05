@@ -1,4 +1,3 @@
-// src/components/layout/customChip/CustomChip.jsx
 import PropTypes from "prop-types";
 import CustomBox from "./CustomBox.jsx";
 import CustomTypography from "./CustomTypography.jsx";
@@ -16,10 +15,10 @@ import clsx from "clsx";
  * @param {function} props.onClick - Callback for click events.
  * @param {number} [props.iconMargin=0] - Extra spacing around the icon.
  * @param {number} [props.iconSize=24] - Icon size (for wrapper calculation).
- * @param {string} [props.labelPosition="bottom"] - "top" or "bottom" label placement.
- * @param {string} [props.labelFontSize="text-[0.7rem]"] - Font size class for the label.
- * @param {string} [props.className] - Optional outer class.
- * @param {number} [props.chipScale=1] - Optional scale factor for chip size (affects padding and border radius only).
+ * @param {number} [props.chipPadding=10] - Extra binnenruimte rond de chip (in px, zonder icon zelf te beïnvloeden).
+ * @param {string} [props.labelPosition="bottom"] - "top" of "bottom".
+ * @param {string} [props.labelFontSize="text-[0.7rem]"] - Fontgrootte voor het label.
+ * @param {string} [props.className] - Extra Tailwind classes.
  */
 const CustomChip = ({
                         icon,
@@ -28,17 +27,14 @@ const CustomChip = ({
                         onClick,
                         iconMargin = 0,
                         iconSize = 24,
+                        chipPadding = 10,
                         labelPosition = "bottom",
                         labelFontSize = "text-[0.7rem]",
-                        className = "",
-                        chipScale = 1,
+                        className = ""
                     }) => {
     const spacingClass = iconMargin ? `px-[${iconMargin}px]` : "px-3";
-    const chipHeight = iconSize + 10;
-    const dimensionClass = `w-[${chipHeight}px] h-[${chipHeight}px]`;
-
-    // Dynamic scaling class for outer chip
-    const scaleClass = `scale-[${chipScale}]`;
+    const chipSize = iconSize + chipPadding * 2;
+    const dimensionClass = `w-[${chipSize}px] h-[${chipSize}px]`;
 
     return (
         <CustomBox
@@ -68,7 +64,6 @@ const CustomChip = ({
                     "rounded-full border-2 flex items-center justify-center transition-colors duration-200",
                     dimensionClass,
                     spacingClass,
-                    scaleClass,
                     selected
                         ? "bg-primary border-primary text-white"
                         : "bg-white dark:bg-gray-800 border-primary text-primary"
@@ -87,10 +82,10 @@ CustomChip.propTypes = {
     onClick: PropTypes.func.isRequired,
     iconMargin: PropTypes.number,
     iconSize: PropTypes.number,
+    chipPadding: PropTypes.number,
     labelPosition: PropTypes.oneOf(["top", "bottom"]),
     labelFontSize: PropTypes.string,
     className: PropTypes.string,
-    chipScale: PropTypes.number,
 };
 
 export default CustomChip;
