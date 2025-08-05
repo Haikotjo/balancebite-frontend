@@ -30,10 +30,16 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                     isActive("/") ? "text-primary" : "text-white"
                 )}
             >
-                <CustomBox className="flex items-center gap-2">
-                    <Home className="w-5 h-5 md:hidden" />
-                    Home
+                <CustomBox
+                    onClick={() => navigate("/")}
+                    className={clsx(
+                        "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
+                        isActive("/") ? "text-primary" : "text-white"
+                    )}
+                >
+                    <Home className="w-5 h-5" />
                 </CustomBox>
+
             </CustomBox>
             {user && (
                 <CustomBox
