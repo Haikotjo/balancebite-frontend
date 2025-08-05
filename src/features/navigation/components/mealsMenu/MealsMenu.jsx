@@ -6,35 +6,16 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomDropdownWeb from "../../../../components/layout/CustomDropdownWeb.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import { ChevronDown, Soup, ChevronUp, Pencil, UserPen, BookOpen } from "lucide-react";
-import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 
-/**
- * MealsMenu component renders a dropdown trigger and menu for navigating
- * between meal-related pages: All Meals, My Meals, Created Meals, and Create Meal.
- * Disabled items prompt login if the user is unauthenticated.
- *
- * @component
- * @returns {JSX.Element}
- */
 const MealsMenu = () => {
-    // State for dropdown open/closed
     const [open, setOpen] = useState(false);
-    // State for any authentication warning message
     const [authMsg, setAuthMsg] = useState(null);
-    // Authenticated user object (null if not logged in)
     const { user } = useContext(AuthContext);
-    // Context function to set which meal filter is active
     const { setActiveOption } = useContext(UserMealsContext);
-    // Navigation helper from react-router
     const navigate = useNavigate();
 
-    /**
-     * Show authentication warning for protected items.
-     * @param {string} label - Name of the menu item that requires login.
-     */
     const showAuth = (label) => {
         setAuthMsg(`Please log in to access ${label.toLowerCase()}.`);
-        // Auto-dismiss after 3 seconds
         setTimeout(() => setAuthMsg(null), 3000);
     };
 
@@ -47,33 +28,15 @@ const MealsMenu = () => {
                 trigger={
                     <CustomBox
                         onClick={() => setOpen(!open)}
-                        className="w-full flex justify-between items-center cursor-pointer text-white"
+                        onMouseEnter={() => window.innerWidth >= 768 && setOpen(true)}
+                        onMouseLeave={() => window.innerWidth >= 768 && setOpen(false)}
+                        className="p-2 rounded-md transition-all hover:bg-white/10 cursor-pointer flex items-center justify-center w-full md:w-auto"
                     >
-                        {/* Button label shown on sm+ screens */}
-                        <CustomTypography
-                            bold
-                            font="sans"
-                            className="text-xs sm:text-sm text-white mr-2 md:inline"
-                        >
-                            Meals
-                        </CustomTypography>
-
-
-                        {/* Always-visible soup icon */}
-                        <Soup fill="white" className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                        {/* Chevron indicator */}
+                        <Soup fill="white" className="w-6 h-6 text-white" />
                         {open ? (
-                            <>
-                                <ChevronDown className="text-white w-5 h-5 mr-2 md:hidden" />
-                                <ChevronUp className="text-white w-5 h-5 mr-2 hidden md:block" />
-
-                            </>
+                            <ChevronUp className="text-white w-5 h-5 ml-1" />
                         ) : (
-                            <>
-                                <ChevronUp className="text-white w-5 h-5 mr-2 md:hidden" />
-                                <ChevronDown className="text-white w-5 h-5 mr-2 hidden md:block" />
-
-                            </>
+                            <ChevronDown className="text-white w-5 h-5 ml-1" />
                         )}
                     </CustomBox>
                 }
@@ -81,7 +44,6 @@ const MealsMenu = () => {
                     {
                         label: "Explore Meals",
                         icon: BookOpen,
-                        /** Navigate to /meals showing all options */
                         onClick: () => {
                             setOpen(false);
                             setActiveOption("All Meals");
@@ -92,7 +54,6 @@ const MealsMenu = () => {
                         label: "My Meals",
                         icon: Soup,
                         disabled: !user,
-                        /** If not logged in, show auth warning */
                         onClick: () => {
                             if (!user) return showAuth("My Meals");
                             setOpen(false);
