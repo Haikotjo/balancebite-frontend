@@ -22,9 +22,9 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
         path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
 
     return (
-        <CustomBox className="flex flex-col  w-full font-body font-bold text-white">
+        <CustomBox className="flex flex-col gap-y-2 w-full font-body font-bold text-white">
             {/* Home */}
-
+            <CustomTooltip text="Home" position="right">
                 <CustomBox
                     onClick={() => navigate("/")}
                     className={clsx(
@@ -32,11 +32,9 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                         isActive("/") ? "text-primary" : "text-white"
                     )}
                 >
-                    <CustomTooltip text="Home" position="right">
                     <Home className="w-8 h-8 mx-auto" />
-                    </CustomTooltip>
                 </CustomBox>
-
+            </CustomTooltip>
 
 
             {/* Dashboard */}
@@ -76,6 +74,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
             {/* Admin */}
             {isAdmin && (
                 <>
+                <CustomTooltip text="Admin" position="right">
                     <CustomBox
                         onClick={() => navigate("/admin")}
                         className={clsx(
@@ -85,11 +84,13 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                     >
                         <ShieldUser className="w-8 h-8 mx-auto" />
                     </CustomBox>
+                </CustomTooltip>
                 </>
             )}
 
             {/* Auth */}
             {!user ? (
+                <CustomTooltip text="Sign in" position="right">
                 <CustomBox
                     onClick={onLoginClick}
                     className={clsx(
@@ -98,13 +99,16 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                 >
                     <LogIn className="w-5 h-5 mx-auto" />
                 </CustomBox>
+                </CustomTooltip>
             ) : (
+                <CustomTooltip text="Log out" position="right">
                 <CustomBox
                     onClick={onLogout}
                     className="w-full cursor-pointer p-2 rounded-md hover:bg-white/10"
                 >
                     <LogOut className="w-8 h-8 mx-auto" />
                 </CustomBox>
+</CustomTooltip>
             )}
         </CustomBox>
     );
