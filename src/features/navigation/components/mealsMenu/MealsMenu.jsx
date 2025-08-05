@@ -55,7 +55,7 @@ const MealsMenu = () => {
                             font="display"
                             className="text-xs sm:text-sm text-white mr-2 md:inline"
                         >
-                            MEALS
+                            Meals
                         </CustomTypography>
 
 
