@@ -26,8 +26,8 @@ const SubMenuChip = ({
                          labelFontSize = "text-[0.8rem]",
                          className = ""
                      }) => {
-    const iconSize = 36; // 1.5x groter dan CustomChip's default (24)
-    const chipSize = iconSize + 20; // extra padding
+    const iconSize = 36;
+    const chipSize = iconSize + 20;
     const chipStyle = {
         width: `${chipSize}px`,
         height: `${chipSize}px`

@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import CustomBox from "../layout/CustomBox.jsx";
-import CustomChip from "../layout/CustomChip.jsx";
 import { useNavigate } from "react-router-dom";
 import SubMenuChip from "../submenuchip/SubMenuChip.jsx";
 
