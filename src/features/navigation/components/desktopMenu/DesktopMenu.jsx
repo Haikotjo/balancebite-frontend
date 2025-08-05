@@ -55,23 +55,23 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
             <CustomDivider className="bg-white my-2" />
 
             {/* Nav‐links */}
-            {navItems.map((item) => {
-                const active = isActive(item.path);
-                return (
-                    <CustomBox
-                        key={item.path}
-                        onClick={() => navigate(item.path)}
-                        className={clsx(
-                            "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                            active ? "text-primary" : "text-white"
-                        )}
-                    >
-                        {item.label}
-                    </CustomBox>
-                );
-            })}
+            {/*{navItems.map((item) => {*/}
+            {/*    const active = isActive(item.path);*/}
+            {/*    return (*/}
+            {/*        <CustomBox*/}
+            {/*            key={item.path}*/}
+            {/*            onClick={() => navigate(item.path)}*/}
+            {/*            className={clsx(*/}
+            {/*                "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",*/}
+            {/*                active ? "text-primary" : "text-white"*/}
+            {/*            )}*/}
+            {/*        >*/}
+            {/*            {item.label}*/}
+            {/*        </CustomBox>*/}
+            {/*    );*/}
+            {/*})}*/}
 
-            <CustomDivider className="bg-white my-2" />
+            {/*<CustomDivider className="bg-white my-2" />*/}
 
             {/* Admin */}
             {isAdmin && (
