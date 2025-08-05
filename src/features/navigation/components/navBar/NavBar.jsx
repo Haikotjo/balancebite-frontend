@@ -98,12 +98,12 @@ const NavBar = () => {
             {/* Desktop layout */}
             <CustomBox className="hidden md:flex md:flex-col md:justify-between md:h-full">
                 <CustomBox className="flex flex-col space-y-6 px-4 py-4">
-                    <Logo size={40} className="hidden lg:block text-white" to="/" />
-                    <CustomDivider className="hidden lg:block  mx-0 bg-white" />
+                    <Logo size={40} className="block text-white" to="/" />
+                    <CustomDivider className="block mx-0 bg-white" />
                     <MealsMenu />
-                    <CustomDivider className="hidden lg:block  mx-0 bg-white" />
+                    <CustomDivider className="block mx-0 bg-white" />
                     <DietsMenu />
-                    <CustomDivider className="hidden lg:block  mx-0 bg-white" />
+                    <CustomDivider className="block mx-0 bg-white" />
                     <ProfileMenu
                         user={user}
                         onLogout={handleLogout}
