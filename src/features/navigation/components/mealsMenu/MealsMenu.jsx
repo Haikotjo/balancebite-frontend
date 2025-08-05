@@ -60,12 +60,14 @@ const MealsMenu = () => {
                         {open ? (
                             <>
                                 <ChevronDown className="text-white w-5 h-5 mr-2 md:hidden" />
-                                <ChevronUp className="text-white w-5 h-5 mr-2 hidden lg:block" />
+                                <ChevronUp className="text-white w-5 h-5 mr-2 hidden md:block" />
+
                             </>
                         ) : (
                             <>
                                 <ChevronUp className="text-white w-5 h-5 mr-2 md:hidden" />
-                                <ChevronDown className="text-white w-5 h-5 mr-2 hidden lg:block" />
+                                <ChevronDown className="text-white w-5 h-5 mr-2 hidden md:block" />
+
                             </>
                         )}
                     </CustomBox>

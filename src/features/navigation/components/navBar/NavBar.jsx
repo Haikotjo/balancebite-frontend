@@ -117,7 +117,7 @@ const NavBar = () => {
                         }}
                         text="Profile"
                     />
-                    <CustomDivider className="hidden lg:block  mx-0 bg-white" />
+                    <CustomDivider className="block mx-0 bg-white" />
                 </CustomBox>
 
                 <CustomBox className="flex flex-col space-y-4 px-4 pb-4">
