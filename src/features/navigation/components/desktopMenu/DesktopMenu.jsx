@@ -22,7 +22,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
         path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
 
     return (
-        <CustomBox className="flex flex-col gap-y-2 w-full font-body font-bold text-white">
+        <CustomBox className="flex flex-col  w-full font-body font-bold text-white">
             {/* Home */}
 
                 <CustomBox
