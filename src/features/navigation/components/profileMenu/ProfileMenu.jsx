@@ -37,7 +37,11 @@ const ProfileMenu = ({
                     onClick={() => setOpen(!open)}
                     className="w-full flex justify-between items-center cursor-pointer text-white"
                 >
-                    <CustomTypography className="text-xs sm:text-sm text-white mr-2 md:inline">
+                    <CustomTypography
+                        bold
+                        font="sans"
+                        className="text-xs sm:text-sm text-white mr-2 md:inline"
+                    >
                         Profile
                     </CustomTypography>
                     {/* Always-visible user icon */}
@@ -46,12 +50,14 @@ const ProfileMenu = ({
                     {open ? (
                         <>
                             <ChevronDown className="text-white w-5 h-5 mr-2 md:hidden" />
-                            <ChevronUp className="text-white w-5 h-5 mr-2 hidden lg:block" />
+                            <ChevronUp className="text-white w-5 h-5 mr-2 hidden md:block" />
+
                         </>
                     ) : (
                         <>
                             <ChevronUp className="text-white w-5 h-5 mr-2 md:hidden" />
-                            <ChevronDown className="text-white w-5 h-5 mr-2 hidden lg:block" />
+                            <ChevronDown className="text-white w-5 h-5 mr-2 hidden md:block" />
+
                         </>
                     )}
 
