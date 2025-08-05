@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Home,LogIn, LogOut  } from "lucide-react";
+import { Home,LogIn, LogOut, Gauge, ShieldUser } from "lucide-react";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
@@ -41,6 +41,8 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                 </CustomBox>
 
             </CustomBox>
+
+            {/* Dashboard */}
             {user && (
                 <CustomBox
                     onClick={() => navigate("/dashboard")}
@@ -49,7 +51,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                         isActive("/dashboard") ? "text-primary" : "text-white"
                     )}
                 >
-                    Dashboard
+                    <Gauge className="w-8 h-8 mx-auto" />
                 </CustomBox>
             )}
 
@@ -82,7 +84,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                             isActive("/admin") ? "text-primary" : "text-white"
                         )}
                     >
-                        Admin
+                        <ShieldUser className="w-8 h-8 mx-auto" />
                     </CustomBox>
                 </>
             )}
