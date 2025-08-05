@@ -18,10 +18,10 @@ const CustomTooltip = ({ children, text, position = "top" }) => {
                 <CustomBox
                     className={`absolute z-50 px-2 py-1 rounded bg-gray-800 dark:bg-gray-700
                       transition-opacity duration-200 whitespace-nowrap
-                      ${position === "top" ? "bottom-full mb-2" : ""}
-                      ${position === "bottom" ? "top-full mt-2" : ""}
-                      ${position === "left" ? "right-full mr-2" : ""}
-                      ${position === "right" ? "left-full ml-2" : ""}
+                      ${position === "top" ? "bottom-full mb-1" : ""}
+                      ${position === "bottom" ? "top-full mt-1" : ""}
+                      ${position === "left" ? "right-full mr-1" : ""}
+                      ${position === "right" ? "left-full ml-1" : ""}
           `}
                 >
                     <CustomTypography
