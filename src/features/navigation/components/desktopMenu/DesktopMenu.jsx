@@ -102,7 +102,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                     onClick={onLogout}
                     className="w-full cursor-pointer p-2 rounded-md hover:bg-white/10"
                 >
-                    <LogOut className="w-5 h-5 mx-auto text-white" />
+                    <LogOut className="w-8 h-8 mx-auto" />
                 </CustomBox>
             )}
         </CustomBox>
