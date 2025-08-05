@@ -39,7 +39,8 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
                         onClick={() => handleChipClick(label)}
                         labelFontSize="text-[0.65rem] sm:text-[0.7rem] md:text-[0.8rem]"
                         labelPosition="bottom"
-                        chipPadding={16}
+                        chipSize={54}
+                        iconMargin={12}
                     />
                 );
             })}

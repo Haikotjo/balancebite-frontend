@@ -1,3 +1,4 @@
+// src/components/layout/customChip/CustomChip.jsx
 import PropTypes from "prop-types";
 import CustomBox from "./CustomBox.jsx";
 import CustomTypography from "./CustomTypography.jsx";
@@ -15,10 +16,9 @@ import clsx from "clsx";
  * @param {function} props.onClick - Callback for click events.
  * @param {number} [props.iconMargin=0] - Extra spacing around the icon.
  * @param {number} [props.iconSize=24] - Icon size (for wrapper calculation).
- * @param {number} [props.chipPadding=10] - Extra binnenruimte rond de chip (in px, zonder icon zelf te beïnvloeden).
- * @param {string} [props.labelPosition="bottom"] - "top" of "bottom".
- * @param {string} [props.labelFontSize="text-[0.7rem]"] - Fontgrootte voor het label.
- * @param {string} [props.className] - Extra Tailwind classes.
+ * @param {string} [props.labelPosition="bottom"] - "top" or "bottom" label placement.
+ * @param {string} [props.labelFontSize="text-[0.7rem]"] - Font size class for the label.
+ * @param {string} [props.className] - Optional outer class.
  */
 const CustomChip = ({
                         icon,
@@ -27,14 +27,19 @@ const CustomChip = ({
                         onClick,
                         iconMargin = 0,
                         iconSize = 24,
-                        chipPadding = 10,
+                        chipSize, // 👈 nieuwe prop
                         labelPosition = "bottom",
                         labelFontSize = "text-[0.7rem]",
                         className = ""
                     }) => {
     const spacingClass = iconMargin ? `px-[${iconMargin}px]` : "px-3";
-    const chipSize = iconSize + chipPadding * 2;
-    const dimensionClass = `w-[${chipSize}px] h-[${chipSize}px]`;
+
+    // Als chipSize meegegeven is, gebruik die, anders iconSize + 10
+    const resolvedChipSize = chipSize ?? (iconSize + 10);
+    const chipStyle = {
+        width: `${resolvedChipSize}px`,
+        height: `${resolvedChipSize}px`
+    };
 
     return (
         <CustomBox
@@ -60,9 +65,9 @@ const CustomChip = ({
             )}
 
             <CustomBox
+                style={chipStyle} // 👈 vaste pixelgrootte
                 className={clsx(
                     "rounded-full border-2 flex items-center justify-center transition-colors duration-200",
-                    dimensionClass,
                     spacingClass,
                     selected
                         ? "bg-primary border-primary text-white"
@@ -82,7 +87,19 @@ CustomChip.propTypes = {
     onClick: PropTypes.func.isRequired,
     iconMargin: PropTypes.number,
     iconSize: PropTypes.number,
-    chipPadding: PropTypes.number,
+    chipSize: PropTypes.number, // 👈 toegevoegd
+    labelPosition: PropTypes.oneOf(["top", "bottom"]),
+    labelFontSize: PropTypes.string,
+    className: PropTypes.string,
+};
+
+CustomChip.propTypes = {
+    icon: PropTypes.element.isRequired,
+    label: PropTypes.string,
+    selected: PropTypes.bool,
+    onClick: PropTypes.func.isRequired,
+    iconMargin: PropTypes.number,
+    iconSize: PropTypes.number,
     labelPosition: PropTypes.oneOf(["top", "bottom"]),
     labelFontSize: PropTypes.string,
     className: PropTypes.string,
