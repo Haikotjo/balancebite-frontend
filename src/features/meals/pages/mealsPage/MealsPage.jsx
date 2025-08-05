@@ -117,7 +117,7 @@ function MealPage() {
             <SubMenu onSelect={setActiveOption}/>
             <NutrientSortOptionsHorizontal onSort={handleSort}/>
 
-            <CustomBox className="block md:hidden w-full">
+            <CustomBox className="block w-full">
                 <AccordionItem title="Nutrient range filter">
                     <MealFilterContent filters={filters} setFilters={setFilters}/>
                 </AccordionItem>
