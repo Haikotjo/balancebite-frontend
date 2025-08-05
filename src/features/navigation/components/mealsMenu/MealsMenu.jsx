@@ -50,7 +50,7 @@ const MealsMenu = () => {
                         className="w-full flex justify-between items-center cursor-pointer text-white"
                     >
                         {/* Button label shown on sm+ screens */}
-                        <CustomTypography variant="bold" className="text-xs sm:text-sm text-white mr-2 md:inline">
+                        <CustomTypography variant="display" className="text-xs sm:text-sm text-white mr-2 md:inline">
                             Meals
                         </CustomTypography>
 
