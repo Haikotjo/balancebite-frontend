@@ -19,7 +19,6 @@ export const UserMealsProvider = ({ children }) => {
     const [filters, setFilters] = useState({});
     const [sortBy, setSortBy] = useState(null);
     const [activeOption, setActiveOption] = useState("All Meals");
-    const [currentListEndpoint, setCurrentListEndpoint] = useState("");
     const userMealsRef = useRef(userMeals);
     const [itemsPerPage] = useState(6);
 
@@ -82,29 +81,23 @@ export const UserMealsProvider = ({ children }) => {
 
 
     useEffect(() => {
-        let baseUrl =
-            activeOption === "My Meals"
-                ? `/users/meals?page=${page - 1}&size=${itemsPerPage}`
-                : activeOption === "Created Meals"
-                    ? `/users/created-meals?page=${page - 1}&size=${itemsPerPage}`
-                    : `/meals?page=${page - 1}&size=${itemsPerPage}`;
-
-        Object.entries(filters).forEach(([key, value]) => {
-            baseUrl += `&${key}=${encodeURIComponent(value)}`;
-        });
-
-        if (sortBy?.sortKey && sortBy?.sortOrder) {
-            baseUrl += `&sortBy=${sortBy.sortKey}&sortOrder=${sortBy.sortOrder}`;
-        }
-
-        if (baseUrl !== currentListEndpoint) {
-            setCurrentListEndpoint(baseUrl);
-        }
-    }, [activeOption, filters, sortBy, page]);
-
-    useEffect(() => {
         const run = async () => {
-            if (!currentListEndpoint) return;
+            let baseUrl =
+                activeOption === "My Meals"
+                    ? `/users/meals?page=${page - 1}&size=${itemsPerPage}`
+                    : activeOption === "Created Meals"
+                        ? `/users/created-meals?page=${page - 1}&size=${itemsPerPage}`
+                        : `/meals?page=${page - 1}&size=${itemsPerPage}`;
+
+            Object.entries(filters).forEach(([key, value]) => {
+                baseUrl += `&${key}=${encodeURIComponent(value)}`;
+            });
+
+            if (sortBy?.sortKey && sortBy?.sortOrder) {
+                baseUrl += `&sortBy=${sortBy.sortKey}&sortOrder=${sortBy.sortOrder}`;
+            }
+
+            console.log("📡 Fetching from:", baseUrl);
 
             const token = localStorage.getItem("accessToken");
             let userCopies = [];
@@ -122,7 +115,7 @@ export const UserMealsProvider = ({ children }) => {
             }
 
             try {
-                const mealsData = await fetchMeals(currentListEndpoint);
+                const mealsData = await fetchMeals(baseUrl);
                 const publicMeals = mealsData.content || [];
 
                 const finalMeals = user && userCopies.length > 0
@@ -154,7 +147,8 @@ export const UserMealsProvider = ({ children }) => {
         };
 
         run().catch(console.error);
-    }, [activeOption, user, currentListEndpoint, sortBy]);
+    }, [activeOption, filters, sortBy, page, user]);
+
 
 
     const replaceMealInMeals = (originalMealId, newMeal) => {
