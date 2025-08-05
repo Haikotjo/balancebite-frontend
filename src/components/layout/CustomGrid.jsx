@@ -22,8 +22,8 @@ const CustomGrid = ({ children }) => {
                 xl:grid-cols-4
                 2xl:grid-cols-4
                 gap-4
-               px-4
-               max-w-screen-lg
+                p-4
+                max-w-[1600px]
                 mx-auto
             "
         >

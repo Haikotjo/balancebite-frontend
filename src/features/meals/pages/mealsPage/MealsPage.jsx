@@ -112,8 +112,8 @@ function MealPage() {
 
 
     return (
-        <CustomBox className="flex flex-col items-center pt-6 sm:pt-10 px-4 pb-24 sm:pb-10">
-            <FilterSidebar filters={filters} onFilter={handleFiltersChange}/>
+        <CustomBox className="flex flex-col items-center pt-6 sm:pt-10 px-4 pb-24 sm:pb-10 md:ml-[90px]">
+        <FilterSidebar filters={filters} onFilter={handleFiltersChange}/>
             <SubMenu onSelect={setActiveOption}/>
             <NutrientSortOptionsHorizontal onSort={handleSort}/>
 
