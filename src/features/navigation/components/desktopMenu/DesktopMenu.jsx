@@ -39,6 +39,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
 
             {/* Dashboard */}
             {user && (
+                <CustomTooltip text="Dashboard" position="right">
                 <CustomBox
                     onClick={() => navigate("/dashboard")}
                     className={clsx(
@@ -48,6 +49,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                 >
                     <Gauge className="w-8 h-8 mx-auto" />
                 </CustomBox>
+                </CustomTooltip>
             )}
 
             {/* Nav‐links */}
