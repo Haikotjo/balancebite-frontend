@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import CustomBox from "../layout/CustomBox.jsx";
 import CustomChip from "../layout/CustomChip.jsx";
 import { useNavigate } from "react-router-dom";
+import SubMenuChip from "../submenuchip/SubMenuChip.jsx";
 
 /**
  * Generic SubMenu component for both Meals and Diets.
@@ -27,19 +28,20 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
                 const selected = label === activeOption;
 
                 return (
-                    <CustomChip
+                    <SubMenuChip
                         key={label}
                         icon={
                             <Icon
-                                className={`${selected ? "text-white" : "text-primary"} w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7`}
+                                className={`${selected ? "text-white" : "text-primary"} w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8`}
                             />
                         }
                         label={label}
                         selected={selected}
                         onClick={() => handleChipClick(label)}
-                        labelFontSize="text-[0.65rem] sm:text-[0.7rem] md:text-[0.8rem]"
+                        labelFontSize="text-[0.75rem] sm:text-[0.8rem] md:text-[0.85rem]"
                         labelPosition="bottom"
                     />
+
                 );
             })}
         </CustomBox>
