@@ -24,9 +24,9 @@ export default function CustomDropdownWeb({
 
     return (
         // Anchor container for the dropdown, attaches ref for click-outside logic
-        + <CustomBox ref={ref} className="relative block w-full">
+        <CustomBox ref={ref} className="relative block w-full">
             {/* Trigger wrapper that toggles menu open/close */}
-            + <CustomBox onClick={toggle} className="cursor-pointer block w-full overflow-visible">
+            <CustomBox onClick={toggle} className="cursor-pointer block w-full overflow-visible">
                 {trigger}
             </CustomBox>
 
