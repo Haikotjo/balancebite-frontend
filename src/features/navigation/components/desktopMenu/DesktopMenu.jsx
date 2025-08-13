@@ -99,6 +99,8 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                 </CustomTooltip>
             )}
 
+            <DarkModeSwitch/>
+
             {/* Theme toggle */}
             <CustomTooltip text="Toggle theme" position="right">
                 <CustomBox
