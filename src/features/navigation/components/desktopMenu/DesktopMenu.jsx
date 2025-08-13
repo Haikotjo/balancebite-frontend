@@ -20,6 +20,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
 
     return (
         <CustomBox className="flex flex-col gap-y-2 w-full font-body font-bold text-white">
+
             {/* Home */}
             <CustomTooltip text="Home" position="right">
                 <CustomBox

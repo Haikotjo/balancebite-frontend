@@ -30,20 +30,20 @@ const ProfileMenu = ({
         // Icon-only trigger for DesktopMenu: user + chevron
         <CustomBox
             onClick={() => setOpen(!open)}
-            className="p-2 rounded-md transition-all hover:bg-white/10 cursor-pointer flex items-center justify-center gap-2 text-white"
+            className="relative p-2 rounded-md transition-all hover:bg-white/10 cursor-pointer text-white"
             aria-haspopup="menu"
             aria-expanded={open}
         >
-            <UserCog className="w-8 h-8" />
+            <UserCog className="w-8 h-8 mx-auto" />
             {open ? (
                 <>
-                    <ChevronDown className="w-5 h-5 md:hidden" />
-                    <ChevronUp className="w-5 h-5 hidden md:block" />
+                    <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-5 h-5 md:hidden pointer-events-none" />
+                    <ChevronUp   className="absolute right-1.5 top-1/2 -translate-y-1/2 w-5 h-5 hidden md:block pointer-events-none" />
                 </>
             ) : (
                 <>
-                    <ChevronUp className="w-5 h-5 md:hidden" />
-                    <ChevronDown className="w-5 h-5 hidden md:block" />
+                    <ChevronUp   className="absolute right-1.5 top-1/2 -translate-y-1/2 w-5 h-5 md:hidden pointer-events-none" />
+                    <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-5 h-5 hidden md:block pointer-events-none" />
                 </>
             )}
         </CustomBox>
