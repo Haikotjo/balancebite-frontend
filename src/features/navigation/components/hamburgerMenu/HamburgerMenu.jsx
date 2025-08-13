@@ -105,7 +105,7 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     <CustomButton
                         className="w-full flex items-center justify-start gap-6 px-4 py-4 text-sm text-userText hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
-                        <DarkModeSwitch hamburgerStyle />
+                        <DarkModeSwitch />
                     </CustomButton>
 
 
