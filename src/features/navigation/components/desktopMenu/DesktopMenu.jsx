@@ -8,6 +8,9 @@ import clsx from "clsx";
 import CustomTooltip from "../../../../components/layout/CustomTooltip.jsx";
 import MealsMenu from "../mealsMenu/MealsMenu.jsx";
 import DietsMenu from "../dietsMenu/DietsMenu.jsx";
+import ProfileMenu from "../profileMenu/ProfileMenu.jsx";
+import useLogout from "../../../../hooks/useLogout.js";
+import {useState} from "react";
 
 const navItems = [
     { label: "All Meals", path: "/meals" },
@@ -19,6 +22,9 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const isAdmin = user?.roles.includes("ADMIN");
+    const handleLogout = useLogout();
+    const [showLoginForm, setShowLoginForm] = useState(false);
+    const [startInRegisterMode, setStartInRegisterMode] = useState(false);
 
     const isActive = (path) =>
         path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
@@ -41,6 +47,20 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
             <MealsMenu />
 
             <DietsMenu />
+
+            <ProfileMenu
+                user={user}
+                onLogout={handleLogout}
+                onLoginClick={() => {
+                    setStartInRegisterMode(false);
+                    setShowLoginForm(true);
+                }}
+                onRegisterClick={() => {
+                    setStartInRegisterMode(true);
+                    setShowLoginForm(true);
+                }}
+                text="Profile"
+            />
 
             {/* Dashboard */}
             {user && (
