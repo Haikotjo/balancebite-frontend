@@ -97,28 +97,28 @@ const NavBar = () => {
 
             {/* Desktop layout */}
             <CustomBox className="hidden md:flex md:flex-col md:justify-between md:h-full">
-                <CustomBox className="flex flex-col space-y-6 px-4 py-4">
-                    <Logo size={40} className="block text-white" to="/" />
-                    <CustomDivider className="block mx-0 bg-white" />
-                    <MealsMenu />
-                    <CustomDivider className="block mx-0 bg-white" />
-                    <DietsMenu />
-                    <CustomDivider className="block mx-0 bg-white" />
-                    <ProfileMenu
-                        user={user}
-                        onLogout={handleLogout}
-                        onLoginClick={() => {
-                            setStartInRegisterMode(false);
-                            setShowLoginForm(true);
-                        }}
-                        onRegisterClick={() => {
-                            setStartInRegisterMode(true);
-                            setShowLoginForm(true);
-                        }}
-                        text="Profile"
-                    />
-                    <CustomDivider className="block mx-0 bg-white" />
-                </CustomBox>
+                {/*<CustomBox className="flex flex-col space-y-6 px-4 py-4">*/}
+                {/*    <Logo size={40} className="block text-white" to="/" />*/}
+                {/*    <CustomDivider className="block mx-0 bg-white" />*/}
+                {/*    <MealsMenu />*/}
+                {/*    <CustomDivider className="block mx-0 bg-white" />*/}
+                {/*    <DietsMenu />*/}
+                {/*    <CustomDivider className="block mx-0 bg-white" />*/}
+                {/*    <ProfileMenu*/}
+                {/*        user={user}*/}
+                {/*        onLogout={handleLogout}*/}
+                {/*        onLoginClick={() => {*/}
+                {/*            setStartInRegisterMode(false);*/}
+                {/*            setShowLoginForm(true);*/}
+                {/*        }}*/}
+                {/*        onRegisterClick={() => {*/}
+                {/*            setStartInRegisterMode(true);*/}
+                {/*            setShowLoginForm(true);*/}
+                {/*        }}*/}
+                {/*        text="Profile"*/}
+                {/*    />*/}
+                {/*    <CustomDivider className="block mx-0 bg-white" />*/}
+                {/*</CustomBox>*/}
 
                 <CustomBox className="flex flex-col space-y-4 px-4 pb-4">
                     <DesktopMenu
