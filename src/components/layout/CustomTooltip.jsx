@@ -1,43 +1,35 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
 import CustomBox from "./CustomBox";
 import CustomTypography from "./CustomTypography";
 
-const CustomTooltip = ({ children, text, position = "top" }) => {
-    const [hovered, setHovered] = useState(false);
+const POS = {
+    top:    { pos: "bottom-full", margin: "mb-[4px]" },
+    bottom: { pos: "top-full",    margin: "mt-[4px]" },
+    left:   { pos: "right-full",  margin: "mr-[4px]" },
+    right:  { pos: "left-full",   margin: "ml-[4px]" },
+};
+
+const CustomTooltip = ({ text, position = "top" }) => {
+    const { pos, margin } = POS[position] || POS.top;
 
     return (
         <CustomBox
-            className="relative flex justify-center items-center"
-            onMouseEnter={() => setHovered(true)}
-            onMouseLeave={() => setHovered(false)}
+            // Absolute inside a relative parent with class 'group'
+            className={[
+                "absolute z-50 px-2 py-1 rounded bg-gray-800 dark:bg-gray-700",
+                "whitespace-nowrap transition-opacity duration-150",
+                "opacity-0 group-hover:opacity-100 pointer-events-none",
+                pos, margin,
+            ].join(" ")}
         >
-            {children}
-
-            {hovered && (
-                <CustomBox
-                    className={`absolute z-50 px-2 py-1 rounded bg-gray-800 dark:bg-gray-700
-                      transition-opacity duration-200 whitespace-nowrap
-                      ${position === "top" ? "bottom-full mb-[1px]" : ""}
-                      ${position === "bottom" ? "top-full mt-[1px]" : ""}
-                      ${position === "left" ? "right-full mr-[1px]" : ""}
-                      ${position === "right" ? "left-full ml-[1px]" : ""}
-          `}
-                >
-                    <CustomTypography
-                        variant="xsmallCard"
-                        className="text-white dark:text-white"
-                    >
-                        {text}
-                    </CustomTypography>
-                </CustomBox>
-            )}
+            <CustomTypography variant="xsmallCard" className="text-white dark:text-white">
+                {text}
+            </CustomTypography>
         </CustomBox>
     );
 };
 
 CustomTooltip.propTypes = {
-    children: PropTypes.node.isRequired,
     text: PropTypes.string.isRequired,
     position: PropTypes.oneOf(["top", "bottom", "left", "right"]),
 };
