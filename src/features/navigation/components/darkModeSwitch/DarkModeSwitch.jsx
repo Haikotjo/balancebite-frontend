@@ -1,13 +1,12 @@
-// English code comments as requested
-import { useEffect, forwardRef } from "react";
+import { useEffect } from "react";
 import { Sun, Moon } from "lucide-react";
+
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import PropTypes from "prop-types";
 import { useThemeMode } from "../../../../themes/useThemeMode.js";
 
-const DarkModeSwitch = forwardRef(function DarkModeSwitch(
-    { hamburgerStyle = false, className = "" , ...props},
-    ref
-) {
+const DarkModeSwitch = ({ hamburgerStyle = false }) => {
     const { mode, toggleTheme } = useThemeMode();
 
     // Restore saved mode on mount
@@ -24,49 +23,41 @@ const DarkModeSwitch = forwardRef(function DarkModeSwitch(
         localStorage.setItem("theme-mode", mode);
     }, [mode]);
 
+    // Hamburger style: small icon + text label
     if (hamburgerStyle) {
         return (
-            <button
-                type="button"
-                ref={ref}
-                onClick={toggleTheme}
-                className={`flex items-center gap-6 w-full cursor-pointer select-none ${className}`}
-                {...props}
-            >
+            <CustomBox className="flex items-center gap-6 w-full" onClick={toggleTheme}>
                 {mode === "dark" ? (
                     <Sun className="w-4 h-4 text-white md:w-3 md:h-3" />
                 ) : (
                     <Moon className="w-4 h-4 text-gray-800 md:w-3 md:h-3" fill="currentColor" stroke="none" />
                 )}
-                <span className="font-medium text-sm">{mode === "dark" ? "Light Mode" : "Dark Mode"}</span>
-            </button>
+                <CustomTypography as="span">
+                    {mode === "dark" ? "Light Mode" : "Dark Mode"}
+                </CustomTypography>
+            </CustomBox>
         );
     }
 
-    // Default: icon-only, no text, no slider
+    // Default style: icon-only, no text, no slider, no tooltips
     return (
-        <button
-            type="button"
-            ref={ref}
+        <CustomBox
+            className="inline-flex items-center justify-center cursor-pointer select-none"
             onClick={toggleTheme}
-            className={`inline-flex items-center justify-center cursor-pointer select-none ${className}`}
-            aria-label={mode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            {...props}
+            role="button"
         >
             {mode === "dark" ? (
                 <Sun className="w-8 h-8 mx-auto text-white" />
             ) : (
                 <Moon className="w-8 h-8 mx-auto text-gray-800" fill="currentColor" stroke="none" />
             )}
-        </button>
+        </CustomBox>
     );
-});
+};
 
 DarkModeSwitch.propTypes = {
     /** Render simplified hamburger-style (icon + label) */
     hamburgerStyle: PropTypes.bool,
-    /** Optional extra classes for the root button */
-    className: PropTypes.string,
 };
 
 export default DarkModeSwitch;
