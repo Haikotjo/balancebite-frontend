@@ -1,30 +1,18 @@
+// English code comments as requested
 import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Home,LogIn, LogOut, Gauge, ShieldUser } from "lucide-react";
-import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import { Home, LogIn, LogOut, Gauge, ShieldUser } from "lucide-react";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
-import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 import clsx from "clsx";
 import CustomTooltip from "../../../../components/layout/CustomTooltip.jsx";
 import MealsMenu from "../mealsMenu/MealsMenu.jsx";
 import DietsMenu from "../dietsMenu/DietsMenu.jsx";
 import ProfileMenu from "../profileMenu/ProfileMenu.jsx";
-import useLogout from "../../../../hooks/useLogout.js";
-import {useState} from "react";
 
-const navItems = [
-    { label: "All Meals", path: "/meals" },
-    { label: "All Diets", path: "/diets" },
-    { label: "About", path: "/about" },
-];
-
-const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
+const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const isAdmin = user?.roles.includes("ADMIN");
-    const handleLogout = useLogout();
-    const [showLoginForm, setShowLoginForm] = useState(false);
-    const [startInRegisterMode, setStartInRegisterMode] = useState(false);
 
     const isActive = (path) =>
         path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
@@ -45,60 +33,34 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
             </CustomTooltip>
 
             <MealsMenu />
-
             <DietsMenu />
 
+            {/* Profile moved here for desktop */}
             <ProfileMenu
                 user={user}
-                onLogout={handleLogout}
-                onLoginClick={() => {
-                    setStartInRegisterMode(false);
-                    setShowLoginForm(true);
-                }}
-                onRegisterClick={() => {
-                    setStartInRegisterMode(true);
-                    setShowLoginForm(true);
-                }}
+                onLogout={onLogout}
+                onLoginClick={onLoginClick}
+                onRegisterClick={onRegisterClick}
                 text="Profile"
             />
 
             {/* Dashboard */}
             {user && (
                 <CustomTooltip text="Dashboard" position="right">
-                <CustomBox
-                    onClick={() => navigate("/dashboard")}
-                    className={clsx(
-                        "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                        isActive("/dashboard") ? "text-primary" : "text-white"
-                    )}
-                >
-                    <Gauge className="w-8 h-8 mx-auto" />
-                </CustomBox>
+                    <CustomBox
+                        onClick={() => navigate("/dashboard")}
+                        className={clsx(
+                            "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
+                            isActive("/dashboard") ? "text-primary" : "text-white"
+                        )}
+                    >
+                        <Gauge className="w-8 h-8 mx-auto" />
+                    </CustomBox>
                 </CustomTooltip>
             )}
 
-            {/* Nav‐links */}
-            {/*{navItems.map((item) => {*/}
-            {/*    const active = isActive(item.path);*/}
-            {/*    return (*/}
-            {/*        <CustomBox*/}
-            {/*            key={item.path}*/}
-            {/*            onClick={() => navigate(item.path)}*/}
-            {/*            className={clsx(*/}
-            {/*                "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",*/}
-            {/*                active ? "text-primary" : "text-white"*/}
-            {/*            )}*/}
-            {/*        >*/}
-            {/*            {item.label}*/}
-            {/*        </CustomBox>*/}
-            {/*    );*/}
-            {/*})}*/}
-
-            {/*<CustomDivider className="bg-white my-2" />*/}
-
             {/* Admin */}
             {isAdmin && (
-                <>
                 <CustomTooltip text="Admin" position="right">
                     <CustomBox
                         onClick={() => navigate("/admin")}
@@ -110,30 +72,24 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                         <ShieldUser className="w-8 h-8 mx-auto" />
                     </CustomBox>
                 </CustomTooltip>
-                </>
             )}
 
-            {/* Auth */}
+            {/* Optional: remove these auth icons if ProfileMenu already covers auth */}
             {!user ? (
                 <CustomTooltip text="Sign in" position="right">
-                <CustomBox
-                    onClick={onLoginClick}
-                    className={clsx(
-                        "w-full cursor-pointer p-2 rounded-md transition-all hover:bg-white/10"
-                    )}
-                >
-                    <LogIn className="w-8 h-8 mx-auto" />
-                </CustomBox>
+                    <CustomBox
+                        onClick={onLoginClick}
+                        className="w-full cursor-pointer p-2 rounded-md transition-all hover:bg-white/10"
+                    >
+                        <LogIn className="w-8 h-8 mx-auto" />
+                    </CustomBox>
                 </CustomTooltip>
             ) : (
                 <CustomTooltip text="Log out" position="right">
-                <CustomBox
-                    onClick={onLogout}
-                    className="w-full cursor-pointer p-2 rounded-md hover:bg-white/10"
-                >
-                    <LogOut className="w-8 h-8 mx-auto" />
-                </CustomBox>
-</CustomTooltip>
+                    <CustomBox onClick={onLogout} className="w-full cursor-pointer p-2 rounded-md hover:bg-white/10">
+                        <LogOut className="w-8 h-8 mx-auto" />
+                    </CustomBox>
+                </CustomTooltip>
             )}
         </CustomBox>
     );
