@@ -22,56 +22,70 @@ const ProfileMenu = ({
                          onLogout,
                          onLoginClick,
                          onRegisterClick,
+                         compact = false,
                      }) => {
     const [open, setOpen] = useState(false);
+
+    const trigger = compact ? (
+        // Icon-only trigger for DesktopMenu: user + chevron
+        <CustomBox
+            onClick={() => setOpen(!open)}
+            className="p-2 rounded-md transition-all hover:bg-white/10 cursor-pointer flex items-center justify-center gap-2 text-white"
+            aria-haspopup="menu"
+            aria-expanded={open}
+        >
+            <UserCog className="w-8 h-8" />
+            {open ? (
+                <>
+                    <ChevronDown className="w-5 h-5 md:hidden" />
+                    <ChevronUp className="w-5 h-5 hidden md:block" />
+                </>
+            ) : (
+                <>
+                    <ChevronUp className="w-5 h-5 md:hidden" />
+                    <ChevronDown className="w-5 h-5 hidden md:block" />
+                </>
+            )}
+        </CustomBox>
+    ) : (
+        // Default trigger with text (mobile/overal)
+        <CustomBox
+            onClick={() => setOpen(!open)}
+            className="w-full flex justify-between items-center cursor-pointer text-white"
+            aria-haspopup="menu"
+            aria-expanded={open}
+        >
+            <CustomTypography bold font="sans" className="text-xs sm:text-sm text-white mr-2 md:inline">
+                Profile
+            </CustomTypography>
+            <UserCog className="text-white w-5 h-5 sm:w-6 sm:h-6" />
+            {open ? (
+                <>
+                    <ChevronDown className="text-white w-5 h-5 mr-2 md:hidden" />
+                    <ChevronUp className="text-white w-5 h-5 mr-2 hidden md:block" />
+                </>
+            ) : (
+                <>
+                    <ChevronUp className="text-white w-5 h-5 mr-2 md:hidden" />
+                    <ChevronDown className="text-white w-5 h-5 mr-2 hidden md:block" />
+                </>
+            )}
+        </CustomBox>
+    );
 
     return (
         <CustomDropdownWeb
             open={open}
             onOpenChange={setOpen}
             className="absolute bottom-full left-0 min-w-[10rem] max-w-[40vw] md:left-full md:top-0 md:bottom-auto"
-
-            /* ── trigger element ─────────────────────────────────────────── */
-            trigger={
-                <CustomBox
-                    onClick={() => setOpen(!open)}
-                    className="w-full flex justify-between items-center cursor-pointer text-white"
-                >
-                    <CustomTypography
-                        bold
-                        font="sans"
-                        className="text-xs sm:text-sm text-white mr-2 md:inline"
-                    >
-                        Profile
-                    </CustomTypography>
-                    {/* Always-visible user icon */}
-                    <UserCog  className="text-white w-5 h-5 sm:w-6 sm:h-6" />
-                    {/* Chevron indicator */}
-                    {open ? (
-                        <>
-                            <ChevronDown className="text-white w-5 h-5 mr-2 md:hidden" />
-                            <ChevronUp className="text-white w-5 h-5 mr-2 hidden md:block" />
-
-                        </>
-                    ) : (
-                        <>
-                            <ChevronUp className="text-white w-5 h-5 mr-2 md:hidden" />
-                            <ChevronDown className="text-white w-5 h-5 mr-2 hidden md:block" />
-
-                        </>
-                    )}
-
-                </CustomBox>
-            }
-            /* ── dropdown items ──────────────────────────────────────────── */
+            trigger={trigger}
             items={[
                 user && {
                     label: "Profile",
                     icon: UserCircle,
                     onClick: () => {
                         setOpen(false);
-                        // route to profile page; adapt if needed
-                        window.location.href = "/profile";
+                        window.location.href = "/profile"; // keep current behavior
                     },
                 },
                 !user && {
@@ -98,7 +112,7 @@ const ProfileMenu = ({
                         onLogout(() => {});
                     },
                 },
-            ].filter(Boolean)} // remove null entries
+            ].filter(Boolean)}
         />
     );
 };
@@ -108,8 +122,7 @@ ProfileMenu.propTypes = {
     onLogout: PropTypes.func.isRequired,
     onLoginClick: PropTypes.func.isRequired,
     onRegisterClick: PropTypes.func.isRequired,
-    iconColor: PropTypes.string,
-    text: PropTypes.string,
+    compact: PropTypes.bool,
 };
 
 export default ProfileMenu;

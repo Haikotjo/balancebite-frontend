@@ -35,10 +35,11 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
             </CustomTooltip>
 
             <MealsMenu compact/>
-            <DietsMenu compact />
+            <DietsMenu compact/>
 
             {/* Profile moved here for desktop */}
             <ProfileMenu
+                compact
                 user={user}
                 onLogout={onLogout}
                 onLoginClick={onLoginClick}
