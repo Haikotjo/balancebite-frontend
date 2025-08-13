@@ -24,16 +24,17 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
     return (
         <CustomBox className="flex flex-col gap-y-2 w-full font-body font-bold text-white">
             {/* Home */}
-            <CustomBox
-                onClick={() => navigate("/")}
-                className={clsx(
-                    "relative group cursor-pointer p-2 rounded-md transition-all hover:bg-white/10", // anchor
-                    isActive("/") ? "text-primary" : "text-white"
-                )}
-            >
-                <Home className="w-8 h-8 mx-auto" />
-                <CustomTooltip text="Home" position="right" />
-            </CustomBox>
+            <CustomTooltip text="Home" position="right">
+                <CustomBox
+                    onClick={() => navigate("/")}
+                    className={clsx(
+                        "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
+                        isActive("/") ? "text-primary" : "text-white"
+                    )}
+                >
+                    <Home className="w-8 h-8 mx-auto" />
+                </CustomBox>
+            </CustomTooltip>
 
 
             {/* Dashboard */}
