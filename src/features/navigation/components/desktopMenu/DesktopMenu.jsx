@@ -99,13 +99,14 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                 </CustomTooltip>
             )}
 
-            <DarkModeSwitch/>
-
             {/* Theme toggle */}
             <CustomTooltip text="Toggle theme" position="right">
                 <CustomBox
                     onClick={toggleTheme}
-                    className="cursor-pointer p-2 rounded-md transition-all hover:bg-white/10"
+                    className={clsx(
+                        "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
+                        mode === "dark" ? "text-white" : "text-gray-800"   // ← force color per mode
+                    )}
                 >
                     {mode === "dark" ? (
                         <Sun className="w-8 h-8 mx-auto" />
