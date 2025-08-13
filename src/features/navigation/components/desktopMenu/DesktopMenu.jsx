@@ -8,12 +8,15 @@ import CustomTooltip from "../../../../components/layout/CustomTooltip.jsx";
 import MealsMenu from "../mealsMenu/MealsMenu.jsx";
 import DietsMenu from "../dietsMenu/DietsMenu.jsx";
 import ProfileMenu from "../profileMenu/ProfileMenu.jsx";
-import DarkModeSwitch from "../darkModeSwitch/DarkModeSwitch.jsx"; // ← added
+import { Sun, Moon } from "lucide-react";
+import DarkModeSwitch from "../darkModeSwitch/DarkModeSwitch.jsx";
+import {useThemeMode} from "../../../../themes/useThemeMode.js";
 
 const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const isAdmin = user?.roles.includes("ADMIN");
+    const { mode, toggleTheme } = useThemeMode();
 
     const isActive = (path) =>
         path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
@@ -98,11 +101,18 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
 
             {/* Theme toggle */}
             <CustomTooltip text="Toggle theme" position="right">
-                <CustomBox className="cursor-pointer p-2 rounded-md transition-all hover:bg-white/10">
-                    {/* DarkModeSwitch itself handles the click + icon rendering */}
-                    <DarkModeSwitch />
+                <CustomBox
+                    onClick={toggleTheme}
+                    className="cursor-pointer p-2 rounded-md transition-all hover:bg-white/10"
+                >
+                    {mode === "dark" ? (
+                        <Sun className="w-8 h-8 mx-auto" />
+                    ) : (
+                        <Moon className="w-8 h-8 mx-auto" fill="currentColor" stroke="none" />
+                    )}
                 </CustomBox>
             </CustomTooltip>
+
         </CustomBox>
     );
 };
