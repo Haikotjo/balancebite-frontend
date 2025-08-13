@@ -5,7 +5,6 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import PropTypes from "prop-types";
 import { useThemeMode } from "../../../../themes/useThemeMode.js";
-import CustomTooltip from "../../../../components/layout/CustomTooltip.jsx"; // Added import
 
 const DarkModeSwitch = ({ hamburgerStyle = false }) => {
     const { mode, toggleTheme } = useThemeMode();
@@ -24,14 +23,14 @@ const DarkModeSwitch = ({ hamburgerStyle = false }) => {
         localStorage.setItem("theme-mode", mode);
     }, [mode]);
 
-    // Hamburger style: small icon + optional text label (unchanged)
+    // Hamburger style: small icon + text label
     if (hamburgerStyle) {
         return (
             <CustomBox className="flex items-center gap-6 w-full" onClick={toggleTheme}>
                 {mode === "dark" ? (
                     <Sun className="w-4 h-4 text-white md:w-3 md:h-3" />
                 ) : (
-                    <Moon className="w-4 h-4 text-gray-800 md:w-3 md:h-3" />
+                    <Moon className="w-4 h-4 text-gray-800 md:w-3 md:h-3" fill="currentColor" stroke="none" />
                 )}
                 <CustomTypography as="span">
                     {mode === "dark" ? "Light Mode" : "Dark Mode"}
@@ -40,35 +39,23 @@ const DarkModeSwitch = ({ hamburgerStyle = false }) => {
         );
     }
 
-    // Default style: icon-only with CustomTooltip, no text, no slider
+    // Default style: icon-only, no text, no slider, no tooltips
     return (
-        <CustomTooltip
-            text={mode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            position="right"
+        <CustomBox
+            className="inline-flex items-center justify-center cursor-pointer select-none"
+            onClick={toggleTheme}
+            role="button"
         >
-            <CustomBox
-                className="inline-flex items-center justify-center cursor-pointer select-none"
-                onClick={toggleTheme}
-                role="button"
-                aria-label={mode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            >
-                {mode === "dark" ? (
-                    <Sun className="w-8 h-8 mx-auto text-white" />
-                ) : (
-                    <Moon
-                        className="w-8 h-8 mx-auto text-gray-800"
-                        fill="currentColor"
-                        stroke="none"
-                    />
-                )}
-            </CustomBox>
-        </CustomTooltip>
+            {mode === "dark" ? (
+                <Sun className="w-8 h-8 mx-auto text-white" />
+            ) : (
+                <Moon className="w-8 h-8 mx-auto text-gray-800" fill="currentColor" stroke="none" />
+            )}
+        </CustomBox>
     );
 };
 
 DarkModeSwitch.propTypes = {
-    /** Show text label (only used in hamburgerStyle) */
-    withLabel: PropTypes.bool,
     /** Render simplified hamburger-style (icon + label) */
     hamburgerStyle: PropTypes.bool,
 };
