@@ -51,7 +51,11 @@ const DarkModeSwitch = ({ withLabel = false, hamburgerStyle = false }) => {
             {mode === "dark" ? (
                 <Sun className="w-7 h-7 md:w-6 md:h-6 text-white" />
             ) : (
-                <Moon className="w-7 h-7 md:w-6 md:h-6 text-gray-800" />
+                <Moon
+                    className="w-7 h-7 md:w-6 md:h-6 text-gray-800"
+                    fill="currentColor"
+                    stroke="none"
+                />
             )}
         </CustomBox>
     );
