@@ -49,10 +49,10 @@ const DarkModeSwitch = ({ withLabel = false, hamburgerStyle = false }) => {
             title={mode === "dark" ? "Light mode" : "Dark mode"}
         >
             {mode === "dark" ? (
-                <Sun className="w-7 h-7 md:w-6 md:h-6 text-white" />
+                <Sun className="w-8 h-8 mx-auto text-white" />
             ) : (
                 <Moon
-                    className="w-7 h-7 md:w-6 md:h-6 text-gray-800"
+                    className="w-8 h-8 mx-autotext-gray-800"
                     fill="currentColor"
                     stroke="none"
                 />
