@@ -9,7 +9,6 @@ import MealsMenu from "../mealsMenu/MealsMenu.jsx";
 import DietsMenu from "../dietsMenu/DietsMenu.jsx";
 import ProfileMenu from "../profileMenu/ProfileMenu.jsx";
 import { Sun, Moon } from "lucide-react";
-import DarkModeSwitch from "../darkModeSwitch/DarkModeSwitch.jsx";
 import {useThemeMode} from "../../../../themes/useThemeMode.js";
 
 const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
@@ -37,7 +36,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
             </CustomTooltip>
 
             <MealsMenu />
-            <DietsMenu />
+            <DietsMenu compact />
 
             {/* Profile moved here for desktop */}
             <ProfileMenu
