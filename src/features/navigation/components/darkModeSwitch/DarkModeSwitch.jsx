@@ -5,8 +5,9 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import PropTypes from "prop-types";
 import { useThemeMode } from "../../../../themes/useThemeMode.js";
+import CustomTooltip from "../../../../components/layout/CustomTooltip.jsx"; // Added import
 
-const DarkModeSwitch = ({ withLabel = false, hamburgerStyle = false }) => {
+const DarkModeSwitch = ({ hamburgerStyle = false }) => {
     const { mode, toggleTheme } = useThemeMode();
 
     // Restore saved mode on mount
@@ -39,25 +40,29 @@ const DarkModeSwitch = ({ withLabel = false, hamburgerStyle = false }) => {
         );
     }
 
-    // Default style: icon-only (bigger), no text, no slider
+    // Default style: icon-only with CustomTooltip, no text, no slider
     return (
-        <CustomBox
-            className="inline-flex items-center justify-center cursor-pointer select-none"
-            onClick={toggleTheme}
-            role="button"
-            aria-label={mode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            title={mode === "dark" ? "Light mode" : "Dark mode"}
+        <CustomTooltip
+            text={mode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            position="right"
         >
-            {mode === "dark" ? (
-                <Sun className="w-8 h-8 mx-auto text-white" />
-            ) : (
-                <Moon
-                    className="w-8 h-8 mx-autotext-gray-800"
-                    fill="currentColor"
-                    stroke="none"
-                />
-            )}
-        </CustomBox>
+            <CustomBox
+                className="inline-flex items-center justify-center cursor-pointer select-none"
+                onClick={toggleTheme}
+                role="button"
+                aria-label={mode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            >
+                {mode === "dark" ? (
+                    <Sun className="w-8 h-8 mx-auto text-white" />
+                ) : (
+                    <Moon
+                        className="w-8 h-8 mx-auto text-gray-800"
+                        fill="currentColor"
+                        stroke="none"
+                    />
+                )}
+            </CustomBox>
+        </CustomTooltip>
     );
 };
 
