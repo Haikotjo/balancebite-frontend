@@ -1,13 +1,12 @@
 import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Home, LogIn, LogOut, Gauge, ShieldUser } from "lucide-react";
+import { Home, LogIn, LogOut, Gauge, ShieldUser, Info, Sun, Moon } from "lucide-react";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import clsx from "clsx";
 import CustomTooltip from "../../../../components/layout/CustomTooltip.jsx";
 import MealsMenu from "../mealsMenu/MealsMenu.jsx";
 import DietsMenu from "../dietsMenu/DietsMenu.jsx";
 import ProfileMenu from "../profileMenu/ProfileMenu.jsx";
-import { Sun, Moon } from "lucide-react";
 import {useThemeMode} from "../../../../themes/useThemeMode.js";
 
 const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
@@ -33,6 +32,20 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     <Home className="w-8 h-8 mx-auto" />
                 </CustomBox>
             </CustomTooltip>
+
+            {/* About */}
+            <CustomTooltip text="About" position="right">
+                <CustomBox
+                    onClick={() => navigate("/about")}
+                    className={clsx(
+                        "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
+                        isActive("/about") ? "text-primary" : "text-white"
+                    )}
+                >
+                    <Info className="w-8 h-8 mx-auto" />
+                </CustomBox>
+            </CustomTooltip>
+
 
             <MealsMenu compact/>
             <DietsMenu compact/>
