@@ -1,4 +1,3 @@
-// English code comments as requested
 import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Home, LogIn, LogOut, Gauge, ShieldUser } from "lucide-react";
@@ -35,7 +34,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                 </CustomBox>
             </CustomTooltip>
 
-            <MealsMenu />
+            <MealsMenu compact/>
             <DietsMenu compact />
 
             {/* Profile moved here for desktop */}
