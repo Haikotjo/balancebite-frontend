@@ -26,7 +26,7 @@ const MealsMenu = ({ compact = false }) => {
         // Icon-only trigger for DesktopMenu: soup + chevron, same size as other icons
         <CustomBox
             onClick={() => setOpen(!open)}
-            className="relative p-2 rounded-md transition-all hover:bg-white/10 cursor-pointer text-white"
+            className="relative block w-full p-2 rounded-md transition-all hover:bg-white/10 cursor-pointer text-white overflow-visible"
             aria-haspopup="menu"
             aria-expanded={open}
         >
