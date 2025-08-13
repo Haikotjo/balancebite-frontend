@@ -6,6 +6,8 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 import clsx from "clsx";
 import CustomTooltip from "../../../../components/layout/CustomTooltip.jsx";
+import MealsMenu from "../mealsMenu/MealsMenu.jsx";
+import DietsMenu from "../dietsMenu/DietsMenu.jsx";
 
 const navItems = [
     { label: "All Meals", path: "/meals" },
@@ -36,6 +38,9 @@ const DesktopMenu = ({ user, onLogout, onLoginClick }) => {
                 </CustomBox>
             </CustomTooltip>
 
+            <MealsMenu />
+
+            <DietsMenu />
 
             {/* Dashboard */}
             {user && (
