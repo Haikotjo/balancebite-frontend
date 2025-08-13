@@ -98,10 +98,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
 
             {/* Theme toggle */}
             <CustomTooltip text="Toggle theme" position="right">
-                <CustomBox className="cursor-pointer p-2 rounded-md transition-all hover:bg-white/10">
-                    {/* DarkModeSwitch itself handles the click + icon rendering */}
-                    <DarkModeSwitch />
-                </CustomBox>
+                <DarkModeSwitch className="p-2 rounded-md transition-all hover:bg-white/10" />
             </CustomTooltip>
         </CustomBox>
     );
