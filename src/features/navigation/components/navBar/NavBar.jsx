@@ -114,7 +114,6 @@ const NavBar = () => {
                             setShowLoginForm(true);
                         }}
                     />
-                    <DarkModeSwitch />
                 </CustomBox>
             </CustomBox>
 

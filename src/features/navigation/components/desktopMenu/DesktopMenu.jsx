@@ -8,6 +8,7 @@ import CustomTooltip from "../../../../components/layout/CustomTooltip.jsx";
 import MealsMenu from "../mealsMenu/MealsMenu.jsx";
 import DietsMenu from "../dietsMenu/DietsMenu.jsx";
 import ProfileMenu from "../profileMenu/ProfileMenu.jsx";
+import DarkModeSwitch from "../darkModeSwitch/DarkModeSwitch.jsx"; // ← added
 
 const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
     const navigate = useNavigate();
@@ -74,7 +75,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                 </CustomTooltip>
             )}
 
-            {/* Optional: remove these auth icons if ProfileMenu already covers auth */}
+            {/* Auth (optional if ProfileMenu already handles it) */}
             {!user ? (
                 <CustomTooltip text="Sign in" position="right">
                     <CustomBox
@@ -86,11 +87,22 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                 </CustomTooltip>
             ) : (
                 <CustomTooltip text="Log out" position="right">
-                    <CustomBox onClick={onLogout} className="w-full cursor-pointer p-2 rounded-md hover:bg-white/10">
+                    <CustomBox
+                        onClick={onLogout}
+                        className="w-full cursor-pointer p-2 rounded-md hover:bg-white/10"
+                    >
                         <LogOut className="w-8 h-8 mx-auto" />
                     </CustomBox>
                 </CustomTooltip>
             )}
+
+            {/* Theme toggle */}
+            <CustomTooltip text="Toggle theme" position="right">
+                <CustomBox className="cursor-pointer p-2 rounded-md transition-all hover:bg-white/10">
+                    {/* DarkModeSwitch itself handles the click + icon rendering */}
+                    <DarkModeSwitch />
+                </CustomBox>
+            </CustomTooltip>
         </CustomBox>
     );
 };
