@@ -18,11 +18,12 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
     const isAdmin = user?.roles.includes("ADMIN");
     const { mode, toggleTheme } = useThemeMode();
 
+    // Helper: determine active route
     const isActive = (path) =>
         path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
 
     return (
-        // Root: let middle area scroll; min-h-0 is key inside flex parents
+        // Root: header top, footer bottom, middle scrollable
         <CustomBox className="flex h-full min-h-0 w-full flex-col justify-between font-body font-bold text-white">
 
             {/* Header (fixed top) */}
@@ -30,10 +31,11 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                 <Logo size={40} className="block text-white" to="/" />
             </CustomBox>
 
-            {/* Middle: scrollable area that holds the 4 sections */}
+            {/* Middle: scroll container with 4 evenly placed rows */}
             <CustomBox className="flex-1 min-h-0 overflow-y-auto py-2">
                 <CustomBox className="grid grid-rows-4 justify-items-center gap-2">
-                    {/* Section 1 */}
+
+                    {/* Section 1 (FIRST): Hamburger / extra actions */}
                     <CustomBox className="flex flex-col items-center">
                         <HamburgerMenu
                             user={user}
@@ -45,7 +47,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                         />
                     </CustomBox>
 
-                    {/* Section 2 */}
+                    {/* Section 2: Meals / Diets / Profile menu */}
                     <CustomBox className="flex flex-col items-center gap-1">
                         <MealsMenu compact />
                         <DietsMenu compact />
@@ -59,7 +61,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                         />
                     </CustomBox>
 
-                    {/* Section 3 */}
+                    {/* Section 3: Profile icon / Dashboard / Admin */}
                     <CustomBox className="flex flex-col items-center">
                         <CustomTooltip text="Profile" position="right">
                             <CustomBox
@@ -103,7 +105,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                         )}
                     </CustomBox>
 
-                    {/* Section 4 */}
+                    {/* Section 4: Home / About / Auth */}
                     <CustomBox className="flex flex-col items-center">
                         <CustomTooltip text="Home" position="right">
                             <CustomBox
@@ -152,7 +154,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                 </CustomBox>
             </CustomBox>
 
-            {/* Footer (fixed bottom) */}
+            {/* Footer (fixed bottom): theme toggle */}
             <CustomTooltip text="Toggle theme" position="right">
                 <CustomBox
                     onClick={toggleTheme}
