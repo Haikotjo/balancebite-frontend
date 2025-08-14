@@ -29,33 +29,10 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     <Logo size={40} className="block text-white" to="/" />
                 </CustomBox>
 
-                {/* Home */}
-                <CustomTooltip text="Home" position="right">
-                    <CustomBox
-                        onClick={() => navigate("/")}
-                        className={clsx(
-                            "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                            isActive("/") ? "text-primary" : "text-white"
-                        )}
-                    >
-                        <Home className="w-8 h-8 mx-auto" />
-                    </CustomBox>
-                </CustomTooltip>
-
-                {/* About */}
-                <CustomTooltip text="About" position="right">
-                    <CustomBox
-                        onClick={() => navigate("/about")}
-                        className={clsx(
-                            "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                            isActive("/about") ? "text-primary" : "text-white"
-                        )}
-                    >
-                        <Info className="w-8 h-8 mx-auto" />
-                    </CustomBox>
-                </CustomTooltip>
-
+                {/* MealsMenu */}
                 <MealsMenu compact />
+
+                {/* DietsMenu */}
                 <DietsMenu compact />
 
                 {/* Profile */}
@@ -98,6 +75,44 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     </CustomTooltip>
                 )}
 
+            <CustomBox className="flex flex-col items-center gap-y-2 mb-4">
+                <CustomBox className="mt-2 self-center">
+                    <HamburgerMenu
+                        user={user}
+                        onLogout={onLogout}
+                        onLoginClick={onLoginClick}
+                        onRegisterClick={onRegisterClick}
+                        variant="desktop"
+                        iconColor="text-white"
+                    />
+                </CustomBox>
+
+                {/* Home */}
+                <CustomTooltip text="Home" position="right">
+                    <CustomBox
+                        onClick={() => navigate("/")}
+                        className={clsx(
+                            "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
+                            isActive("/") ? "text-primary" : "text-white"
+                        )}
+                    >
+                        <Home className="w-8 h-8 mx-auto" />
+                    </CustomBox>
+                </CustomTooltip>
+
+                {/* About */}
+                <CustomTooltip text="About" position="right">
+                    <CustomBox
+                        onClick={() => navigate("/about")}
+                        className={clsx(
+                            "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
+                            isActive("/about") ? "text-primary" : "text-white"
+                        )}
+                    >
+                        <Info className="w-8 h-8 mx-auto" />
+                    </CustomBox>
+                </CustomTooltip>
+
                 {/* Auth fallback */}
                 {!user ? (
                     <CustomTooltip text="Sign in" position="right">
@@ -119,19 +134,6 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     </CustomTooltip>
                 )}
             </CustomBox>
-
-            {/* Onderste sectie */}
-            <CustomBox className="flex flex-col items-center gap-y-2 mb-4">
-                <CustomBox className="mt-2 self-center">
-                    <HamburgerMenu
-                        user={user}
-                        onLogout={onLogout}
-                        onLoginClick={onLoginClick}
-                        onRegisterClick={onRegisterClick}
-                        variant="desktop"
-                        iconColor="text-white"
-                    />
-                </CustomBox>
 
                 <CustomTooltip text="Toggle theme" position="right">
                     <CustomBox
