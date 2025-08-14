@@ -34,6 +34,18 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
             <CustomBox className="flex-1 min-h-0 overflow-y-auto py-2">
                 <CustomBox className="grid grid-rows-4 justify-items-center gap-2">
                     {/* Section 1 */}
+                    <CustomBox className="flex flex-col items-center">
+                        <HamburgerMenu
+                            user={user}
+                            onLogout={onLogout}
+                            onLoginClick={onLoginClick}
+                            onRegisterClick={onRegisterClick}
+                            variant="desktop"
+                            iconColor="text-white"
+                        />
+                    </CustomBox>
+
+                    {/* Section 2 */}
                     <CustomBox className="flex flex-col items-center gap-1">
                         <MealsMenu compact />
                         <DietsMenu compact />
@@ -44,18 +56,6 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                             onLoginClick={onLoginClick}
                             onRegisterClick={onRegisterClick}
                             text="Profile"
-                        />
-                    </CustomBox>
-
-                    {/* Section 2 */}
-                    <CustomBox className="flex flex-col items-center">
-                        <HamburgerMenu
-                            user={user}
-                            onLogout={onLogout}
-                            onLoginClick={onLoginClick}
-                            onRegisterClick={onRegisterClick}
-                            variant="desktop"
-                            iconColor="text-white"
                         />
                     </CustomBox>
 
@@ -150,21 +150,20 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                         )}
                     </CustomBox>
                 </CustomBox>
-
-
-                {/* Footer (fixed bottom) */}
-                <CustomTooltip text="Toggle theme" position="right">
-                    <CustomBox
-                        onClick={toggleTheme}
-                        className={clsx(
-                            "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                            mode === "dark" ? "text-white" : "text-gray-800"
-                        )}
-                    >
-                        {mode === "dark" ? <Sun className="w-8 h-8 mx-auto" /> : <Moon className="w-8 h-8 mx-auto" fill="currentColor" stroke="none" />}
-                    </CustomBox>
-                </CustomTooltip>
             </CustomBox>
+
+            {/* Footer (fixed bottom) */}
+            <CustomTooltip text="Toggle theme" position="right">
+                <CustomBox
+                    onClick={toggleTheme}
+                    className={clsx(
+                        "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
+                        mode === "dark" ? "text-white" : "text-gray-800"
+                    )}
+                >
+                    {mode === "dark" ? <Sun className="w-8 h-8 mx-auto" /> : <Moon className="w-8 h-8 mx-auto" fill="currentColor" stroke="none" />}
+                </CustomBox>
+            </CustomTooltip>
         </CustomBox>
     );
 };
