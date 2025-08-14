@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Home, LogIn, LogOut, Gauge, ShieldUser, Info, Sun, Moon } from "lucide-react";
+import { Home, LogIn, LogOut, Gauge, ShieldUser, Info, Sun, Moon, UserCircle  } from "lucide-react";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import clsx from "clsx";
 import CustomTooltip from "../../../../components/layout/CustomTooltip.jsx";
@@ -112,6 +112,21 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                         <Info className="w-8 h-8 mx-auto" />
                     </CustomBox>
                 </CustomTooltip>
+
+                {/* Profile (icoon) */}
+                <CustomTooltip text="Profile" position="right">
+                    <CustomBox
+                        onClick={() => (user ? navigate("/profile") : onLoginClick())}
+                        className={clsx(
+                            "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
+                            isActive("/profile") ? "text-primary" : "text-white"
+                        )}
+                        title={user ? "Open profile" : "Login/Register"}
+                    >
+                        <UserCircle className="w-8 h-8 mx-auto" />
+                    </CustomBox>
+                </CustomTooltip>
+
 
                 {/* Auth fallback */}
                 {!user ? (
