@@ -1,3 +1,4 @@
+// DesktopMenu.jsx
 import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Home, LogIn, LogOut, Gauge, ShieldUser, Info, Sun, Moon, UserCircle } from "lucide-react";
@@ -17,23 +18,22 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
     const isAdmin = user?.roles.includes("ADMIN");
     const { mode, toggleTheme } = useThemeMode();
 
-    // Helper to mark active route
+    // Mark active route
     const isActive = (path) =>
         path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
 
     return (
-        // Root: fill height and push first/last child to top/bottom
-        <CustomBox className="flex h-full w-full flex-col justify-between font-body font-bold text-white">
+        // Root fills the full sidebar height; header at top, footer at bottom
+        <CustomBox className="flex h-full min-h-full w-full flex-col justify-between font-body font-bold text-white">
 
-            {/* Top: Logo (stick to top) */}
+            {/* Header (fixed top) */}
             <CustomBox className="flex items-center justify-center py-4">
                 <Logo size={40} className="block text-white" to="/" />
             </CustomBox>
 
-            {/* Middle: takes remaining space and spreads sections vertically */}
-            <CustomBox className="flex-1 flex flex-col justify-between py-2">
-
-                {/* Section 1: Menus */}
+            {/* Middle: evenly distribute 4 sections using a 4-row grid that fills remaining space */}
+            <CustomBox className="flex-1 grid grid-rows-4 justify-items-center content-between py-2">
+                {/* Section 1: Meals / Diets / Profile menu */}
                 <CustomBox className="flex flex-col items-center gap-1">
                     <MealsMenu compact />
                     <DietsMenu compact />
@@ -47,7 +47,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     />
                 </CustomBox>
 
-                {/* Section 2: Optional hamburger */}
+                {/* Section 2: Hamburger (optional extras) */}
                 <CustomBox className="flex flex-col items-center">
                     <HamburgerMenu
                         user={user}
@@ -151,7 +151,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                 </CustomBox>
             </CustomBox>
 
-            {/* Bottom: Theme toggle (stick to bottom) */}
+            {/* Footer (fixed bottom): theme toggle */}
             <CustomTooltip text="Toggle theme" position="right">
                 <CustomBox
                     onClick={toggleTheme}

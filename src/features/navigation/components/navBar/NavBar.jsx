@@ -96,9 +96,8 @@ const NavBar = () => {
 
 
             {/* Desktop layout */}
-            <CustomBox className="hidden md:flex md:flex-col md:justify-between md:h-full">
-
-                <CustomBox className="flex flex-col space-y-4 pb-4">
+            <CustomBox className="hidden md:flex md:h-full">
+                <CustomBox className="h-full w-full">
                     <DesktopMenu
                         user={user}
                         onLogout={handleLogout}
