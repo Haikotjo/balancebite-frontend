@@ -103,7 +103,7 @@ const HamburgerMenu = ({
     // Menu entries
     const menuItems = [
         { label: "Home", icon: Home, path: "/" },
-        !user && { label: "Dashboard", icon: Gauge, path: "/dashboard" },
+        user && { label: "Dashboard", icon: Gauge, path: "/dashboard" },
         { label: "About", icon: Info, path: "/about" },
         { label: "Meals", icon: Soup, path: "/meals" },
         { label: "Diets", icon: Apple, path: "/diets" },
