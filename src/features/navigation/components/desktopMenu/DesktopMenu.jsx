@@ -7,7 +7,8 @@ import CustomTooltip from "../../../../components/layout/CustomTooltip.jsx";
 import MealsMenu from "../mealsMenu/MealsMenu.jsx";
 import DietsMenu from "../dietsMenu/DietsMenu.jsx";
 import ProfileMenu from "../profileMenu/ProfileMenu.jsx";
-import {useThemeMode} from "../../../../themes/useThemeMode.js";
+import HamburgerMenu from "../hamburgerMenu/HamburgerMenu.jsx"; // <-- add
+import { useThemeMode } from "../../../../themes/useThemeMode.js";
 
 const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
     const navigate = useNavigate();
@@ -15,12 +16,12 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
     const isAdmin = user?.roles.includes("ADMIN");
     const { mode, toggleTheme } = useThemeMode();
 
+    // Helper: mark active route
     const isActive = (path) =>
         path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
 
     return (
         <CustomBox className="flex flex-col gap-y-2 w-full font-body font-bold text-white">
-
             {/* Home */}
             <CustomTooltip text="Home" position="right">
                 <CustomBox
@@ -47,11 +48,10 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                 </CustomBox>
             </CustomTooltip>
 
+            <MealsMenu compact />
+            <DietsMenu compact />
 
-            <MealsMenu compact/>
-            <DietsMenu compact/>
-
-            {/* Profile moved here for desktop */}
+            {/* Profile */}
             <ProfileMenu
                 compact
                 user={user}
@@ -91,7 +91,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                 </CustomTooltip>
             )}
 
-            {/* Auth (optional if ProfileMenu already handles it) */}
+            {/* Auth fallback (optional) */}
             {!user ? (
                 <CustomTooltip text="Sign in" position="right">
                     <CustomBox
@@ -118,7 +118,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     onClick={toggleTheme}
                     className={clsx(
                         "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                        mode === "dark" ? "text-white" : "text-gray-800"   // ← force color per mode
+                        mode === "dark" ? "text-white" : "text-gray-800"
                     )}
                 >
                     {mode === "dark" ? (
@@ -129,6 +129,16 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                 </CustomBox>
             </CustomTooltip>
 
+            {/* Hamburger (same component as mobile, nu ook op desktop) */}
+            <CustomBox className="mt-2">
+                <HamburgerMenu
+                    user={user}
+                    onLogout={onLogout}
+                    onLoginClick={onLoginClick}
+                    onRegisterClick={onRegisterClick}
+                    iconColor="text-white" // keep icon readable on dark sidebar
+                />
+            </CustomBox>
         </CustomBox>
     );
 };
