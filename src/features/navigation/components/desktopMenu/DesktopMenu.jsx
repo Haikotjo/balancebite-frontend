@@ -1,15 +1,7 @@
 import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
-    Home,
-    LogIn,
-    LogOut,
-    Gauge,
-    ShieldUser,
-    Info,
-    Sun,
-    Moon,
-    UserCircle
+    Home, LogIn, LogOut, Gauge, ShieldUser, Info, Sun, Moon, UserCircle
 } from "lucide-react";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import clsx from "clsx";
@@ -31,33 +23,30 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
         path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
 
     return (
-        <CustomBox className="flex flex-col justify-between h-full w-full font-body font-bold text-white">
+        <CustomBox className="flex flex-col h-full w-full font-body font-bold text-white">
+            {/* Section 0: Logo (fixed top) */}
+            <CustomBox className="flex flex-col items-center justify-center py-4">
+                <Logo size={40} className="block text-white" to="/" />
+            </CustomBox>
 
-
-        {/* Sectie 0: Logo */}
-            <CustomBox>
-                <CustomBox className="flex flex-col items-center justify-center py-4 w-auto">
-                    <Logo size={40} className="block text-white" to="/" />
+            {/* Sections 1–4 live in a middle column that spreads them vertically */}
+            <CustomBox className="flex-1 flex flex-col justify-between">
+                {/* Section 1: Meals / Diets / ProfileMenu */}
+                <CustomBox className="flex flex-col items-center">
+                    <MealsMenu compact />
+                    <DietsMenu compact />
+                    <ProfileMenu
+                        compact
+                        user={user}
+                        onLogout={onLogout}
+                        onLoginClick={onLoginClick}
+                        onRegisterClick={onRegisterClick}
+                        text="Profile"
+                    />
                 </CustomBox>
-            </CustomBox>
 
-            {/* Sectie 1: Meals, Diets, ProfileMenu */}
-            <CustomBox>
-                <MealsMenu compact />
-                <DietsMenu compact />
-                <ProfileMenu
-                    compact
-                    user={user}
-                    onLogout={onLogout}
-                    onLoginClick={onLoginClick}
-                    onRegisterClick={onRegisterClick}
-                    text="Profile"
-                />
-            </CustomBox>
-
-            {/* Sectie 2: HamburgerMenu (optioneel) */}
-            <CustomBox>
-                <CustomBox className="mt-2 self-center">
+                {/* Section 2: HamburgerMenu (optioneel) */}
+                <CustomBox className="flex flex-col items-center">
                     <HamburgerMenu
                         user={user}
                         onLogout={onLogout}
@@ -67,117 +56,115 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                         iconColor="text-white"
                     />
                 </CustomBox>
-            </CustomBox>
 
-            {/* Sectie 3: Profile icoon, Dashboard, Admin */}
-            <CustomBox>
-                <CustomTooltip text="Profile" position="right">
-                    <CustomBox
-                        onClick={() => (user ? navigate("/profile") : onLoginClick())}
-                        className={clsx(
-                            "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                            isActive("/profile") ? "text-primary" : "text-white"
-                        )}
-                        title={user ? "Open profile" : "Login/Register"}
-                    >
-                        <UserCircle className="w-8 h-8 mx-auto" />
-                    </CustomBox>
-                </CustomTooltip>
-
-                {user && (
-                    <CustomTooltip text="Dashboard" position="right">
+                {/* Section 3: Profile icon / Dashboard / Admin */}
+                <CustomBox className="flex flex-col items-center">
+                    <CustomTooltip text="Profile" position="right">
                         <CustomBox
-                            onClick={() => navigate("/dashboard")}
+                            onClick={() => (user ? navigate("/profile") : onLoginClick())}
                             className={clsx(
                                 "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                                isActive("/dashboard") ? "text-primary" : "text-white"
+                                isActive("/profile") ? "text-primary" : "text-white"
                             )}
+                            title={user ? "Open profile" : "Login/Register"}
                         >
-                            <Gauge className="w-8 h-8 mx-auto" />
+                            <UserCircle className="w-8 h-8 mx-auto" />
                         </CustomBox>
                     </CustomTooltip>
-                )}
 
-                {isAdmin && (
-                    <CustomTooltip text="Admin" position="right">
+                    {user && (
+                        <CustomTooltip text="Dashboard" position="right">
+                            <CustomBox
+                                onClick={() => navigate("/dashboard")}
+                                className={clsx(
+                                    "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
+                                    isActive("/dashboard") ? "text-primary" : "text-white"
+                                )}
+                            >
+                                <Gauge className="w-8 h-8 mx-auto" />
+                            </CustomBox>
+                        </CustomTooltip>
+                    )}
+
+                    {isAdmin && (
+                        <CustomTooltip text="Admin" position="right">
+                            <CustomBox
+                                onClick={() => navigate("/admin")}
+                                className={clsx(
+                                    "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
+                                    isActive("/admin") ? "text-primary" : "text-white"
+                                )}
+                            >
+                                <ShieldUser className="w-8 h-8 mx-auto" />
+                            </CustomBox>
+                        </CustomTooltip>
+                    )}
+                </CustomBox>
+
+                {/* Section 4: Home / About / Auth */}
+                <CustomBox className="flex flex-col items-center">
+                    <CustomTooltip text="Home" position="right">
                         <CustomBox
-                            onClick={() => navigate("/admin")}
+                            onClick={() => navigate("/")}
                             className={clsx(
                                 "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                                isActive("/admin") ? "text-primary" : "text-white"
+                                isActive("/") ? "text-primary" : "text-white"
                             )}
                         >
-                            <ShieldUser className="w-8 h-8 mx-auto" />
+                            <Home className="w-8 h-8 mx-auto" />
                         </CustomBox>
                     </CustomTooltip>
-                )}
-            </CustomBox>
 
-            {/* Sectie 4: Home, About, Login/Logout */}
-            <CustomBox>
-                <CustomTooltip text="Home" position="right">
-                    <CustomBox
-                        onClick={() => navigate("/")}
-                        className={clsx(
-                            "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                            isActive("/") ? "text-primary" : "text-white"
-                        )}
-                    >
-                        <Home className="w-8 h-8 mx-auto" />
-                    </CustomBox>
-                </CustomTooltip>
-
-                <CustomTooltip text="About" position="right">
-                    <CustomBox
-                        onClick={() => navigate("/about")}
-                        className={clsx(
-                            "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                            isActive("/about") ? "text-primary" : "text-white"
-                        )}
-                    >
-                        <Info className="w-8 h-8 mx-auto" />
-                    </CustomBox>
-                </CustomTooltip>
-
-                {!user ? (
-                    <CustomTooltip text="Sign in" position="right">
+                    <CustomTooltip text="About" position="right">
                         <CustomBox
-                            onClick={onLoginClick}
-                            className="w-full cursor-pointer p-2 rounded-md transition-all hover:bg-white/10"
+                            onClick={() => navigate("/about")}
+                            className={clsx(
+                                "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
+                                isActive("/about") ? "text-primary" : "text-white"
+                            )}
                         >
-                            <LogIn className="w-8 h-8 mx-auto" />
+                            <Info className="w-8 h-8 mx-auto" />
                         </CustomBox>
                     </CustomTooltip>
-                ) : (
-                    <CustomTooltip text="Log out" position="right">
-                        <CustomBox
-                            onClick={onLogout}
-                            className="w-full cursor-pointer p-2 rounded-md hover:bg-white/10"
-                        >
-                            <LogOut className="w-8 h-8 mx-auto" />
-                        </CustomBox>
-                    </CustomTooltip>
-                )}
+
+                    {!user ? (
+                        <CustomTooltip text="Sign in" position="right">
+                            <CustomBox
+                                onClick={onLoginClick}
+                                className="w-full cursor-pointer p-2 rounded-md transition-all hover:bg-white/10"
+                            >
+                                <LogIn className="w-8 h-8 mx-auto" />
+                            </CustomBox>
+                        </CustomTooltip>
+                    ) : (
+                        <CustomTooltip text="Log out" position="right">
+                            <CustomBox
+                                onClick={onLogout}
+                                className="w-full cursor-pointer p-2 rounded-md hover:bg-white/10"
+                            >
+                                <LogOut className="w-8 h-8 mx-auto" />
+                            </CustomBox>
+                        </CustomTooltip>
+                    )}
+                </CustomBox>
             </CustomBox>
 
-            {/* Sectie 5: Theme switcher */}
-            <CustomBox className="mt-auto">
-                <CustomTooltip text="Toggle theme" position="right">
-                    <CustomBox
-                        onClick={toggleTheme}
-                        className={clsx(
-                            "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                            mode === "dark" ? "text-white" : "text-gray-800"
-                        )}
-                    >
-                        {mode === "dark" ? (
-                            <Sun className="w-8 h-8 mx-auto" />
-                        ) : (
-                            <Moon className="w-8 h-8 mx-auto" fill="currentColor" stroke="none" />
-                        )}
-                    </CustomBox>
-                </CustomTooltip>
-            </CustomBox>
+            {/* Section 5: Theme (fixed bottom) */}
+            <CustomTooltip text="Toggle theme" position="right">
+                <CustomBox
+                    onClick={toggleTheme}
+                    className={clsx(
+                        "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
+                        mode === "dark" ? "text-white" : "text-gray-800"
+                    )}
+                >
+                    {mode === "dark" ? (
+                        <Sun className="w-8 h-8 mx-auto" />
+                    ) : (
+                        <Moon className="w-8 h-8 mx-auto" fill="currentColor" stroke="none" />
+                    )}
+                </CustomBox>
+            </CustomTooltip>
         </CustomBox>
     );
 };
