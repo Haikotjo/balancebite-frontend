@@ -45,6 +45,32 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     text="Profile"
                 />
 
+            <CustomBox className="flex flex-col items-center gap-y-2 mb-4">
+                <CustomBox className="mt-2 self-center">
+                    <HamburgerMenu
+                        user={user}
+                        onLogout={onLogout}
+                        onLoginClick={onLoginClick}
+                        onRegisterClick={onRegisterClick}
+                        variant="desktop"
+                        iconColor="text-white"
+                    />
+                </CustomBox>
+
+                {/* Profile (icoon) */}
+                <CustomTooltip text="Profile" position="right">
+                    <CustomBox
+                        onClick={() => (user ? navigate("/profile") : onLoginClick())}
+                        className={clsx(
+                            "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
+                            isActive("/profile") ? "text-primary" : "text-white"
+                        )}
+                        title={user ? "Open profile" : "Login/Register"}
+                    >
+                        <UserCircle className="w-8 h-8 mx-auto" />
+                    </CustomBox>
+                </CustomTooltip>
+
                 {/* Dashboard */}
                 {user && (
                     <CustomTooltip text="Dashboard" position="right">
@@ -75,18 +101,6 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     </CustomTooltip>
                 )}
 
-            <CustomBox className="flex flex-col items-center gap-y-2 mb-4">
-                <CustomBox className="mt-2 self-center">
-                    <HamburgerMenu
-                        user={user}
-                        onLogout={onLogout}
-                        onLoginClick={onLoginClick}
-                        onRegisterClick={onRegisterClick}
-                        variant="desktop"
-                        iconColor="text-white"
-                    />
-                </CustomBox>
-
                 {/* Home */}
                 <CustomTooltip text="Home" position="right">
                     <CustomBox
@@ -112,21 +126,6 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                         <Info className="w-8 h-8 mx-auto" />
                     </CustomBox>
                 </CustomTooltip>
-
-                {/* Profile (icoon) */}
-                <CustomTooltip text="Profile" position="right">
-                    <CustomBox
-                        onClick={() => (user ? navigate("/profile") : onLoginClick())}
-                        className={clsx(
-                            "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                            isActive("/profile") ? "text-primary" : "text-white"
-                        )}
-                        title={user ? "Open profile" : "Login/Register"}
-                    >
-                        <UserCircle className="w-8 h-8 mx-auto" />
-                    </CustomBox>
-                </CustomTooltip>
-
 
                 {/* Auth fallback */}
                 {!user ? (
