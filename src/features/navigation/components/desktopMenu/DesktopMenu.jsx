@@ -1,6 +1,16 @@
 import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Home, LogIn, LogOut, Gauge, ShieldUser, Info, Sun, Moon, UserCircle  } from "lucide-react";
+import {
+    Home,
+    LogIn,
+    LogOut,
+    Gauge,
+    ShieldUser,
+    Info,
+    Sun,
+    Moon,
+    UserCircle
+} from "lucide-react";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import clsx from "clsx";
 import CustomTooltip from "../../../../components/layout/CustomTooltip.jsx";
@@ -22,20 +32,19 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
 
     return (
         <CustomBox className="flex flex-col justify-between h-full w-full font-body font-bold text-white">
-            {/* Bovenste sectie */}
-            <CustomBox className="flex flex-col gap-y-2">
-                {/* Logo */}
+
+
+        {/* Sectie 0: Logo */}
+            <CustomBox>
                 <CustomBox className="flex flex-col items-center justify-center py-4 w-auto">
                     <Logo size={40} className="block text-white" to="/" />
                 </CustomBox>
+            </CustomBox>
 
-                {/* MealsMenu */}
+            {/* Sectie 1: Meals, Diets, ProfileMenu */}
+            <CustomBox>
                 <MealsMenu compact />
-
-                {/* DietsMenu */}
                 <DietsMenu compact />
-
-                {/* Profile */}
                 <ProfileMenu
                     compact
                     user={user}
@@ -44,8 +53,10 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     onRegisterClick={onRegisterClick}
                     text="Profile"
                 />
+            </CustomBox>
 
-            <CustomBox className="flex flex-col items-center gap-y-2 mb-4">
+            {/* Sectie 2: HamburgerMenu (optioneel) */}
+            <CustomBox>
                 <CustomBox className="mt-2 self-center">
                     <HamburgerMenu
                         user={user}
@@ -56,8 +67,10 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                         iconColor="text-white"
                     />
                 </CustomBox>
+            </CustomBox>
 
-                {/* Profile (icoon) */}
+            {/* Sectie 3: Profile icoon, Dashboard, Admin */}
+            <CustomBox>
                 <CustomTooltip text="Profile" position="right">
                     <CustomBox
                         onClick={() => (user ? navigate("/profile") : onLoginClick())}
@@ -71,7 +84,6 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     </CustomBox>
                 </CustomTooltip>
 
-                {/* Dashboard */}
                 {user && (
                     <CustomTooltip text="Dashboard" position="right">
                         <CustomBox
@@ -86,7 +98,6 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     </CustomTooltip>
                 )}
 
-                {/* Admin */}
                 {isAdmin && (
                     <CustomTooltip text="Admin" position="right">
                         <CustomBox
@@ -100,8 +111,10 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                         </CustomBox>
                     </CustomTooltip>
                 )}
+            </CustomBox>
 
-                {/* Home */}
+            {/* Sectie 4: Home, About, Login/Logout */}
+            <CustomBox>
                 <CustomTooltip text="Home" position="right">
                     <CustomBox
                         onClick={() => navigate("/")}
@@ -114,7 +127,6 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     </CustomBox>
                 </CustomTooltip>
 
-                {/* About */}
                 <CustomTooltip text="About" position="right">
                     <CustomBox
                         onClick={() => navigate("/about")}
@@ -127,7 +139,6 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     </CustomBox>
                 </CustomTooltip>
 
-                {/* Auth fallback */}
                 {!user ? (
                     <CustomTooltip text="Sign in" position="right">
                         <CustomBox
@@ -149,6 +160,8 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                 )}
             </CustomBox>
 
+            {/* Sectie 5: Theme switcher */}
+            <CustomBox className="mt-auto">
                 <CustomTooltip text="Toggle theme" position="right">
                     <CustomBox
                         onClick={toggleTheme}
