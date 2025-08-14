@@ -129,16 +129,18 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                 </CustomBox>
             </CustomTooltip>
 
-            {/* Hamburger (same component as mobile, nu ook op desktop) */}
-            <CustomBox className="mt-2">
+            {/* HamburgerMenu */}
+            <CustomBox className="mt-2 self-center">
                 <HamburgerMenu
                     user={user}
                     onLogout={onLogout}
                     onLoginClick={onLoginClick}
                     onRegisterClick={onRegisterClick}
-                    iconColor="text-white" // keep icon readable on dark sidebar
+                    variant="desktop"         // ← activeert centreren + rechts openen
+                    iconColor="text-white"
                 />
             </CustomBox>
+
         </CustomBox>
     );
 };

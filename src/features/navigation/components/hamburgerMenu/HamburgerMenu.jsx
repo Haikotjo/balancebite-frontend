@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router-dom";
-import { MenuIcon, Home, Info, LogIn, LogOut, UserPlus, Settings, Soup, Apple, Gauge} from "lucide-react";
+import { MenuIcon, Home, Info, LogIn, LogOut, UserPlus, Settings, Soup, Apple, Gauge } from "lucide-react";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
@@ -9,17 +9,19 @@ import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 import DarkModeSwitch from "../darkModeSwitch/DarkModeSwitch.jsx";
 
 /**
- * A responsive hamburger menu for small screens.
- * Displays a toggle button and a dropdown menu with navigation or auth actions.
- *
- * @component
- * @param {Object} props
- * @param {Object|null} props.user - The current logged-in user, or null if not authenticated.
- * @param {Function} props.onLogout - Callback to handle logout.
- * @param {Function} props.onLoginClick - Callback to navigate to log in.
- * @param {Function} props.onRegisterClick - Callback to navigate to registration.
+ * Responsive hamburger menu.
+ * - Mobile (default): button at bottom bar, dropdown opens upward/right-aligned.
+ * - Desktop variant: centered button in sidebar, dropdown opens to the right.
  */
-const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
+const HamburgerMenu = ({
+                           user,
+                           onLogout,
+                           onLoginClick,
+                           onRegisterClick,
+                           variant = "mobile",        // "mobile" | "desktop"
+                           iconColor = "text-white",  // allow overriding icon color
+                           className = "",            // optional extra classes for the toggle button
+                       }) => {
     const [open, setOpen] = useState(false);
     const [isIconLoaded, setIsIconLoaded] = useState(false);
     const isAdmin = user?.roles.includes("ADMIN");
@@ -27,30 +29,32 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    const isDesktop = variant === "desktop";
+
     const isActive = (path) => location.pathname === path;
 
-    // Rotate icon on mount for simple animation effect
+    // Simple mount animation for the icon
     useEffect(() => {
         const timer = setTimeout(() => setIsIconLoaded(true), 100);
         return () => clearTimeout(timer);
     }, []);
 
-
-    // Close menu when clicking outside of it
+    // Close on outside click
     useEffect(() => {
         if (!open) return;
-        const handleClickOutside = (event) => {
-            if (menuRef.current && !menuRef.current.contains(event.target)) {
-                setOpen(false);
-            }
+        const handleClickOutside = (e) => {
+            if (menuRef.current && !menuRef.current.contains(e.target)) setOpen(false);
         };
-        if (open) {
-            document.addEventListener("mousedown", handleClickOutside);
-        }
+        document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [open]);
 
-    // Menu item configuration
+    // Close on route change
+    useEffect(() => {
+        setOpen(false);
+    }, [location.pathname]);
+
+    // Menu config
     const menuItems = [
         { label: "Home", icon: Home, path: "/" },
         { label: "Dashboard", icon: Gauge, path: "/dashboard" },
@@ -63,24 +67,27 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
         user && { label: "Logout", icon: LogOut, action: onLogout },
     ].filter(Boolean);
 
+    // Positioning: mobile opens upward right-aligned; desktop opens to the right, vertically centered
+    const dropdownPosClasses = isDesktop
+        ? "absolute left-full top-1/2 -translate-y-1/2 ml-2"
+        : "absolute bottom-full mb-2 right-0";
 
     return (
-        <CustomBox ref={menuRef} className="relative">
+        <CustomBox ref={menuRef} className={isDesktop ? "relative self-center" : "relative"}>
             {/* Toggle button */}
             <CustomButton
                 onClick={() => setOpen(!open)}
-                className={`text-white transition-transform duration-700 ease-in-out ${
-                    isIconLoaded ? "rotate-[360deg]" : "rotate-0"
-                }`}
+                className={`transition-transform duration-700 ease-in-out ${isIconLoaded ? "rotate-[360deg]" : "rotate-0"} ${className}`}
             >
-                <MenuIcon className="w-6 h-6" />
+                <MenuIcon className={`w-8 h-8 ${iconColor}`} /> {/* bigger on desktop by default */}
             </CustomButton>
 
-            {/* Dropdown menu */}
+            {/* Dropdown */}
             {open && (
-                <CustomBox className="absolute bottom-full mb-2 right-0 z-50 w-64 max-w-[90vw] rounded-xl bg-white dark:bg-gray-800 shadow-lg px-4">
-
-                {menuItems.map(({ label, icon: Icon, path, action }, index) => (
+                <CustomBox
+                    className={`${dropdownPosClasses} z-50 w-64 max-w-[90vw] rounded-xl bg-white dark:bg-gray-800 shadow-lg px-4 py-2`}
+                >
+                    {menuItems.map(({ label, icon: Icon, path, action }, index) => (
                         <CustomBox key={label}>
                             <CustomButton
                                 onClick={() => {
@@ -88,7 +95,7 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                                     if (action) action();
                                     setOpen(false);
                                 }}
-                                className="w-full flex items-center justify-start gap-6 px-4 py-4 text-sm text-userText hover:bg-gray-100 dark:hover:bg-gray-700"
+                                className="w-full flex items-center justify-start gap-6 px-4 py-3 text-sm text-userText hover:bg-gray-100 dark:hover:bg-gray-700"
                             >
                                 <Icon className="w-4 h-4 text-[#5b616e] dark:text-[#F9FAFB]" />
                                 <CustomTypography as="span">{label}</CustomTypography>
@@ -99,16 +106,12 @@ const HamburgerMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                             )}
                         </CustomBox>
                     ))}
-                    {/* Divider before the theme toggle */}
+
+                    {/* Theme toggle */}
                     <CustomDivider className="bg-gray-200 dark:bg-gray-600" />
-                    <CustomDivider className="bg-gray-200 dark:bg-gray-600" />
-                    <CustomButton
-                        className="w-full flex items-center justify-start gap-6 px-4 py-4 text-sm text-userText hover:bg-gray-100 dark:hover:bg-gray-700"
-                    >
+                    <CustomButton className="w-full flex items-center justify-start gap-6 px-4 py-3 text-sm text-userText hover:bg-gray-100 dark:hover:bg-gray-700">
                         <DarkModeSwitch />
                     </CustomButton>
-
-
                 </CustomBox>
             )}
         </CustomBox>
@@ -124,6 +127,9 @@ HamburgerMenu.propTypes = {
     onLogout: PropTypes.func.isRequired,
     onLoginClick: PropTypes.func.isRequired,
     onRegisterClick: PropTypes.func.isRequired,
+    variant: PropTypes.oneOf(["mobile", "desktop"]),
+    iconColor: PropTypes.string,
+    className: PropTypes.string,
 };
 
 export default HamburgerMenu;
