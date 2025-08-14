@@ -2,7 +2,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomDropdownWeb from "../../../../components/layout/CustomDropdownWeb.jsx";
-import {UserCog, LogIn, LogOut, UserPlus, UserCircle, ChevronDown, ChevronUp} from "lucide-react";
+import {UserCog, LogIn, LogOut, UserPlus, UserCircle, ChevronDown, ChevronUp, Gauge } from "lucide-react";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 
 /**
@@ -86,6 +86,14 @@ const ProfileMenu = ({
                     onClick: () => {
                         setOpen(false);
                         window.location.href = "/profile"; // keep current behavior
+                    },
+                },
+                user && {
+                    label: "Dashboard",
+                    icon: Gauge,
+                    onClick: () => {
+                        setOpen(false);
+                        window.location.href = "/dashboard";
                     },
                 },
                 !user && {
