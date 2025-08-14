@@ -96,7 +96,7 @@ const NavBar = () => {
 
 
             {/* Desktop layout */}
-            <CustomBox className="hidden md:flex md:h-full">
+            <CustomBox className="hidden md:flex md:h-full md:min-h-0">
                 <CustomBox className="h-full w-full">
                     <DesktopMenu
                         user={user}
