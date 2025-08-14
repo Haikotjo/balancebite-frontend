@@ -64,7 +64,7 @@ const HamburgerMenu = ({
                 const viewportH = window.innerHeight;
 
                 // Available room from dropdown top to viewport bottom minus a small margin
-                const available = Math.max(160, viewportH - rect.top - 24);
+                const available = Math.max(160, viewportH - rect.top - 16);
                 // Cap to 80vh so the menu never becomes too tall
                 const computed = Math.min(Math.floor(viewportH * 0.8), Math.floor(available));
                 setMaxHeight(`${computed}px`);
@@ -91,7 +91,7 @@ const HamburgerMenu = ({
     // Positioning classes; desktop opens to the right, slightly lower; mobile opens upward right-aligned
     const dropdownPosClasses = isDesktop
         ? "absolute left-full top-1/2"        // Will adjust with inline transform + margins
-        : "absolute bottom-full mb-2 right-0";
+        : "absolute top-full mb-2 right-0";
 
     // Inline style to nudge desktop dropdown down/right (keeps relative positioning)
     const desktopStyle = isDesktop
