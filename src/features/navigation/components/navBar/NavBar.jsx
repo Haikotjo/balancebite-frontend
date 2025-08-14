@@ -42,7 +42,7 @@ const NavBar = () => {
 
             {/* Mobile layout */}
             <CustomBox className="fixed bottom-0 left-0 right-0 z-50 md:hidden transition-transform duration-300">
-                {/* Menu-knop */}
+                {/* Menu-button */}
                 <CustomBox className="relative">
                     <CustomButton
                         onClick={() => setShowMobileMenu((prev) => !prev)}
