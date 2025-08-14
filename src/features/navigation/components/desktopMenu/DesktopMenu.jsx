@@ -150,20 +150,21 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                         )}
                     </CustomBox>
                 </CustomBox>
-            </CustomBox>
 
-            {/* Footer (fixed bottom) */}
-            <CustomTooltip text="Toggle theme" position="right">
-                <CustomBox
-                    onClick={toggleTheme}
-                    className={clsx(
-                        "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                        mode === "dark" ? "text-white" : "text-gray-800"
-                    )}
-                >
-                    {mode === "dark" ? <Sun className="w-8 h-8 mx-auto" /> : <Moon className="w-8 h-8 mx-auto" fill="currentColor" stroke="none" />}
-                </CustomBox>
-            </CustomTooltip>
+
+                {/* Footer (fixed bottom) */}
+                <CustomTooltip text="Toggle theme" position="right">
+                    <CustomBox
+                        onClick={toggleTheme}
+                        className={clsx(
+                            "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
+                            mode === "dark" ? "text-white" : "text-gray-800"
+                        )}
+                    >
+                        {mode === "dark" ? <Sun className="w-8 h-8 mx-auto" /> : <Moon className="w-8 h-8 mx-auto" fill="currentColor" stroke="none" />}
+                    </CustomBox>
+                </CustomTooltip>
+            </CustomBox>
         </CustomBox>
     );
 };
