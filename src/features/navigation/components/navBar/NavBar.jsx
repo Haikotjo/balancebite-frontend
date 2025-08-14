@@ -101,7 +101,7 @@ const NavBar = () => {
                     <Logo size={40} className="block text-white" to="/" />
                 </CustomBox>
 
-                <CustomBox className="flex flex-col space-y-4 px-4 pb-4">
+                <CustomBox className="flex flex-col space-y-4 pb-4">
                     <DesktopMenu
                         user={user}
                         onLogout={handleLogout}
