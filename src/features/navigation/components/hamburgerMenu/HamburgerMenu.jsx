@@ -64,7 +64,7 @@ const HamburgerMenu = ({
                 const viewportH = window.innerHeight;
 
                 // Available room from dropdown top to viewport bottom minus a small margin
-                const available = Math.max(160, viewportH - rect.top - 16);
+                const available = Math.max(160, viewportH - rect.top - 24);
                 // Cap to 80vh so the menu never becomes too tall
                 const computed = Math.min(Math.floor(viewportH * 0.8), Math.floor(available));
                 setMaxHeight(`${computed}px`);
