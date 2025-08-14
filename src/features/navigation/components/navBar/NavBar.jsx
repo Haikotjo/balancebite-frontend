@@ -97,9 +97,6 @@ const NavBar = () => {
 
             {/* Desktop layout */}
             <CustomBox className="hidden md:flex md:flex-col md:justify-between md:h-full">
-                <CustomBox className="flex flex-col items-center justify-center py-4 w-auto">
-                    <Logo size={40} className="block text-white" to="/" />
-                </CustomBox>
 
                 <CustomBox className="flex flex-col space-y-4 pb-4">
                     <DesktopMenu

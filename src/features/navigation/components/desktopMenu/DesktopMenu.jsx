@@ -9,6 +9,7 @@ import DietsMenu from "../dietsMenu/DietsMenu.jsx";
 import ProfileMenu from "../profileMenu/ProfileMenu.jsx";
 import HamburgerMenu from "../hamburgerMenu/HamburgerMenu.jsx"; // <-- add
 import { useThemeMode } from "../../../../themes/useThemeMode.js";
+import Logo from "../../../../components/logo/Logo.jsx";
 
 const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
     const navigate = useNavigate();
@@ -22,6 +23,11 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
 
     return (
         <CustomBox className="flex flex-col gap-y-2 w-full font-body font-bold text-white">
+            {/* Home */}
+            <CustomBox className="flex flex-col items-center justify-center py-4 w-auto">
+                <Logo size={40} className="block text-white" to="/" />
+            </CustomBox>
+
             {/* Home */}
             <CustomTooltip text="Home" position="right">
                 <CustomBox
@@ -112,6 +118,18 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                 </CustomTooltip>
             )}
 
+            {/* HamburgerMenu */}
+            <CustomBox className="mt-2 self-center">
+                <HamburgerMenu
+                    user={user}
+                    onLogout={onLogout}
+                    onLoginClick={onLoginClick}
+                    onRegisterClick={onRegisterClick}
+                    variant="desktop"         // ← activeert centreren + rechts openen
+                    iconColor="text-white"
+                />
+            </CustomBox>
+
             {/* Theme toggle */}
             <CustomTooltip text="Toggle theme" position="right">
                 <CustomBox
@@ -128,18 +146,6 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     )}
                 </CustomBox>
             </CustomTooltip>
-
-            {/* HamburgerMenu */}
-            <CustomBox className="mt-2 self-center">
-                <HamburgerMenu
-                    user={user}
-                    onLogout={onLogout}
-                    onLoginClick={onLoginClick}
-                    onRegisterClick={onRegisterClick}
-                    variant="desktop"         // ← activeert centreren + rechts openen
-                    iconColor="text-white"
-                />
-            </CustomBox>
 
         </CustomBox>
     );
