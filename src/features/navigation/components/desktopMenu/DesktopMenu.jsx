@@ -1,8 +1,6 @@
 import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-    Home, LogIn, LogOut, Gauge, ShieldUser, Info, Sun, Moon, UserCircle
-} from "lucide-react";
+import { Home, LogIn, LogOut, Gauge, ShieldUser, Info, Sun, Moon, UserCircle } from "lucide-react";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import clsx from "clsx";
 import CustomTooltip from "../../../../components/layout/CustomTooltip.jsx";
@@ -19,20 +17,24 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
     const isAdmin = user?.roles.includes("ADMIN");
     const { mode, toggleTheme } = useThemeMode();
 
+    // Helper to mark active route
     const isActive = (path) =>
         path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
 
     return (
-        <CustomBox className="flex flex-col h-full w-full font-body font-bold text-white">
-            {/* Section 0: Logo (fixed top) */}
-            <CustomBox className="flex flex-col items-center justify-center py-4">
+        // Root: fill height and push first/last child to top/bottom
+        <CustomBox className="flex h-full w-full flex-col justify-between font-body font-bold text-white">
+
+            {/* Top: Logo (stick to top) */}
+            <CustomBox className="flex items-center justify-center py-4">
                 <Logo size={40} className="block text-white" to="/" />
             </CustomBox>
 
-            {/* Sections 1–4 live in a middle column that spreads them vertically */}
-            <CustomBox className="flex-1 flex flex-col justify-between">
-                {/* Section 1: Meals / Diets / ProfileMenu */}
-                <CustomBox className="flex flex-col items-center">
+            {/* Middle: takes remaining space and spreads sections vertically */}
+            <CustomBox className="flex-1 flex flex-col justify-between py-2">
+
+                {/* Section 1: Menus */}
+                <CustomBox className="flex flex-col items-center gap-1">
                     <MealsMenu compact />
                     <DietsMenu compact />
                     <ProfileMenu
@@ -45,7 +47,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     />
                 </CustomBox>
 
-                {/* Section 2: HamburgerMenu (optioneel) */}
+                {/* Section 2: Optional hamburger */}
                 <CustomBox className="flex flex-col items-center">
                     <HamburgerMenu
                         user={user}
@@ -57,7 +59,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     />
                 </CustomBox>
 
-                {/* Section 3: Profile icon / Dashboard / Admin */}
+                {/* Section 3: Profile / Dashboard / Admin */}
                 <CustomBox className="flex flex-col items-center">
                     <CustomTooltip text="Profile" position="right">
                         <CustomBox
@@ -149,7 +151,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                 </CustomBox>
             </CustomBox>
 
-            {/* Section 5: Theme (fixed bottom) */}
+            {/* Bottom: Theme toggle (stick to bottom) */}
             <CustomTooltip text="Toggle theme" position="right">
                 <CustomBox
                     onClick={toggleTheme}
