@@ -35,7 +35,7 @@ const NavBar = () => {
         <CustomAppBar
             className={clsx(
                 "fixed bottom-0 w-full z-50",
-                "md:top-0 md:left-0 md:bottom-auto md:h-screen md:w-auto md:max-w-max bg-appBarColor"
+                "md:top-0 md:left-0 md:bottom-auto md:h-screen md:w-[72px] md:max-w-none bg-appBarColor"
             )}
             bgColor="bg-appBarColor"
         >
