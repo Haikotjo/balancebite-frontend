@@ -9,7 +9,7 @@ const CreateMealPage = () => {
         // Page shell: handles sidebar/bottombar offsets + base paddings
         <PageWrapper className="max-w-screen-md mx-auto">
             {/* Center content + large icon above the form */}
-            <CustomBox className="flex flex-col items-center">
+            <CustomBox className="flex flex-col items-center w-full max-w-screen-md mx-auto">
                 {/* Big page icon */}
                 <Soup className="w-16 h-16 sm:w-24 sm:h-24 text-primary mb-4" aria-hidden="true" />
 
