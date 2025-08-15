@@ -9,7 +9,7 @@ import { RecommendedNutritionProvider } from "./context/RecommendedNutritionCont
 import { UserDietsProvider } from "./context/UserDietContext.jsx";
 import { DialogProvider } from "./context/NotificationContext.jsx";
 import { ModalProvider } from "./context/ModalContext.jsx";
-import { BrowserRouter } from "react-router-dom"; // ✅ DIT IS NIEUW
+import { BrowserRouter } from "react-router-dom";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>

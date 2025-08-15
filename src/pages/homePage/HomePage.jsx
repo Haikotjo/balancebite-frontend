@@ -12,6 +12,7 @@ import { UserDietsContext } from "../../context/UserDietContext.jsx";
 import {getAllStickyItems} from "../../services/apiService.js";
 import fetchStickyItemDetails from "../../utils/helpers/fetchStickyItemDetails.js";
 import {UserMealsContext} from "../../context/UserMealsContext.jsx";
+import PageWrapper from "../../components/layout/PageWrapper.jsx";
 
 function HomePage() {
     const navigate = useNavigate();
@@ -94,7 +95,7 @@ function HomePage() {
 
 
     return (
-        <CustomBox className="flex flex-col items-center justify-center min-h-screen w-full max-w-full mx-auto px-2 text-center ">
+        <PageWrapper className="flex flex-col items-center justify-center text-center px-2">
             <CustomAnimatedBox animation="fadeIn" className="animated-logo p-2 mb-2 mt-6">
                 <Logo size={100} />
             </CustomAnimatedBox>
@@ -163,7 +164,7 @@ function HomePage() {
             />
 
 
-        </CustomBox>
+        </PageWrapper>
     );
 }
 

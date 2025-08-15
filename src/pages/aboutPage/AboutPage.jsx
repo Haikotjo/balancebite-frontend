@@ -8,6 +8,7 @@ import FeatureSection from "../../components/home/FeatureSection.jsx";
 import Logo from "../../components/logo/Logo.jsx";
 import CustomIconButton from "../../components/layout/CustomIconButton.jsx";
 import FeatureList from "../../components/home/FeatureList.jsx";
+import PageWrapper from "../../components/layout/PageWrapper.jsx";
 
 function AboutPage() {
     const navigate = useNavigate();
@@ -70,7 +71,7 @@ function AboutPage() {
     ];
 
     return (
-        <CustomBox className="flex flex-col items-center justify-center min-h-screen w-full text-center px-2">
+        <PageWrapper className="flex flex-col items-center justify-center text-center px-2">
             <CustomAnimatedBox animation="slideInDown" className="p-2 my-2">
                 <Logo size={90} className="text-primary" />
             </CustomAnimatedBox>
@@ -182,7 +183,7 @@ function AboutPage() {
                     </Link>
                 </CustomBox>
             </CustomBox>
-        </CustomBox>
+        </PageWrapper>
     );
 }
 
