@@ -14,6 +14,7 @@ import {getAllPublicDietPlanNames, getStickyItems, searchUsersApi} from "../../.
 import {useLocation} from "react-router-dom";
 import SearchBar from "../../../../components/searchBar/SearchBar.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import PageWrapper from "../../../../components/layout/PageWrapper.js";
 
 const DietsPage = () => {
     const {
@@ -117,7 +118,7 @@ const DietsPage = () => {
 
 
     return (
-        <CustomBox className="pt-6 sm:pt-10 pb-24 sm:pb-16 px-4 md:pl-[40px] ">
+        <PageWrapper >
 
         <DietSubMenu
                 isDetailPage={false}
@@ -215,7 +216,7 @@ const DietsPage = () => {
                 </CustomBox>
             )}
             <ScrollToTopButton />
-        </CustomBox>
+        </PageWrapper >
 
     );
 };

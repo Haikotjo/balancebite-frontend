@@ -16,6 +16,7 @@ import ActiveFilterChips from "../../../diets/components/activeFilterChips/Activ
 import AccordionItem from "../../../diets/components/accordionItem/AccordionItem.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import Spinner from "../../../../components/layout/Spinner.jsx";
+import PageWrapper from "../../../../components/layout/PageWrapper.js";
 
 function MealPage() {
     const location = useLocation();
@@ -112,7 +113,7 @@ function MealPage() {
 
 
     return (
-        <CustomBox className="flex flex-col items-center pt-6 sm:pt-10 px-4 pb-24 md:ml-6">
+        <PageWrapper className="flex flex-col items-center">
         <FilterSidebar filters={filters} onFilter={handleFiltersChange}/>
             <SubMenu onSelect={setActiveOption}/>
             <NutrientSortOptionsHorizontal onSort={handleSort}/>
@@ -205,7 +206,7 @@ function MealPage() {
                 </CustomBox>
             )}
             <ScrollToTopButton/>
-        </CustomBox>
+        </PageWrapper>
     );
 }
 
