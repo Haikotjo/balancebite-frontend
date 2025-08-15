@@ -13,7 +13,7 @@ import { BrowserRouter } from "react-router-dom"; // ✅ DIT IS NIEUW
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
-        <BrowserRouter> {/* ✅ HIER WRAPPEN */}
+        <BrowserRouter>
             <AuthProvider>
                 <UserMealsProvider>
                     <UserDietsProvider>
@@ -21,7 +21,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                             <ThemeModeProvider>
                                 <DialogProvider>
                                     <ModalProvider>
-                                        <div className="min-h-screen bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText md:ml-[105px] lg:ml-[133px]">
+                                        <div className="min-h-screen bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText">
                                             <App />
                                         </div>
                                     </ModalProvider>
