@@ -7,13 +7,9 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 const CreateMealPage = () => {
     return (
         // Page shell: handles sidebar/bottombar offsets + base paddings
-        <PageWrapper className="max-w-screen-md mx-auto">
-            {/* Center content + large icon above the form */}
-            <CustomBox className="flex flex-col items-center w-full max-w-screen-md mx-auto">
-                {/* Big page icon */}
+        <PageWrapper className="md:ml-0 md:pl-[72px] max-w-screen-md mx-auto">
+            <CustomBox className="flex flex-col items-center w-full max-w-[720px] mx-auto px-2">
                 <Soup className="w-16 h-16 sm:w-24 sm:h-24 text-primary mb-4" aria-hidden="true" />
-
-                {/* Form */}
                 <CreateMealForm />
             </CustomBox>
         </PageWrapper>
