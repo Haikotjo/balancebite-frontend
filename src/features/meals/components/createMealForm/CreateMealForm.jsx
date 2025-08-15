@@ -47,14 +47,13 @@ const CreateMealForm = () => {
         (ing) => ing.foodItemId && ing.foodItemId.toString().trim() !== ""
     );
 
-    // Haal alleen op wat we nodig hebben uit de hook
     const { onSubmit, handleImageChange, imageUrl, renderDialogs } = useCreateMeal();
 
     return (
         <CustomBox
             as="form"
             onSubmit={handleSubmit(onSubmit)}
-            className="w-full pb-16 px-2 flex flex-col gap-2 mb-4"
+            className="w-full max-w-[720px] mx-auto self-center pb-16 px-2 flex flex-col gap-2 mb-4"
         >
             <CustomTypography as="h2" variant="h1" className="text-left">
                 Create Your Meal
