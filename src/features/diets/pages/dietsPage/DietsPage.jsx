@@ -14,7 +14,7 @@ import {getAllPublicDietPlanNames, getStickyItems, searchUsersApi} from "../../.
 import {useLocation} from "react-router-dom";
 import SearchBar from "../../../../components/searchBar/SearchBar.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
-import PageWrapper from "../../../../components/layout/PageWrapper.js";
+import PageWrapper from "../../../../components/layout/PageWrapper.jsx";
 
 const DietsPage = () => {
     const {

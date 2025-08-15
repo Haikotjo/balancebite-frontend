@@ -16,7 +16,7 @@ import ActiveFilterChips from "../../../diets/components/activeFilterChips/Activ
 import AccordionItem from "../../../diets/components/accordionItem/AccordionItem.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import Spinner from "../../../../components/layout/Spinner.jsx";
-import PageWrapper from "../../../../components/layout/PageWrapper.js";
+import PageWrapper from "../../../../components/layout/PageWrapper.jsx";
 
 function MealPage() {
     const location = useLocation();
