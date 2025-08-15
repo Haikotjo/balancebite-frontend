@@ -28,6 +28,8 @@ import RegisterForm from "../../navigation/components/authRegisterForm/RegisterF
 import DeleteDietPlanForm from "../components/deleteDietForm/DeleteMealForm.jsx";
 import CreateStickyItemForm from "../components/createStickyItemForm/CreateStickyItemForm.jsx";
 import PromoteFoodItemForm from "../components/promotefoodItemform/PromoteFoodItemForm.jsx";
+import PageWrapper from "../../../components/layout/PageWrapper.jsx";
+import { ShieldUser } from "lucide-react";
 
 /**
  * AdminPage – Central admin dashboard to manage food items, meals, users and future settings.
@@ -163,7 +165,10 @@ const AdminPage = () => {
     };
 
     return (
-        <CustomBox className="flex flex-col items-center p-2">
+        <PageWrapper className="flex flex-col items-center">
+
+            <ShieldUser className="w-16 h-16 sm:w-24 sm:h-24 text-primary mb-2" aria-hidden="true" />
+
             {/* Dashboard title */}
             <CustomTypography variant="h2" bold className="my-4">
                 Admin Dashboard
@@ -202,7 +207,7 @@ const AdminPage = () => {
             <CustomBox className="w-full max-w-[600px] p-2 sm:p-0">
                 {renderActiveComponent()}
             </CustomBox>
-        </CustomBox>
+        </PageWrapper>
     );
 };
 
