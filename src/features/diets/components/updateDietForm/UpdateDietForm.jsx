@@ -13,6 +13,7 @@ import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import { createDietPlanSchema } from "../../../../utils/valadition/validationSchemas.js";
 import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
+import {Apple} from "lucide-react";
 
 export default function UpdateDietForm({ onSubmit }) {
     const { dietId } = useParams();
@@ -147,11 +148,19 @@ export default function UpdateDietForm({ onSubmit }) {
 
 
     return (
-        <form onSubmit={handleSubmit(handleFormSubmit)}>
+        <CustomBox
+            as="form"
+            onSubmit={handleSubmit(onSubmit)}
+            // Keep the form constrained and centered
+            className="w-full max-w-[720px] mx-auto self-center pb-16 px-2 flex flex-col gap-2 mb-4"
+        >
             <CustomBox className="space-y-4 max-w-3xl mx-auto">
-                <CustomTypography as="h2" variant="h1">
+                <CustomBox className="flex flex-col items-center gap-3 mb-2">
+                    <Apple className="w-16 h-16 sm:w-24 sm:h-24 text-primary" aria-hidden="true" />
+                    <CustomTypography as="h2" variant="h1" className="text-center">
                     Update Diet (ID: {dietId})
                 </CustomTypography>
+                </CustomBox>
 
                 <CustomTextField
                     label="Diet Name"
@@ -263,7 +272,7 @@ export default function UpdateDietForm({ onSubmit }) {
                     Update Diet
                 </CustomButton>
             </CustomBox>
-        </form>
+        </CustomBox>
     );
 }
 
