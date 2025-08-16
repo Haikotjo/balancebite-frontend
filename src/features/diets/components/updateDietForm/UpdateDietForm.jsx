@@ -154,7 +154,6 @@ export default function UpdateDietForm({ onSubmit }) {
             // Keep the form constrained and centered
             className="w-full max-w-[720px] mx-auto self-center pb-16 px-2 flex flex-col gap-2 mb-4"
         >
-            <CustomBox className="space-y-4 max-w-3xl mx-auto">
                 <CustomBox className="flex flex-col items-center gap-3 mb-2">
                     <Apple className="w-16 h-16 sm:w-24 sm:h-24 text-primary" aria-hidden="true" />
                     <CustomTypography as="h2" variant="h1" className="text-center">
@@ -271,7 +270,7 @@ export default function UpdateDietForm({ onSubmit }) {
                 <CustomButton type="submit" className="group p-2" disabled={!isValid}>
                     Update Diet
                 </CustomButton>
-            </CustomBox>
+
         </CustomBox>
     );
 }
