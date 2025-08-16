@@ -6,6 +6,7 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import {useUpdateDiet} from "../../utils/hooks/useUpdateDiet.js";
 import Spinner from "../../../../components/layout/Spinner.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import PageWrapper from "../../../../components/layout/PageWrapper.jsx";
 
 const UpdateDietPage = () => {
     const { dietId } = useParams();
@@ -22,41 +23,45 @@ const UpdateDietPage = () => {
 
     if (loading) {
         return (
-            <CustomBox className="flex flex-col items-center justify-center ">
-                <Spinner />
-                <CustomTypography
-                    as="p"
-                    className="mt-2 text-sm text-muted-foreground text-center"
-                >
-                    Loading...
-                </CustomTypography>
-            </CustomBox>
-
+            <PageWrapper>
+                {/* Center loading state */}
+                <CustomBox className="flex flex-col items-center justify-center">
+                    <Spinner />
+                    <CustomTypography
+                        as="p"
+                        className="mt-2 text-sm text-muted-foreground text-center"
+                    >
+                        Loading...
+                    </CustomTypography>
+                </CustomBox>
+            </PageWrapper>
         );
     }
 
     return (
-        <CustomBox className="mx-auto px-2 pb-20 pt-10 sm:px-4">
-            <UpdateDietForm onSubmit={handleUpdate} />
+        <PageWrapper>
+            <CustomBox className="max-w-screen-md mx-auto">
+                <UpdateDietForm onSubmit={handleUpdate} />
 
-            {showDialog && (
-                <ErrorDialog
-                    open={true}
-                    onClose={() => setShowDialog(false)}
-                    message="Diet plan updated successfully."
-                    type="success"
-                />
-            )}
+                {showDialog && (
+                    <ErrorDialog
+                        open={true}
+                        onClose={() => setShowDialog(false)}
+                        message="Diet plan updated successfully."
+                        type="success"
+                    />
+                )}
 
-            {error && (
-                <ErrorDialog
-                    open={showError}
-                    onClose={() => setShowError(false)}
-                    message={error}
-                    type="error"
-                />
-            )}
-        </CustomBox>
+                {error && (
+                    <ErrorDialog
+                        open={showError}
+                        onClose={() => setShowError(false)}
+                        message={error}
+                        type="error"
+                    />
+                )}
+            </CustomBox>
+        </PageWrapper>
     );
 };
 
