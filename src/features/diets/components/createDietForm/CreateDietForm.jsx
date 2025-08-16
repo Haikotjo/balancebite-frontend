@@ -72,7 +72,7 @@ export default function CreateDietFormFull({ onSuccess }) {
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
 
-            <CustomBox  className="w-full pb-16 px-2 flex flex-col gap-2 mb-4">
+            <CustomBox className="w-full max-w-[720px] mx-auto self-center pb-16 px-2 flex flex-col gap-2 mb-4">
                 <CustomTextField
                     label="Diet Name"
                     name="name"
