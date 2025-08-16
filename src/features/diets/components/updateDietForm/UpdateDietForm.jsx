@@ -150,7 +150,7 @@ export default function UpdateDietForm({ onSubmit }) {
     return (
         <CustomBox
             as="form"
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(handleFormSubmit)}
             // Keep the form constrained and centered
             className="w-full max-w-[720px] mx-auto self-center pb-16 px-2 flex flex-col gap-2 mb-4"
         >
