@@ -42,7 +42,7 @@ const ProfilePage = () => {
                 <CustomBox className="flex flex-col items-center gap-3 mb-2">
                     <UserCircle className="w-16 h-16 sm:w-24 sm:h-24 text-primary" aria-hidden="true" />
                     <CustomTypography as="h2" variant="h1" className="text-center">
-                        Create Your Meal
+                        Profile
                     </CustomTypography>
                 </CustomBox>
                 {/* Personal Info & User Details Section */}
