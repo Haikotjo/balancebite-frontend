@@ -6,7 +6,7 @@ import MealCard from "../../components/mealCard/MealCard.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import Spinner from "../../../../components/layout/Spinner.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
-import SubMenu from "../../components/subMenu/SubMenu.jsx";
+import MealsSubMenu from "../../components/subMenu/MealsSubMenu.jsx";
 import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
 import PageWrapper from "../../../../components/layout/PageWrapper.jsx";
 
@@ -48,7 +48,7 @@ const MealDetailsPage = () => {
             <>
                 <PageWrapper>
                     <CustomBox className="mb-4">
-                        <SubMenu isDetailPage />
+                        <MealsSubMenu isDetailPage />
                     </CustomBox>
                     <CustomBox className="flex justify-center pt-10">
                         <Spinner />
@@ -62,7 +62,7 @@ const MealDetailsPage = () => {
         return (
             <PageWrapper>
                 <CustomBox className="mb-4">
-                    <SubMenu isDetailPage />
+                    <MealsSubMenu isDetailPage />
                 </CustomBox>
                 <CustomTypography className="text-2xl font-bold text-center mt-10 text-error">
                     Meal not found
@@ -74,7 +74,7 @@ const MealDetailsPage = () => {
     return (
         <PageWrapper>
             <CustomBox className="max-w-screen-xl mx-auto">
-                <SubMenu isDetailPage />
+                <MealsSubMenu isDetailPage />
                 <CustomBox className="block md:hidden justify-center mt-6">
                     <MealDetailCard meal={meal} viewMode="page" />
                 </CustomBox>

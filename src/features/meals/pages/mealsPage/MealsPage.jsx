@@ -9,7 +9,7 @@ import NutrientSortOptionsHorizontal from "../../components/nutrientSortOptions/
 import MealList from "../../components/mealList/MealList.jsx";
 import CustomPagination from "../../../../components/customPagination/CustomPagination.jsx";
 import ScrollToTopButton from "../../../../components/scrollToTopButton/ScrollToTopButton.jsx";
-import SubMenu from "../../components/subMenu/SubMenu.jsx";
+import MealsSubMenu from "../../components/subMenu/MealsSubMenu.jsx";
 import fetchStickyItemDetails from "../../../../utils/helpers/fetchStickyItemDetails.js";
 import MealFilterContent from "../../components/mealfiltercontent/MealFilterContent.jsx";
 import ActiveFilterChips from "../../../diets/components/activeFilterChips/ActiveFilterChips.jsx";
@@ -115,7 +115,7 @@ function MealPage() {
     return (
         <PageWrapper className="flex flex-col items-center">
         <FilterSidebar filters={filters} onFilter={handleFiltersChange}/>
-            <SubMenu onSelect={setActiveOption}/>
+            <MealsSubMenu onSelect={setActiveOption}/>
             <NutrientSortOptionsHorizontal onSort={handleSort}/>
 
             <CustomBox className="block md:hidden w-full">

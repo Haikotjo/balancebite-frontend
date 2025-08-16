@@ -5,7 +5,7 @@ import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import SubMenuGeneric from "../../../../components/subMenuGeneric/SubMenuGeneric.jsx";
 import PropTypes from "prop-types";
 
-const SubMenu = ({ isDetailPage = false, onSelect }) => {
+const MealsSubMenu = ({ isDetailPage = false, onSelect }) => {
     const { activeOption, setActiveOption } = useContext(UserMealsContext);
     const { user } = useContext(AuthContext);
 
@@ -29,9 +29,9 @@ const SubMenu = ({ isDetailPage = false, onSelect }) => {
     );
 };
 
-SubMenu.propTypes = {
+MealsSubMenu.propTypes = {
     isDetailPage: PropTypes.bool,
     onSelect: PropTypes.func,
 };
 
-export default SubMenu;
+export default MealsSubMenu;

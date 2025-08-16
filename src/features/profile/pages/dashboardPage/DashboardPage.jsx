@@ -5,7 +5,7 @@ import { AuthContext } from "../../../../context/AuthContext.jsx";
 import { getSortedNutritionData } from "../../utils/nutritionHelpers.js";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import DietSubMenu from "../../../diets/components/subMenu/DietsSubMenu.jsx";
-import SubMenu from "../../../meals/components/subMenu/SubMenu.jsx";
+import MealsSubMenu from "../../../meals/components/subMenu/MealsSubMenu.jsx";
 import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import { format, subDays } from "date-fns";
@@ -77,7 +77,7 @@ const DashboardPage = () => {
                 <DietSubMenu
                     isDetailPage
                 />
-                <SubMenu isDetailPage />
+                <MealsSubMenu isDetailPage />
             </CustomBox>
 
             {/* Driekoloms-layout */}
