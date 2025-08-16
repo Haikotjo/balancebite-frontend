@@ -8,6 +8,7 @@ import Spinner from "../../../../components/layout/Spinner.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import SubMenu from "../../components/subMenu/SubMenu.jsx";
 import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
+import PageWrapper from "../../../../components/layout/PageWrapper.jsx";
 
 const MealDetailsPage = () => {
     const { mealId } = useParams();
@@ -45,31 +46,33 @@ const MealDetailsPage = () => {
     if (loading) {
         return (
             <>
-                <CustomBox className="mb-4 pt-10">
-                    <SubMenu isDetailPage />
-                </CustomBox>
-                <CustomBox className="flex justify-center pt-10">
-                    <Spinner />
-                </CustomBox>
+                <PageWrapper>
+                    <CustomBox className="mb-4">
+                        <SubMenu isDetailPage />
+                    </CustomBox>
+                    <CustomBox className="flex justify-center pt-10">
+                        <Spinner />
+                    </CustomBox>
+                </PageWrapper>
             </>
         );
     }
 
     if (error || !meal) {
         return (
-            <>
-                <CustomBox className="mb-4 pt-10">
+            <PageWrapper>
+                <CustomBox className="mb-4">
                     <SubMenu isDetailPage />
                 </CustomBox>
                 <CustomTypography className="text-2xl font-bold text-center mt-10 text-error">
                     Meal not found
                 </CustomTypography>
-            </>
+            </PageWrapper>
         );
     }
 
     return (
-        <CustomBox className="pt-6 sm:pt-10 pb-20 sm:pb-10 px-4">
+        <PageWrapper>
             <CustomBox className="max-w-screen-xl mx-auto">
                 <SubMenu isDetailPage />
                 <CustomBox className="block md:hidden justify-center mt-6">
@@ -78,9 +81,8 @@ const MealDetailsPage = () => {
                 <CustomBox className="hidden md:flex justify-center mt-6">
                     <MealCard meal={meal} />
                 </CustomBox>
-
             </CustomBox>
-        </CustomBox>
+        </PageWrapper>
     );
 };
 
