@@ -10,6 +10,7 @@ import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomTextField from "../../../../components/layout/CustomTextField.jsx";
 import CustomFloatingSelect from "../../../../components/layout/CustomFloatingSelect.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
+import {Apple, Soup} from "lucide-react";
 
 export default function CreateDietFormFull({ onSuccess }) {
     const { mealOptions, loading: mealsLoading, error: mealsError } = useFetchMeals();
@@ -73,12 +74,16 @@ export default function CreateDietFormFull({ onSuccess }) {
         <CustomBox
             as="form"
             onSubmit={handleSubmit(onSubmit)}
+            // Keep the form constrained and centered
             className="w-full max-w-[720px] mx-auto self-center pb-16 px-2 flex flex-col gap-2 mb-4"
         >
-
-            <CustomTypography as="h2" variant="h1" className="text-left">
-                Create New Diet Plan
-            </CustomTypography>
+            {/* Form header: icon + title */}
+            <CustomBox className="flex flex-col items-center gap-3 mb-2">
+                <Soup className="w-16 h-16 sm:w-24 sm:h-24 text-primary" aria-hidden="true" />
+                <CustomTypography as="h2" variant="h1" className="text-center">
+                    Create New Diet Plan
+                </CustomTypography>
+            </CustomBox>
 
             <CustomTextField
                 label="Diet Name"

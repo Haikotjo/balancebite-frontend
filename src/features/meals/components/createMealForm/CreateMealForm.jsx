@@ -11,6 +11,7 @@ import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomTextField from "../../../../components/layout/CustomTextField.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import {mealSchema} from "../../../../utils/valadition/validationSchemas.js";
+import {Soup} from "lucide-react";
 
 /**
  * Component for creating a new meal.
@@ -53,11 +54,16 @@ const CreateMealForm = () => {
         <CustomBox
             as="form"
             onSubmit={handleSubmit(onSubmit)}
+            // Keep the form constrained and centered
             className="w-full max-w-[720px] mx-auto self-center pb-16 px-2 flex flex-col gap-2 mb-4"
         >
-            <CustomTypography as="h2" variant="h1" className="text-left">
-                Create Your Meal
-            </CustomTypography>
+            {/* Form header: icon + title */}
+            <CustomBox className="flex flex-col items-center gap-3 mb-2">
+                <Soup className="w-16 h-16 sm:w-24 sm:h-24 text-primary" aria-hidden="true" />
+                <CustomTypography as="h2" variant="h1" className="text-center">
+                    Create Your Meal
+                </CustomTypography>
+            </CustomBox>
 
             {cameraError && (
                 <ErrorDialog
