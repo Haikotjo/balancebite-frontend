@@ -75,6 +75,11 @@ export default function CreateDietFormFull({ onSuccess }) {
             onSubmit={handleSubmit(onSubmit)}
             className="w-full max-w-[720px] mx-auto self-center pb-16 px-2 flex flex-col gap-2 mb-4"
         >
+
+            <CustomTypography as="h2" variant="h1" className="text-left">
+                Create New Diet Plan
+            </CustomTypography>
+
             <CustomTextField
                 label="Diet Name"
                 name="name"
