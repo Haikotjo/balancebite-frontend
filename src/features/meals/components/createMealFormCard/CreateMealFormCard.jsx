@@ -148,7 +148,8 @@ const CreateMealFormCard = () => {
                 <input type="hidden" {...register("imageUrl")} />
 
                 {/* Uploader overlay top-right */}
-                <CustomBox className="absolute top-2 right-2 rounded-md p-2">
+                <CustomBox className="absolute top-3 right-3 z-20 pointer-events-auto">
+                    <CustomBox className="min-w-[280px] rounded-xl bg-cardLight/90 dark:bg-cardDark/90 shadow-lg p-3">
                     <MealImageUploader
                         imageUrl={urlValue}
                         onImageChange={(image, type) => {
@@ -169,6 +170,7 @@ const CreateMealFormCard = () => {
                         errors={errors}
                         register={register}
                     />
+                    </CustomBox>
                 </CustomBox>
 
                 {/* Preparation time (top-left) */}

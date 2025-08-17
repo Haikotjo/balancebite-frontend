@@ -29,7 +29,7 @@ const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialI
     const isAnySet = !!capturedImage || !!uploadedImage || !!imageUrl;
 
     return (
-        <CustomBox className="flex flex-col items-center gap-3 w-full bg-base-200 dark:bg-base-800 rounded-md p-3">
+        <CustomBox className="flex flex-col items-center gap-3 w-full">
             <CustomTypography variant="small" className="text-gray-500 font-normal italic">
                 Add an Image
             </CustomTypography>
