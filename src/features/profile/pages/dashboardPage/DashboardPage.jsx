@@ -10,6 +10,7 @@ import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import { format, subDays } from "date-fns";
 import DashboardContent from "../../components/dashboardContent/DashboardContent.jsx";
+import PageWrapper from "../../../../components/layout/PageWrapper.jsx";
 
 const DashboardPage = () => {
     const {
@@ -64,36 +65,39 @@ const DashboardPage = () => {
                     days.push({ date: formattedDate, data });
                 }
             }
-            setDailyRdiList(days.reverse()); // Oudste eerst
+            setDailyRdiList(days.reverse());
         };
 
         if (token) loadDailyRdi();
     }, [token]);
 
     return (
-        <CustomBox className="flex flex-col items-center gap-6 pt-6 sm:pt-10 px-4 pb-24 sm:pb-10">
-            {/* Submenus */}
-            <CustomBox className="flex flex-col md:flex-row gap-12 justify-center">
-                <DietSubMenu
-                    isDetailPage
-                />
-                <MealsSubMenu isDetailPage />
-            </CustomBox>
+        <PageWrapper>
+            {/* Center content and allow wider dashboard */}
+            <CustomBox className="max-w-screen-xl mx-auto flex flex-col items-center gap-6">
+                {/* Submenus */}
+                <CustomBox className="flex flex-col md:flex-row gap-12 justify-center">
+                    <DietSubMenu
+                        isDetailPage
+                    />
+                    <MealsSubMenu isDetailPage />
+                </CustomBox>
 
-            {/* Driekoloms-layout */}
-            <DashboardContent
-                userMeals={userMeals}
-                userDiets={userDiets}
-                currentMealId={null}
-                chartData={chartData}
-                sortedNutrients={sortedNutrients}
-                recommendedNutrition={recommendedNutrition}
-                baseNutrition={baseNutrition}
-                weeklyRdi={weeklyRdi}
-                monthlyRdi={monthlyRdi}
-                dailyRdiList={dailyRdiList}
-            />
-        </CustomBox>
+                {/* Driekoloms-layout */}
+                <DashboardContent
+                    userMeals={userMeals}
+                    userDiets={userDiets}
+                    currentMealId={null}
+                    chartData={chartData}
+                    sortedNutrients={sortedNutrients}
+                    recommendedNutrition={recommendedNutrition}
+                    baseNutrition={baseNutrition}
+                    weeklyRdi={weeklyRdi}
+                    monthlyRdi={monthlyRdi}
+                    dailyRdiList={dailyRdiList}
+                />
+            </CustomBox>
+        </PageWrapper>
     );
 };
 
