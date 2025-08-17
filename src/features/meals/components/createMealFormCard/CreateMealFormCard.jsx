@@ -1,6 +1,5 @@
 // CreateMealFormCard.jsx
-// WYSIWYG card: shows final MealCard look with buttons instead of always-on inputs.
-// Clicking a button reveals the editor inline; on save/close it returns to preview.
+// WYSIWYG card: final MealCard look with per-section edit buttons.
 // English code comments as requested.
 
 import { useState, useMemo, useEffect } from "react";
@@ -29,8 +28,22 @@ import MealCardMacrosSection from "../mealCardMacrosSection/MeaCardlMacrosSectio
 import MealCardMealTags from "../mealCardMealTags/MealCardMealTags.jsx";
 import PreparationTimeIcon from "../mealCardPreparationTimeIcon/PreparationTimeIcon.jsx";
 
+// --- helpers (keep backend contract: File for uploaded/captured, string for url) ---
+async function dataUrlToFile(dataUrl, filename = "capture.png") {
+    // Works for data: and blob: URLs
+    const res = await fetch(dataUrl);
+    const blob = await res.blob();
+    return new File([blob], filename, { type: blob.type || "image/png" });
+}
+
+async function blobUrlToFile(blobUrl, filename = "upload.png") {
+    const res = await fetch(blobUrl);
+    const blob = await res.blob();
+    return new File([blob], filename, { type: blob.type || "image/*" });
+}
+
 const CreateMealFormCard = () => {
-    // Local toggles for inline editors
+    // Inline editor toggles
     const [editName, setEditName] = useState(false);
     const [editDesc, setEditDesc] = useState(false);
     const [editIngr, setEditIngr] = useState(false);
@@ -57,13 +70,13 @@ const CreateMealFormCard = () => {
             cuisines: [],
             diets: [],
             preparationTime: "",
-            imageFile: "",
-            imageUrl: "",
+            imageFile: "", // File for uploaded/captured
+            imageUrl: "",  // string for direct URL
         },
     });
 
-    // Domain submit + image handling
-    const { onSubmit, handleImageChange, imageUrl: hookImageUrl, renderDialogs } = useCreateMeal();
+    // Domain submit + dialogs
+    const { onSubmit, imageUrl: hookImageUrl, renderDialogs } = useCreateMeal();
 
     // Track fields
     const fileValue = watch("imageFile");
@@ -87,25 +100,26 @@ const CreateMealFormCard = () => {
         return null;
     }, [fileValue]);
 
-    // Preview image
-    const previewSrc = useMemo(() => {
-        if (fileCandidate) return URL.createObjectURL(fileCandidate);
-        if (urlValue) return urlValue;
-        return null;
-    }, [fileCandidate, urlValue]);
-
+    // Create a stable object URL for the preview (and revoke correctly)
+    const [fileObjectUrl, setFileObjectUrl] = useState(null);
     useEffect(() => {
-        if (!fileCandidate) return;
-        const objUrl = URL.createObjectURL(fileCandidate);
-        return () => URL.revokeObjectURL(objUrl);
+        if (!fileCandidate) {
+            setFileObjectUrl(null);
+            return;
+        }
+        const url = URL.createObjectURL(fileCandidate);
+        setFileObjectUrl(url);
+        return () => URL.revokeObjectURL(url);
     }, [fileCandidate]);
 
-    // Enable submit
-    const hasIngredient = Array.isArray(ingrVal) && ingrVal.some(
-        (ing) => ing?.foodItemId && String(ing.foodItemId).trim() !== ""
-    );
+    // Preview source (File URL wins over manual URL)
+    const previewSrc = fileObjectUrl || (urlValue ? urlValue : null);
 
-    // Build a temporary "meal-like" object for preview components
+    // Enable submit
+    const hasIngredient =
+        Array.isArray(ingrVal) && ingrVal.some((ing) => ing?.foodItemId && String(ing.foodItemId).trim() !== "");
+
+    // Build a temporary meal-like object for preview components
     const previewMeal = {
         id: "preview",
         name: nameVal || "Set meal name",
@@ -115,10 +129,10 @@ const CreateMealFormCard = () => {
         cuisines: cuisinesVal,
         diets: dietsVal,
         preparationTime: prepVal,
-        imageUrl: urlValue,
+        imageUrl: urlValue, // not used for preview if file selected, but useful for macros/helpers
     };
 
-    // Calculate macros preview (safe-guarded)
+    // Macros preview (safe)
     let macros = null;
     try {
         const calc = calculateMacrosPer100g(previewMeal);
@@ -133,7 +147,7 @@ const CreateMealFormCard = () => {
             onSubmit={handleSubmit(onSubmit)}
             className="hidden md:flex max-w-4xl w-full mx-auto bg-cardLight dark:bg-cardDark rounded-xl shadow-md overflow-hidden border border-border"
         >
-            {/* Left: image + overlay uploader (MealCard style) */}
+            {/* Left: image + anchored controls */}
             <CustomBox className="lg:w-[50%] w-[48%] min-h-[360px] relative">
                 {previewSrc ? (
                     <CustomImage src={previewSrc} alt="Meal preview" className="w-full h-full object-cover" />
@@ -143,37 +157,43 @@ const CreateMealFormCard = () => {
                     </CustomBox>
                 )}
 
-                {/* Hidden fields so RHF tracks values */}
+                {/* Keep RHF tracking values */}
                 <input type="hidden" {...register("imageFile")} />
                 <input type="hidden" {...register("imageUrl")} />
 
-                {/* Uploader overlay top-right */}
+                {/* Controls panel (fixed, readable) */}
                 <CustomBox className="absolute top-3 right-3 z-20 pointer-events-auto">
                     <CustomBox className="min-w-[280px] rounded-xl bg-cardLight/90 dark:bg-cardDark/90 shadow-lg p-3">
-                    <MealImageUploader
-                        imageUrl={urlValue}
-                        onImageChange={(image, type) => {
-                            // sync met jouw emitter
-                            if (type === "uploaded") {
-                                const f = image instanceof FileList ? (image[0] || "") : image; // File
-                                setValue("imageFile", f, { shouldDirty: true, shouldValidate: true });
-                                setValue("imageUrl", "", { shouldDirty: true, shouldValidate: true });
-                            } else if (type === "captured" || type === "url") {
-                                // beide geven een string (data URL of http URL)
-                                setValue("imageUrl", image || "", { shouldDirty: true, shouldValidate: true });
-                                setValue("imageFile", "", { shouldDirty: true, shouldValidate: true });
-                            } else if (type === "reset") {
-                                setValue("imageFile", "", { shouldDirty: true, shouldValidate: true });
-                                setValue("imageUrl", "", { shouldDirty: true, shouldValidate: true });
-                            }
-                        }}
-                        errors={errors}
-                        register={register}
-                    />
+                        <MealImageUploader
+                            imageUrl={urlValue}
+                            onImageChange={async (image, type) => {
+                                // Keep backend contract:
+                                // uploaded/captured -> imageFile (File), url -> imageUrl (string), reset -> clear both
+                                if (type === "uploaded") {
+                                    let file = image;
+                                    if (typeof image === "string") file = await blobUrlToFile(image);
+                                    setValue("imageFile", file || "", { shouldDirty: true, shouldValidate: true });
+                                    setValue("imageUrl", "", { shouldDirty: true, shouldValidate: true });
+                                } else if (type === "captured") {
+                                    let file = image;
+                                    if (typeof image === "string") file = await dataUrlToFile(image);
+                                    setValue("imageFile", file || "", { shouldDirty: true, shouldValidate: true });
+                                    setValue("imageUrl", "", { shouldDirty: true, shouldValidate: true });
+                                } else if (type === "url") {
+                                    setValue("imageUrl", image || "", { shouldDirty: true, shouldValidate: true });
+                                    setValue("imageFile", "", { shouldDirty: true, shouldValidate: true });
+                                } else if (type === "reset") {
+                                    setValue("imageFile", "", { shouldDirty: true, shouldValidate: true });
+                                    setValue("imageUrl", "", { shouldDirty: true, shouldValidate: true });
+                                }
+                            }}
+                            errors={errors}
+                            register={register}
+                        />
                     </CustomBox>
                 </CustomBox>
 
-                {/* Preparation time (top-left) */}
+                {/* Preparation time badge (top-left) */}
                 {prepVal ? (
                     <CustomBox className="absolute top-2 left-2">
                         <PreparationTimeIcon preparationTime={prepVal} layout="inline" />
@@ -181,7 +201,7 @@ const CreateMealFormCard = () => {
                 ) : null}
             </CustomBox>
 
-            {/* Right: WYSIWYG content column (looks like MealCard) */}
+            {/* Right: WYSIWYG content (looks like MealCard) */}
             <CustomBox className="flex-1 p-4 md:p-6 lg:p-8 flex flex-col">
                 {/* Title + edit */}
                 <CustomBox className="flex items-start justify-between gap-3">
@@ -247,7 +267,7 @@ const CreateMealFormCard = () => {
 
                 <CustomDivider className="my-6" />
 
-                {/* Ingredients: preview with MealCardIngredients; edit inline on click */}
+                {/* Ingredients: preview vs editor */}
                 {!editIngr ? (
                     <CustomBox>
                         {hasIngredient ? (
@@ -284,7 +304,7 @@ const CreateMealFormCard = () => {
 
                 <CustomDivider className="my-6" />
 
-                {/* Macros preview (if computable) */}
+                {/* Macros preview */}
                 {macros ? (
                     <MealCardMacrosSection macros={macros} />
                 ) : (
@@ -295,7 +315,7 @@ const CreateMealFormCard = () => {
 
                 <CustomDivider className="my-6" />
 
-                {/* Tags (mealTypes/cuisines/diets/prepTime) preview as chips; edit opens full dropdowns */}
+                {/* Tags/time preview vs editor */}
                 {!editTags ? (
                     <CustomBox className="flex flex-col gap-3">
                         <MealCardMealTags
@@ -320,7 +340,7 @@ const CreateMealFormCard = () => {
                     </CustomBox>
                 )}
 
-                {/* Footer actions */}
+                {/* Footer */}
                 <CustomBox className="mt-8 flex items-center justify-end gap-3">
                     <CustomButton type="button" variant="ghost">
                         Cancel
