@@ -1,15 +1,13 @@
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import {useContext, useState} from "react";
+import {useContext} from "react";
 import MealCardImageSection from "../mealCardImageSection/MealCardImageSection.jsx";
 import MealCardExpandableDescription from "../mealCardExpandableDescription/ExpandableDescription.jsx";
-import MealCardIngredients from "../mealCardIngredients/MealCardIngredients.jsx";
 import ExpandableTitle from "../mealCardexpandableTitle/ExpandableTitle.jsx";
 import MealCardMacrosCompact from "../mealCardMacrosCompact/MealCardMacrosCompact.jsx";
 import {calculateMacrosPer100g} from "../../utils/helpers/calculateMacrosPer100g.js";
 import {buildMacrosObject} from "../../utils/helpers/buildMacrosObject.js";
 import MealCardMealTags from "../mealCardMealTags/MealCardMealTags.jsx";
-import MealCardNutritionToggle from "../mealCardNutritionToggle/MealCardNutritionToggle.jsx";
 import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
 import CustomCard from "../../../../components/layout/CustomCard.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
@@ -39,8 +37,6 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
         diets: "diets",
         cuisines: "cuisines",
     };
-
-    const shouldHideContent = isListItem;
 
     const handleFilterRedirect = (category, value) => {
 
@@ -104,38 +100,6 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
                                 viewMode={viewMode}
                             />
 
-
-                {/*{!shouldHideContent && (*/}
-                {/*    <>*/}
-                {/*        <CustomDivider className="my-6" />*/}
-
-                {/*        /!* Ingredients Section *!/*/}
-                {/*        <MealCardIngredients ingredients={mealToRender.mealIngredients} />*/}
-                {/*        <CustomDivider className="my-6" />*/}
-
-                {/*        /!* MealTags Section*!/*/}
-                {/*        {!isListItem && (*/}
-                {/*            <CustomBox className="px-2 py-1 mt-2">*/}
-                {/*                <MealCardMealTags*/}
-                {/*                    cuisines={mealToRender.cuisines}*/}
-                {/*                    diets={mealToRender.diets}*/}
-                {/*                    mealTypes={mealToRender.mealTypes}*/}
-                {/*                    onFilter={handleFilterRedirect}*/}
-                {/*                    forceExpand*/}
-                {/*                    viewMode={viewMode}*/}
-                {/*                />*/}
-                {/*            </CustomBox>*/}
-                {/*        )}*/}
-                {/*        <CustomDivider className="my-6" />*/}
-
-                {/*        /!* Nutrition Section *!/*/}
-                {/*        <MealCardNutritionToggle*/}
-                {/*            macros={macros}*/}
-                {/*            viewMode={viewMode}*/}
-                {/*        />*/}
-
-                {/*    </>*/}
-                {/*)}*/}
             </CustomBox>
 
         </CustomCard>
