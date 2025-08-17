@@ -1,5 +1,5 @@
 // CreateMealFormCard.jsx
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -15,11 +15,13 @@ import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import CustomTextField from "../../../../components/layout/CustomTextField.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
+import CustomImage from "../../../../components/layout/CustomImage.jsx";
 import MealImageUploader from "../createMealForm/mealImageUploader/MealImageUploader.jsx";
 
 /**
  * Card-style Create Meal form for desktop (≥ md), matching MealCard look.
  * Uses the same RHF + yup + useCreateMeal flow as CreateMealForm.
+ * Shows a live image preview (uploaded file OR typed URL) on the left.
  */
 const CreateMealFormCard = () => {
     // Keep parity with existing flow
@@ -56,7 +58,36 @@ const CreateMealFormCard = () => {
     );
 
     // Domain submit + image handling
-    const { onSubmit, handleImageChange, imageUrl, renderDialogs } = useCreateMeal();
+    const { onSubmit, handleImageChange, imageUrl: hookImageUrl, renderDialogs } = useCreateMeal();
+
+    // Watch current file/url in the form
+    const fileValue = watch("imageFile");
+    const urlValue = watch("imageUrl") || hookImageUrl || "";
+
+    // Compute a safe preview source from file or url
+    const previewSrc = useMemo(() => {
+        // Handle File or FileList or empty
+        const file = Array.isArray(fileValue) ? fileValue[0] : fileValue;
+        if (file && typeof file === "object" && file instanceof File) {
+            return URL.createObjectURL(file);
+        }
+        if (typeof urlValue === "string" && urlValue.trim() !== "") {
+            return urlValue.trim();
+        }
+        return null;
+    }, [fileValue, urlValue]);
+
+    // Revoke object URL when it changes/unmounts (avoid memory leaks)
+    useEffect(() => {
+        const file = Array.isArray(fileValue) ? fileValue[0] : fileValue;
+        let objUrl;
+        if (file && file instanceof File) {
+            objUrl = previewSrc;
+        }
+        return () => {
+            if (objUrl) URL.revokeObjectURL(objUrl);
+        };
+    }, [fileValue, previewSrc]);
 
     return (
         <CustomBox
@@ -65,14 +96,29 @@ const CreateMealFormCard = () => {
             // Mirror MealCard shell on desktop
             className="hidden md:flex max-w-4xl w-full mx-auto bg-cardLight dark:bg-cardDark rounded-xl shadow-md overflow-hidden border border-border"
         >
-            {/* Left: image/media column */}
-            <CustomBox className="lg:w-[50%] w-[48%] min-h-[320px] bg-base-200 flex items-center justify-center p-3">
-                <MealImageUploader
-                    imageUrl={imageUrl}
-                    onImageChange={(image, type) => handleImageChange(image, type, setValue)}
-                    errors={errors}
-                    register={register}
-                />
+            {/* Left: image/media column with live preview */}
+            <CustomBox className="lg:w-[50%] w-[48%] min-h-[320px] relative">
+                {previewSrc ? (
+                    <CustomImage
+                        src={previewSrc}
+                        alt="Meal preview"
+                        className="w-full h-full object-cover"
+                    />
+                ) : (
+                    <CustomBox className="w-full h-full bg-base-200 flex items-center justify-center p-3">
+                        <span className="text-sm text-muted-foreground">No image selected</span>
+                    </CustomBox>
+                )}
+
+                {/* Uploader as an overlay (top-right) */}
+                <CustomBox className="absolute top-2 right-2 bg-base-100/80 dark:bg-base-900/80 backdrop-blur rounded-md p-2">
+                    <MealImageUploader
+                        imageUrl={urlValue}
+                        onImageChange={(image, type) => handleImageChange(image, type, setValue)}
+                        errors={errors}
+                        register={register}
+                    />
+                </CustomBox>
             </CustomBox>
 
             {/* Right: content column */}
