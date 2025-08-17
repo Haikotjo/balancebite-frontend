@@ -1,3 +1,6 @@
+// MealImageUploader.jsx (controls-only; no internal preview)
+// English code comments.
+
 import { useState } from "react";
 import PropTypes from "prop-types";
 import Camera from "../../camera/Camera.jsx";
@@ -8,49 +11,34 @@ import CustomBox from "../../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../../components/layout/CustomTypography.jsx";
 import CustomIconButton from "../../../../../components/layout/CustomIconButton.jsx";
 
-/**
- * MealImageUploader allows users to upload a meal image by:
- * - Taking a photo using the camera
- * - Uploading a file
- * - Providing a direct image URL
- *
- * Only one image type is active at a time. A preview is shown if any image is selected.
- *
- * @component
- * @param {function} register - React Hook Form register function
- * @param {object} errors - Validation errors
- * @param {function} onImageChange - Callback with (image, type)
- * @param {string} imageUrl - Optional initial image URL (for editing)
- */
 const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialImageUrl }) => {
+    // Keep minimal local state to control disabled logic
     const [capturedImage, setCapturedImage] = useState(null);
     const [uploadedImage, setUploadedImage] = useState(null);
     const [imageUrl, setImageUrl] = useState(initialImageUrl || "");
     const [resetTrigger, setResetTrigger] = useState(false);
 
-    // Clears all image sources and resets preview
+    // Clear all and notify parent
     const handleReset = () => {
         setCapturedImage(null);
         setUploadedImage(null);
         setImageUrl("");
         setResetTrigger(prev => !prev);
-        onImageChange("", "");
         onImageChange(null, "reset");
     };
 
+    const isAnySet = !!capturedImage || !!uploadedImage || !!imageUrl;
+
     return (
         <CustomBox className="flex flex-col items-center gap-2">
-            <CustomTypography
-                variant="small"
-                className="text-gray-500 font-normal italic"
-            >
+            <CustomTypography variant="small" className="text-gray-500 font-normal italic">
                 Add an Image
             </CustomTypography>
 
-            {/* Buttons for capture, upload, or URL entry */}
+            {/* Action controls */}
             <CustomBox className="flex justify-center items-center gap-2">
                 <Camera
-                    disabled={!!capturedImage || !!uploadedImage || !!imageUrl}
+                    disabled={isAnySet}
                     onCapture={(image) => {
                         setCapturedImage(image);
                         setUploadedImage(null);
@@ -60,7 +48,7 @@ const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialI
                 />
 
                 <UploadImageComponent
-                    disabled={!!capturedImage || !!uploadedImage || !!imageUrl}
+                    disabled={isAnySet}
                     onUpload={(file) => {
                         setUploadedImage(file);
                         setCapturedImage(null);
@@ -72,7 +60,7 @@ const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialI
                 />
 
                 <AddImageUrlComponent
-                    disabled={!!capturedImage || !!uploadedImage || !!imageUrl}
+                    disabled={isAnySet}
                     onUrlChange={(newUrl) => {
                         setImageUrl(newUrl);
                         setCapturedImage(null);
@@ -85,39 +73,21 @@ const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialI
                 />
             </CustomBox>
 
-            {/* Image preview with delete button */}
-            {(capturedImage || uploadedImage || imageUrl) && (
-                <CustomBox className="mt-2 flex flex-col items-center justify-center text-center">
-                    <CustomTypography
-                        variant="small"
-                        className="text-gray-500 italic mb-1"
-                    >
-                        Image Preview
-                    </CustomTypography>
-
-                    <img
-                        src={capturedImage || uploadedImage || imageUrl}
-                        alt="Preview"
-                        style={{
-                            maxWidth: "100%",
-                            maxHeight: "200px",
-                            borderRadius: "8px",
-                            objectFit: "cover",
-                        }}
-                    />
-                    <CustomIconButton
-                        icon={<Trash2 size={24} className="text-error" />}
-                        onClick={handleReset}
-                        bgColor="bg-transparent"
-                        className="mt-2"
-                    />
-                </CustomBox>
+            {/* Reset button (since preview moved to page) */}
+            {isAnySet && (
+                <CustomIconButton
+                    icon={<Trash2 size={20} className="text-error" />}
+                    onClick={handleReset}
+                    bgColor="bg-transparent"
+                    className="mt-1"
+                    ariaLabel="Clear image"
+                />
             )}
 
-            {/* Error message */}
-            {errors.image && (
+            {/* Optional: align error keys with your RHF fields */}
+            {(errors.imageFile || errors.imageUrl) && (
                 <CustomTypography className="text-error text-sm">
-                    {errors.image.message}
+                    {errors.imageFile?.message || errors.imageUrl?.message}
                 </CustomTypography>
             )}
         </CustomBox>
