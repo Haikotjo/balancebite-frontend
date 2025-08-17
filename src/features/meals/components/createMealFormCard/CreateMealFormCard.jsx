@@ -30,13 +30,14 @@ import PreparationTimeIcon from "../mealCardPreparationTimeIcon/PreparationTimeI
 
 // --- helpers (keep backend contract: File for uploaded/captured, string for url) ---
 async function dataUrlToFile(dataUrl, filename = "capture.png") {
-    // Works for data: and blob: URLs
+    // Works for data: URLs produced by camera snapshots
     const res = await fetch(dataUrl);
     const blob = await res.blob();
     return new File([blob], filename, { type: blob.type || "image/png" });
 }
 
 async function blobUrlToFile(blobUrl, filename = "upload.png") {
+    // Fallback if an uploader returns a blob:objectURL string instead of a File
     const res = await fetch(blobUrl);
     const blob = await res.blob();
     return new File([blob], filename, { type: blob.type || "image/*" });
@@ -71,11 +72,11 @@ const CreateMealFormCard = () => {
             diets: [],
             preparationTime: "",
             imageFile: "", // File for uploaded/captured
-            imageUrl: "",  // string for direct URL
+            imageUrl: "", // string for direct URL
         },
     });
 
-    // Domain submit + dialogs + image handler (keep backend contract)
+    // Domain submit + dialogs + image handler (UNCHANGED backend contract)
     const { onSubmit, handleImageChange, imageUrl: hookImageUrl, renderDialogs } = useCreateMeal();
 
     // Track fields
@@ -89,7 +90,26 @@ const CreateMealFormCard = () => {
     const dietsVal = watch("diets") || [];
     const prepVal = watch("preparationTime") || "";
 
-    // Normalize file candidate
+    // ---------- LOCAL PREVIEW (UI-only, independent of hook) ----------
+    const [previewSrcLocal, setPreviewSrcLocal] = useState(null);
+    const [previewObjUrl, setPreviewObjUrl] = useState(null);
+
+    const setLocalPreviewFromFile = (file) => {
+        if (!file) return;
+        const url = URL.createObjectURL(file);
+        if (previewObjUrl) URL.revokeObjectURL(previewObjUrl);
+        setPreviewObjUrl(url);
+        setPreviewSrcLocal(url);
+    };
+
+    useEffect(() => {
+        return () => {
+            if (previewObjUrl) URL.revokeObjectURL(previewObjUrl);
+        };
+    }, [previewObjUrl]);
+    // -----------------------------------------------------------------
+
+    // Normalize file candidate (from RHF state – used as fallback preview)
     const fileCandidate = useMemo(() => {
         if (!fileValue) return null;
         if (fileValue instanceof File) return fileValue;
@@ -100,7 +120,7 @@ const CreateMealFormCard = () => {
         return null;
     }, [fileValue]);
 
-    // Stable object URL for file preview
+    // Stable object URL for RHF file fallback (if local preview not set)
     const [fileObjectUrl, setFileObjectUrl] = useState(null);
     useEffect(() => {
         if (!fileCandidate) {
@@ -112,8 +132,8 @@ const CreateMealFormCard = () => {
         return () => URL.revokeObjectURL(url);
     }, [fileCandidate]);
 
-    // Preview source (File URL wins over manual URL)
-    const previewSrc = fileObjectUrl || (urlValue ? urlValue : null);
+    // Final preview order: local UI state > RHF file fallback > typed URL
+    const previewSrc = previewSrcLocal || fileObjectUrl || (urlValue ? urlValue : null);
 
     // Enable submit
     const hasIngredient =
@@ -129,7 +149,7 @@ const CreateMealFormCard = () => {
         cuisines: cuisinesVal,
         diets: dietsVal,
         preparationTime: prepVal,
-        imageUrl: urlValue, // not used for preview if file selected, but useful for macros/helpers
+        imageUrl: urlValue, // not used for preview if file selected, but fine for helpers
     };
 
     // Macros preview (safe)
@@ -145,7 +165,7 @@ const CreateMealFormCard = () => {
         <CustomBox
             as="form"
             onSubmit={handleSubmit(onSubmit)}
-            className="hidden md:flex max-w-4xl w-full mx-auto bg-cardLight dark:bg-cardDark rounded-xl shadow-md overflow-hidden border border-border"
+            className="hidden md:flex max-w-4xl w/full mx-auto bg-cardLight dark:bg-cardDark rounded-xl shadow-md overflow-hidden border border-border"
         >
             {/* Left: image + anchored controls */}
             <CustomBox className="lg:w-[50%] w-[48%] min-h-[360px] relative">
@@ -169,29 +189,50 @@ const CreateMealFormCard = () => {
                             onImageChange={async (image, type) => {
                                 let file = null;
 
-                                if (type === "captured") {
-                                    file = typeof image === "string" ? await dataUrlToFile(image) : image; // -> File
-                                    setValue("imageFile", file, { shouldDirty: true, shouldValidate: true });
-                                    setValue("imageUrl", "",    { shouldDirty: true, shouldValidate: true });
-                                } else if (type === "uploaded") {
-                                    file = image instanceof FileList ? (image[0] || "") : image;           // -> File
+                                if (type === "uploaded") {
+                                    // Could be File OR blob: URL string from child
+                                    if (image instanceof FileList) {
+                                        file = image[0] || null;
+                                    } else if (image instanceof File) {
+                                        file = image;
+                                    } else if (typeof image === "string") {
+                                        // blob: objectURL
+                                        setPreviewSrcLocal(image); // instant UI
+                                        file = await blobUrlToFile(image);
+                                    }
+                                    if (file) setLocalPreviewFromFile(file);
+                                    // RHF values (keep contract)
                                     setValue("imageFile", file || "", { shouldDirty: true, shouldValidate: true });
-                                    setValue("imageUrl", "",          { shouldDirty: true, shouldValidate: true });
+                                    setValue("imageUrl", "", { shouldDirty: true, shouldValidate: true });
+                                } else if (type === "captured") {
+                                    // Usually a dataURL string
+                                    if (typeof image === "string") {
+                                        setPreviewSrcLocal(image); // instant UI
+                                        file = await dataUrlToFile(image);
+                                    } else {
+                                        file = image; // already a File
+                                        if (file) setLocalPreviewFromFile(file);
+                                    }
+                                    setValue("imageFile", file || "", { shouldDirty: true, shouldValidate: true });
+                                    setValue("imageUrl", "", { shouldDirty: true, shouldValidate: true });
                                 } else if (type === "url") {
+                                    setPreviewSrcLocal(image || ""); // instant UI
                                     setValue("imageUrl", image || "", { shouldDirty: true, shouldValidate: true });
-                                    setValue("imageFile", "",         { shouldDirty: true, shouldValidate: true });
+                                    setValue("imageFile", "", { shouldDirty: true, shouldValidate: true });
                                 } else if (type === "reset") {
-                                    setValue("imageFile", "",         { shouldDirty: true, shouldValidate: true });
-                                    setValue("imageUrl", "",          { shouldDirty: true, shouldValidate: true });
+                                    if (previewObjUrl) URL.revokeObjectURL(previewObjUrl);
+                                    setPreviewObjUrl(null);
+                                    setPreviewSrcLocal(null);
+                                    setValue("imageFile", "", { shouldDirty: true, shouldValidate: true });
+                                    setValue("imageUrl", "", { shouldDirty: true, shouldValidate: true });
                                 }
 
-                                // Hook blijft exact dezelfde payload naar de backend sturen
+                                // Let the domain hook do its normal thing (unchanged payload to backend)
                                 handleImageChange(file ?? image, type, setValue);
                             }}
                             errors={errors}
                             register={register}
                         />
-
                     </CustomBox>
                 </CustomBox>
 
