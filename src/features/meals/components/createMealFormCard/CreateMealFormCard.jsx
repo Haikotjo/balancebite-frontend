@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import MealImageUploader from "./mealImageUploader/MealImageUploader.jsx";
 import CreateMealMealIngredients from "../createMealMealIngredients/CreateMealMealIngredients.jsx";
 import CreateMealDropdowns from "../createMealDropdowns/MealDropdowns.jsx";
 
@@ -16,6 +15,7 @@ import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import CustomTextField from "../../../../components/layout/CustomTextField.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
+import MealImageUploader from "../createMealForm/mealImageUploader/MealImageUploader.jsx";
 
 /**
  * Card-style Create Meal form for desktop (≥ md), matching MealCard look.
