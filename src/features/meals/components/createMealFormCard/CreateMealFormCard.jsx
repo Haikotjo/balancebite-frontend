@@ -75,8 +75,8 @@ const CreateMealFormCard = () => {
         },
     });
 
-    // Domain submit + dialogs
-    const { onSubmit, imageUrl: hookImageUrl, renderDialogs } = useCreateMeal();
+    // Domain submit + dialogs + image handler (keep backend contract)
+    const { onSubmit, handleImageChange, imageUrl: hookImageUrl, renderDialogs } = useCreateMeal();
 
     // Track fields
     const fileValue = watch("imageFile");
@@ -100,7 +100,7 @@ const CreateMealFormCard = () => {
         return null;
     }, [fileValue]);
 
-    // Create a stable object URL for the preview (and revoke correctly)
+    // Stable object URL for file preview
     const [fileObjectUrl, setFileObjectUrl] = useState(null);
     useEffect(() => {
         if (!fileCandidate) {
@@ -167,25 +167,16 @@ const CreateMealFormCard = () => {
                         <MealImageUploader
                             imageUrl={urlValue}
                             onImageChange={async (image, type) => {
-                                // Keep backend contract:
-                                // uploaded/captured -> imageFile (File), url -> imageUrl (string), reset -> clear both
-                                if (type === "uploaded") {
-                                    let file = image;
-                                    if (typeof image === "string") file = await blobUrlToFile(image);
-                                    setValue("imageFile", file || "", { shouldDirty: true, shouldValidate: true });
-                                    setValue("imageUrl", "", { shouldDirty: true, shouldValidate: true });
-                                } else if (type === "captured") {
-                                    let file = image;
-                                    if (typeof image === "string") file = await dataUrlToFile(image);
-                                    setValue("imageFile", file || "", { shouldDirty: true, shouldValidate: true });
-                                    setValue("imageUrl", "", { shouldDirty: true, shouldValidate: true });
-                                } else if (type === "url") {
-                                    setValue("imageUrl", image || "", { shouldDirty: true, shouldValidate: true });
-                                    setValue("imageFile", "", { shouldDirty: true, shouldValidate: true });
-                                } else if (type === "reset") {
-                                    setValue("imageFile", "", { shouldDirty: true, shouldValidate: true });
-                                    setValue("imageUrl", "", { shouldDirty: true, shouldValidate: true });
+                                // Preserve backend contract:
+                                // uploaded/captured => File in imageFile, url => string in imageUrl, reset => clear both.
+                                if (type === "captured" && typeof image === "string") {
+                                    image = await dataUrlToFile(image);        // -> File
                                 }
+                                if (type === "uploaded" && typeof image === "string") {
+                                    image = await blobUrlToFile(image);        // -> File
+                                }
+                                // Delegate to domain hook (it updates RHF + internal state exactly like your working form)
+                                handleImageChange(image, type, setValue);
                             }}
                             errors={errors}
                             register={register}
