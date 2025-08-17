@@ -1,6 +1,6 @@
 // CreateMealFormCard.jsx
-// WYSIWYG card with inline editors + safe image preview.
-// Backend contract preserved: the hook alone updates imageFile (File) / imageUrl (string).
+// WYSIWYG card with inline editors + robust local preview.
+// Backend contract preserved: only your hook updates imageFile/imageUrl.
 
 import { useState, useMemo, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -64,10 +64,9 @@ const CreateMealFormCard = () => {
     // Domain hook (unchanged contract)
     const { onSubmit, handleImageChange, imageUrl: hookImageUrl, renderDialogs } = useCreateMeal();
 
-    // Track form values (driven by the hook)
+    // Form values (from hook)
     const fileValue = watch("imageFile");
     const urlValue = (watch("imageUrl") || hookImageUrl || "").trim();
-
     const nameVal = watch("name") || "";
     const descVal = watch("mealDescription") || "";
     const ingrVal = watch("mealIngredients") || [];
@@ -76,8 +75,27 @@ const CreateMealFormCard = () => {
     const dietsVal = watch("diets") || [];
     const prepVal = watch("preparationTime") || "";
 
-    // --- Preview from RHF state only (no extra setValue here) ---
-    const fileCandidate = useMemo(() => {
+    // ---------- LOCAL PREVIEW (authoritative for UI) ----------
+    const [localPreview, setLocalPreview] = useState(null);
+    const [localObjUrl, setLocalObjUrl] = useState(null);
+
+    const setPreviewFromFile = (file) => {
+        if (!(file instanceof File)) return;
+        const url = URL.createObjectURL(file);
+        if (localObjUrl) URL.revokeObjectURL(localObjUrl);
+        setLocalObjUrl(url);
+        setLocalPreview(url);
+    };
+
+    useEffect(() => {
+        return () => {
+            if (localObjUrl) URL.revokeObjectURL(localObjUrl);
+        };
+    }, [localObjUrl]);
+    // ---------------------------------------------------------
+
+    // Fallback preview from RHF if the hook sets a File
+    const rhfFile = useMemo(() => {
         if (!fileValue) return null;
         if (fileValue instanceof File) return fileValue;
         if (Array.isArray(fileValue) && fileValue[0] instanceof File) return fileValue[0];
@@ -87,19 +105,28 @@ const CreateMealFormCard = () => {
         return null;
     }, [fileValue]);
 
-    const [objUrl, setObjUrl] = useState(null);
+    const [rhfObjUrl, setRhfObjUrl] = useState(null);
     useEffect(() => {
-        if (!fileCandidate) {
-            setObjUrl(null);
+        if (!rhfFile) {
+            setRhfObjUrl(null);
             return;
         }
-        const u = URL.createObjectURL(fileCandidate);
-        setObjUrl(u);
+        const u = URL.createObjectURL(rhfFile);
+        setRhfObjUrl(u);
         return () => URL.revokeObjectURL(u);
-    }, [fileCandidate]);
+    }, [rhfFile]);
 
-    const previewSrc = objUrl || (urlValue ? urlValue : null);
-    // ------------------------------------------------------------
+    // Preview priority:
+    // 1) localPreview (set direct on user action)
+    // 2) object URL from RHF file
+    // 3) if imageFile is a string blob:/data: (rare) use it
+    // 4) urlValue (http/https)
+    const previewSrc =
+        localPreview ||
+        rhfObjUrl ||
+        (typeof fileValue === "string" && (fileValue.startsWith("blob:") || fileValue.startsWith("data:"))
+            ? fileValue
+            : urlValue || null);
 
     // Enable submit
     const hasIngredient =
@@ -152,8 +179,27 @@ const CreateMealFormCard = () => {
                         <MealImageUploader
                             imageUrl={urlValue}
                             onImageChange={(image, type) => {
-                                // Preview stays in sync because we derive it from RHF state.
-                                // Delegate ALL updates to your existing hook (same as CreateMealForm).
+                                // 1) LOCAL PREVIEW (fast, independent of hook)
+                                if (type === "uploaded") {
+                                    const file = image instanceof FileList ? image[0] : image;
+                                    if (file instanceof File) setPreviewFromFile(file);
+                                    // if some uploader hands back a data/blob URL string:
+                                    if (typeof image === "string" && (image.startsWith("blob:") || image.startsWith("data:"))) {
+                                        setLocalPreview(image);
+                                    }
+                                } else if (type === "captured") {
+                                    // camera often returns a data URL
+                                    if (typeof image === "string") setLocalPreview(image);
+                                    if (image instanceof File) setPreviewFromFile(image);
+                                } else if (type === "url") {
+                                    setLocalPreview(image || "");
+                                } else if (type === "reset") {
+                                    if (localObjUrl) URL.revokeObjectURL(localObjUrl);
+                                    setLocalObjUrl(null);
+                                    setLocalPreview(null);
+                                }
+
+                                // 2) FORM/HOOK (single source of truth for backend)
                                 const payload = type === "uploaded" && image instanceof FileList ? image[0] : image;
                                 handleImageChange(payload, type, setValue);
                             }}
