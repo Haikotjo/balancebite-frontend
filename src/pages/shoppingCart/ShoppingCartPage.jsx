@@ -69,7 +69,9 @@ const ShoppingCartPage = () => {
     // --- Main render ---
     return (
         <PageWrapper>
+            <CustomBox className="max-w-screen-xl mx-auto">
             {/* Submenu (detail mode): selecting an option routes to Diets page with query param */}
+                <CustomBox className="mb-4">
             <DietSubMenu
                 isDetailPage={true}
                 onSelect={(label) => {
@@ -78,6 +80,7 @@ const ShoppingCartPage = () => {
                     navigate(`/diets?option=${optionParam}`);
                 }}
             />
+                </CustomBox>
 
             {/* Content layout: cart + sidebar */}
             <CustomBox className="flex flex-col lg:flex-row gap-6 justify-between items-start mt-4">
@@ -137,6 +140,7 @@ const ShoppingCartPage = () => {
                             ))}
                     </CustomBox>
                 </CustomBox>
+            </CustomBox>
             </CustomBox>
         </PageWrapper>
     );
