@@ -1,4 +1,4 @@
-// MealImageUploader.jsx (controls-only; no internal preview)
+// MealImageUploader.jsx (controls-only; no internal preview, with bg + centered URL)
 // English code comments.
 
 import { useState } from "react";
@@ -12,7 +12,6 @@ import CustomTypography from "../../../../../components/layout/CustomTypography.
 import CustomIconButton from "../../../../../components/layout/CustomIconButton.jsx";
 
 const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialImageUrl }) => {
-    // Keep minimal local state to control disabled logic
     const [capturedImage, setCapturedImage] = useState(null);
     const [uploadedImage, setUploadedImage] = useState(null);
     const [imageUrl, setImageUrl] = useState(initialImageUrl || "");
@@ -30,13 +29,13 @@ const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialI
     const isAnySet = !!capturedImage || !!uploadedImage || !!imageUrl;
 
     return (
-        <CustomBox className="flex flex-col items-center gap-2">
+        <CustomBox className="flex flex-col items-center gap-3 w-full bg-base-200 dark:bg-base-800 rounded-md p-3">
             <CustomTypography variant="small" className="text-gray-500 font-normal italic">
                 Add an Image
             </CustomTypography>
 
-            {/* Action controls */}
-            <CustomBox className="flex justify-center items-center gap-2">
+            {/* Action controls row */}
+            <CustomBox className="flex justify-center items-center gap-3">
                 <Camera
                     disabled={isAnySet}
                     onCapture={(image) => {
@@ -58,7 +57,10 @@ const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialI
                     register={register}
                     errors={errors}
                 />
+            </CustomBox>
 
+            {/* URL input always visible, centered under buttons */}
+            <CustomBox className="w-full flex justify-center">
                 <AddImageUrlComponent
                     disabled={isAnySet}
                     onUrlChange={(newUrl) => {
@@ -73,7 +75,7 @@ const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialI
                 />
             </CustomBox>
 
-            {/* Reset button (since preview moved to page) */}
+            {/* Reset button */}
             {isAnySet && (
                 <CustomIconButton
                     icon={<Trash2 size={20} className="text-error" />}
@@ -84,9 +86,9 @@ const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialI
                 />
             )}
 
-            {/* Optional: align error keys with your RHF fields */}
+            {/* Validation errors */}
             {(errors.imageFile || errors.imageUrl) && (
-                <CustomTypography className="text-error text-sm">
+                <CustomTypography className="text-error text-sm text-center">
                     {errors.imageFile?.message || errors.imageUrl?.message}
                 </CustomTypography>
             )}
