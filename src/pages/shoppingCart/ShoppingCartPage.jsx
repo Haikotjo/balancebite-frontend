@@ -129,7 +129,7 @@ const ShoppingCartPage = () => {
                 {/* Sidebar: other user diets (excluding current) */}
                 <CustomBox className="hidden lg:flex flex-col gap-4 lg:basis-1/4 min-w-0">
                     <CustomTypography variant="h4" className="mb-4 font-semibold">
-                        My Other Diets
+                        My Diets
                     </CustomTypography>
 
                     <CustomBox className="flex flex-col gap-2 overflow-y-auto pr-2">

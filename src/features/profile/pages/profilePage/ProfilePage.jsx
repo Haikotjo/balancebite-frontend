@@ -37,7 +37,7 @@ const ProfilePage = () => {
     return (
         <PageWrapper>
             {/* Center content and constrain width */}
-            <CustomBox className="max-w-screen-xl mx-auto flex flex-col gap-5">
+            <CustomBox className="max-w-screen-xl mx-auto flex flex-col gap-5 mb-4">
                 {/* Form header: icon + title */}
                 <CustomBox className="flex flex-col items-center gap-3 mb-2">
                     <UserCircle className="w-16 h-16 sm:w-24 sm:h-24 text-primary" aria-hidden="true" />
