@@ -152,17 +152,18 @@ const CreateMealFormCard = () => {
                     <MealImageUploader
                         imageUrl={urlValue}
                         onImageChange={(image, type) => {
-                            // domain handling
-                            handleImageChange(image, type, setValue);
-                            // RHF sync
-                            if (type === "file") {
-                                const f =
-                                    image instanceof FileList ? (image.length > 0 ? image[0] : "") : image;
-                                setValue("imageFile", f || "", { shouldDirty: true, shouldValidate: true });
+                            // sync met jouw emitter
+                            if (type === "uploaded") {
+                                const f = image instanceof FileList ? (image[0] || "") : image; // File
+                                setValue("imageFile", f, { shouldDirty: true, shouldValidate: true });
                                 setValue("imageUrl", "", { shouldDirty: true, shouldValidate: true });
-                            } else if (type === "url") {
+                            } else if (type === "captured" || type === "url") {
+                                // beide geven een string (data URL of http URL)
                                 setValue("imageUrl", image || "", { shouldDirty: true, shouldValidate: true });
                                 setValue("imageFile", "", { shouldDirty: true, shouldValidate: true });
+                            } else if (type === "reset") {
+                                setValue("imageFile", "", { shouldDirty: true, shouldValidate: true });
+                                setValue("imageUrl", "", { shouldDirty: true, shouldValidate: true });
                             }
                         }}
                         errors={errors}
