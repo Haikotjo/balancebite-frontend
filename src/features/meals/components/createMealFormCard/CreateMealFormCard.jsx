@@ -167,20 +167,31 @@ const CreateMealFormCard = () => {
                         <MealImageUploader
                             imageUrl={urlValue}
                             onImageChange={async (image, type) => {
-                                // Preserve backend contract:
-                                // uploaded/captured => File in imageFile, url => string in imageUrl, reset => clear both.
-                                if (type === "captured" && typeof image === "string") {
-                                    image = await dataUrlToFile(image);        // -> File
+                                let file = null;
+
+                                if (type === "captured") {
+                                    file = typeof image === "string" ? await dataUrlToFile(image) : image; // -> File
+                                    setValue("imageFile", file, { shouldDirty: true, shouldValidate: true });
+                                    setValue("imageUrl", "",    { shouldDirty: true, shouldValidate: true });
+                                } else if (type === "uploaded") {
+                                    file = image instanceof FileList ? (image[0] || "") : image;           // -> File
+                                    setValue("imageFile", file || "", { shouldDirty: true, shouldValidate: true });
+                                    setValue("imageUrl", "",          { shouldDirty: true, shouldValidate: true });
+                                } else if (type === "url") {
+                                    setValue("imageUrl", image || "", { shouldDirty: true, shouldValidate: true });
+                                    setValue("imageFile", "",         { shouldDirty: true, shouldValidate: true });
+                                } else if (type === "reset") {
+                                    setValue("imageFile", "",         { shouldDirty: true, shouldValidate: true });
+                                    setValue("imageUrl", "",          { shouldDirty: true, shouldValidate: true });
                                 }
-                                if (type === "uploaded" && typeof image === "string") {
-                                    image = await blobUrlToFile(image);        // -> File
-                                }
-                                // Delegate to domain hook (it updates RHF + internal state exactly like your working form)
-                                handleImageChange(image, type, setValue);
+
+                                // Hook blijft exact dezelfde payload naar de backend sturen
+                                handleImageChange(file ?? image, type, setValue);
                             }}
                             errors={errors}
                             register={register}
                         />
+
                     </CustomBox>
                 </CustomBox>
 
