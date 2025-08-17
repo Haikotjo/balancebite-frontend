@@ -20,8 +20,7 @@ import MealImageUploader from "../createMealForm/mealImageUploader/MealImageUplo
 
 /**
  * Card-style Create Meal form for desktop (≥ md), matching MealCard look.
- * Uses the same RHF + yup + useCreateMeal flow as CreateMealForm.
- * Shows a live image preview (uploaded file OR typed URL) on the left.
+ * RHF + yup + useCreateMeal. Live preview for file OR URL.
  */
 const CreateMealFormCard = () => {
     // Keep parity with existing flow
@@ -46,75 +45,92 @@ const CreateMealFormCard = () => {
             cuisines: [],
             diets: [],
             preparationTime: "",
-            imageFile: "",
-            imageUrl: "",
+            imageFile: "", // will hold a File
+            imageUrl: "",  // will hold a string
         },
     });
+
+    // Submit + image handling from domain hook
+    const { onSubmit, handleImageChange, imageUrl: hookImageUrl, renderDialogs } = useCreateMeal();
+
+    // Track current image values in RHF
+    const fileValue = watch("imageFile");
+    const urlValue = (watch("imageUrl") || hookImageUrl || "").trim();
+
+    // Normalize possible inputs (File or FileList)
+    const fileCandidate = useMemo(() => {
+        if (!fileValue) return null;
+        if (fileValue instanceof File) return fileValue;
+        if (Array.isArray(fileValue) && fileValue[0] instanceof File) return fileValue[0];
+        // Some uploaders pass FileList
+        if (typeof FileList !== "undefined" && fileValue instanceof FileList && fileValue.length > 0) {
+            return fileValue[0];
+        }
+        return null;
+    }, [fileValue]);
+
+    // Compute preview from file (object URL) or URL string
+    const previewSrc = useMemo(() => {
+        if (fileCandidate) return URL.createObjectURL(fileCandidate);
+        if (urlValue) return urlValue;
+        return null;
+    }, [fileCandidate, urlValue]);
+
+    // Revoke object URL when it changes/unmounts
+    useEffect(() => {
+        if (!fileCandidate) return;
+        const objUrl = URL.createObjectURL(fileCandidate);
+        return () => URL.revokeObjectURL(objUrl);
+    }, [fileCandidate]);
 
     // Derived state for enabling submit
     const mealIngredients = watch("mealIngredients") || [];
     const hasIngredient = mealIngredients.some(
-        (ing) => ing.foodItemId && ing.foodItemId.toString().trim() !== ""
+        (ing) => ing?.foodItemId && String(ing.foodItemId).trim() !== ""
     );
-
-    // Domain submit + image handling
-    const { onSubmit, handleImageChange, imageUrl: hookImageUrl, renderDialogs } = useCreateMeal();
-
-    // Watch current file/url in the form
-    const fileValue = watch("imageFile");
-    const urlValue = watch("imageUrl") || hookImageUrl || "";
-
-    // Compute a safe preview source from file or url
-    const previewSrc = useMemo(() => {
-        // Handle File or FileList or empty
-        const file = Array.isArray(fileValue) ? fileValue[0] : fileValue;
-        if (file && typeof file === "object" && file instanceof File) {
-            return URL.createObjectURL(file);
-        }
-        if (typeof urlValue === "string" && urlValue.trim() !== "") {
-            return urlValue.trim();
-        }
-        return null;
-    }, [fileValue, urlValue]);
-
-    // Revoke object URL when it changes/unmounts (avoid memory leaks)
-    useEffect(() => {
-        const file = Array.isArray(fileValue) ? fileValue[0] : fileValue;
-        let objUrl;
-        if (file && file instanceof File) {
-            objUrl = previewSrc;
-        }
-        return () => {
-            if (objUrl) URL.revokeObjectURL(objUrl);
-        };
-    }, [fileValue, previewSrc]);
 
     return (
         <CustomBox
             as="form"
             onSubmit={handleSubmit(onSubmit)}
-            // Mirror MealCard shell on desktop
             className="hidden md:flex max-w-4xl w-full mx-auto bg-cardLight dark:bg-cardDark rounded-xl shadow-md overflow-hidden border border-border"
         >
             {/* Left: image/media column with live preview */}
             <CustomBox className="lg:w-[50%] w-[48%] min-h-[320px] relative">
                 {previewSrc ? (
-                    <CustomImage
-                        src={previewSrc}
-                        alt="Meal preview"
-                        className="w-full h-full object-cover"
-                    />
+                    <CustomImage src={previewSrc} alt="Meal preview" className="w-full h-full object-cover" />
                 ) : (
                     <CustomBox className="w-full h-full bg-base-200 flex items-center justify-center p-3">
                         <span className="text-sm text-muted-foreground">No image selected</span>
                     </CustomBox>
                 )}
 
-                {/* Uploader as an overlay (top-right) */}
+                {/* Hidden fields so RHF always tracks current values */}
+                <input type="hidden" {...register("imageFile")} />
+                <input type="hidden" {...register("imageUrl")} />
+
+                {/* Uploader overlay (top-right) */}
                 <CustomBox className="absolute top-2 right-2 bg-base-100/80 dark:bg-base-900/80 backdrop-blur rounded-md p-2">
                     <MealImageUploader
                         imageUrl={urlValue}
-                        onImageChange={(image, type) => handleImageChange(image, type, setValue)}
+                        onImageChange={(image, type) => {
+                            // Update app/domain state
+                            handleImageChange(image, type, setValue);
+
+                            // Ensure RHF state stays in sync for preview + validation
+                            if (type === "file") {
+                                // If uploader passed FileList, pick first File
+                                const file =
+                                    image instanceof FileList ? (image.length > 0 ? image[0] : "") : image;
+                                setValue("imageFile", file || "", { shouldDirty: true, shouldValidate: true });
+                                // Optionally clear URL to avoid ambiguity
+                                setValue("imageUrl", "", { shouldDirty: true, shouldValidate: true });
+                            } else if (type === "url") {
+                                setValue("imageUrl", image || "", { shouldDirty: true, shouldValidate: true });
+                                // Clear file if switching to URL
+                                setValue("imageFile", "", { shouldDirty: true, shouldValidate: true });
+                            }
+                        }}
                         errors={errors}
                         register={register}
                     />
@@ -123,7 +139,6 @@ const CreateMealFormCard = () => {
 
             {/* Right: content column */}
             <CustomBox className="flex-1 p-4 md:p-6 lg:p-8 flex flex-col">
-                {/* Header */}
                 <CustomTypography className="text-3xl font-bold text-primary mb-2">
                     Create Your Meal
                 </CustomTypography>
@@ -167,11 +182,7 @@ const CreateMealFormCard = () => {
                     defaultValue={[{ foodItemId: "", quantity: 0 }]}
                     render={({ field: { onChange, value } }) => (
                         <>
-                            <CreateMealMealIngredients
-                                value={value}
-                                onChange={onChange}
-                                errors={errors.mealIngredients}
-                            />
+                            <CreateMealMealIngredients value={value} onChange={onChange} errors={errors.mealIngredients} />
                             {errors.mealIngredients?.message && (
                                 <p className="text-error text-sm mt-1">{errors.mealIngredients.message}</p>
                             )}
@@ -189,11 +200,7 @@ const CreateMealFormCard = () => {
                     <CustomButton type="button" variant="ghost">
                         Cancel
                     </CustomButton>
-                    <CustomButton
-                        type="submit"
-                        className="bg-primary text-white"
-                        disabled={!(isValid && hasIngredient)}
-                    >
+                    <CustomButton type="submit" className="bg-primary text-white" disabled={!(isValid && hasIngredient)}>
                         Upload Meal
                     </CustomButton>
                 </div>
