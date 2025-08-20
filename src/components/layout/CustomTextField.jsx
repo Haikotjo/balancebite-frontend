@@ -14,7 +14,6 @@ const CustomTextField = React.forwardRef(function CustomTextField(
         className = "",
         multiline = false,
         rows = 4,
-        inputPaddingTop = "pt-5",
         ...rest
     },
     ref
@@ -26,36 +25,44 @@ const CustomTextField = React.forwardRef(function CustomTextField(
 
     return (
         <CustomBox className={`relative w-full mt-4 ${className}`}>
-            <div className="relative w-full">
+            <CustomBox className="relative w-full">
                 <InputComponent
                     id={name}
                     name={name}
                     ref={ref}
                     type={multiline ? undefined : inputType}
-                    placeholder=" "
+                    placeholder={label}
                     rows={multiline ? rows : undefined}
                     {...rest}
-                    className={`peer w-full border ${error ? "border-error" : "border-primary"} rounded px-3 ${inputPaddingTop} pb-2 text-sm bg-lightBackground dark:bg-darkBackground text-gray-900 dark:text-gray-100 focus:outline-none focus:border-success resize-none pr-10`}
+                    className={`
+                        w-full
+                        border-0
+                        border-b
+                         ${error
+                        ? "border-error focus:border-error"
+                        : "border-gray-400 dark:border-gray-600 focus:border-primary dark:focus:border-primary"}
+                         focus:border-b-2
+                        py-2 text-sm
+                        bg-transparent
+                        text-gray-900 dark:text-gray-100
+                        focus:outline-none
+                        focus:ring-0
+                        resize-none
+                        pr-8
+                    `}
                 />
 
                 {isPassword && (
                     <button
                         type="button"
                         onClick={() => setShowPassword((prev) => !prev)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-300"
+                        className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-300"
                         tabIndex={-1}
                     >
                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                 )}
-            </div>
-
-            <label
-                htmlFor={name}
-                className="absolute left-3 -top-2 px-1 text-xs text-primary peer-focus:text-primary peer-focus:text-xs peer-focus:-top-2 transition-all duration-200 bg-lightBackground dark:bg-darkBackground"
-            >
-                {label}
-            </label>
+            </CustomBox>
 
             {helperText && (
                 <CustomTypography
@@ -79,7 +86,6 @@ CustomTextField.propTypes = {
     className: PropTypes.string,
     multiline: PropTypes.bool,
     rows: PropTypes.number,
-    inputPaddingTop: PropTypes.string,
 };
 
 export default CustomTextField;

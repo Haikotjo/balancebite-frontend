@@ -27,6 +27,7 @@ import MealCardIngredients from "../mealCardIngredients/MealCardIngredients.jsx"
 import MealCardMacrosSection from "../mealCardMacrosSection/MeaCardlMacrosSection.jsx";
 import MealCardMealTags from "../mealCardMealTags/MealCardMealTags.jsx";
 import PreparationTimeIcon from "../mealCardPreparationTimeIcon/PreparationTimeIcon.jsx";
+import { Pencil, Check } from "lucide-react";
 
 const CreateMealFormCard = () => {
     // Inline editor toggles
@@ -116,6 +117,36 @@ const CreateMealFormCard = () => {
         return () => URL.revokeObjectURL(u);
     }, [rhfFile]);
 
+    const hasName = (nameVal ?? "").trim().length > 0;
+    const nameBtnLabel = editName ? "Done" : hasName ? "Edit" : "Set name";
+
+    const hasDesc = (descVal ?? "").trim().length > 0;
+    const descBtnLabel = editDesc ? "Done" : hasDesc ? "Edit description" : "Set description";
+
+    // Enable submit
+    const hasIngredient =
+        Array.isArray(ingrVal) && ingrVal.some((ing) => ing?.foodItemId && String(ing.foodItemId).trim() !== "");
+
+    const ingrBtnLabel = editIngr
+        ? "Done"
+        : hasIngredient
+            ? "Add or edit ingredients"
+            : "Add ingredients";
+
+    // Has any tags or preparation time?
+    const hasTagsOrTime =
+        (Array.isArray(typesVal) && typesVal.length > 0) ||
+        (Array.isArray(cuisinesVal) && cuisinesVal.length > 0) ||
+        (Array.isArray(dietsVal) && dietsVal.length > 0) ||
+        (prepVal ?? "").toString().trim().length > 0;
+
+// Button label for tags/time
+    const tagsBtnLabel = editTags
+        ? "Done"
+        : hasTagsOrTime
+            ? "Edit or add tags & time"
+            : "Set tags & time";
+
     // Preview priority:
     // 1) localPreview (set direct on user action)
     // 2) object URL from RHF file
@@ -127,10 +158,6 @@ const CreateMealFormCard = () => {
         (typeof fileValue === "string" && (fileValue.startsWith("blob:") || fileValue.startsWith("data:"))
             ? fileValue
             : urlValue || null);
-
-    // Enable submit
-    const hasIngredient =
-        Array.isArray(ingrVal) && ingrVal.some((ing) => ing?.foodItemId && String(ing.foodItemId).trim() !== "");
 
     // Meal-like object for macros preview
     const previewMeal = {
@@ -222,7 +249,7 @@ const CreateMealFormCard = () => {
                 <CustomBox className="flex items-start justify-between gap-3">
                     {!editName ? (
                         <CustomTypography className="text-4xl font-bold text-primary">
-                            {nameVal || "Set meal name"}
+                            {nameVal || "Meal name"}
                         </CustomTypography>
                     ) : (
                         <CustomBox className="w-full max-w-xl">
@@ -231,17 +258,24 @@ const CreateMealFormCard = () => {
                                 {...register("name")}
                                 error={!!errors.name}
                                 helperText={errors.name?.message}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                        e.preventDefault();
+                                        setEditName(false);
+                                    }
+                                }}
                             />
                         </CustomBox>
                     )}
 
                     <CustomButton
                         type="button"
-                        variant="ghost"
+                        variant="link"
                         onClick={() => setEditName((v) => !v)}
-                        className="shrink-0"
+                        className="shrink-0 flex items-center gap-1"
                     >
-                        {editName ? "Done" : "Set name"}
+                        {editName ? <Check size={16} /> : <Pencil size={16} />}
+                        {nameBtnLabel}
                     </CustomButton>
                 </CustomBox>
 
@@ -256,8 +290,15 @@ const CreateMealFormCard = () => {
                         <CustomTypography className="italic">
                             {descVal || "Add a short description..."}
                         </CustomTypography>
-                        <CustomButton type="button" variant="ghost" onClick={() => setEditDesc(true)} className="mt-2">
-                            Edit description
+
+                        <CustomButton
+                            type="button"
+                            variant="link"
+                            onClick={() => setEditDesc(true)}
+                            className="mt-2 flex items-center gap-1"
+                        >
+                            <Pencil size={16} />
+                            {descBtnLabel} {/* "Set description" of "Edit description" */}
                         </CustomButton>
                     </CustomBox>
                 ) : (
@@ -269,9 +310,21 @@ const CreateMealFormCard = () => {
                             helperText={errors.mealDescription?.message}
                             multiline
                             rows={5}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter" && !e.shiftKey) { // Enter = Done, Shift+Enter = nieuwe regel
+                                    e.preventDefault();
+                                    setEditDesc(false);
+                                }
+                            }}
                         />
                         <CustomBox className="mt-2 flex justify-end">
-                            <CustomButton type="button" variant="ghost" onClick={() => setEditDesc(false)}>
+                            <CustomButton
+                                type="button"
+                                variant="link"
+                                onClick={() => setEditDesc(false)}
+                                className="flex items-center gap-1"
+                            >
+                                <Check size={16} />
                                 Done
                             </CustomButton>
                         </CustomBox>
@@ -286,10 +339,19 @@ const CreateMealFormCard = () => {
                         {hasIngredient ? (
                             <MealCardIngredients ingredients={ingrVal} />
                         ) : (
-                            <CustomTypography className="text-muted-foreground">No ingredients yet.</CustomTypography>
+                            <CustomTypography className="text-muted-foreground">
+                                No ingredients yet.
+                            </CustomTypography>
                         )}
-                        <CustomButton type="button" variant="ghost" onClick={() => setEditIngr(true)} className="mt-2">
-                            {hasIngredient ? "Edit ingredients" : "Add ingredients"}
+
+                        <CustomButton
+                            type="button"
+                            variant="link"
+                            onClick={() => setEditIngr(true)}
+                            className="mt-2 flex items-center gap-1"
+                        >
+                            <Pencil size={16} />
+                            {ingrBtnLabel} {/* Add ingredients / Edit ingredients */}
                         </CustomButton>
                     </CustomBox>
                 ) : (
@@ -298,13 +360,32 @@ const CreateMealFormCard = () => {
                         control={control}
                         defaultValue={[{ foodItemId: "", quantity: 0 }]}
                         render={({ field: { onChange, value } }) => (
-                            <CustomBox>
-                                <CreateMealMealIngredients value={value} onChange={onChange} errors={errors.mealIngredients} />
+                            <CustomBox
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+                                        e.preventDefault();
+                                        setEditIngr(false);
+                                    }
+                                }}
+                            >
+                                <CreateMealMealIngredients
+                                    value={value}
+                                    onChange={onChange}
+                                    errors={errors.mealIngredients}
+                                />
                                 {errors.mealIngredients?.message && (
-                                    <p className="text-error text-sm mt-1">{errors.mealIngredients.message}</p>
+                                    <p className="text-error text-sm mt-1">
+                                        {errors.mealIngredients.message}
+                                    </p>
                                 )}
                                 <CustomBox className="mt-2 flex justify-end">
-                                    <CustomButton type="button" variant="ghost" onClick={() => setEditIngr(false)}>
+                                    <CustomButton
+                                        type="button"
+                                        variant="link"
+                                        onClick={() => setEditIngr(false)}
+                                        className="flex items-center gap-1"
+                                    >
+                                        <Check size={16} />
                                         Done
                                     </CustomButton>
                                 </CustomBox>
@@ -312,6 +393,7 @@ const CreateMealFormCard = () => {
                         )}
                     />
                 )}
+
 
                 <CustomDivider className="my-6" />
 
@@ -336,20 +418,43 @@ const CreateMealFormCard = () => {
                             onFilter={() => {}}
                             forceExpand
                         />
-                        <CustomButton type="button" variant="ghost" onClick={() => setEditTags(true)}>
-                            Edit tags & time
+
+                        <CustomButton
+                            type="button"
+                            variant="link"
+                            onClick={() => setEditTags(true)}
+                            className="flex items-center gap-1"
+                        >
+                            <Pencil size={16} />
+                            {tagsBtnLabel} {/* Set tags & time / Edit or add tags & time */}
                         </CustomButton>
                     </CustomBox>
                 ) : (
-                    <CustomBox>
+                    <CustomBox
+                        onKeyDown={(e) => {
+                            // Ctrl/Cmd+Enter to finish editing (since dropdowns capture Enter)
+                            if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+                                e.preventDefault();
+                                setEditTags(false);
+                            }
+                        }}
+                    >
                         <CreateMealDropdowns control={control} errors={errors} />
+
                         <CustomBox className="mt-2 flex justify-end">
-                            <CustomButton type="button" variant="ghost" onClick={() => setEditTags(false)}>
+                            <CustomButton
+                                type="button"
+                                variant="link"
+                                onClick={() => setEditTags(false)}
+                                className="flex items-center gap-1"
+                            >
+                                <Check size={16} />
                                 Done
                             </CustomButton>
                         </CustomBox>
                     </CustomBox>
                 )}
+
 
                 {/* Footer */}
                 <CustomBox className="mt-8 flex items-center justify-end gap-3">

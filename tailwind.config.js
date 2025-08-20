@@ -29,11 +29,17 @@ export default {
         primary: "#41D3BD",
         "primary-dark": "#298073",
 
+        borderPrimary: "#41D3BD",
+        "border-primary": "#298073",
+
         secondary: "#EDB6A3",
         "secondary-dark": "#D19882",
 
         error: "#DD1155",
         "error-dark": "#9c0d3d",
+
+        borderError: "#DD1155",
+        "border-error": "#9c0d3d",
 
         success: "#71f175",
         "success-dark": "#4BCF53",
