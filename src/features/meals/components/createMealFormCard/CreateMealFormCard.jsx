@@ -2,7 +2,7 @@
 // WYSIWYG card with inline editors + robust local preview.
 // Backend contract preserved: only your hook updates imageFile/imageUrl.
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -119,9 +119,26 @@ const CreateMealFormCard = () => {
 
     const hasName = (nameVal ?? "").trim().length > 0;
     const nameBtnLabel = editName ? "Done" : hasName ? "Edit" : "Set name";
+    const { ref: nameRHFRef, ...nameReg } = register("name");
+    const nameInputRef = useRef(null);
 
     const hasDesc = (descVal ?? "").trim().length > 0;
     const descBtnLabel = editDesc ? "Done" : hasDesc ? "Edit description" : "Set description";
+    const { ref: descRHFRef, ...descReg } = register("mealDescription");
+    const descInputRef = useRef(null);
+
+    useEffect(() => {
+        if (editName && nameInputRef.current) {
+            nameInputRef.current.focus();
+            nameInputRef.current.select();
+        }
+    }, [editName]);
+
+    useEffect(() => {
+        if (editDesc && descInputRef.current) {
+            descInputRef.current.focus();
+        }
+    }, [editDesc]);
 
     // Enable submit
     const hasIngredient =
@@ -255,13 +272,14 @@ const CreateMealFormCard = () => {
                         <CustomBox className="w-full max-w-xl">
                             <CustomTextField
                                 label="Meal Name"
-                                {...register("name")}
+                                {...nameReg}                                        // RHF handlers
                                 error={!!errors.name}
                                 helperText={errors.name?.message}
+                                ref={(el) => { nameRHFRef(el); nameInputRef.current = el; }}  // beide refs
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") {
                                         e.preventDefault();
-                                        setEditName(false);
+                                        setEditName(false);    // waarde blijft in RHF
                                     }
                                 }}
                             />
@@ -271,7 +289,7 @@ const CreateMealFormCard = () => {
                     <CustomButton
                         type="button"
                         variant="link"
-                        onClick={() => setEditName((v) => !v)}
+                        onClick={() => setEditName(v => !v)}
                         className="shrink-0 flex items-center gap-1"
                     >
                         {editName ? <Check size={16} /> : <Pencil size={16} />}
@@ -305,13 +323,14 @@ const CreateMealFormCard = () => {
                     <CustomBox>
                         <CustomTextField
                             label="Meal Description"
-                            {...register("mealDescription")}
+                            {...descReg}
                             error={!!errors.mealDescription}
                             helperText={errors.mealDescription?.message}
                             multiline
                             rows={5}
+                            ref={(el) => { descRHFRef(el); descInputRef.current = el; }}
                             onKeyDown={(e) => {
-                                if (e.key === "Enter" && !e.shiftKey) { // Enter = Done, Shift+Enter = nieuwe regel
+                                if (e.key === "Enter" && !e.shiftKey) {
                                     e.preventDefault();
                                     setEditDesc(false);
                                 }
