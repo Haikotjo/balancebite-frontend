@@ -144,6 +144,29 @@ export const createMealApi = async (formData) => {
     return response.data;
 };
 
+export const cancelMealApi = async (mealId, token) => {
+    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_CANCEL_MEAL_ENDPOINT}/${mealId}/cancel`;
+    try {
+        const response = await Interceptor.delete(endpoint, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        console.log(`[API] DELETE ${endpoint} → meal cancelled`);
+        return response.data;
+    } catch (error) {
+        // Normalize and rethrow for UI handling
+        const errData = error?.response?.data;
+        console.error("❌ Backend responded with error (cancel meal):", errData);
+        throw {
+            ...error,
+            response: {
+                ...error.response,
+                data: errData,
+            },
+        };
+    }
+};
+
+
 export const getAllFoodItemNames = async () => {
     const endpoint = import.meta.env.VITE_FOODITEM_NAMES_ENDPOINT;
     const response = await Interceptor.get(endpoint);
@@ -410,6 +433,16 @@ export const fetchFoodItemsBulkApi = async (fdcIds) => {
     return response.data;
 };
 
+export const getFoodItemById = async (id) => {
+    const endpoint = `${import.meta.env.VITE_GET_FOODITEM_BY_ID_ENDPOINT}/${id}`;
+    try {
+        const response = await Interceptor.get(endpoint);
+        return response.data;
+    } catch (error) {
+        console.error(`[API Error] Failed to fetch food item with ID ${id}:`, error);
+        throw error;
+    }
+};
 
 // Admin services
 export const getAllUsersApi = async (token) => {

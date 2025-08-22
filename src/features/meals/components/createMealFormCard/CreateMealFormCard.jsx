@@ -209,7 +209,12 @@ const CreateMealFormCard = () => {
                     <CustomImage src={previewSrc} alt="Meal preview" className="w-full h-full object-cover" />
                 ) : (
                     <CustomBox className="w-full h-full bg-base-200 flex items-center justify-center p-3">
-                        <span className="text-sm text-muted-foreground">No image selected</span>
+                        <CustomTypography
+                            variant="small"
+                            color="text-muted-foreground"
+                        >
+                            No image selected
+                        </CustomTypography>
                     </CustomBox>
                 )}
 
@@ -393,9 +398,13 @@ const CreateMealFormCard = () => {
                                     errors={errors.mealIngredients}
                                 />
                                 {errors.mealIngredients?.message && (
-                                    <p className="text-error text-sm mt-1">
-                                        {errors.mealIngredients.message}
-                                    </p>
+                                    <CustomTypography
+                                        variant="small"
+                                        color="text-error"
+                                        className="mt-1"
+                                    >
+                                        {errors.mealIngredients?.message}
+                                    </CustomTypography>
                                 )}
                                 <CustomBox className="mt-2 flex justify-end">
                                     <CustomButton
@@ -477,7 +486,7 @@ const CreateMealFormCard = () => {
 
                 {/* Footer */}
                 <CustomBox className="mt-8 flex items-center justify-end gap-3">
-                    <CustomButton type="button" variant="ghost">
+                    <CustomButton type="submit" className="bg-error">
                         Cancel
                     </CustomButton>
                     <CustomButton type="submit" className="bg-primary text-white" disabled={!(isValid && hasIngredient)}>

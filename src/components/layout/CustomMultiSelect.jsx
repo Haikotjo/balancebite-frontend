@@ -1,27 +1,15 @@
+// CustomMultiSelect.jsx
+// Underlined textfield look (like CustomFloatingSelect) with the original multi-select behavior.
 import { useRef, useEffect, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 import CustomBox from "../layout/CustomBox.jsx";
 import PropTypes from "prop-types";
-import CustomButton from "./CustomButton.jsx";
-import clsx from "clsx";
 import CustomTypography from "./CustomTypography.jsx";
-import {createPortal} from "react-dom";
+import clsx from "clsx";
+import { createPortal } from "react-dom";
 
-/**
- * CustomMultiSelect component – A reusable multiselect dropdown using only custom layout components.
- * Designed to be fully compatible with both web and React Native structure.
- *
- * @param {Object} props
- * @param {string} props.label – The label shown above the dropdown.
- * @param {Array<{ value: string|number, label: string }>} props.options – All available options to select from.
- * @param {Array<string|number>} [props.value=[]] – Currently selected values.
- * @param {function} props.onChange – Callback when selection changes.
- * @param {string} [props.placeholder="Select..."] – Placeholder text when nothing is selected.
- * @param {string} [props.containerClassName] – Extra class for the container.
- * @param {string} [props.className] – Extra class for the button.
- */
 const CustomMultiSelect = ({
-                               label,
+                               label,                   // shown as placeholder (like CustomFloatingSelect)
                                options,
                                value = [],
                                onChange,
@@ -31,12 +19,13 @@ const CustomMultiSelect = ({
                            }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedValues, setSelectedValues] = useState(value);
-    const dropdownRef = useRef();
+    const [searchText, setSearchText] = useState(""); // simple inline filter like typing in visible input
+    const containerRef = useRef(null);
 
-    // Close dropdown when clicking outside
+    // Close on click outside
     useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        const handleClickOutside = (e) => {
+            if (containerRef.current && !containerRef.current.contains(e.target)) {
                 setIsOpen(false);
             }
         };
@@ -44,93 +33,153 @@ const CustomMultiSelect = ({
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    // Update internal state if parent-controlled value changes
+    // Sync internal state when parent value changes
     useEffect(() => {
         setSelectedValues(value);
     }, [value]);
 
-    // Add or remove selected value
+    // Toggle option selection
     const toggleOption = (optionValue) => {
-        const newValue = selectedValues.includes(optionValue)
-            ? selectedValues.filter((val) => val !== optionValue)
+        const next = selectedValues.includes(optionValue)
+            ? selectedValues.filter((v) => v !== optionValue)
             : [...selectedValues, optionValue];
-        setSelectedValues(newValue);
-        onChange(newValue);
+        setSelectedValues(next);
+        onChange(next);
     };
 
+    // Clear all selections
+    const clearAll = () => {
+        setSelectedValues([]);
+        onChange([]);
+        setSearchText("");
+    };
+
+    // Filtered list (by the visible input text)
+    const normalizedQuery = searchText.trim().toLowerCase();
+    const filteredOptions = normalizedQuery
+        ? options.filter((o) => o.label.toLowerCase().includes(normalizedQuery))
+        : options;
+
+    // Build preview text (like a text input's value)
+    const previewText =
+        selectedValues.length > 0
+            ? options
+                .filter((opt) => selectedValues.includes(opt.value))
+                .map((opt) => opt.label)
+                .join(", ")
+            : "";
+
+    // Compute dropdown position (like your original)
+    const rect = containerRef.current?.getBoundingClientRect();
+    const dropdownStyle = rect
+        ? {
+            top: rect.bottom + window.scrollY,
+            left: rect.left,                 // keeping your original behavior
+            width: rect.width,
+            position: "absolute",
+            zIndex: 30
+        }
+        : {};
+
     return (
-        <CustomBox ref={dropdownRef} className={`relative w-full mt-4 ${containerClassName}`}>
-            {label && (
-                <label
-                    className="absolute -top-2 left-3 px-1 text-[0.6rem] text-primary z-10 bg-lightBackground dark:bg-darkBackground">
-
-                    {label}
-                </label>
-            )}
-
-            {/* Trigger button */}
-            <CustomButton
-                onClick={() => setIsOpen((prev) => !prev)}
-                className={clsx(
-                    "w-full border rounded px-3 pt-5 pb-1 text-sm bg-lightBackground dark:bg-darkBackground border-primary focus:outline-none flex justify-between items-center",
-                    className
-                )}
-            >
-                {/* Selected text preview */}
-                <CustomBox
+        <CustomBox ref={containerRef} className={clsx("relative w-full mt-4", containerClassName)}>
+            <CustomBox className="relative w-full">
+                {/* Underlined input, like CustomFloatingSelect (readOnly so we control text) */}
+                <input
+                    type="text"
+                    value={previewText ? previewText : ""}            // show selected labels
+                    onChange={() => { /* noop (readOnly UX) */ }}
+                    onClick={() => setIsOpen((p) => !p)}
+                    onFocus={() => setIsOpen(true)}
+                    placeholder={label || placeholder}                // placeholder-as-label
+                    readOnly={false}                                   // allow typing to filter
+                    onInput={(e) => {
+                        setSearchText(e.target.value);
+                        if (!isOpen) setIsOpen(true);
+                    }}
                     className={clsx(
-                        "truncate",
-                        selectedValues.length === 0 && "text-gray-400 dark:text-gray-500 italic"
+                        `
+            w-full
+            border-0
+            border-b
+            focus:border-b-2
+            py-2 text-sm
+            bg-transparent
+            text-gray-900 dark:text-gray-100
+            focus:outline-none
+            focus:ring-0
+            pr-8
+          `,
+                        // error styling parity can be added via a prop later if needed
+                        "border-gray-400 dark:border-gray-600 focus:border-primary dark:focus:border-primary",
+                        className
                     )}
-                >
-                    {selectedValues.length > 0
-                        ? options
-                            .filter((opt) => selectedValues.includes(opt.value))
-                            .map((opt) => opt.label)
-                            .join(", ")
-                        : placeholder}
-                </CustomBox>
+                    aria-expanded={isOpen}
+                    aria-haspopup="listbox"
+                />
 
-                <ChevronDown className="h-4 w-4 text-gray-500" />
-            </CustomButton>
+                {/* Right icon: clear when selected, otherwise chevron */}
+                {selectedValues.length > 0 ? (
+                    <button
+                        type="button"
+                        onClick={clearAll}
+                        className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-300 p-1"
+                        aria-label="Clear selection"
+                        tabIndex={-1}
+                    >
+                        <X size={18} />
+                    </button>
+                ) : (
+                    <ChevronDown
+                        size={18}
+                        className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-300 pointer-events-none"
+                        aria-hidden="true"
+                    />
+                )}
+            </CustomBox>
 
-            {/* Dropdown panel */}
+            {/* Dropdown (portal), styled like your lists, preserving original behavior */}
             {isOpen &&
                 createPortal(
                     <CustomBox
-                        className="absolute z-30 mt-1 w-full max-h-60 overflow-auto rounded bg-lightBackground dark:bg-darkBackground shadow-lg border border-gray-400 dark:border-gray-300"
-                        style={{
-                            top: dropdownRef.current?.getBoundingClientRect().bottom + window.scrollY,
-                            left: dropdownRef.current?.getBoundingClientRect().left,
-                            width: dropdownRef.current?.offsetWidth,
-                            position: "absolute"
-                        }}
+                        className="mt-1 max-h-60 overflow-auto rounded bg-lightBackground dark:bg-darkBackground shadow-lg border border-gray-400 dark:border-gray-300"
+                        style={dropdownStyle}
+                        role="listbox"
                     >
-                        {options.map((option) => (
-                            <CustomBox
-                                key={option.value}
-                                onMouseDown={(e) => {
-                                    e.stopPropagation();
-                                    e.preventDefault();
-                                    toggleOption(option.value);
-                                }}
-                                className="cursor-pointer flex items-center px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-                            >
-                                <input
-                                    type="checkbox"
-                                    checked={selectedValues.includes(option.value)}
-                                    readOnly
-                                    className="mr-2 pointer-events-none"
-                                />
-                                <CustomTypography as="span">{option.label}</CustomTypography>
+                        {filteredOptions.length === 0 ? (
+                            <CustomBox className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
+                                No results
                             </CustomBox>
-                        ))}
-
+                        ) : (
+                            filteredOptions.map((option) => {
+                                const checked = selectedValues.includes(option.value);
+                                return (
+                                    <CustomBox
+                                        key={option.value}
+                                        onMouseDown={(e) => {
+                                            e.preventDefault(); // keep focus
+                                            toggleOption(option.value);
+                                        }}
+                                        className={clsx(
+                                            "cursor-pointer flex items-center px-4 py-2 text-sm hover:bg-primary/10 dark:hover:bg-gray-700"
+                                        )}
+                                        role="option"
+                                        aria-selected={checked}
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            checked={checked}
+                                            readOnly
+                                            className="mr-2 pointer-events-none"
+                                        />
+                                        <CustomTypography as="span">{option.label}</CustomTypography>
+                                    </CustomBox>
+                                );
+                            })
+                        )}
                     </CustomBox>,
                     document.body
-                )
-            }
-
+                )}
         </CustomBox>
     );
 };
@@ -143,9 +192,7 @@ CustomMultiSelect.propTypes = {
             label: PropTypes.string
         })
     ).isRequired,
-    value: PropTypes.arrayOf(
-        PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-    ),
+    value: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])),
     onChange: PropTypes.func.isRequired,
     placeholder: PropTypes.string,
     containerClassName: PropTypes.string,
