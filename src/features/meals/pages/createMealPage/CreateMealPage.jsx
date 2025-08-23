@@ -6,8 +6,8 @@ const CreateMealPage = () => {
     return (
         // Page shell
         <PageWrapper className="flex flex-col items-center">
-            {/*<CreateMealForm />*/}
-            <CreateMealFormCard />
+            <CreateMealForm />
+            {/*<CreateMealFormCard />*/}
         </PageWrapper>
     );
 };

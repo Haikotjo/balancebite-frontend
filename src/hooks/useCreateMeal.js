@@ -1,17 +1,17 @@
+// useCreateMeal.js
 import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { useFormMessages } from "./useFormMessages.jsx";
 import { UserMealsContext } from "../context/UserMealsContext.jsx";
 import { createMealApi } from "../services/apiService.js";
 import { getReadableApiError } from "../utils/helpers/getReadableApiError.js";
-import {buildMealFormData} from "../features/meals/utils/helpers/buildMealFormData.js";
+import { buildMealFormData } from "../features/meals/utils/helpers/buildMealFormData.js";
 
-export const useCreateMeal = () => {
+export const useCreateMeal = ({ preview = false } = {}) => {
     const navigate = useNavigate();
     const { addMealToUserMeals, setMeals } = useContext(UserMealsContext);
     const { setError, setSuccess, clear, renderDialogs } = useFormMessages();
 
-    // Alleen de state die we écht nodig hebben in de hook:
     const [capturedImage, setCapturedImage] = useState(null);
     const [uploadedImage, setUploadedImage] = useState(null);
     const [imageUrl, setImageUrl] = useState("");
@@ -41,7 +41,6 @@ export const useCreateMeal = () => {
     const onSubmit = async (data) => {
         clear();
         try {
-            // 1) Map form-data velden
             const mealData = {
                 ...data,
                 mealTypes: (data.mealTypes || []).map((t) => t.value || t),
@@ -49,7 +48,6 @@ export const useCreateMeal = () => {
                 diets: (data.diets || []).map((d) => d.value || d),
             };
 
-            // 2) Bouw FormData inclusief afbeelding
             const formData = await buildMealFormData(
                 mealData,
                 capturedImage,
@@ -57,17 +55,20 @@ export const useCreateMeal = () => {
                 imageUrl
             );
 
-            // 3) API call
             const response = await createMealApi(formData);
+
+            if (preview) {
+                return response;
+            }
 
             addMealToUserMeals(response);
             setMeals((prev) => [response, ...prev]);
-
-            // 4) Success afhandelen
             setSuccess(`Meal created: ${response.name || "Unknown meal"}`);
             navigate(`/meal/${response.id}`);
+            return response;
         } catch (error) {
             setError(getReadableApiError(error));
+            throw error;
         }
     };
 

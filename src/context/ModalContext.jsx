@@ -22,7 +22,7 @@ export const ModalProvider = ({ children }) => {
     };
 
     return (
-        <ModalContext.Provider value={{ openModal, closeModal, modalType, modalData }}> {/* ✅ modalData toegevoegd */}
+        <ModalContext.Provider value={{ openModal, closeModal, modalType, modalData }}>
             {children}
             <CustomModal isOpen={!!modalContent} onClose={closeModal}>
                 {modalContent}
