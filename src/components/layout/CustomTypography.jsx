@@ -15,12 +15,36 @@ const VARIANT_STYLES = {
     paragraphCard: "text-sm sm:text-base md:text-sm",
 };
 
+// Font family map (Tailwind classes)
 const FONT_MAP = {
     sans: "font-sans",
     display: "font-display",
     body: "font-body",
 };
 
+// Explicit font-weight map (Tailwind)
+// Note: these classes work with any font-family; the actual visual result
+// depends on whether the font provides that weight.
+const WEIGHT_STYLES = {
+    thin: "font-thin",
+    extralight: "font-extralight",
+    light: "font-light",
+    normal: "font-normal",
+    medium: "font-medium",
+    semibold: "font-semibold",
+    bold: "font-bold",
+    extrabold: "font-extrabold",
+    black: "font-black",
+};
+
+/**
+ * CustomTypography
+ *
+ * - `variant` bepaalt grootte en (soms) een default gewicht.
+ * - `bold` (boolean) zet font-bold.
+ * - `weight` (nieuw) kan elk gewicht afdwingen en override't `variant`/`bold`.
+ *   Gebruik bijv. weight="normal" om bold te neutraliseren.
+ */
 const CustomTypography = ({
                               children,
                               variant,
@@ -30,16 +54,19 @@ const CustomTypography = ({
                               font = "sans",
                               className = "",
                               as = "p",
+                              weight, // "thin" | "extralight" | "light" | "normal" | "medium" | "semibold" | "bold" | "extrabold" | "black"
                               ...props
                           }) => {
     const Tag = as;
 
     const combinedClass = clsx(
         FONT_MAP[font],
-        FONT_MAP[font],
-        bold && VARIANT_STYLES.bold,
         italic && VARIANT_STYLES.italic,
         variant && VARIANT_STYLES[variant],
+        // Only apply boolean bold if no explicit weight is provided (to avoid conflicts)
+        bold && !weight && VARIANT_STYLES.bold,
+        // Explicit weight overrides any weight coming from variant/bold
+        weight && WEIGHT_STYLES[weight],
         color ?? "text-lightText dark:text-darkText",
         className
     );
@@ -60,6 +87,17 @@ CustomTypography.propTypes = {
     font: PropTypes.oneOf(Object.keys(FONT_MAP)),
     className: PropTypes.string,
     as: PropTypes.string,
+    weight: PropTypes.oneOf([
+        "thin",
+        "extralight",
+        "light",
+        "normal",
+        "medium",
+        "semibold",
+        "bold",
+        "extrabold",
+        "black",
+    ]),
 };
 
 export default CustomTypography;

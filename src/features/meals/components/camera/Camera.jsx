@@ -55,9 +55,9 @@ const Camera = ({ onCapture, disabled }) => {
             <CustomIconButton
                 icon={
                     hasCamera ? (
-                        <CameraIcon size={34} className="text-primary" />
+                        <CameraIcon size={40} className="text-primary" />
                     ) : (
-                        <CameraOff size={34} className="text-error" />
+                        <CameraOff size={40} className="text-error" />
                     )
                 }
                 onClick={() => setShowCamera((prev) => !prev)}

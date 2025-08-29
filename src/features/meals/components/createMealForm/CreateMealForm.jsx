@@ -100,9 +100,9 @@ const CreateMealForm = () => {
         >
             {/* Header */}
             <CustomBox className="flex flex-col items-center gap-3 mb-2">
-                <Soup className="w-16 h-16 sm:w-24 sm:h-24 text-primary" aria-hidden="true" />
+                <Soup className="w-16 h-16 sm:w-24 sm:h-24 text-primary" />
                 <CustomTypography as="h2" variant="h1" className="text-center">
-                    Create Your Meal
+                    Create Meal
                 </CustomTypography>
             </CustomBox>
 
@@ -163,11 +163,22 @@ const CreateMealForm = () => {
             {/* Submit */}
             <CustomButton
                 type="submit"
-                className="bg-primary text-white font-bold px-4 py-2 mt-4 self-stretch"
+                variant="solid"
+                color="primary"
+                className="px-4 py-2 mt-4 self-stretch"
                 disabled={!(isValid && hasIngredient)}
             >
-                Show preview to upload
+                <CustomTypography
+                    as="span"
+                    variant="h5"
+                    font="sans"
+                    weight="bold"
+                    color="text-white"
+                >
+                    Preview meal
+                </CustomTypography>
             </CustomButton>
+
         </CustomBox>
     );
 };

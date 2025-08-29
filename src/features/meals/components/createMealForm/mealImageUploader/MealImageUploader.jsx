@@ -1,7 +1,7 @@
-// MealImageUploader.jsx (controls-only; no internal preview, with bg + centered URL)
+// MealImageUploader.jsx (controls with inline preview; link icon on same row; URL field below)
 // English code comments.
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import Camera from "../../camera/Camera.jsx";
 import AddImageUrlComponent from "./addImageUrlComponent/AddImageUrlComponent.jsx";
@@ -17,25 +17,31 @@ const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialI
     const [imageUrl, setImageUrl] = useState(initialImageUrl || "");
     const [resetTrigger, setResetTrigger] = useState(false);
 
-    // Clear all and notify parent
+    const isAnySet = !!capturedImage || !!uploadedImage || !!(imageUrl && imageUrl.trim());
+
+    const previewSrc = useMemo(() => {
+        if (capturedImage) return capturedImage;
+        if (uploadedImage) return uploadedImage;
+        if (imageUrl && imageUrl.trim()) return imageUrl.trim();
+        return null;
+    }, [capturedImage, uploadedImage, imageUrl]);
+
     const handleReset = () => {
         setCapturedImage(null);
         setUploadedImage(null);
         setImageUrl("");
-        setResetTrigger(prev => !prev);
+        setResetTrigger(prev => !prev); // trigger child reset
         onImageChange(null, "reset");
     };
 
-    const isAnySet = !!capturedImage || !!uploadedImage || !!imageUrl;
-
     return (
-        <CustomBox className="flex flex-col items-center gap-3 w-full">
-            <CustomTypography variant="small" className="text-gray-500 font-normal italic">
-                Add an Image
-            </CustomTypography>
+        <CustomBox className="flex flex-col items-center gap-3 w-full my-8">
+            {/*<CustomTypography variant="small" className="text-gray-500 font-normal italic">*/}
+            {/*    Add an Image*/}
+            {/*</CustomTypography>*/}
 
-            {/* Action controls row */}
-            <CustomBox className="flex justify-center items-center gap-3">
+            {/* Action controls row: allow wrapping so URL input can sit on the next line */}
+            <CustomBox className="flex flex-wrap justify-center items-start gap-6 w-full">
                 <Camera
                     disabled={isAnySet}
                     onCapture={(image) => {
@@ -48,19 +54,16 @@ const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialI
 
                 <UploadImageComponent
                     disabled={isAnySet}
-                    onUpload={(file) => {
-                        setUploadedImage(file);
+                    onUpload={(fileOrBase64) => {
+                        setUploadedImage(fileOrBase64);
                         setCapturedImage(null);
                         setImageUrl("");
-                        onImageChange(file, "uploaded");
+                        onImageChange(fileOrBase64, "uploaded");
                     }}
-                    register={register}
                     errors={errors}
                 />
-            </CustomBox>
 
-            {/* URL input always visible, centered under buttons */}
-            <CustomBox className="w-full flex justify-center">
+                {/* Link icon (inline) + its input rendered as full-width next line inside the same flex container */}
                 <AddImageUrlComponent
                     disabled={isAnySet}
                     onUrlChange={(newUrl) => {
@@ -75,7 +78,12 @@ const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialI
                 />
             </CustomBox>
 
-            {/* Reset button */}
+            {previewSrc && (
+                <CustomBox className="w-full rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 mt-1 flex items-center justify-center">
+                    <img src={previewSrc} alt="Selected" className="max-h-56 w-auto object-contain" />
+                </CustomBox>
+            )}
+
             {isAnySet && (
                 <CustomIconButton
                     icon={<Trash2 size={20} className="text-error" />}
@@ -86,7 +94,6 @@ const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialI
                 />
             )}
 
-            {/* Validation errors */}
             {(errors.imageFile || errors.imageUrl) && (
                 <CustomTypography className="text-error text-sm text-center">
                     {errors.imageFile?.message || errors.imageUrl?.message}

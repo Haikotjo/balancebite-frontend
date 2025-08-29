@@ -44,7 +44,7 @@ const UploadImageComponent = ({ disabled, onUpload, errors }) => {
             {/* Label ties the hidden input to the button */}
             <label htmlFor="file-upload">
                 <CustomIconButton
-                    icon={<ImagePlus size={34} className="text-primary" />}
+                    icon={<ImagePlus size={40} className="text-primary" />}
                     bgColor="bg-transparent"
                     className={disabled ? "opacity-50 pointer-events-none" : ""}
                     size={56}

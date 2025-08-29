@@ -6,62 +6,52 @@ import CustomIconButton from "../../../../../../components/layout/CustomIconButt
 import CustomTextField from "../../../../../../components/layout/CustomTextField.jsx";
 
 /**
- * AddImageUrlComponent allows users to manually enter an image URL.
- * It shows a toggleable input field when the link icon is clicked.
- *
- * @component
- * @param {boolean} disabled - Whether the component is disabled
- * @param {function} onUrlChange - Callback to handle URL value changes
- * @param {string} value - Current value of the image URL
- * @param {object} errors - Validation errors object
- * @param {boolean} onReset - Trigger to externally reset the input field
+ * Renders the link icon inline with other icons.
+ * When open, renders a full-width input as a separate flex item on the next line.
  */
 const AddImageUrlComponent = ({ disabled, onUrlChange, value, errors, onReset }) => {
     const [showInput, setShowInput] = useState(false);
 
-    // Handle input change and propagate it to the parent
-    const handleChange = (e) => {
-        const newValue = e.target.value;
-        onUrlChange(newValue);
-    };
+    const handleChange = (e) => onUrlChange(e.target.value);
 
-    // Reset local state and notify parent
     const handleReset = () => {
         onUrlChange("");
         setShowInput(false);
     };
 
-    // Trigger reset when onReset prop changes to true
     useEffect(() => {
-        if (onReset === true) {
-            handleReset();
-        }
+        if (onReset === true) handleReset();
     }, [onReset]);
 
     return (
-        <CustomBox className="flex flex-col items-center">
-            {/* Toggle button for showing input */}
-            <CustomIconButton
-                icon={<Link size={34} className="text-primary" />}
-                onClick={() => setShowInput(!showInput)}
-                size={56}
-                bgColor="bg-transparent"
-                className={disabled ? "opacity-50 pointer-events-none" : ""}
-            />
-
-            {/* URL input field */}
-            {showInput && (
-                <CustomTextField
-                    name="imageUrl"
-                    label="Image URL"
-                    value={value}
-                    onChange={handleChange}
-                    error={errors.imageUrl}
-                    helperText={errors.imageUrl?.message}
-                    className="w-full mt-2"
+        <>
+            {/* Inline icon (first flex item) */}
+            <CustomBox className="flex flex-col items-center">
+                <CustomIconButton
+                    icon={<Link size={40} className="text-primary" />}
+                    onClick={() => setShowInput(!showInput)}
+                    size={56}
+                    bgColor="bg-transparent"
+                    className={disabled ? "opacity-50 pointer-events-none" : ""}
+                    disableScale
                 />
+            </CustomBox>
+
+            {/* Full-width input on the next line (second flex item) */}
+            {showInput && (
+                <CustomBox className="basis-full w-full flex justify-center">
+                    <CustomTextField
+                        name="imageUrl"
+                        label="Image URL"
+                        value={value}
+                        onChange={handleChange}
+                        error={errors.imageUrl}
+                        helperText={errors.imageUrl?.message}
+                        className="w-full max-w-xl mt-2"
+                    />
+                </CustomBox>
             )}
-        </CustomBox>
+        </>
     );
 };
 

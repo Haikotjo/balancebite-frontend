@@ -1,19 +1,10 @@
+// CustomIconButton.jsx
 import PropTypes from "prop-types";
 import { motion } from "framer-motion";
+import { cloneElement, isValidElement } from "react";
 import CustomBox from "../layout/CustomBox.jsx";
 
-/**
- * Reusable animated icon button with customizable background color.
- *
- * @param {JSX.Element} icon - The icon element to display inside the button.
- * @param {Function} onClick - Callback when the button is clicked.
- * @param {string} [bgColor="bg-[rgba(0,0,0,0.5)]"] - Tailwind class for background color.
- * @param {number} [size=35] - Diameter of the button.
- * @param {string} [className] - Optional extra classes for outer styling.
- * @param disableScale
- * @param useMotion
- * @returns {JSX.Element}
- */
+/** Reusable animated icon button with dynamic size. */
 const CustomIconButton = ({
                               icon,
                               onClick,
@@ -24,21 +15,21 @@ const CustomIconButton = ({
                               useMotion = true,
                           }) => {
     const Wrapper = useMotion ? motion.div : "div";
+    const wrapperProps = useMotion && !disableScale ? { whileTap:{scale:0.9}, whileHover:{scale:1.15} } : {};
 
-    const wrapperProps = useMotion && !disableScale
-        ? {
-            whileTap: { scale: 0.9 },
-            whileHover: { scale: 1.15 },
-        }
-        : {};
+    // If the passed icon has no explicit size, scale it to ~60% of button size
+    const finalIcon = isValidElement(icon) && icon.props.size == null
+        ? cloneElement(icon, { size: Math.round(size * 0.6) })
+        : icon;
 
     return (
         <Wrapper {...wrapperProps} className="transition-transform duration-100 ease-in-out">
             <CustomBox
                 onClick={onClick}
-                className={`cursor-pointer ${bgColor} rounded-xl flex items-center justify-center w-9 h-9 sm:w-8 sm:h-8 ${className}`}
+                className={`cursor-pointer ${bgColor} rounded-xl flex items-center justify-center ${className}`}
+                style={{ width: size, height: size }} // <-- uses size prop
             >
-                {icon}
+                {finalIcon}
             </CustomBox>
         </Wrapper>
     );

@@ -1,7 +1,15 @@
 // src/features/meals/components/modal/MealModal.jsx
 /**
  * MealModal
+ *
+ * Preview rules:
  * - In "preview" mode ONLY Confirm/Create and Cancel are allowed.
+ * - Backdrop click and ESC are disabled.
+ * - Top action bar is ALWAYS shown (all breakpoints), sticky, very high z-index.
+ * - A visual spacer separates the top bar from the card content (no borders).
+ *
+ * View rules:
+ * - In "view" mode the backdrop click closes the modal and ESC works.
  */
 
 import PropTypes from "prop-types";
@@ -49,52 +57,69 @@ const MealModal = ({ meal, isPinned = false, mode = "view", onCancel, onConfirm 
     };
 
     return ReactDOM.createPortal(
-        <CustomBox className="fixed inset-0 z-[100] flex items-center justify-center" data-mode={mode}>
-            {/* Backdrop layer */}
+        <CustomBox
+            className="fixed inset-0 z-[2147483000] flex items-center justify-center"
+            data-mode={mode}
+            role="presentation"
+        >
+            {/* Backdrop layer (click disabled in preview) */}
             <CustomBox
                 as="div"
                 className="absolute inset-0 bg-black bg-opacity-70"
-                onClick={isPreview ? undefined : closeModal} // disable backdrop close in preview
+                onClick={isPreview ? undefined : closeModal}
                 aria-hidden={isPreview ? "true" : "false"}
             />
 
             {/* Modal surface */}
             <CustomBox
                 as="div"
-                className="relative z-10 w-[90%] max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl shadow-lg bg-lightBackground dark:bg-darkBackground"
+                className="relative z-[2147483001] w-[90%] max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl shadow-lg bg-lightBackground dark:bg-darkBackground"
                 onClick={(e) => e.stopPropagation()}
                 role="dialog"
                 aria-modal="true"
                 aria-label={isPreview ? "Meal preview (actions limited)" : "Meal view"}
             >
-                {/* Preview header + top actions on small screens */}
+                {/* Always-on TOP action bar in preview (sticky, very high z-index) */}
                 {isPreview && (
-                    <CustomBox className="sticky top-0 z-10 p-3 sm:p-4 border-b border-divider bg-lightBackground/95 dark:bg-darkBackground/95 backdrop-blur">
-                        <CustomTypography as="div" variant="small" bold className="uppercase opacity-80">
-                            Preview
-                        </CustomTypography>
+                    <>
+                        <CustomBox
+                            className="sticky top-0 z-[2147483002] p-3 sm:p-4 bg-lightBackground/90 dark:bg-darkBackground/90 backdrop-blur"
+                            /* English comment: sticky top bar with actions */
+                        >
+                            <CustomTypography as="div" variant="h1" font="sans" weight="bold" className="opacity-80 text-center w-full">
+                                Meal Preview
+                            </CustomTypography>
 
-                        <CustomBox className="mt-2 flex flex-col sm:flex-row gap-2 md:hidden">
-                            <CustomButton
-                                onClick={handleConfirm}
-                                variant="solid"
-                                color="primary"
-                                className="flex-1 py-2"
-                                aria-label="Create meal"
-                            >
-                                Confirm
-                            </CustomButton>
-                            <CustomButton
-                                onClick={handleCancel}
-                                variant="solid"
-                                color="error"
-                                className="flex-1 py-2"
-                                aria-label="Cancel and delete meal"
-                            >
-                                Cancel
-                            </CustomButton>
+                            <CustomBox className="mt-2 flex flex-col sm:flex-row gap-2">
+                                <CustomButton
+                                    onClick={handleConfirm}
+                                    variant="solid"
+                                    color="primary"
+                                    className="px-4 py-2 flex-1"
+                                    aria-label="Create meal"
+                                >
+                                    <CustomTypography as="span" variant="h5" font="sans" weight="bold" color="text-white">
+                                        Confirm
+                                    </CustomTypography>
+                                </CustomButton>
+
+                                <CustomButton
+                                    onClick={handleCancel}
+                                    variant="outline"
+                                    color="error"
+                                    className="px-4 py-2 flex-1"
+                                    aria-label="Cancel and delete meal"
+                                >
+                                    <CustomTypography as="span" variant="h5" font="sans" weight="bold" color="text-error">
+                                        Cancel
+                                    </CustomTypography>
+                                </CustomButton>
+                            </CustomBox>
                         </CustomBox>
-                    </CustomBox>
+
+                        {/* English comment: visual separation between top bar and card content (no borders). */}
+                        <CustomBox className="h-2" aria-hidden="true" />
+                    </>
                 )}
 
                 {/* Main meal content (actions disabled in preview) */}
@@ -105,29 +130,7 @@ const MealModal = ({ meal, isPinned = false, mode = "view", onCancel, onConfirm 
                     disableActions={isPreview}
                 />
 
-                {/* Bottom actions for md+ */}
-                {isPreview && (
-                    <CustomBox className="hidden md:flex w-full p-3 sm:p-4 border-t border-divider gap-2">
-                        <CustomButton
-                            onClick={handleConfirm}
-                            variant="solid"
-                            color="primary"
-                            className="flex-1 py-2"
-                            aria-label="Create meal"
-                        >
-                            Confirm
-                        </CustomButton>
-                        <CustomButton
-                            onClick={handleCancel}
-                            variant="solid"
-                            color="error"
-                            className="flex-1 py-2"
-                            aria-label="Cancel and delete meal"
-                        >
-                            Cancel
-                        </CustomButton>
-                    </CustomBox>
-                )}
+                {/* Bottom action bar removed: buttons are always at the top now */}
             </CustomBox>
         </CustomBox>,
         document.body
@@ -135,10 +138,15 @@ const MealModal = ({ meal, isPinned = false, mode = "view", onCancel, onConfirm 
 };
 
 MealModal.propTypes = {
+    /** Meal to display in the modal */
     meal: PropTypes.object.isRequired,
+    /** Pass-through pinned styling to MealCard */
     isPinned: PropTypes.bool,
+    /** "view" (no actions) | "preview" (top actions, restricted) */
     mode: PropTypes.oneOf(["view", "preview"]),
+    /** Optional cancel handler (called before closing) */
     onCancel: PropTypes.func,
+    /** Optional confirm handler (called before closing) */
     onConfirm: PropTypes.func,
 };
 
