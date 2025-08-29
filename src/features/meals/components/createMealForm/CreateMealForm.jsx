@@ -157,7 +157,6 @@ const CreateMealForm = () => {
                 imageUrl={imageUrl}
                 onImageChange={(image, type) => handleImageChange(image, type, setValue)}
                 errors={errors}
-                register={register}
             />
 
             {/* Submit */}

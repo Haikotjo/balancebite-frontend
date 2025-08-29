@@ -11,7 +11,7 @@ import CustomBox from "../../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../../components/layout/CustomTypography.jsx";
 import CustomIconButton from "../../../../../components/layout/CustomIconButton.jsx";
 
-const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialImageUrl }) => {
+const MealImageUploader = ({ errors, onImageChange, imageUrl: initialImageUrl }) => {
     const [capturedImage, setCapturedImage] = useState(null);
     const [uploadedImage, setUploadedImage] = useState(null);
     const [imageUrl, setImageUrl] = useState(initialImageUrl || "");
@@ -104,7 +104,6 @@ const MealImageUploader = ({ register, errors, onImageChange, imageUrl: initialI
 };
 
 MealImageUploader.propTypes = {
-    register: PropTypes.func.isRequired,
     errors: PropTypes.object.isRequired,
     onImageChange: PropTypes.func.isRequired,
     imageUrl: PropTypes.string,
