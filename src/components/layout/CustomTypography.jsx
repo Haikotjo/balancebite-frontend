@@ -51,7 +51,7 @@ const CustomTypography = ({
                               color,
                               bold = false,
                               italic = false,
-                              font = "sans",
+                              font = "body",
                               className = "",
                               as = "p",
                               weight, // "thin" | "extralight" | "light" | "normal" | "medium" | "semibold" | "bold" | "extrabold" | "black"

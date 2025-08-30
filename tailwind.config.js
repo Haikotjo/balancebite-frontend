@@ -26,7 +26,7 @@ export default {
         darkBackground: "#111827",
 
 
-        primary: "#41D3BD",
+        primary: "#38adb5",
         "primary-dark": "#298073",
 
         borderPrimary: "#41D3BD",
@@ -35,7 +35,7 @@ export default {
         secondary: "#EDB6A3",
         "secondary-dark": "#D19882",
 
-        error: "#DD1155",
+        error: "#F43F5E",
         "error-dark": "#9c0d3d",
 
         borderError: "#DD1155",
@@ -55,7 +55,7 @@ export default {
         friendlyGray: "#8f8f8f",
         softIvory: "#F0EAE2",
 
-        appBarColor: "#DB324D",
+        appBarColor: "#F43F5E",
 
         promote: '#facc15',
 

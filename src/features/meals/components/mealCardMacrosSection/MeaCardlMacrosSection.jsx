@@ -42,7 +42,7 @@ const MealCardMacrosSection = ({ macros }) => {
                                     {macros.UnsaturatedFat?.total > 0 && (
                                         <CustomTypography variant="xsmallCard" font="body" italic>
                                             Healthy Fats:{" "}
-                                            <CustomTypography as="span" variant="xsmallCard" color="text-success">
+                                            <CustomTypography as="span" variant="xsmallCard">
                                                 {macros.UnsaturatedFat.total}
                                                 {macros.UnsaturatedFat.unit && macros.UnsaturatedFat.unit !== "g" && ` ${macros.UnsaturatedFat.unit}`}
                                             </CustomTypography>
@@ -66,7 +66,7 @@ const MealCardMacrosSection = ({ macros }) => {
                                 <CustomBox className="flex mt-1">
                                     <CustomTypography variant="xsmallCard" font="body" italic>
                                         Sugars:{" "}
-                                        <CustomTypography as="span" variant="xsmallCard" color="text-error">
+                                        <CustomTypography as="span" variant="xsmallCard">
                                             {macros.Sugars.total}
                                             {macros.Sugars.unit && macros.Sugars.unit !== "g" && ` ${macros.Sugars.unit}`}
                                         </CustomTypography>

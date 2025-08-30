@@ -17,7 +17,6 @@ import clsx from "clsx";
  * @param {number} [props.iconMargin=0] - Extra spacing around the icon.
  * @param {number} [props.iconSize=24] - Icon size (for wrapper calculation).
  * @param {string} [props.labelPosition="bottom"] - "top" or "bottom" label placement.
- * @param {string} [props.labelFontSize="text-[0.7rem]"] - Font size class for the label.
  * @param {string} [props.className] - Optional outer class.
  */
 const CustomChip = ({
@@ -28,7 +27,6 @@ const CustomChip = ({
                         iconMargin = 0,
                         iconSize = 24,
                         labelPosition = "bottom",
-                        labelFontSize = "text-[0.7rem]",
                         className = ""
                     }) => {
     const spacingClass = iconMargin ? `px-[${iconMargin}px]` : "px-3";
@@ -46,13 +44,13 @@ const CustomChip = ({
             )}
         >
             {label && (
-
                 <CustomTypography
                     as="span"
+                    font="sans"
+                    variant="xsmallCard"
+                    weight="normal"
                     className={clsx(
-                        labelFontSize,
-                        "text-center font-semibold",
-                        selected ? "text-primary" : "undefined",
+                        "text-center",
                         labelPosition === "top" ? "mb-1" : "mt-1"
                     )}
 
@@ -85,7 +83,6 @@ CustomChip.propTypes = {
     iconMargin: PropTypes.number,
     iconSize: PropTypes.number,
     labelPosition: PropTypes.oneOf(["top", "bottom"]),
-    labelFontSize: PropTypes.string,
     className: PropTypes.string,
 };
 

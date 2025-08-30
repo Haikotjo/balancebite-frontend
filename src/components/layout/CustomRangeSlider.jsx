@@ -6,8 +6,6 @@ import CustomBox from "./CustomBox.jsx";
 import CustomTypography from "./CustomTypography.jsx";
 import clsx from "clsx";
 
-
-
 const CustomDualSlider = ({
                               label,
                               minValue = 0,
@@ -62,9 +60,10 @@ const CustomDualSlider = ({
             {label && (
                 <CustomTypography
                     as="label"
-                    variant="paragraph"
+                    variant="h4"
                     font="body"
-                    className="block text-center"
+                    className="block text-center mb-1"
+                    weight="normal"
                 >
                     {label}
                 </CustomTypography>
@@ -73,7 +72,9 @@ const CustomDualSlider = ({
 
             {/* min-label boven de slider */}
             <CustomBox className="flex justify-between text-xs px-3 mb-1">
-                <CustomTypography variant="paragraph" className="text-white">min</CustomTypography>
+                <CustomTypography as="span" font="sans" variant="paragraph" weight="bold">
+                    min
+                </CustomTypography>
                 <CustomBox />
             </CustomBox>
 
@@ -83,7 +84,9 @@ const CustomDualSlider = ({
             {/* max-label onder de slider */}
             <CustomBox className="flex justify-between text-xs px-3 mt-1">
                 <CustomBox />
-                <CustomTypography variant="paragraph" className="text-white">max</CustomTypography>
+                <CustomTypography as="span" font="sans" variant="paragraph" weight="bold">
+                    max
+                </CustomTypography>
             </CustomBox>
         </CustomBox>
     );

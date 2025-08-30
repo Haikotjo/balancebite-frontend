@@ -99,7 +99,6 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
                         label={nutrient.label}
                         selected={currentSort.key === nutrient.sortKey}
                         onClick={() => handleSort(nutrient.sortKey)}
-                        labelFontSize="text-[0.6rem] sm:text-[0.65rem] md:text-[0.7rem]"
                         labelPosition="bottom"
                     />
                 ))}
@@ -114,7 +113,6 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
                     }
                     selected={!!currentSort.key}
                     onClick={handleSortOrderClick}
-                    labelFontSize="text-[0.6rem] sm:text-[0.65rem] md:text-[0.7rem]"
                     labelPosition="bottom"
                 />
             </CustomBox>
@@ -130,7 +128,6 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
                                     label={nutrient.label}
                                     selected={currentSort.key === nutrient.sortKey}
                                     onClick={() => handleSort(nutrient.sortKey)}
-                                    labelFontSize="text-[0.6rem] sm:text-[0.65rem] md:text-[0.7rem]"
                                     labelPosition="bottom"
                                 />
                             ))}

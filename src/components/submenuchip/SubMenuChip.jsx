@@ -14,7 +14,6 @@ import clsx from "clsx";
  * @param {boolean} [props.selected=false] - Visual selection state.
  * @param {function} props.onClick - Click handler.
  * @param {string} [props.labelPosition="bottom"] - "top" or "bottom".
- * @param {string} [props.labelFontSize="text-[0.8rem]"] - Tailwind font size class.
  * @param {string} [props.className] - Optional class override.
  */
 const SubMenuChip = ({
@@ -23,7 +22,6 @@ const SubMenuChip = ({
                          selected = false,
                          onClick,
                          labelPosition = "bottom",
-                         labelFontSize = "text-[0.8rem]",
                          className = ""
                      }) => {
     const iconSize = 36;
@@ -45,10 +43,11 @@ const SubMenuChip = ({
             {label && (
                 <CustomTypography
                     as="span"
+                    font="sans"
+                    variant="small"
+                    weight="bold"
                     className={clsx(
-                        labelFontSize,
-                        "text-center font-semibold",
-                        selected ? "text-primary" : "text-gray-700 dark:text-gray-300",
+                        "text-center",
                         labelPosition === "top" ? "mb-2" : "mt-2"
                     )}
                 >
@@ -77,7 +76,6 @@ SubMenuChip.propTypes = {
     selected: PropTypes.bool,
     onClick: PropTypes.func.isRequired,
     labelPosition: PropTypes.oneOf(["top", "bottom"]),
-    labelFontSize: PropTypes.string,
     className: PropTypes.string,
 };
 

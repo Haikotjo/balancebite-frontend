@@ -37,7 +37,6 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
                         label={label}
                         selected={selected}
                         onClick={() => handleChipClick(label)}
-                        labelFontSize="text-[0.75rem] sm:text-[0.8rem] md:text-[0.85rem]"
                         labelPosition="bottom"
                     />
 
