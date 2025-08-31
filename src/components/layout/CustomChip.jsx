@@ -47,8 +47,8 @@ const CustomChip = ({
                 <CustomTypography
                     as="span"
                     font="sans"
-                    variant="xsmallCard"
-                    weight="normal"
+                    variant="small"
+                    weight="bold"
                     className={clsx(
                         "text-center",
                         labelPosition === "top" ? "mb-1" : "mt-1"

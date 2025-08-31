@@ -44,7 +44,7 @@ const SubMenuChip = ({
                 <CustomTypography
                     as="span"
                     font="sans"
-                    variant="small"
+                    variant="paragraph"
                     weight="bold"
                     className={clsx(
                         "text-center",
