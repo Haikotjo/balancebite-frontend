@@ -128,7 +128,7 @@ function MealPage() {
                 <MealFilterContent filters={filters} setFilters={setFilters}/>
             </CustomBox>
 
-            <CustomBox className="w-[300px] md:w-[350px] my-6">
+
                 <SearchBar
                     onSearch={handleCombinedSearch}
                     onQuerySubmit={(val) => {
@@ -142,7 +142,7 @@ function MealPage() {
                     placeholder="Search for a meal or user..."
                 />
 
-            </CustomBox>
+
             {(Object.keys(filters).length > 0 || sortBy) && (
                 <ActiveFilterChips
                     filters={filters}

@@ -6,7 +6,7 @@ import { dietsOptions } from "../../../meals/utils/helpers/dropdownOptionsMealsT
 
 const avgFields = [
     { label: "Average daily protein", value: "avgProtein" },
-    { label: "Average daily carbohydrates", value: "avgCarbs" },
+    { label: "Average daily carbs", value: "avgCarbs" },
     { label: "Average daily fat", value: "avgFat" },
     { label: "Average daily calories", value: "avgCalories" },
 ];

@@ -31,17 +31,20 @@ export default function PageWrapper({ children, className = "", narrow = false }
                 // Desktop (md+): remove bottom padding because sidebar is left, not bottom.
                 "pb-[calc(72px+env(safe-area-inset-bottom))] md:pb-0",
 
-                // Desktop: push content to the right of the fixed left sidebar (72px).
+                // Desktop: leave space for fixed left sidebar (72px)
                 "md:ml-[72px]",
-
-                // Optional narrow layout (max width + centered)
-                narrow && "max-w-screen-lg mx-auto",
 
                 // Additional classes passed in
                 className
             )}
         >
-            {children}
+            {/* Inner container centers and caps width */}
+            <CustomBox className={clsx(
+                "w-full max-w-[1750px] mx-auto", // cap to 1800px and center
+                narrow && "max-w-screen-lg"     // optional narrower layout
+            )}>
+                {children}
+            </CustomBox>
         </CustomBox>
     );
 }
@@ -49,10 +52,8 @@ export default function PageWrapper({ children, className = "", narrow = false }
 PageWrapper.propTypes = {
     /** Content to render inside the wrapper. */
     children: PropTypes.node.isRequired,
-
     /** Additional Tailwind classes for custom layouts. */
     className: PropTypes.string,
-
     /** Constrain content width and center it. */
     narrow: PropTypes.bool,
 };

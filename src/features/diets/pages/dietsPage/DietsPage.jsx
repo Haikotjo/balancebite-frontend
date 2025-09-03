@@ -120,7 +120,7 @@ const DietsPage = () => {
     return (
         <PageWrapper >
 
-        <DietSubMenu
+            <DietSubMenu
                 isDetailPage={false}
                 onSelect={() => {
                 }}
@@ -138,27 +138,24 @@ const DietsPage = () => {
                 setFilters={setFilters}
             />
 
-            <CustomBox className="w-[300px] md:w-[350px] my-6 mx-auto">
-                <SearchBar
-                    onSearch={handleCombinedSearch}
-                    onQuerySubmit={(val) => {
-                        if (typeof val === "string") {
-                            setFilters((prev) => ({ ...prev, name: val }));
-                            setCreatorIdFilter(null);
-                        } else if (val.creatorId) {
-                            setCreatorIdFilter(val.creatorId);
-                            setFilters((prev) => {
-                                // eslint-disable-next-line no-unused-vars
-                                const { name, ...rest } = prev;
-                                return rest;
-                            });
-                        }
-                        setPage(1);
-                    }}
 
-                />
-            </CustomBox>
-
+            <SearchBar
+                onSearch={handleCombinedSearch}
+                onQuerySubmit={(val) => {
+                    if (typeof val === "string") {
+                        setFilters((prev) => ({ ...prev, name: val }));
+                        setCreatorIdFilter(null);
+                    } else if (val.creatorId) {
+                        setCreatorIdFilter(val.creatorId);
+                        setFilters((prev) => {
+                            // eslint-disable-next-line no-unused-vars
+                            const { name, ...rest } = prev;
+                            return rest;
+                        });
+                    }
+                    setPage(1);
+                }}
+            />
 
             <ActiveFilterChips
                 filters={filters}
