@@ -166,46 +166,47 @@ const AdminPage = () => {
 
     return (
         <PageWrapper className="flex flex-col items-center">
+            <CustomBox className="flex flex-col items-center w-full">
+                <ShieldUser className="w-16 h-16 sm:w-24 sm:h-24 text-primary mb-2" aria-hidden="true" />
 
-            <ShieldUser className="w-16 h-16 sm:w-24 sm:h-24 text-primary mb-2" aria-hidden="true" />
+                {/* Dashboard title */}
+                <CustomTypography variant="h2" bold className="my-4">
+                    Admin Dashboard
+                </CustomTypography>
 
-            {/* Dashboard title */}
-            <CustomTypography variant="h2" bold className="my-4">
-                Admin Dashboard
-            </CustomTypography>
-
-            {/* Option chips */}
-            <CustomBox className="mb-5 flex justify-center">
-                <CustomBox className="flex flex-row items-center gap-4">
-                    {options.map((option) => (
-                        <CustomBox key={option.label} className="flex flex-col items-center">
-                            <CustomCardChip
-                                onClick={() => setActiveOption(option.label)}
-                                className={clsx(
-                                    "flex flex-col items-center justify-center border-2",
-                                    option.label === activeOption
-                                        ? "bg-primary border-primary text-white"
-                                        : "bg-white dark:bg-gray-800 border-primary text-primary",
-                                    "w-[56px] h-[32px] sm:w-[76px] sm:h-[46px]"
-                                )}
-                                textClassName="flex flex-col items-center"
-                            >
-                                {option.icon}
-                            </CustomCardChip>
-                            <CustomTypography
-                                as="span"
-                                className="text-[0.8rem] sm:text-[0.9rem] font-semibold mt-2"
-                            >
-                                {option.label}
-                            </CustomTypography>
-                        </CustomBox>
-                    ))}
+                {/* Option chips */}
+                <CustomBox className="mb-5 flex justify-center">
+                    <CustomBox className="flex flex-row items-center gap-4">
+                        {options.map((option) => (
+                            <CustomBox key={option.label} className="flex flex-col items-center">
+                                <CustomCardChip
+                                    onClick={() => setActiveOption(option.label)}
+                                    className={clsx(
+                                        "flex flex-col items-center justify-center border-2",
+                                        option.label === activeOption
+                                            ? "bg-primary border-primary text-white"
+                                            : "bg-white dark:bg-gray-800 border-primary text-primary",
+                                        "w-[56px] h-[32px] sm:w-[76px] sm:h-[46px]"
+                                    )}
+                                    textClassName="flex flex-col items-center"
+                                >
+                                    {option.icon}
+                                </CustomCardChip>
+                                <CustomTypography
+                                    as="span"
+                                    className="text-[0.8rem] sm:text-[0.9rem] font-semibold mt-2"
+                                >
+                                    {option.label}
+                                </CustomTypography>
+                            </CustomBox>
+                        ))}
+                    </CustomBox>
                 </CustomBox>
-            </CustomBox>
 
-            {/* Main content area */}
-            <CustomBox className="w-full max-w-[600px] p-2 sm:p-0">
-                {renderActiveComponent()}
+                {/* Main content area */}
+                <CustomBox className="w-full max-w-[600px] p-2 sm:p-0">
+                    {renderActiveComponent()}
+                </CustomBox>
             </CustomBox>
         </PageWrapper>
     );

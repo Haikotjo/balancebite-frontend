@@ -96,74 +96,75 @@ function HomePage() {
 
     return (
         <PageWrapper className="flex flex-col items-center justify-center text-center px-2">
-            <CustomAnimatedBox animation="fadeIn" className="animated-logo p-2 mb-2 mt-6">
-                <Logo size={100} />
-            </CustomAnimatedBox>
+            <CustomBox className="flex flex-col items-center w-full">
+                <CustomAnimatedBox animation="fadeIn" className="animated-logo p-2 mb-2 mt-6">
+                    <Logo size={100} />
+                </CustomAnimatedBox>
 
-            <HorizontalScrollSection
-                title="Pinned Items"
-                items={stickyItems}
-                onTitleClick={() => navigate("/pinned")}
-                renderItem={(item) => {
-                    if (item.type === "MEAL") {
-                        return (
-                            <CustomBox className="w-full max-w-[300px]">
-                                <MealDetailCard
-                                    meal={item.reference}
-                                    viewMode="list"
-                                    hideAfterTitle
-                                    isPinned
-                                />
-                            </CustomBox>
-                        );
-                    }
-                    if (item.type === "DIET_PLAN") {
-                        return (
-                            <CustomBox className="w-full max-w-[280px]">
-                                <DietListCard diet={item.reference} compact isPinned />
-                            </CustomBox>
-                        );
-                    }
-                    return null;
-                }}
-            />
-
-
-            <HorizontalScrollSection
-                title="Vegetarian Meals"
-                items={vegetarianMeals}
-                onTitleClick={() => navigate("/meals?diets=VEGETARIAN")}
-                renderItem={(meal) => <MealCardCompact meal={meal}/>}
-            />
-
-            <HorizontalScrollSection
-                title="All Meals – View More"
-                items={allMeals}
-                onTitleClick={() => navigate("/meals", { state: { filtersFromRedirect: {} } })}
-                renderItem={(meal) => (
-                    <CustomBox className="w-full max-w-[300px]">
-                        <MealDetailCard meal={meal} viewMode="list" hideAfterTitle />
-                    </CustomBox>
-                )}
-            />
-
-            <HorizontalScrollSection
-                title="Explore Diet Plans"
-                items={diets.slice(0, 6)}
-                onTitleClick={() => navigate("/diets")}
-                renderItem={(diet) => (
-                    <CustomBox className="w-full max-w-[280px]">
-                        <DietListCard
-                            diet={diet}
-                            compact={true}
-                            onAdd={(newDiet) => replaceDietInDiets(diet.id, newDiet)}
-                            onRemove={() => removeDietFromUserDiets(diet.id)}
-                        />
-                    </CustomBox>
-                )}
-            />
+                <HorizontalScrollSection
+                    title="Pinned Items"
+                    items={stickyItems}
+                    onTitleClick={() => navigate("/pinned")}
+                    renderItem={(item) => {
+                        if (item.type === "MEAL") {
+                            return (
+                                <CustomBox className="w-full max-w-[300px]">
+                                    <MealDetailCard
+                                        meal={item.reference}
+                                        viewMode="list"
+                                        hideAfterTitle
+                                        isPinned
+                                    />
+                                </CustomBox>
+                            );
+                        }
+                        if (item.type === "DIET_PLAN") {
+                            return (
+                                <CustomBox className="w-full max-w-[280px]">
+                                    <DietListCard diet={item.reference} compact isPinned />
+                                </CustomBox>
+                            );
+                        }
+                        return null;
+                    }}
+                />
 
 
+                <HorizontalScrollSection
+                    title="Vegetarian Meals"
+                    items={vegetarianMeals}
+                    onTitleClick={() => navigate("/meals?diets=VEGETARIAN")}
+                    renderItem={(meal) => <MealCardCompact meal={meal}/>}
+                />
+
+                <HorizontalScrollSection
+                    title="All Meals – View More"
+                    items={allMeals}
+                    onTitleClick={() => navigate("/meals", { state: { filtersFromRedirect: {} } })}
+                    renderItem={(meal) => (
+                        <CustomBox className="w-full max-w-[300px]">
+                            <MealDetailCard meal={meal} viewMode="list" hideAfterTitle />
+                        </CustomBox>
+                    )}
+                />
+
+                <HorizontalScrollSection
+                    title="Explore Diet Plans"
+                    items={diets.slice(0, 6)}
+                    onTitleClick={() => navigate("/diets")}
+                    renderItem={(diet) => (
+                        <CustomBox className="w-full max-w-[280px]">
+                            <DietListCard
+                                diet={diet}
+                                compact={true}
+                                onAdd={(newDiet) => replaceDietInDiets(diet.id, newDiet)}
+                                onRemove={() => removeDietFromUserDiets(diet.id)}
+                            />
+                        </CustomBox>
+                    )}
+                />
+
+            </CustomBox>
         </PageWrapper>
     );
 }
