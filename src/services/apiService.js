@@ -376,28 +376,19 @@ export const updateMealApi = async (mealId, formData) => {
     }
 };
 
-
 // Fooditem services
-export const createFoodItemApi = async (data) => {
+export const createFoodItemApi = async (formData) => {
     const endpoint = import.meta.env.VITE_CREATE_FOODITEM_ENDPOINT;
     const token = localStorage.getItem("accessToken");
+    if (!token) throw new Error("No access token available.");
 
-    if (!token) {
-        throw new Error("No access token available.");
-    }
-
-    try {
-        const response = await Interceptor.post(endpoint, data, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-        return response.data;
-    } catch (error) {
-        logError(error);
-        throw error;
-    }
+    const res = await Interceptor.post(endpoint, formData, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+        },
+    });
+    return res.data;
 };
 
 export const deleteFoodItemApi = async (id, token) => {
@@ -407,6 +398,39 @@ export const deleteFoodItemApi = async (id, token) => {
             headers: { Authorization: `Bearer ${token}` },
         });
         return response;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+// Helper (optional): enforce exactly one of imageFile | imageUrl | image (base64)
+// const validateSingleImageSource = ({ imageFile, imageUrl, image }) => {
+//     const sources = [!!imageFile, !!(imageUrl && imageUrl.trim()), !!(image && image.trim())].filter(Boolean).length;
+//     if (sources > 1) throw new Error("Provide exactly one of: imageFile, imageUrl, or image (base64).");
+// };
+
+export const updateFoodItemApi = async (id, dto, imageFile = null) => {
+    const base = import.meta.env.VITE_UPDATE_FOODITEM_ENDPOINT; // e.g. "/fooditems"
+    const endpoint = `${base}/${id}`;
+    const token = localStorage.getItem("accessToken");
+    if (!token) throw new Error("No access token available.");
+
+    // (Optional) mirror backend rule early
+    validateSingleImageSource({ imageFile, imageUrl: dto.imageUrl, image: dto.image });
+
+    const formData = new FormData();
+    formData.append("foodItemInputDTO", JSON.stringify(dto)); // DTO with fields you updated
+    if (imageFile) formData.append("imageFile", imageFile);    // may be null
+
+    try {
+        const response = await Interceptor.patch(endpoint, formData, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                // DO NOT set Content-Type; browser sets multipart boundary
+            },
+        });
+        return response.data;
     } catch (error) {
         logError(error);
         throw error;

@@ -1,5 +1,8 @@
+// CreateFoodItemForm.jsx
+// English code comments.
+
 import CustomFloatingSelect from "../../../../components/layout/CustomFloatingSelect.jsx";
-import { useForm } from "react-hook-form";
+import {Controller, useForm} from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { foodItemSchema } from "../../../../utils/valadition/validationSchemas.js";
 import CustomTextField from "../../../../components/layout/CustomTextField.jsx";
@@ -8,10 +11,13 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import { useFormMessages } from "../../../../hooks/useFormMessages.jsx";
-import {getReadableApiError} from "../../../../utils/helpers/getReadableApiError.js";
+import { getReadableApiError } from "../../../../utils/helpers/getReadableApiError.js";
+import MealImageUploader from "../../../meals/components/createMealForm/mealImageUploader/MealImageUploader.jsx";
+import CustomCheckbox from "../../../../components/layout/CustomCheckbox.jsx";
 
 const CreateFoodItemForm = () => {
     const {
+        control,
         register,
         handleSubmit,
         formState: { errors },
@@ -21,16 +27,34 @@ const CreateFoodItemForm = () => {
     } = useForm({
         resolver: yupResolver(foodItemSchema),
         defaultValues: {
+            // basics
+            name: "",
             portionDescription: "Standard portion (100 gram)",
             gramWeight: 100,
+            source: "",
             foodSource: "",
+            foodCategory: "",
+            // NEW fields
+            storeBrand: false,
+            price: "",
+            grams: "",
+            imageFile: "",
+            imageUrl: "",
         },
-        shouldUnregister: true,
     });
 
     const { setError, setSuccess, clear, renderDialogs } = useFormMessages();
-    const { onSubmit: createFoodItem, foodSourceOptions,foodCategoryOptions } = useCreateFoodItem(reset);
 
+    // Hook mirrors meal flow: builds FormData internally and posts multipart
+    const {
+        onSubmit: createFoodItem,
+        foodSourceOptions,
+        foodCategoryOptions,
+        handleImageChange,
+        imageUrl,
+    } = useCreateFoodItem(reset);
+
+    // Submit handler
     const onSubmit = async (data) => {
         clear();
         try {
@@ -40,7 +64,6 @@ const CreateFoodItemForm = () => {
             setError(getReadableApiError(err));
         }
     };
-
 
     return (
         <CustomBox
@@ -54,6 +77,7 @@ const CreateFoodItemForm = () => {
 
             {renderDialogs()}
 
+            {/* Basic info */}
             <CustomTextField
                 label="Name"
                 name="name"
@@ -85,13 +109,13 @@ const CreateFoodItemForm = () => {
                 onFocus={(e) => e.target.select()}
             />
 
-
+            {/* Source + Category */}
             <CustomFloatingSelect
                 label="Select source"
                 options={foodSourceOptions}
                 value={
                     watch("foodSource")
-                        ? foodSourceOptions.find(opt => opt.value === watch("foodSource"))
+                        ? foodSourceOptions.find((opt) => opt.value === watch("foodSource"))
                         : null
                 }
                 onChange={(val) => setValue("foodSource", val?.value || "")}
@@ -112,14 +136,59 @@ const CreateFoodItemForm = () => {
                 options={foodCategoryOptions}
                 value={
                     watch("foodCategory")
-                        ? foodCategoryOptions.find(opt => opt.value === watch("foodCategory"))
+                        ? foodCategoryOptions.find((opt) => opt.value === watch("foodCategory"))
                         : null
                 }
                 onChange={(val) => setValue("foodCategory", val?.value || "")}
                 placeholder="Select food category"
             />
 
+            {/* NEW fields: brand / price / grams */}
 
+            <CustomTextField
+                label="Price (€)"
+                name="price"
+                {...register("price")}
+                error={!!errors.price}
+                helperText={errors.price?.message}
+                type="text"
+                step="any"
+                placeholder="e.g. 2.49"
+            />
+
+            <CustomTextField
+                label="Package Grams"
+                name="grams"
+                {...register("grams")}
+                error={!!errors.grams}
+                helperText={errors.grams?.message}
+                type="text"
+                step="any"
+                placeholder="e.g. 500"
+            />
+
+            {/* Image: file OR url OR camera (base64). Hook ensures exclusivity and builds FormData */}
+            <MealImageUploader
+                errors={errors}
+                imageUrl={imageUrl}
+                onImageChange={(image, type) => handleImageChange(image, type, setValue)}
+            />
+
+            <Controller
+                name="storeBrand"
+                control={control}
+                defaultValue={false}
+                render={({ field: { value, onChange } }) => (
+                    <CustomCheckbox
+                        id="storeBrand"
+                        label="Storebrand"                // UI label
+                        checked={!!value}                 // ensure boolean
+                        onChange={() => onChange(!value)} // toggle
+                    />
+                )}
+            />
+
+            {/* Nutrients */}
             <CustomTextField
                 label="Calories (kcal per 100g)"
                 name="calories"
@@ -130,7 +199,6 @@ const CreateFoodItemForm = () => {
                 step="any"
                 placeholder="e.g. 250"
             />
-
             <CustomTextField
                 label="Protein (g per 100g)"
                 name="protein"
@@ -141,7 +209,6 @@ const CreateFoodItemForm = () => {
                 step="any"
                 placeholder="e.g. 20"
             />
-
             <CustomTextField
                 label="Carbohydrates (g per 100g)"
                 name="carbohydrates"
@@ -152,7 +219,6 @@ const CreateFoodItemForm = () => {
                 step="any"
                 placeholder="e.g. 20"
             />
-
             <CustomTextField
                 label="Sugars (g per 100g)"
                 name="sugars"
@@ -163,7 +229,6 @@ const CreateFoodItemForm = () => {
                 step="any"
                 placeholder="e.g. 15"
             />
-
             <CustomTextField
                 label="Fat (g per 100g)"
                 name="fat"
@@ -174,7 +239,6 @@ const CreateFoodItemForm = () => {
                 step="any"
                 placeholder="e.g. 10"
             />
-
             <CustomTextField
                 label="Saturated Fat (g per 100g)"
                 name="saturatedFat"
@@ -185,7 +249,6 @@ const CreateFoodItemForm = () => {
                 step="any"
                 placeholder="e.g. 3"
             />
-
             <CustomTextField
                 label="Unsaturated Fat (g per 100g)"
                 name="unsaturatedFat"
@@ -196,7 +259,6 @@ const CreateFoodItemForm = () => {
                 step="any"
                 placeholder="e.g. 4"
             />
-
 
             <CustomButton
                 type="submit"

@@ -36,7 +36,7 @@ export const mealSchema  = yup.object().shape({
     imageUrl: yup
         .string()
         .url("Invalid URL format.")
-        .max(500, "The image URL must not exceed 500 characters."),
+        .max(2048, "The image URL must not exceed 500 characters."),
 });
 
 export const foodItemSchema = yup.object().shape({
@@ -113,6 +113,12 @@ export const foodItemSchema = yup.object().shape({
         .typeError("Unsaturated Fat must be a number")
         .min(0, "Unsaturated Fat cannot be negative")
         .nullable(),
+
+    image: yup.mixed(),
+    imageUrl: yup
+        .string()
+        .url("Invalid URL format.")
+        .max(2048, "The image URL must not exceed 500 characters."),
 });
 
 export const fdcIdSchema = yup.object().shape({
