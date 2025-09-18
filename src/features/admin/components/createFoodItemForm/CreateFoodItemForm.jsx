@@ -153,7 +153,7 @@ const CreateFoodItemForm = () => {
                 helperText={errors.price?.message}
                 type="text"
                 step="any"
-                placeholder="e.g. 2.49"
+                placeholder="Price (€) e.g. 2.49"
             />
 
             <CustomTextField
@@ -164,7 +164,7 @@ const CreateFoodItemForm = () => {
                 helperText={errors.grams?.message}
                 type="text"
                 step="any"
-                placeholder="e.g. 500"
+                placeholder="Package Grams e.g. 500"
             />
 
             {/* Image: file OR url OR camera (base64). Hook ensures exclusivity and builds FormData */}
@@ -197,7 +197,7 @@ const CreateFoodItemForm = () => {
                 helperText={errors.calories?.message}
                 type="text"
                 step="any"
-                placeholder="e.g. 250"
+                placeholder="Calories (kcal per 100g) e.g. 250"
             />
             <CustomTextField
                 label="Protein (g per 100g)"
@@ -207,7 +207,7 @@ const CreateFoodItemForm = () => {
                 helperText={errors.protein?.message}
                 type="text"
                 step="any"
-                placeholder="e.g. 20"
+                placeholder="Protein (g per 100g) e.g. 20"
             />
             <CustomTextField
                 label="Carbohydrates (g per 100g)"
@@ -217,7 +217,7 @@ const CreateFoodItemForm = () => {
                 helperText={errors.carbohydrates?.message}
                 type="text"
                 step="any"
-                placeholder="e.g. 20"
+                placeholder="Carbohydrates (g per 100g) e.g. 20"
             />
             <CustomTextField
                 label="Sugars (g per 100g)"
@@ -227,7 +227,7 @@ const CreateFoodItemForm = () => {
                 helperText={errors.sugars?.message}
                 type="text"
                 step="any"
-                placeholder="e.g. 15"
+                placeholder="Sugars (g per 100g) e.g. 15"
             />
             <CustomTextField
                 label="Fat (g per 100g)"
@@ -237,7 +237,7 @@ const CreateFoodItemForm = () => {
                 helperText={errors.fat?.message}
                 type="text"
                 step="any"
-                placeholder="e.g. 10"
+                placeholder="Fat (g per 100g) e.g. 10"
             />
             <CustomTextField
                 label="Saturated Fat (g per 100g)"
@@ -247,7 +247,7 @@ const CreateFoodItemForm = () => {
                 helperText={errors.saturatedFat?.message}
                 type="text"
                 step="any"
-                placeholder="e.g. 3"
+                placeholder="Saturated Fat (g per 100g) e.g. 3"
             />
             <CustomTextField
                 label="Unsaturated Fat (g per 100g)"
@@ -257,7 +257,7 @@ const CreateFoodItemForm = () => {
                 helperText={errors.unsaturatedFat?.message}
                 type="text"
                 step="any"
-                placeholder="e.g. 4"
+                placeholder="Unsaturated Fat (g per 100g) e.g. 4"
             />
 
             <CustomButton
