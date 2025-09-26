@@ -156,7 +156,7 @@ const ShoppingCartPage = () => {
                 </CustomBox>
 
                 {/* Content layout: cart + sidebar */}
-                <CustomBox className="flex flex-col lg:flex-row gap-6 justify-between items-start mt-4">
+                <CustomBox className="flex flex-col lg:flex-row justify-between items-start mt-4">
                     {/* Shopping cart */}
                     <CustomBox className="w-full lg:w-auto lg:max-w-[75%] mx-auto">
                         <CustomCard className="p-4 space-y-6 w-full">
@@ -170,12 +170,16 @@ const ShoppingCartPage = () => {
                                 const hasPrice = item?.unitPrice != null || item?.totalCost != null;
 
                                 return (
-                                    <CustomBox key={index} className="relative">
-                                        {/* overlay whn checked*/}
-                                        <CustomBox
-                                            className={`absolute inset-0 rounded-lg pointer-events-none transition-opacity duration-200 
-                                            ${isChecked ? "bg-green-300/30 dark:bg-white/10 opacity-100" : "opacity-0"}`}
-                                        />
+                                    <CustomCard
+                                        key={index}
+                                        className={`relative p-4 duration-200
+                                        bg-cardLight dark:bg-cardDark
+                                        ${isChecked
+                                            ? "ring-2 ring-primary/50 dark:ring-primary/60 bg-primary/20 dark:bg-primary/10"
+                                            : "ring-0"
+                                        }`}
+                                    >
+                                        {/* inhoud zoals je nu hebt */}
                                         <CustomBox className="flex justify-between items-start">
                                             <CustomBox>
                                                 <CustomTypography as="h3" variant="h5" className="font-semibold text-lg mb-2">
@@ -194,63 +198,38 @@ const ShoppingCartPage = () => {
                                                     </CustomTypography>
                                                 )}
 
-                                                <BulletText
-                                                    variant="paragraph"
-                                                >
-                                                    {item.requiredGrams} (gram)
-                                                </BulletText>
+                                                <BulletText variant="paragraph">{item.requiredGrams} (gram)</BulletText>
 
                                                 <CustomBox className="space-y-1 pl-4 mt-1">
-                                                    {/* Pack size (when known) */}
-                                                    {hasPack &&
-                                                        <CustomTypography
-                                                            variant="paragraphCard"
-                                                            italic
-                                                        >
+                                                    {hasPack && (
+                                                        <CustomTypography variant="paragraphCard" italic>
                                                             Pack size: {item.packGrams} g
-                                                        </CustomTypography>}
+                                                        </CustomTypography>
+                                                    )}
 
-                                                    {/* Price line(s) */}
                                                     {hasPrice ? (
                                                         Number(item.packsNeeded) > 1 ? (
-                                                            // e.g. "Price: 2 × €1,99 = €3,98"
-                                                            <CustomTypography
-                                                                variant="paragraphCard"
-                                                                italic
-                                                            >
+                                                            <CustomTypography variant="paragraphCard" italic>
                                                                 Required: {item.packsNeeded} × {formatMoney(item.unitPrice)} = {formatMoney(item.totalCost)}
                                                             </CustomTypography>
                                                         ) : (
-                                                            // e.g. "Price: €1,99"
-                                                            <CustomTypography
-                                                                variant="paragraphCard"
-                                                                italic
-                                                            >
+                                                            <CustomTypography variant="paragraphCard" italic>
                                                                 Price: {formatMoney(item.totalCost ?? item.unitPrice)}
                                                             </CustomTypography>
                                                         )
                                                     ) : (
-                                                        <CustomTypography
-                                                            variant="paragraphCard"
-                                                            italic
-                                                        >
+                                                        <CustomTypography variant="paragraphCard" italic>
                                                             Price: unknown
                                                         </CustomTypography>
                                                     )}
 
-                                                    {/* Optional: promo badge/label */}
                                                     {item.promoted && (
-                                                        <CustomTypography
-                                                            variant="paragraphCard"
-                                                            italic
-                                                        >
+                                                        <CustomTypography variant="paragraphCard" italic>
                                                             Promo{item.saleDescription ? `: ${item.saleDescription}` : ""}
                                                         </CustomTypography>
-
                                                     )}
                                                 </CustomBox>
 
-                                                {/* Source link */}
                                                 {item.source && (
                                                     <BulletText>
                                                         <CustomLink href={item.source}>{item.source}</CustomLink>
@@ -266,10 +245,10 @@ const ShoppingCartPage = () => {
                                             />
                                         </CustomBox>
 
-                                        <CustomDivider className="my-1" />
-                                    </CustomBox>
+                                    </CustomCard>
                                 );
                             })}
+
 
                             {/* ------------------ NEW: footer with totals ------------------ */}
 
