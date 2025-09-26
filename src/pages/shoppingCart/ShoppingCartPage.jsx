@@ -25,6 +25,12 @@ const ShoppingCartPage = () => {
 
     const { userDiets, setActiveOption } = useContext(UserDietsContext);
 
+    /** Format numbers as € with 2 decimals. Accepts number or numeric string. */
+    const formatMoney = (v) =>
+        v == null || isNaN(Number(v))
+            ? null
+            : new Intl.NumberFormat("nl-NL", { style: "currency", currency: "EUR" }).format(Number(v));
+
     /** Toggle single checkbox state by list index. */
     const toggleChecked = (index) => {
         setCheckedItems((prev) => ({
@@ -36,24 +42,22 @@ const ShoppingCartPage = () => {
     /**
      * Fetch shopping list for the given diet plan.
      * We log:
-     * - de rauwe API-respons
-     * - een compacte tabelweergave met veelgebruikte velden (als die bestaan)
+     * - raw API response
+     * - compact table with common fields (when present)
      */
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const result = await getShoppingCartForDietPlanApi(dietPlanId);
 
-                // --- logging van API-response (NIET functioneel, puur inspectie) ---
+                // --- logging (non-functional) ---
                 console.log("API → shopping list:", result);
-                // Let op: jouw backend kan 'quantity' of 'requiredGrams' gebruiken.
-                // De tabel hieronder toont beide waar mogelijk.
                 try {
                     console.table(
                         (Array.isArray(result) ? result : []).map((it) => ({
                             name: it?.name,
-                            quantity: it?.quantity,            // wat je nu rendert
-                            requiredGrams: it?.requiredGrams,  // alternatief veld, indien aanwezig
+                            quantity: it?.quantity, // legacy alt
+                            requiredGrams: it?.requiredGrams,
                             packGrams: it?.packGrams,
                             packsNeeded: it?.packsNeeded,
                             unitPrice: it?.unitPrice,
@@ -61,13 +65,12 @@ const ShoppingCartPage = () => {
                             promoted: it?.promoted,
                             saleDescription: it?.saleDescription,
                             source: it?.source,
-                        }))
+                        })),
                     );
                 } catch (e) {
-                    // console.table kan throwen bij rare data; hou logging robuust
                     console.warn("console.table failed:", e);
                 }
-                // -------------------------------------------------------------------
+                // -------------------------------
 
                 setShoppingList(result);
             } catch (err) {
@@ -80,10 +83,7 @@ const ShoppingCartPage = () => {
         fetchData();
     }, [dietPlanId]);
 
-    /**
-     * Extra logging zodra de state (shoppingList) is gezet of wijzigt.
-     * Dit helpt onderscheiden tussen wat de API terugstuurt en wat er uiteindelijk in state zit.
-     */
+    /** Extra logging when state is set/updated. */
     useEffect(() => {
         if (!shoppingList || shoppingList.length === 0) return;
 
@@ -101,14 +101,28 @@ const ShoppingCartPage = () => {
                     promoted: it?.promoted,
                     saleDescription: it?.saleDescription,
                     source: it?.source,
-                }))
+                })),
             );
         } catch (e) {
             console.warn("console.table failed:", e);
         }
     }, [shoppingList]);
 
-    // --- Conditional states wrapped with PageWrapper so layout offsets remain correct ---
+    // ------------------ NEW: totals & missing prices ------------------
+    const totalKnownCost = shoppingList.reduce((sum, it) => {
+        const val = it?.totalCost != null ? Number(it.totalCost) : 0;
+        return isNaN(val) ? sum : sum + val;
+    }, 0);
+
+    const missingPriceItems = shoppingList
+        .filter((it) => it?.totalCost == null)
+        .map((it) => it?.name)
+        .filter(Boolean);
+
+    const hasMissingPrices = missingPriceItems.length > 0;
+    // ------------------------------------------------------------------
+
+    // --- Conditional states ---
     if (loading) {
         return (
             <PageWrapper className="flex items-center justify-center">
@@ -129,7 +143,7 @@ const ShoppingCartPage = () => {
     return (
         <PageWrapper>
             <CustomBox className="max-w-screen-xl mx-auto">
-                {/* Submenu (detail mode): selecting an option routes to Diets page with query param */}
+                {/* Submenu (detail mode) */}
                 <CustomBox className="mb-4">
                     <DietSubMenu
                         isDetailPage={true}
@@ -152,25 +166,96 @@ const ShoppingCartPage = () => {
 
                             {shoppingList.map((item, index) => {
                                 const isChecked = !!checkedItems[index];
+                                const hasPack = item?.packGrams != null && Number(item.packGrams) > 0;
+                                const hasPrice = item?.unitPrice != null || item?.totalCost != null;
+
                                 return (
-                                    <CustomBox key={index}>
+                                    <CustomBox key={index} className="relative">
+                                        {/* overlay whn checked*/}
+                                        <CustomBox
+                                            className={`absolute inset-0 rounded-lg pointer-events-none transition-opacity duration-200 
+                                            ${isChecked ? "bg-green-300/30 dark:bg-white/10 opacity-100" : "opacity-0"}`}
+                                        />
                                         <CustomBox className="flex justify-between items-start">
                                             <CustomBox>
                                                 <CustomTypography as="h3" variant="h5" className="font-semibold text-lg mb-2">
                                                     {item.name}
                                                 </CustomTypography>
 
-                                                <CustomBox className="space-y-1 pl-4">
-                                                    {/* NB: Als je backend 'requiredGrams' levert ipv 'quantity',
-                              laat je deze regel staan voor nu (geen functionele wijziging),
-                              maar dan kun je later item.requiredGrams tonen i.p.v. item.quantity. */}
-                                                    <BulletText>{item.quantity} (gram)</BulletText>
-                                                    {item.source && (
-                                                        <BulletText>
-                                                            <CustomLink href={item.source}>{item.source}</CustomLink>
-                                                        </BulletText>
+                                                {item.promoted && (
+                                                    <CustomTypography
+                                                        as="p"
+                                                        variant="bold"
+                                                        italic
+                                                        color="text-promote dark:text-promote"
+                                                        className="mb-2"
+                                                    >
+                                                        On sale
+                                                    </CustomTypography>
+                                                )}
+
+                                                <BulletText
+                                                    variant="paragraph"
+                                                >
+                                                    {item.requiredGrams} (gram)
+                                                </BulletText>
+
+                                                <CustomBox className="space-y-1 pl-4 mt-1">
+                                                    {/* Pack size (when known) */}
+                                                    {hasPack &&
+                                                        <CustomTypography
+                                                            variant="paragraphCard"
+                                                            italic
+                                                        >
+                                                            Pack size: {item.packGrams} g
+                                                        </CustomTypography>}
+
+                                                    {/* Price line(s) */}
+                                                    {hasPrice ? (
+                                                        Number(item.packsNeeded) > 1 ? (
+                                                            // e.g. "Price: 2 × €1,99 = €3,98"
+                                                            <CustomTypography
+                                                                variant="paragraphCard"
+                                                                italic
+                                                            >
+                                                                Required: {item.packsNeeded} × {formatMoney(item.unitPrice)} = {formatMoney(item.totalCost)}
+                                                            </CustomTypography>
+                                                        ) : (
+                                                            // e.g. "Price: €1,99"
+                                                            <CustomTypography
+                                                                variant="paragraphCard"
+                                                                italic
+                                                            >
+                                                                Price: {formatMoney(item.totalCost ?? item.unitPrice)}
+                                                            </CustomTypography>
+                                                        )
+                                                    ) : (
+                                                        <CustomTypography
+                                                            variant="paragraphCard"
+                                                            italic
+                                                        >
+                                                            Price: unknown
+                                                        </CustomTypography>
+                                                    )}
+
+                                                    {/* Optional: promo badge/label */}
+                                                    {item.promoted && (
+                                                        <CustomTypography
+                                                            variant="paragraphCard"
+                                                            italic
+                                                        >
+                                                            Promo{item.saleDescription ? `: ${item.saleDescription}` : ""}
+                                                        </CustomTypography>
+
                                                     )}
                                                 </CustomBox>
+
+                                                {/* Source link */}
+                                                {item.source && (
+                                                    <BulletText>
+                                                        <CustomLink href={item.source}>{item.source}</CustomLink>
+                                                    </BulletText>
+                                                )}
                                             </CustomBox>
 
                                             <CustomCheckbox
@@ -185,6 +270,20 @@ const ShoppingCartPage = () => {
                                     </CustomBox>
                                 );
                             })}
+
+                            {/* ------------------ NEW: footer with totals ------------------ */}
+
+                            <CustomBox className="flex flex-col items-end gap-1 pr-1">
+                                <CustomTypography as="p" className="text-lg font-semibold">
+                                    Total{hasMissingPrices ? "*" : ""}: {formatMoney(totalKnownCost)}
+                                </CustomTypography>
+                                {hasMissingPrices && (
+                                    <CustomTypography as="p" className="text-xs text-gray-500">
+                                        * price missing from: {missingPriceItems.join(", ")}
+                                    </CustomTypography>
+                                )}
+                            </CustomBox>
+                            {/* ------------------------------------------------------------- */}
                         </CustomCard>
                     </CustomBox>
 
