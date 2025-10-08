@@ -30,6 +30,7 @@ import CreateStickyItemForm from "../components/createStickyItemForm/CreateStick
 import PromoteFoodItemForm from "../components/promotefoodItemform/PromoteFoodItemForm.jsx";
 import PageWrapper from "../../../components/layout/PageWrapper.jsx";
 import { ShieldUser } from "lucide-react";
+import UpdateFoodItemPicker from "../../fooditem/components/updateFoodItemPicker/UpdateFoodItemPicker.jsx";
 
 /**
  * AdminPage – Central admin dashboard to manage food items, meals, users and future settings.
@@ -68,6 +69,7 @@ const AdminPage = () => {
                             { value: "Delete", label: "Delete Food Item" },
                             { value: "Fetch",  label: "Fetch Food Item(s)" },
                             { value: "Promote", label: "Promote Food Item" },
+                            { value: "Update", label: "Update Food Item" },
                         ]}
                         className="py-2 sm:py-3"
                     />
@@ -75,6 +77,7 @@ const AdminPage = () => {
                     {foodItemAction === "Delete" && <DeleteFoodItemForm />}
                     {foodItemAction === "Fetch" && <FetchFoodItemForm />}
                     {foodItemAction === "Promote" && <PromoteFoodItemForm />}
+                    {foodItemAction === "Update" && <UpdateFoodItemPicker />}
 
                 </CustomBox>
             );

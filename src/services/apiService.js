@@ -417,7 +417,7 @@ export const updateFoodItemApi = async (id, dto, imageFile = null) => {
     if (!token) throw new Error("No access token available.");
 
     // (Optional) mirror backend rule early
-    validateSingleImageSource({ imageFile, imageUrl: dto.imageUrl, image: dto.image });
+    // validateSingleImageSource({ imageFile, imageUrl: dto.imageUrl, image: dto.image });
 
     const formData = new FormData();
     formData.append("foodItemInputDTO", JSON.stringify(dto)); // DTO with fields you updated
@@ -433,6 +433,37 @@ export const updateFoodItemApi = async (id, dto, imageFile = null) => {
         return response.data;
     } catch (error) {
         logError(error);
+        throw error;
+    }
+};
+
+/**
+ * Patch only the price of a FoodItem.
+ * @param {number|string} id - FoodItem id
+ * @param {number|null} price - Nieuwe prijs (als number). Gebruik null om prijs te verwijderen.
+ * @returns {Promise<Object>} Updated FoodItemDTO
+ */
+export const patchFoodItemPriceApi = async (id, price) => {
+    const endpoint = import.meta.env.VITE_UPDATE_FOODITEM_PRICE_ENDPOINT.replace("{id}", id);
+    const token = localStorage.getItem("accessToken");
+
+    // Zorg dat het JSON number is (of null), geen string
+    const payload = { price: price == null ? null : Number(price) };
+
+    try {
+        const res = await Interceptor.patch(endpoint, payload, {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+        return res.data;
+    } catch (error) {
+        // consistent met jouw logging
+        if (error.response) {
+            console.error(`[API Error] ${error.response.status}: ${error.response.data?.error || error.message}`);
+        } else if (error.request) {
+            console.error(`[API Error] No response: ${error.message}`);
+        } else {
+            console.error(`[API Error] ${error.message}`);
+        }
         throw error;
     }
 };

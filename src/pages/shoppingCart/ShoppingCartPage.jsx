@@ -12,7 +12,6 @@ import CustomLink from "../../components/layout/customLink.jsx";
 import DietListCard from "../../features/diets/components/dietListCard/DietListCard.jsx";
 import DietSubMenu from "../../features/diets/components/subMenu/DietsSubMenu.jsx";
 import CustomCheckbox from "../../components/layout/CustomCheckbox.jsx";
-import CustomDivider from "../../components/layout/CustomDivider.jsx";
 
 const ShoppingCartPage = () => {
     const { dietPlanId } = useParams();

@@ -1,5 +1,7 @@
 import PropTypes from "prop-types";
 import clsx from "clsx";
+import {useEffect} from "react";
+import {getAllFoodItems} from "../../services/apiService.js";
 
 const VARIANT_STYLES = {
     h1: "text-2xl sm:text-3xl md:text-4xl font-extrabold",
