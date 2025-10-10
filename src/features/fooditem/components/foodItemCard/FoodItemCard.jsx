@@ -39,6 +39,14 @@ const FoodItemCard = ({
         nutrients = [],
     } = item;
 
+    const hasLink = (() => {
+        try {
+            return typeof source === "string" && source.trim() !== "" && new URL(source);
+        } catch {
+            return false;
+        }
+    })();
+
     const formatCurrency = (valueInCents) => {
         if (valueInCents == null) return "-";
         return new Intl.NumberFormat("nl-NL", {
@@ -249,18 +257,20 @@ const FoodItemCard = ({
 
             {/* Footer */}
             <CustomBox className="flex items-center justify-between mt-auto">
-                <CustomLink
-                    href={source}
-                    ariaLabel={linkLabel}
-                    title={linkLabel}
-                    truncate
-                    rightIcon={<ExternalLink className="w-3 h-3" aria-hidden="true" />}
-                    onClick={(e) => e.stopPropagation()} // preserve card onClick
-                >
-                    <CustomTypography as="span" variant="xsmallCard" className="text-primary">
-                        {linkLabel}
-                    </CustomTypography>
-                </CustomLink>
+                {hasLink && (
+                    <CustomLink
+                        href={source}
+                        ariaLabel={linkLabel}
+                        title={linkLabel}
+                        truncate
+                        rightIcon={<ExternalLink className="w-3 h-3" aria-hidden="true" />}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <CustomTypography as="span" variant="xsmallCard" className="text-primary">
+                            {linkLabel}
+                        </CustomTypography>
+                    </CustomLink>
+                )}
 
 
                 {/*{onClick && (*/}

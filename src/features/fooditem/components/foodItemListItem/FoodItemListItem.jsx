@@ -3,6 +3,11 @@ import PropTypes from "prop-types";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import BulletText from "../../../../components/layout/BulletText.jsx";
 import PromotionInfo from "../../../../components/promotioninfo/PromotionInfo.jsx";
+import { Camera, ExternalLink, Pencil  } from "lucide-react";
+import CustomLink from "../../../../components/layout/customLink.jsx";
+import {useContext} from "react";
+import {AuthContext} from "../../../../context/AuthContext.jsx";
+import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 
 /**
  * FoodItemListItem
@@ -16,8 +21,10 @@ const FoodItemListItem = ({
                               formatMoney,
                               formatGrams,
                           }) => {
-    if (!item) return null;
 
+    const { user } = useContext(AuthContext);
+
+    if (!item) return null;
     const {
         id,
         name,
@@ -28,11 +35,36 @@ const FoodItemListItem = ({
         gramWeight,
         grams,
         nutrients = [],
+        imageUrl,
         promoted,
         promotionStartDate,
         promotionEndDate,
         source,
     } = item;
+
+    const isAdmin = !!user && Array.isArray(user.roles) && user.roles.includes("ADMIN");
+
+    const hasLink = (() => {
+        try { return typeof source === "string" && source.trim() !== "" && new URL(source); }
+        catch { return false; }
+    })();
+
+    const prettySource = (raw) => {
+        if (!raw || typeof raw !== "string") return null;
+        const cleaned = raw.replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
+        return cleaned.split(" ").map((w) => {
+            const isAcr = /^[A-Z0-9]{1,2}$/.test(w);
+            if (isAcr) return w.toUpperCase();
+            const lower = w.toLowerCase();
+            return lower.charAt(0).toUpperCase() + lower.slice(1);
+        }).join(" ");
+    };
+
+    const labelSource =
+        prettySource(item.foodSource) ||
+        (() => { try { return new URL(source).hostname.replace(/^www\./, ""); } catch { return null; } })();
+
+    const linkLabel = labelSource ? `Open product page on ${labelSource}` : "Open product page";
 
     // Grouping logic preserved from original page
     const orderedNutrients = [...nutrients].sort((a, b) => {
@@ -51,14 +83,54 @@ const FoodItemListItem = ({
             <CustomBox onClick={() => onToggle?.(id)} className="cursor-pointer">
                 <BulletText font="body">{name}</BulletText>
             </CustomBox>
+            {/* Promotion info */}
+            {promoted && (
+                <PromotionInfo
+                    start={promotionStartDate}
+                    end={promotionEndDate}
+                    source={source}
+                    className="ml-6"
+                />
+            )}
 
             {/* Expanded details */}
             {expanded && (
-                <CustomBox className="ml-6 mt-1 flex flex-col gap-1">
+                <CustomBox className="ml-6 mt-1 flex flex-col gap-1 mb-2">
+
+                    {imageUrl ? (
+                        <img
+                            src={imageUrl}
+                            alt={name}
+                            loading="lazy"
+                            className="w-14 h-14 object-cover rounded-md flex-shrink-0 border border-borderLight dark:border-borderDark"
+                        />
+                    ) : (
+                        <CustomBox
+                            className="w-14 h-14 rounded-md flex-shrink-0 border border-borderLight dark:border-borderDark bg-muted flex items-center justify-center"
+                            aria-label="No image available"
+                            role="img"
+                        >
+                            <Camera className="w-6 h-6 text-muted-foreground" />
+                        </CustomBox>
+                    )}
+
                     {/* Pricing & packaging details */}
-                    <BulletText font="body" italic>
-                        Price: {formatMoney(price)}
-                    </BulletText>
+                    <CustomBox className="flex items-center gap-2">
+                        <BulletText font="body" italic>
+                            Price: {formatMoney(price)}
+                        </BulletText>
+
+                        {isAdmin && (
+                            <CustomIconButton
+                                icon={<Pencil />}
+                                size={22}
+                                bgColor="bg-transparent"
+                                className="rounded border border-borderLight dark:border-borderDark hover:bg-muted"
+                                onClick={(e) => { e.stopPropagation(); onEditPrice?.(item); }}
+                            />
+                        )}
+                    </CustomBox>
+
 
                     {pricePer100g != null && (
                         <BulletText font="body" italic>
@@ -162,18 +234,32 @@ const FoodItemListItem = ({
                             </BulletText>
                         );
                     })}
+
+                    {grams != null && !isNaN(Number(grams)) && (
+                        <BulletText font="body" italic>
+                            Product size: {formatGrams(grams)}
+                        </BulletText>
+                    )}
+
+                    {hasLink && (
+                        <CustomBox className="mt-1">
+                            <CustomLink
+                                href={source}
+                                ariaLabel={linkLabel}
+                                title={linkLabel}
+                                truncate
+                                rightIcon={<ExternalLink className="w-3 h-3" aria-hidden="true" />}
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <BulletText font="body">
+                                    <span className="text-primary">{linkLabel}</span>
+                                </BulletText>
+                            </CustomLink>
+                        </CustomBox>
+                    )}
                 </CustomBox>
             )}
 
-            {/* Promotion info */}
-            {promoted && (
-                <PromotionInfo
-                    start={promotionStartDate}
-                    end={promotionEndDate}
-                    source={source}
-                    className="ml-6 mt-1"
-                />
-            )}
         </CustomBox>
     );
 };
@@ -200,11 +286,14 @@ FoodItemListItem.propTypes = {
         promotionStartDate: PropTypes.string,
         promotionEndDate: PropTypes.string,
         source: PropTypes.string,
+        imageUrl: PropTypes.string,
+        foodSource: PropTypes.string,
     }),
     expanded: PropTypes.bool,
     onToggle: PropTypes.func,
     formatMoney: PropTypes.func.isRequired,
     formatGrams: PropTypes.func.isRequired,
+    onEditPrice: PropTypes.func
 };
 
 export default FoodItemListItem;
