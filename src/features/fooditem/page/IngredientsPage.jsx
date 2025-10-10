@@ -11,8 +11,6 @@ import CustomGrid from "../../../components/layout/CustomGrid.jsx";
 import FoodItemCard from "../components/foodItemCard/FoodItemCard.jsx";
 import PageWrapper from "../../../components/layout/PageWrapper.jsx";
 
-const SIDEBAR_W = "16rem"; // pas aan naar je daadwerkelijke zijbalkbreedte
-
 const IngredientsPage = () => {
     const [groupedItems, setGroupedItems] = useState({});
     const [expandedItems, setExpandedItems] = useState({});

@@ -3,6 +3,9 @@ import CustomCard from "../../../../components/layout/CustomCard.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import { Camera, ExternalLink } from "lucide-react";
+import {useState} from "react";
+import {formatNutrient, shouldShowNutrient} from "../../helpers/formatNutrient.js";
+import CustomLink from "../../../../components/layout/customLink.jsx";
 
 /**
  * Compact card to render a single food item.
@@ -92,6 +95,7 @@ const FoodItemCard = ({
                     .includes(k.toLowerCase())
             )
         );
+
         const pick = (prioritized.length ? prioritized : nutrients).slice(0, 3);
         return pick.map((n) => {
             const label = n?.name || n?.nutrientName || "Nutrient";
@@ -103,9 +107,17 @@ const FoodItemCard = ({
         });
     })();
 
+    const formatLabel = (text) => {
+        if (!text) return "—";
+        const lower = text.toLowerCase();
+        return lower.charAt(0).toUpperCase() + lower.slice(1);
+    };
+
+    const [isTitleExpanded, setIsTitleExpanded] = useState(false);
+
     return (
         <CustomCard
-            className={`p-2 sm:p-3 gap-2 ${className}`}
+            className={`h-full w-full flex flex-col overflow-hidden p-2 sm:p-3 gap-2 ${className}`}
             isPinned={isPinned}
             createdByRole={createdByRole}
         >
@@ -130,15 +142,25 @@ const FoodItemCard = ({
 
                 <CustomBox className="min-w-0 flex-1">
                     <CustomBox className="flex items-center gap-1.5 flex-wrap">
-                        <CustomTypography as="h3" variant="h5" className="truncate" title={name}>
+                        <CustomTypography
+                            as="h3"
+                            variant="h5"
+                            title={name}
+                            role="button"
+                            tabIndex={0}
+                            onClick={(e) => { e.stopPropagation(); setIsTitleExpanded(v => !v); }}
+                            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setIsTitleExpanded(v => !v); } }}
+                            className={`${isTitleExpanded ? "line-clamp-2 break-words" : "line-clamp-1"} cursor-pointer select-none`}
+                        >
                             {name}
                         </CustomTypography>
+
 
                         {promoted && (
                             <CustomTypography
                                 as="span"
                                 variant="xsmallCard"
-                                className="px-1.5 py-0.5 rounded bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300"
+                                className="px-1.5 py-0.5 rounded bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 mb-1"
                             >
                                 Promoted
                             </CustomTypography>
@@ -148,7 +170,7 @@ const FoodItemCard = ({
                             <CustomTypography
                                 as="span"
                                 variant="xsmallCard"
-                                className="px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
+                                className="px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 mb-1"
                             >
                                 Store brand
                             </CustomTypography>
@@ -159,7 +181,7 @@ const FoodItemCard = ({
                         variant="xsmallCard"
                         className="text-muted-foreground truncate"
                     >
-                        {foodCategory ?? "—"} {foodSource ? `• ${prettySource(foodSource)}` : ""}
+                        {formatLabel(foodCategory)} {foodSource ? `• ${formatLabel(prettySource(foodSource))}` : ""}
                     </CustomTypography>
                 </CustomBox>
             </CustomBox>
@@ -168,9 +190,9 @@ const FoodItemCard = ({
             <CustomBox className="grid grid-cols-2 gap-2">
                 {/* Price box */}
                 <CustomBox className="rounded-lg border border-borderLight dark:border-borderDark p-1.5">
-                    <CustomBox className="flex justify-between">
+                    <CustomBox className="flex justify-between mb-1">
                         <CustomTypography variant="xsmallCard" className="text-muted-foreground">
-                            Price
+                            Price:
                         </CustomTypography>
                         <CustomTypography variant="xsmallCard" weight="medium">
                             {formatCurrency(price)}
@@ -189,9 +211,9 @@ const FoodItemCard = ({
 
                 {/* Pack + Portion box */}
                 <CustomBox className="rounded-lg border border-borderLight dark:border-borderDark p-1.5">
-                    <CustomBox className="flex justify-between">
+                    <CustomBox className="flex justify-between mb-1">
                         <CustomTypography variant="xsmallCard" className="text-muted-foreground">
-                            Pack
+                            Product size:
                         </CustomTypography>
                         <CustomTypography variant="xsmallCard" weight="medium">
                             {grams ? `${grams} g` : "—"}
@@ -199,62 +221,63 @@ const FoodItemCard = ({
                     </CustomBox>
 
                     <CustomBox className="mt-1">
-                        <CustomTypography variant="xsmallCard" className="text-muted-foreground">
-                            Portion
-                        </CustomTypography>
-                        <CustomTypography
-                            variant="xsmallCard"
-                            weight="medium"
-                            className="leading-tight truncate"
-                        >
-                            {portionDescription || (gramWeight ? `${gramWeight} g` : "—")}
-                        </CustomTypography>
+                        <CustomBox className="flex flex-wrap items-baseline">
+                            <CustomTypography
+                                variant="xsmallCard"
+                                className="text-muted-foreground whitespace-nowrap mr-1"
+                            >
+                                Portion:
+                            </CustomTypography>
+
+                            <CustomTypography
+                                variant="xsmallCard"
+                                weight="medium"
+                                className="break-words min-w-0"
+                            >
+                                {portionDescription || (gramWeight ? `${gramWeight} g` : "—")}
+                            </CustomTypography>
+                        </CustomBox>
                     </CustomBox>
+
                 </CustomBox>
             </CustomBox>
 
             {/* Nutrients preview */}
-            {shortNutrients.length > 0 && (
+            {Array.isArray(nutrients) && nutrients.length > 0 && (
                 <CustomBox className="flex flex-wrap gap-1">
-                    {shortNutrients.map((t, i) => (
-                        <CustomTypography
-                            as="span"
-                            key={i}
-                            variant="xsmallCard"
-                            className="px-1.5 py-0.5 rounded bg-muted text-foreground/80"
-                            title={t}
-                        >
-                            {t}
-                        </CustomTypography>
-                    ))}
-                    {Array.isArray(nutrients) && nutrients.length > shortNutrients.length && (
-                        <CustomTypography
-                            as="span"
-                            variant="xsmallCard"
-                            className="px-1.5 py-0.5 rounded bg-muted text-foreground/80"
-                        >
-                            +{nutrients.length - shortNutrients.length} more
-                        </CustomTypography>
-                    )}
+                    {nutrients.filter(n => shouldShowNutrient(n?.nutrientName)).map((n, i) => {
+                        const text = formatNutrient(n);
+                        return (
+                            <CustomTypography
+                                as="span"
+                                key={n?.nutrientId ?? i}
+                                variant="xsmallCard"
+                                className="px-1.5 py-0.5 rounded bg-muted text-foreground/80"
+                                title={text}
+                            >
+                                {text}
+                            </CustomTypography>
+                        );
+                    })}
                 </CustomBox>
             )}
 
+
             {/* Footer */}
-            <CustomBox className="flex items-center justify-between">
-                <a
+            <CustomBox className="flex items-center justify-between mt-auto">
+                <CustomLink
                     href={source}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 underline text-muted-foreground truncate"
+                    ariaLabel={linkLabel}
                     title={linkLabel}
-                    aria-label={linkLabel}
-                    onClick={(e) => e.stopPropagation()}
+                    truncate
+                    rightIcon={<ExternalLink className="w-3 h-3" aria-hidden="true" />}
+                    onClick={(e) => e.stopPropagation()} // preserve card onClick
                 >
-                    <CustomTypography as="span" variant="xsmallCard">
+                    <CustomTypography as="span" variant="xsmallCard" className="text-primary">
                         {linkLabel}
                     </CustomTypography>
-                    <ExternalLink className="w-3 h-3" aria-hidden="true" />
-                </a>
+                </CustomLink>
+
 
                 {/*{onClick && (*/}
                 {/*    <button*/}
