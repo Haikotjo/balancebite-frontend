@@ -5,7 +5,7 @@ import CustomTypography from "../../../../components/layout/CustomTypography.jsx
 import { Camera, ExternalLink } from "lucide-react";
 import {useState} from "react";
 import {formatNutrient, shouldShowNutrient} from "../../helpers/formatNutrient.js";
-import CustomLink from "../../../../components/layout/customLink.jsx";
+import CustomLink from "../../../../components/layout/CustomLink.jsx";
 
 /**
  * Compact card to render a single food item.
@@ -18,6 +18,9 @@ const FoodItemCard = ({
                           createdByRole,
                           onClick,
                       }) => {
+
+    const [isTitleExpanded, setIsTitleExpanded] = useState(false);
+
     if (!item) return null;
 
     const {
@@ -74,46 +77,11 @@ const FoodItemCard = ({
         ? `Open product page on ${labelSource}`
         : "Open product page";
 
-    // Try to surface a few common nutrients if present
-    const prioritizedKeys = [
-        "Energy",
-        "Calories",
-        "Protein",
-        "Carbohydrate",
-        "Fat",
-        "Fiber",
-        "Sugar",
-        "Salt",
-        "Sodium",
-    ];
-    const shortNutrients = (() => {
-        if (!Array.isArray(nutrients)) return [];
-        const prioritized = nutrients.filter((n) =>
-            prioritizedKeys.some((k) =>
-                String(n?.name || n?.nutrientName || "")
-                    .toLowerCase()
-                    .includes(k.toLowerCase())
-            )
-        );
-
-        const pick = (prioritized.length ? prioritized : nutrients).slice(0, 3);
-        return pick.map((n) => {
-            const label = n?.name || n?.nutrientName || "Nutrient";
-            const amount = n?.amount ?? n?.value ?? null;
-            const unit = n?.unitName || n?.unit || "";
-            return `${label}: ${amount != null ? amount : "?"}${
-                unit ? ` ${unit}` : ""
-            }`;
-        });
-    })();
-
     const formatLabel = (text) => {
         if (!text) return "—";
         const lower = text.toLowerCase();
         return lower.charAt(0).toUpperCase() + lower.slice(1);
     };
-
-    const [isTitleExpanded, setIsTitleExpanded] = useState(false);
 
     return (
         <CustomCard
@@ -162,7 +130,7 @@ const FoodItemCard = ({
                                 variant="xsmallCard"
                                 className="px-1.5 py-0.5 rounded bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 mb-1"
                             >
-                                Promoted
+                                On Sale
                             </CustomTypography>
                         )}
 
@@ -242,6 +210,22 @@ const FoodItemCard = ({
                 </CustomBox>
             </CustomBox>
 
+            {/* Sale description below the two boxes */}
+            {promoted && item.saleDescription && (
+                <CustomBox
+                    className="mt-2 rounded-lg border border-yellow-300 dark:border-yellow-700 bg-yellow-50 dark:bg-yellow-900/20 p-1.5 min-w-0"
+                >
+                    <CustomTypography
+                        variant="xsmallCard"
+                        className="text-yellow-800 dark:text-yellow-300 whitespace-normal break-words"
+                    >
+                        {item.saleDescription}
+                    </CustomTypography>
+                </CustomBox>
+            )}
+
+
+
             {/* Nutrients preview */}
             {Array.isArray(nutrients) && nutrients.length > 0 && (
                 <CustomBox className="flex flex-wrap gap-1">
@@ -305,6 +289,7 @@ FoodItemCard.propTypes = {
         id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
         imageUrl: PropTypes.string,
         name: PropTypes.string.isRequired,
+        saleDescription: PropTypes.string,
         nutrients: PropTypes.arrayOf(
             PropTypes.shape({
                 name: PropTypes.string,

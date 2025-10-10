@@ -1,15 +1,14 @@
 // src/pages/ingredients/IngredientsPage.jsx
 import { useEffect, useRef, useState } from "react";
 import { getAllFoodItems } from "../../../services/apiService";
-import BulletText from "../../../components/layout/BulletText";
 import { foodCategoryOptions } from "../../../utils/const/foodCategoryOptions.js";
 import CustomButton from "../../../components/layout/CustomButton.jsx";
 import CustomTypography from "../../../components/layout/CustomTypography.jsx";
 import CustomBox from "../../../components/layout/CustomBox.jsx";
-import PromotionInfo from "../../../components/promotioninfo/PromotionInfo.jsx";
 import CustomGrid from "../../../components/layout/CustomGrid.jsx";
 import FoodItemCard from "../components/foodItemCard/FoodItemCard.jsx";
 import PageWrapper from "../../../components/layout/PageWrapper.jsx";
+import FoodItemListItem from "../components/foodItemListItem/FoodItemListItem.jsx";
 
 const IngredientsPage = () => {
     const [groupedItems, setGroupedItems] = useState({});
@@ -95,155 +94,64 @@ const IngredientsPage = () => {
             </CustomBox>
 
             {/* content by category */}
-            {foodCategoryOptions.map(({ label, value }) => {
-                const items = groupedItems[value];
-                if (!items || items.length === 0) return null;
+            {viewMode === "list" ? (
+                // Two-column layout for category sections (when space allows)
+                <CustomBox className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                    {foodCategoryOptions.map(({ label, value }) => {
+                        const items = groupedItems[value];
+                        if (!items || items.length === 0) return null;
 
-                return (
-                    <CustomBox key={value} ref={(el) => (sectionRefs.current[value] = el)} className="mb-8">
-                        <CustomTypography as="h2" variant="h2" className="mb-2">
-                            {label}
-                        </CustomTypography>
+                        return (
+                            <CustomBox key={value} ref={(el) => (sectionRefs.current[value] = el)} className="mb-2">
+                                <CustomTypography as="h2" variant="h2" className="mb-2">
+                                    {label}
+                                </CustomTypography>
 
-                        {/* LIST MODE */}
-                        {viewMode === "list" && (
-                            <CustomBox className="flex flex-col gap-1">
-                                {items.map((item) => (
-                                    <CustomBox key={item.id}>
-                                        <CustomBox onClick={() => toggleExpand(item.id)} className="cursor-pointer">
-                                            <BulletText font="body">{item.name}</BulletText>
-                                        </CustomBox>
-
-                                        {expandedItems[item.id] && (
-                                            <CustomBox className="ml-6 mt-1 flex flex-col gap-1">
-                                                {/* pricing & packaging details */}
-                                                <BulletText font="body" italic>
-                                                    Price: {formatMoney(item.price)}
-                                                </BulletText>
-
-                                                {item.pricePer100g != null && (
-                                                    <BulletText font="body" italic>
-                                                        Price per 100 g: {formatMoney(item.pricePer100g)}
-                                                    </BulletText>
-                                                )}
-
-                                                {item.promoPrice != null && (
-                                                    <BulletText font="body" italic>
-                                                        Promo price: {formatMoney(item.promoPrice)}
-                                                    </BulletText>
-                                                )}
-
-                                                {item.salePercentage != null && !isNaN(Number(item.salePercentage)) && (
-                                                    <BulletText font="body" italic>
-                                                        Sale: {Number(item.salePercentage)}% off
-                                                    </BulletText>
-                                                )}
-
-                                                {item.gramWeight != null && !isNaN(Number(item.gramWeight)) && (
-                                                    <BulletText font="body" italic>
-                                                        Portion size: {formatGrams(item.gramWeight)}
-                                                    </BulletText>
-                                                )}
-
-                                                {item.grams != null && !isNaN(Number(item.grams)) && (
-                                                    <BulletText font="body" italic>
-                                                        Product size: {formatGrams(item.grams)}
-                                                    </BulletText>
-                                                )}
-
-                                                {/* nutrients (grouping logic preserved) */}
-                                                {[...item.nutrients]
-                                                    .sort((a, b) => {
-                                                        const order = ["Energy", "Carbohydrates", "Protein", "Total lipid (fat)"];
-                                                        const aIndex = order.indexOf(a.nutrientName);
-                                                        const bIndex = order.indexOf(b.nutrientName);
-                                                        if (aIndex === -1 && bIndex === -1) return 0;
-                                                        if (aIndex === -1) return 1;
-                                                        if (bIndex === -1) return -1;
-                                                        return aIndex - bIndex;
-                                                    })
-                                                    .map((n, index) => {
-                                                        if (n.nutrientName === "Total lipid (fat)") {
-                                                            const subFats = item.nutrients.filter(
-                                                                (sub) => sub.nutrientName === "Unsaturated Fat" || sub.nutrientName === "Saturated Fat"
-                                                            );
-
-                                                            return (
-                                                                <CustomBox key={`${item.id}-${n.nutrientId || index}`}>
-                                                                    <BulletText font="body" italic>
-                                                                        {n.nutrientName}: {n.value} {n.unitName}
-                                                                    </BulletText>
-                                                                    <CustomBox className="ml-4 mt-1 flex flex-col gap-1">
-                                                                        {subFats.map((sub, i) => (
-                                                                            <BulletText font="body" italic key={`${item.id}-${sub.nutrientName}-${i}`}>
-                                                                                {sub.nutrientName}: {sub.value} {sub.unitName}
-                                                                            </BulletText>
-                                                                        ))}
-                                                                    </CustomBox>
-                                                                </CustomBox>
-                                                            );
-                                                        }
-
-                                                        if (n.nutrientName === "Carbohydrates") {
-                                                            const sugars = item.nutrients.filter((sub) => sub.nutrientName === "Total Sugars");
-
-                                                            return (
-                                                                <CustomBox key={`${item.id}-${n.nutrientId || index}`}>
-                                                                    <BulletText font="body" italic>
-                                                                        {n.nutrientName}: {n.value} {n.unitName}
-                                                                    </BulletText>
-                                                                    <CustomBox className="ml-4 mt-1 flex flex-col gap-1">
-                                                                        {sugars.map((sub, i) => (
-                                                                            <BulletText font="body" italic key={`${item.id}-${sub.nutrientName}-${i}`}>
-                                                                                {sub.nutrientName}: {sub.value} {sub.unitName}
-                                                                            </BulletText>
-                                                                        ))}
-                                                                    </CustomBox>
-                                                                </CustomBox>
-                                                            );
-                                                        }
-
-                                                        if (
-                                                            n.nutrientName === "Unsaturated Fat" ||
-                                                            n.nutrientName === "Saturated Fat" ||
-                                                            n.nutrientName === "Total Sugars"
-                                                        ) {
-                                                            return null;
-                                                        }
-
-                                                        return (
-                                                            <BulletText font="body" italic key={`${item.id}-${n.nutrientId || index}`}>
-                                                                {n.nutrientName}: {n.value} {n.unitName}
-                                                            </BulletText>
-                                                        );
-                                                    })}
-                                            </CustomBox>
-                                        )}
-
-                                        {item.promoted && (
-                                            <PromotionInfo
-                                                start={item.promotionStartDate}
-                                                end={item.promotionEndDate}
-                                                source={item.source}
-                                                className="ml-6 mt-1"
-                                            />
-                                        )}
-                                    </CustomBox>
-                                ))}
+                                <CustomBox className="flex flex-col gap-1">
+                                    {items.map((item) => (
+                                        <FoodItemListItem
+                                            key={item.id}
+                                            item={item}
+                                            expanded={!!expandedItems[item.id]}
+                                            onToggle={(id) =>
+                                                setExpandedItems((prev) => ({ ...prev, [id]: !prev[id] }))
+                                            }
+                                            formatMoney={formatMoney}
+                                            formatGrams={formatGrams}
+                                        />
+                                    ))}
+                                </CustomBox>
                             </CustomBox>
-                        )}
+                        );
+                    })}
+                </CustomBox>
+            ) : (
+                // GRID MODE unchanged (per category)
+                foodCategoryOptions.map(({ label, value }) => {
+                    const items = groupedItems[value];
+                    if (!items || items.length === 0) return null;
 
-                        {/* GRID MODE */}
-                        {viewMode === "grid" && (
+                    return (
+                        <CustomBox key={value} ref={(el) => (sectionRefs.current[value] = el)} className="mb-8 w-full">
+                            <CustomTypography as="h2" variant="h2" className="mb-2">
+                                {label}
+                            </CustomTypography>
+
                             <CustomGrid>
                                 {items.map((item) => (
-                                    <FoodItemCard key={item.id} item={item} className="h-full" onClick={() => toggleExpand(item.id)} />
+                                    <FoodItemCard
+                                        key={item.id}
+                                        item={item}
+                                        className="h-full"
+                                        onClick={() => setExpandedItems((p) => ({ ...p, [item.id]: !p[item.id] }))}
+                                    />
                                 ))}
                             </CustomGrid>
-                        )}
-                    </CustomBox>
-                );
-            })}
+                        </CustomBox>
+                    );
+                })
+            )}
+
         </PageWrapper>
     );
 };
