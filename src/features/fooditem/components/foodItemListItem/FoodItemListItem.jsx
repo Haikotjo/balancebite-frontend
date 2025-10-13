@@ -4,7 +4,7 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import BulletText from "../../../../components/layout/BulletText.jsx";
 import PromotionInfo from "../../../../components/promotioninfo/PromotionInfo.jsx";
 import { Camera, ExternalLink, Pencil  } from "lucide-react";
-import CustomLink from "../../../../components/layout/customLink.jsx";
+import CustomLink from "../../../../components/layout/CustomLink.jsx";
 import {useContext} from "react";
 import {AuthContext} from "../../../../context/AuthContext.jsx";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
