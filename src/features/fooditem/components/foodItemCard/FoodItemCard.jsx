@@ -47,13 +47,14 @@ const FoodItemCard = ({
         }
     })();
 
-    const formatCurrency = (valueInCents) => {
-        if (valueInCents == null) return "-";
+    const formatCurrency = (valueInEuro) => {
+        const n = Number(valueInEuro);
+        if (valueInEuro == null || Number.isNaN(n)) return "—";
         return new Intl.NumberFormat("nl-NL", {
             style: "currency",
             currency: "EUR",
             minimumFractionDigits: 2,
-        }).format(valueInCents / 100);
+        }).format(n);
     };
 
     // Pretty-print a generic source string/enum (no per-enum mapping needed)

@@ -10,11 +10,19 @@ import FoodItemCard from "../components/foodItemCard/FoodItemCard.jsx";
 import PageWrapper from "../../../components/layout/PageWrapper.jsx";
 import FoodItemListItem from "../components/foodItemListItem/FoodItemListItem.jsx";
 
+import CustomModal from "../../../components/layout/CustomModal.jsx";
+import { patchFoodItemPriceApi } from "../../../services/apiService";
+
 const IngredientsPage = () => {
     const [groupedItems, setGroupedItems] = useState({});
     const [expandedItems, setExpandedItems] = useState({});
     const [viewMode, setViewMode] = useState("list"); // "list" | "grid"
     const sectionRefs = useRef({});
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [newPrice, setNewPrice] = useState(""); // in euro's
+    const [saving, setSaving] = useState(false);
 
     const formatMoney = (v) =>
         v == null || isNaN(Number(v))
@@ -27,36 +35,70 @@ const IngredientsPage = () => {
         const fetchData = async () => {
             try {
                 const items = await getAllFoodItems();
-                console.log("Fetched food items:", items);
-
+                console.log("All food items:", items);
                 const grouped = items.reduce((acc, item) => {
                     const category = item.foodCategory || "OTHER";
                     if (!acc[category]) acc[category] = [];
                     acc[category].push(item);
                     return acc;
                 }, {});
-
                 setGroupedItems(grouped);
             } catch (error) {
                 console.error("Error fetching food items:", error);
             }
         };
-
         fetchData();
     }, []);
+
 
     const handleScroll = (categoryValue) => {
         const ref = sectionRefs.current[categoryValue];
         if (ref) ref.scrollIntoView({ behavior: "smooth", block: "start" });
     };
 
-    const toggleExpand = (id) => {
-        setExpandedItems((prev) => ({ ...prev, [id]: !prev[id] }));
+    const openEditPrice = (item) => {
+        setSelectedItem(item);
+        // prefill met euro’s
+        setNewPrice(item?.price != null ? Number(item.price).toFixed(2) : "");
+        setIsModalOpen(true);
     };
+
+    const closeEditPrice = () => {
+        setIsModalOpen(false);
+        setSelectedItem(null);
+        setNewPrice("");
+        setSaving(false);
+    };
+
+    const savePrice = async () => {
+        if (!selectedItem) return;
+        try {
+            setSaving(true);
+            // Send EURO, bv. 2.49 (or zero to clear)
+            const euro = newPrice === "" ? null : parseFloat(String(newPrice).replace(",", "."));
+            const updated = await patchFoodItemPriceApi(selectedItem.id, euro);
+
+            setGroupedItems((prev) => {
+                const next = { ...prev };
+                for (const cat of Object.keys(next)) {
+                    next[cat] = next[cat].map((it) =>
+                        it.id === updated.id ? { ...it, ...updated } : it
+                    );
+                }
+                return next;
+            });
+
+            closeEditPrice();
+        } catch (err) {
+            console.error("Failed to update price", err);
+            setSaving(false);
+        }
+    };
+
 
     return (
         <PageWrapper className="flex flex-col items-center">
-            <CustomBox className="flex items-center justify-between mb-8 flex-wrap">
+            <CustomBox className="flex items-center justify-between mb-8 flex-wrap w-full">
                 <CustomTypography as="h1" variant="h1">
                     Ingredients
                 </CustomTypography>
@@ -81,7 +123,7 @@ const IngredientsPage = () => {
             </CustomBox>
 
             {/* category shortcuts */}
-            <CustomBox className="flex flex-wrap gap-2 mb-6">
+            <CustomBox className="flex flex-wrap gap-2 mb-6 w-full">
                 {foodCategoryOptions.map(({ label, value }) => (
                     <CustomButton
                         key={value}
@@ -118,6 +160,8 @@ const IngredientsPage = () => {
                                             }
                                             formatMoney={formatMoney}
                                             formatGrams={formatGrams}
+                                            // ⬇️ nieuw: geef handler door
+                                            onEditPrice={openEditPrice}
                                         />
                                     ))}
                                 </CustomBox>
@@ -152,6 +196,37 @@ const IngredientsPage = () => {
                 })
             )}
 
+            {/*  Modal for adjusting price*/}
+            <CustomModal isOpen={isModalOpen} onClose={closeEditPrice}>
+                <CustomBox className="p-4 flex flex-col gap-3">
+                    <CustomTypography as="h3" variant="h4" className="mb-1">
+                        Edit price
+                    </CustomTypography>
+
+                    <CustomTypography variant="small" className="text-muted-foreground">
+                        {selectedItem?.name}
+                    </CustomTypography>
+
+                    <input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        value={newPrice}
+                        onChange={(e) => setNewPrice(e.target.value)}
+                        className="border border-borderLight dark:border-borderDark rounded-md p-2 w-full"
+                        placeholder="Nieuwe prijs in € (bijv. 2.49)"
+                    />
+
+                    <CustomBox className="flex justify-end gap-2 mt-2">
+                        <CustomButton onClick={closeEditPrice} variant="outline" color="neutral">
+                            Cancel
+                        </CustomButton>
+                        <CustomButton onClick={savePrice} variant="solid" color="primary" disabled={saving}>
+                            {saving ? "Saving..." : "Save"}
+                        </CustomButton>
+                    </CustomBox>
+                </CustomBox>
+            </CustomModal>
         </PageWrapper>
     );
 };

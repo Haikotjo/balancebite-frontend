@@ -20,6 +20,7 @@ const FoodItemListItem = ({
                               onToggle,
                               formatMoney,
                               formatGrams,
+                              onEditPrice = () => {},
                           }) => {
 
     const { user } = useContext(AuthContext);
@@ -125,7 +126,7 @@ const FoodItemListItem = ({
                                 icon={<Pencil />}
                                 size={22}
                                 bgColor="bg-transparent"
-                                className="rounded border border-borderLight dark:border-borderDark hover:bg-muted"
+                                className="text-primary"
                                 onClick={(e) => { e.stopPropagation(); onEditPrice?.(item); }}
                             />
                         )}
