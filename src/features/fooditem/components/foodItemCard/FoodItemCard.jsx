@@ -4,8 +4,15 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import { Camera, ExternalLink } from "lucide-react";
 import {useState} from "react";
+import {useContext} from "react";
+import {AuthContext} from "../../../../context/AuthContext.jsx";
 import {formatNutrient, shouldShowNutrient} from "../../helpers/formatNutrient.js";
 import CustomLink from "../../../../components/layout/CustomLink.jsx";
+import { Pencil } from "lucide-react";
+import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
+import CustomModal from "../../../../components/layout/CustomModal.jsx";
+import UpdateFoodItemForm from "../updateFooditemForm/UpdateFoodItemForm.jsx";
+import CustomButton from "../../../../components/layout/CustomButton.jsx";
 
 /**
  * Compact card to render a single food item.
@@ -18,6 +25,10 @@ const FoodItemCard = ({
                           createdByRole,
                           onClick,
                       }) => {
+
+    const { user } = useContext(AuthContext);
+
+    const [isEditOpen, setIsEditOpen] = useState(false);
 
     const [isTitleExpanded, setIsTitleExpanded] = useState(false);
 
@@ -38,6 +49,8 @@ const FoodItemCard = ({
         source,
         nutrients = [],
     } = item;
+
+    const isAdmin = !!user && Array.isArray(user.roles) && user.roles.includes("ADMIN");
 
     const hasLink = (() => {
         try {
@@ -161,6 +174,14 @@ const FoodItemCard = ({
                         {formatLabel(foodCategory)} {foodSource ? `• ${formatLabel(prettySource(foodSource))}` : ""}
                     </CustomTypography>
                 </CustomBox>
+                {isAdmin && (
+                    <CustomIconButton
+                        icon={<Pencil />}
+                        size={22}
+                        bgColor="bg-transparent"
+                        onClick={(e) => { e.stopPropagation(); setIsEditOpen(true); }}
+                    />
+                )}
             </CustomBox>
 
             {/* Meta */}
@@ -286,6 +307,29 @@ const FoodItemCard = ({
                 {/*    </button>*/}
                 {/*)}*/}
             </CustomBox>
+
+            {/* Modal met Update form */}
+            <CustomModal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)}>
+                <CustomBox className="p-3 sm:p-4 max-h-[80vh] overflow-auto">
+                    <CustomTypography as="h3" variant="h4" className="mb-2">
+                        Update “{item?.name}”
+                    </CustomTypography>
+
+                    {/* Sluitknop (optioneel) */}
+                    <CustomBox className="flex justify-end mb-2">
+                        <CustomButton
+                            variant="outline"
+                            color="error"
+                            onClick={() => setIsEditOpen(false)}
+                        >
+                            Close
+                        </CustomButton>
+                    </CustomBox>
+
+
+                    <UpdateFoodItemForm foodItemId={item?.id} />
+                </CustomBox>
+            </CustomModal>
         </CustomCard>
     );
 };

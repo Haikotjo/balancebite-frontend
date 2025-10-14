@@ -16,5 +16,6 @@ export const foodCategoryOptions = [
     { label: "Ready meal", value: "READY_MEAL" },
     { label: "Snack", value: "SNACK" },
     { label: "Supplement", value: "SUPPLEMENT" },
+    { label: "Protein supplement", value: "PROTEIN_SUPPLEMENT" },
     { label: "Other", value: "OTHER" },
 ];

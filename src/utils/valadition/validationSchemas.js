@@ -49,7 +49,7 @@ export const foodItemSchema = yup.object().shape({
         .string()
         .transform((value, originalValue) => originalValue === "" ? null : value)
         .url("Source must be a valid URL")
-        .max(100, "Source must not exceed 100 characters.")
+        .max(2048, "Source must not exceed 2048 characters.")
         .nullable(),
 
     portionDescription: yup

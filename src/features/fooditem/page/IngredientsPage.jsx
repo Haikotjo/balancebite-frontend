@@ -16,7 +16,7 @@ import { patchFoodItemPriceApi } from "../../../services/apiService";
 const IngredientsPage = () => {
     const [groupedItems, setGroupedItems] = useState({});
     const [expandedItems, setExpandedItems] = useState({});
-    const [viewMode, setViewMode] = useState("list"); // "list" | "grid"
+    const [viewMode, setViewMode] = useState("grid"); // "list" | "grid"
     const sectionRefs = useRef({});
 
     const [isModalOpen, setIsModalOpen] = useState(false);
