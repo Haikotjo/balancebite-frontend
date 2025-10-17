@@ -20,7 +20,7 @@ export const UserMealsProvider = ({ children }) => {
     const [sortBy, setSortBy] = useState(null);
     const [activeOption, setActiveOption] = useState("All Meals");
     const userMealsRef = useRef(userMeals);
-    const [itemsPerPage] = useState(6);
+    const [itemsPerPage] = useState(12);
 
     useEffect(() => {
         userMealsRef.current = userMeals;

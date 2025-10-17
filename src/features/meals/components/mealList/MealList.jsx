@@ -4,8 +4,6 @@ import PropTypes from "prop-types";
 import MealDetailCard from "../mealCardLarge/MealDetailCard.jsx";
 import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
-import Spinner from "../../../../components/layout/Spinner.jsx";
-import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomGrid from "../../../../components/layout/CustomGrid.jsx";
 
 /**
@@ -19,7 +17,7 @@ import CustomGrid from "../../../../components/layout/CustomGrid.jsx";
  * @returns {JSX.Element}
  */
 function MealList({ filters, sortBy, selectedMeal, pinnedMeals = [] }) {
-    const { meals, loading, error, setFilters, setSortBy  } = useContext(UserMealsContext);
+    const { meals, setFilters, setSortBy  } = useContext(UserMealsContext);
     const location = useLocation();
 
     // Apply name filter or selected meal override
