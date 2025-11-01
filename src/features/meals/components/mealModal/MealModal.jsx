@@ -65,7 +65,7 @@ const MealModal = ({ meal, isPinned = false, mode = "view", onCancel, onConfirm 
             {/* Backdrop layer (click disabled in preview) */}
             <CustomBox
                 as="div"
-                className="absolute inset-0 bg-black bg-opacity-70"
+                className="absolute inset-0 bg-black bg-opacity-50"
                 onClick={isPreview ? undefined : closeModal}
                 aria-hidden={isPreview ? "true" : "false"}
             />
