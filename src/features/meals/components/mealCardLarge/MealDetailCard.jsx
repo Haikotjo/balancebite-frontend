@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import { useContext, useMemo } from "react";
+import {useContext, useMemo, useState} from "react";
 
 import MealCardImageSection from "../mealCardImageSection/MealCardImageSection.jsx";
 import MealCardExpandableDescription from "../mealCardExpandableDescription/ExpandableDescription.jsx";
@@ -34,7 +34,9 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
     const { user } = useAuth();
     const isCreator = String(user?.id) === String(mealToRender?.createdBy?.id);
     const isDietitian = Array.isArray(user?.roles) && user.roles.includes("DIETITIAN");
-    const canShare = isCreator && isDietitian;
+    const isAdmin = Array.isArray(user?.roles) && user.roles.includes("ADMIN");
+    const canShare = isCreator && (isDietitian || isAdmin);
+    const [infoOpen, setInfoOpen] = useState(false);
 
     const isListItem = viewMode === "list";
 
@@ -81,57 +83,62 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
                     showUpdateButton={showUpdateButton}
                     viewMode={viewMode}
                     isPinned={isPinned}
+                    priceLabel={formattedPrice}
+                    macros={macros}
                 />
 
             </CustomBox>
 
             {/* Right column: details */}
             <CustomBox className="p-4 flex-1">
-                {/* Title + price row */}
-                <CustomBox className="flex items-start justify-between gap-3">
-                    <CustomBox className="flex items-center gap-2">
-                        <ExpandableTitle
-                            title={mealToRender.name}
-                            mealId={String(mealToRender.id)}
-                            viewMode={viewMode}
-                        />
+                <CustomBox className="mb-2">
+                    {/* Title + price row */}
+                    <CustomBox className="flex items-start justify-between gap-3">
+                        <CustomBox className="flex items-center gap-2">
+                            <ExpandableTitle
+                                title={mealToRender.name}
+                                mealId={String(mealToRender.id)}
+                                viewMode={viewMode}
+                            />
 
-                        <CustomLink
-                            href={`/meals/${mealToRender.id}`}
-                            ariaLabel="Open in nieuw tabblad"
-                            title="Open in nieuw tabblad"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            rightIcon={<ExternalLink className="w-3 h-3" aria-hidden="true" />}
-                            onClick={(e) => e.stopPropagation()}
-                            className="text-muted-foreground hover:text-primary"
-                        >
-                            <span className="sr-only">Open in nieuw tabblad</span>
-                        </CustomLink>
+                            <CustomLink
+                                href={`/meal/${mealToRender.id}`}
+                                ariaLabel="Open new window"
+                                title="Open new window"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                rightIcon={<ExternalLink className="w-3 h-3" aria-hidden="true" />}
+                                onClick={(e) => e.stopPropagation()}
+                                className="text-muted-foreground hover:text-primary"
+                            >
+                            </CustomLink>
+                        </CustomBox>
+
+
                     </CustomBox>
-
 
                 </CustomBox>
 
-                {formattedPrice && (
-                    <CustomTypography
-                        as="span"
-                        variant="xsmallCard"
-                        bold
-                        className="shrink-0 rounded-full px-3 py-1 bg-primary text-white"
-                    >
-                        {formattedPrice}
-                    </CustomTypography>
-                )}
+                {/* Description */}
+                <MealCardExpandableDescription
+                    description={mealToRender.mealDescription}
+                    viewMode={viewMode}
+                />
 
-                {canShare && <MealShareForm mealId={mealToRender.id} />}
+                {/*{canShare && <MealShareForm mealId={mealToRender.id} />}*/}
+
 
                 {isListItem && (
                     <>
-                        <CustomDivider className="my-2" />
-                        <CustomBox className="my-2 px-4">
-                            <MealCardMacrosCompact macros={macros} />
-                        </CustomBox>
+                        {/*<CustomDivider className="my-2" />*/}
+                        {/*<CustomBox className="my-2 px-4">*/}
+                        {/*    <MealCardMacrosCompact*/}
+                        {/*        macros={macros}*/}
+                        {/*        viewMode={viewMode}*/}
+                        {/*    />*/}
+                        {/*</CustomBox>*/}
+
+                        <CustomDivider className="mt-4 mb-4" />
 
                         <MealCardMealTags
                             cuisines={mealToRender.cuisines}
@@ -143,12 +150,6 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
                         <CustomDivider className="my-4" />
                     </>
                 )}
-
-                {/* Description */}
-                <MealCardExpandableDescription
-                    description={mealToRender.mealDescription}
-                    viewMode={viewMode}
-                />
 
                 {/* Horizontal scroller with ingredient images (only if we have any) */}
                 {ingredientThumbs.length > 0 && (

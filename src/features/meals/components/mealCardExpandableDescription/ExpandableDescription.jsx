@@ -34,25 +34,32 @@ const MealCardExpandableDescription = ({ description, viewMode }) => {
                     <>
                         {description}
                         {isLongText && !showAll && (
-                            <span
+                            <CustomTypography
+                                as="span"
+                                variant="small"
+                                inheritColor
+                                className="text-primary cursor-pointer not-italic ml-1"
                                 onClick={() => setExpanded(false)}
-                                className="text-primary cursor-pointer not-italic"
                             >
-                                Read less
-                            </span>
+                                ...Read less
+                            </CustomTypography>
                         )}
                     </>
                 ) : (
                     <>
                         {description.substring(0, 100)}{" "}
-                        <span
-                            onClick={() => setExpanded(true)}
+                        <CustomTypography
+                            as="span"
+                            variant="small"
+                            inheritColor
                             className="text-primary cursor-pointer not-italic"
+                            onClick={() => setExpanded(true)}
                         >
                             ...Read more
-                        </span>
+                        </CustomTypography>
                     </>
                 )}
+
             </CustomTypography>
         </CustomBox>
     );

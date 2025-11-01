@@ -1,7 +1,5 @@
 import PropTypes from "prop-types";
 import clsx from "clsx";
-import {useEffect} from "react";
-import {getAllFoodItems} from "../../services/apiService.js";
 
 const VARIANT_STYLES = {
     h1: "text-2xl sm:text-3xl md:text-4xl font-extrabold",
@@ -56,7 +54,8 @@ const CustomTypography = ({
                               font = "body",
                               className = "",
                               as = "p",
-                              weight, // "thin" | "extralight" | "light" | "normal" | "medium" | "semibold" | "bold" | "extrabold" | "black"
+                              weight,
+                              inheritColor = false,
                               ...props
                           }) => {
     const Tag = as;
@@ -69,7 +68,7 @@ const CustomTypography = ({
         bold && !weight && VARIANT_STYLES.bold,
         // Explicit weight overrides any weight coming from variant/bold
         weight && WEIGHT_STYLES[weight],
-        color ?? "text-lightText dark:text-darkText",
+        !inheritColor && (color ?? "text-lightText dark:text-darkText"),
         className
     );
 
@@ -100,6 +99,7 @@ CustomTypography.propTypes = {
         "extrabold",
         "black",
     ]),
+    inheritColor: PropTypes.bool,
 };
 
 export default CustomTypography;

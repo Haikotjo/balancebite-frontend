@@ -9,12 +9,16 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomImage from "../../../../components/layout/CustomImage.jsx";
 import { ModalContext } from "../../../../context/ModalContext.jsx";
 import MealModal from "../mealModal/MealModal.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import MealCardMacrosCompact from "../mealCardMacrosCompact/MealCardMacrosCompact.jsx";
 
 const MealCardImageSection = ({
                                   meal,
                                   viewMode = "page",
                                   showUpdateButton = true,
                                   isPinned = false,
+                                  priceLabel,
+                                  macros,
                               }) => {
     const imageSrc = getImageSrc(meal);
     const { openModal } = useContext(ModalContext);
@@ -31,32 +35,57 @@ const MealCardImageSection = ({
                 )}
                 onClick={handleImageClick}
             >
-                {/* IMAGE */}
-                <CustomImage
-                    src={imageSrc}
-                    alt={meal.name}
-                    className="w-full h-full object-cover rounded-md"
-                />
+                <CustomImage src={imageSrc} alt={meal.name} className="w-full h-full object-cover rounded-md" />
 
-                {/* OVERLAY TOP */}
+                {/* OVERLAY TOP (prep-time + actions) – omlaag gezet onder de macrosbar */}
                 <CustomBox
-                    className="absolute top-0 left-0 w-full flex items-center justify-between px-2 py-1 z-0 pointer-events-auto cursor-default"
+                    className="absolute top-1 w-full flex items-center justify-between px-2 py-1 z-10
+                     pointer-events-auto cursor-default"
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <CustomBox className="flex items-center justify-between w-full z-10">
+                    <CustomBox className="flex items-center mr-1">
                         {meal.preparationTime && (
                             <PreparationTimeIcon preparationTime={meal.preparationTime} layout="inline" />
                         )}
-                        <MealCardActionButtons
-                            meal={meal}
-                            showUpdateButton={showUpdateButton}
-                            viewMode={viewMode}
-                            isPinned={isPinned}
-                        />
                     </CustomBox>
+
+                    <MealCardActionButtons
+                        meal={meal}
+                        showUpdateButton={showUpdateButton}
+                        viewMode={viewMode}
+                        isPinned={isPinned}
+                    />
+
+                    {/* PRICE CHIP – top-right */}
+                    {priceLabel && (
+                        <CustomBox className="absolute top-2 right-2 z-30" onClick={(e) => e.stopPropagation()}>
+                            <CustomTypography as="span" variant="xsmallCard" bold className="rounded-full px-3 py-1 bg-primary text-white">
+                                {priceLabel}
+                            </CustomTypography>
+                        </CustomBox>
+                    )}
+
+
+                    {/* VERTICAL MACROS – right, just under price chip */}
+                    {macros && (
+                        <CustomBox
+                            className="absolute right-2 top-12 z-20 pointer-events-auto"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <MealCardMacrosCompact
+                                macros={macros}
+                                vertical                        // ← stack items vertically
+                                iconSize={18}
+                                textClassName="text-white"
+                                className="text-white"
+                                rowClassName="flex flex-col items-end gap-2" // right-align, nice spacing
+                                // itemClassName default adds per-item chip bg/blur/rounded
+                            />
+                        </CustomBox>
+                    )}
                 </CustomBox>
 
-                {/* OVERLAY BOTTOM */}
+                {/* OVERLAY BOTTOM (creator info) */}
                 <CustomBox
                     className="absolute bottom-0 left-0 w-full z-0 pointer-events-auto cursor-default"
                     onClick={(e) => e.stopPropagation()}
@@ -73,6 +102,8 @@ MealCardImageSection.propTypes = {
     showUpdateButton: PropTypes.bool,
     viewMode: PropTypes.oneOf(["page", "list", "mobile"]),
     isPinned: PropTypes.bool,
+    priceLabel: PropTypes.string,
+    macros: PropTypes.object,
 };
 
 export default MealCardImageSection;
