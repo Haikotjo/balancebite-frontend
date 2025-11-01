@@ -12,6 +12,7 @@ import ProfileMenu from "../profileMenu/ProfileMenu.jsx";
 import HamburgerMenu from "../hamburgerMenu/HamburgerMenu.jsx";
 import { useThemeMode } from "../../../../themes/useThemeMode.js";
 import Logo from "../../../../components/logo/Logo.jsx";
+import DarkModeSwitch from "../darkModeSwitch/DarkModeSwitch.jsx";
 
 // Small hook to track viewport height (used to hide items below a threshold)
 function useViewportHeight() {
@@ -199,19 +200,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
 
             {/* Footer (fixed bottom): theme toggle) */}
             <CustomTooltip text="Toggle theme" position="right">
-                <CustomBox
-                    onClick={toggleTheme}
-                    className={clsx(
-                        "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                        mode === "dark" ? "text-white" : "text-gray-800"
-                    )}
-                >
-                    {mode === "dark" ? (
-                        <Sun className="w-8 h-8 mx-auto" />
-                    ) : (
-                        <Moon className="w-8 h-8 mx-auto" fill="currentColor" stroke="none" />
-                    )}
-                </CustomBox>
+                <DarkModeSwitch variant="icon" iconSize={32} />
             </CustomTooltip>
         </CustomBox>
     );
