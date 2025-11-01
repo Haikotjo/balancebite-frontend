@@ -73,7 +73,7 @@ const MealModal = ({ meal, isPinned = false, mode = "view", onCancel, onConfirm 
             {/* Modal surface */}
             <CustomBox
                 as="div"
-                className="relative z-[2147483001] w-[90%] max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl shadow-lg bg-lightBackground dark:bg-darkBackground"
+                className="relative z-[2147483001] w-[85%] max-w-4xl max-h-[85vh] overflow-y-auto rounded-xl shadow-lg bg-lightBackground dark:bg-darkBackground"
                 onClick={(e) => e.stopPropagation()}
                 role="dialog"
                 aria-modal="true"
@@ -117,7 +117,7 @@ const MealModal = ({ meal, isPinned = false, mode = "view", onCancel, onConfirm 
                             </CustomBox>
                         </CustomBox>
 
-                        {/* English comment: visual separation between top bar and card content (no borders). */}
+                        {/* Visual separation between top bar and card content (no borders). */}
                         <CustomBox className="h-2" aria-hidden="true" />
                     </>
                 )}

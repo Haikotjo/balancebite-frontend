@@ -29,7 +29,7 @@ export default function PageWrapper({ children, className = "", narrow = false }
 
                 // Mobile: reserve space for bottom bar (72px) + safe area.
                 // Desktop (md+): remove bottom padding because sidebar is left, not bottom.
-                "pb-[calc(72px+env(safe-area-inset-bottom))] md:pb-0",
+                "pb-[calc(72px+env(safe-area-inset-bottom))] md:pb-20",
 
                 // Desktop: leave space for fixed left sidebar (72px)
                 "md:ml-[72px]",

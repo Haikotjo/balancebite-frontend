@@ -142,7 +142,7 @@ function HomePage() {
                     items={allMeals}
                     onTitleClick={() => navigate("/meals", { state: { filtersFromRedirect: {} } })}
                     renderItem={(meal) => (
-                        <CustomBox className="w-full max-w-[300px]">
+                        <CustomBox className="w-full max-w-[300px] text-left">
                             <MealDetailCard meal={meal} viewMode="list" hideAfterTitle />
                         </CustomBox>
                     )}

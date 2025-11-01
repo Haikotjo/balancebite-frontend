@@ -20,6 +20,8 @@ import MealShareForm from "../mealshareform/MealShareForm.jsx";
 import CustomLink from "../../../../components/layout/CustomLink.jsx";
 import { ExternalLink } from "lucide-react";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 
 const useAuth = () => useContext(AuthContext);
 
@@ -37,6 +39,7 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
     const isAdmin = Array.isArray(user?.roles) && user.roles.includes("ADMIN");
     const canShare = isCreator && (isDietitian || isAdmin);
     const [infoOpen, setInfoOpen] = useState(false);
+    const [showMoreInfo, setShowMoreInfo] = useState(false);
 
     const isListItem = viewMode === "list";
 
@@ -119,55 +122,68 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
 
                 </CustomBox>
 
+                <CustomDivider className="mb-2" />
+
                 {/* Description */}
                 <MealCardExpandableDescription
                     description={mealToRender.mealDescription}
                     viewMode={viewMode}
                 />
 
+
                 {/*{canShare && <MealShareForm mealId={mealToRender.id} />}*/}
 
 
                 {isListItem && (
                     <>
-                        {/*<CustomDivider className="my-2" />*/}
-                        {/*<CustomBox className="my-2 px-4">*/}
-                        {/*    <MealCardMacrosCompact*/}
-                        {/*        macros={macros}*/}
-                        {/*        viewMode={viewMode}*/}
-                        {/*    />*/}
-                        {/*</CustomBox>*/}
+                        {/* Toggle */}
+                        <CustomBox className={`mt-4 ${showMoreInfo ? "mb-4" : "mb-0"} w-full flex justify-center`}>
+                            <CustomIconButton
+                                icon={showMoreInfo ? <ChevronUp className="text-primary" /> : <ChevronDown className="text-primary" />}
+                                onClick={() => setShowMoreInfo(v => !v)}
+                                size={28}
+                                bgColor="bg-transparent hover:bg-primary/10"
+                                className="border border-primary/60 hover:border-primary text-primary rounded-xl focus:outline-none"
+                                disableScale
+                            />
 
-                        <CustomDivider className="mt-4 mb-4" />
+                        </CustomBox>
 
-                        <MealCardMealTags
-                            cuisines={mealToRender.cuisines}
-                            diets={mealToRender.diets}
-                            mealTypes={mealToRender.mealTypes}
-                            onFilter={handleFilterRedirect}
-                            viewMode={viewMode}
-                        />
-                        <CustomDivider className="my-4" />
+                        {/* Verborgen content pas tonen bij expand */}
+                        {showMoreInfo && (
+                            <>
+
+                                <MealCardMealTags
+                                    cuisines={mealToRender.cuisines}
+                                    diets={mealToRender.diets}
+                                    mealTypes={mealToRender.mealTypes}
+                                    onFilter={handleFilterRedirect}
+                                    viewMode={viewMode}
+                                    size="small"
+                                />
+
+                                <CustomDivider className="my-4" />
+
+                                {ingredientThumbs.length > 0 && (
+                                    <HorizontalScrollSection
+                                        items={ingredientThumbs}
+                                        className="mt-1 mb-0"
+                                        renderItem={(src) => (
+                                            <img
+                                                src={src}
+                                                alt="Ingredient"
+                                                className="h-16 w-16 rounded-md object-cover border border-borderLight dark:border-borderDark"
+                                                loading="lazy"
+                                                draggable={false}
+                                            />
+                                        )}
+                                    />
+                                )}
+                            </>
+                        )}
                     </>
                 )}
 
-                {/* Horizontal scroller with ingredient images (only if we have any) */}
-                {ingredientThumbs.length > 0 && (
-                    <HorizontalScrollSection
-                        // no title by default; set title="Ingredients" if you want a heading
-                        items={ingredientThumbs}
-                        className="mt-1 mb-0"
-                        renderItem={(src) => (
-                            <img
-                                src={src}
-                                alt="Ingredient"
-                                className="h-16 w-16 rounded-md object-cover border border-borderLight dark:border-borderDark"
-                                loading="lazy"
-                                draggable={false}
-                            />
-                        )}
-                    />
-                )}
             </CustomBox>
         </CustomCard>
     );
