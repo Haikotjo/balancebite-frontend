@@ -76,7 +76,7 @@ const MealModal = ({ meal, isPinned = false, mode = "view", onCancel, onConfirm 
                 className="
     relative z-[2147483001]
     w-[90%] max-w-4xl
-    max-h-[60vh] sm:max-h-[70vh] md:max-h-[85vh]
+    max-h-[70vh] sm:max-h-[70vh] md:max-h-[85vh]
     overflow-y-auto
     rounded-xl shadow-lg
     bg-lightBackground dark:bg-darkBackground
