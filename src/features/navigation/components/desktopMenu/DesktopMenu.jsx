@@ -183,7 +183,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
             {/* Middle: evenly distribute groups using flex spacers */}
             <CustomBox className="flex-1 flex flex-col items-center">
                 {/* Spacer before the first group to match the pattern */}
-                <div className="flex-1" />
+                <CustomBox className="flex-1" />
 
                 {groups.map((node, idx) => (
                     <Fragment key={idx}>

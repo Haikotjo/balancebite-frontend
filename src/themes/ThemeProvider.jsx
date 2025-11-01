@@ -1,30 +1,33 @@
 // src/themes/ThemeModeProvider.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import { ThemeModeContext } from "./ThemeModeContext";
 
+/**
+ * Single source of truth for theme mode.
+ * - Restores from localStorage or system preference on first mount.
+ * - Persists to localStorage on change.
+ * - Applies/removes the 'dark' class on <html>.
+ */
 export const ThemeModeProvider = ({ children }) => {
-    const [mode, setMode] = useState("dark");
+    // Lazy init: read once from localStorage or system preference
+    const [mode, setMode] = useState(() => {
+        const saved = localStorage.getItem("theme-mode");
+        if (saved === "light" || saved === "dark") return saved;
+        const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
+        return prefersDark ? "dark" : "light";
+    });
 
-    const toggleTheme = () => {
-        setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
-    };
+    const toggleTheme = () => setMode((m) => (m === "light" ? "dark" : "light"));
 
+    // Apply to <html> and persist
     useEffect(() => {
-        if (mode === "dark") {
-            document.documentElement.classList.add("dark");
-        } else {
-            document.documentElement.classList.remove("dark");
-        }
+        document.documentElement.classList.toggle("dark", mode === "dark");
+        localStorage.setItem("theme-mode", mode);
     }, [mode]);
 
-    return (
-        <ThemeModeContext.Provider value={{ mode, toggleTheme }}>
-            {children}
-        </ThemeModeContext.Provider>
-    );
+    const value = useMemo(() => ({ mode, toggleTheme }), [mode]);
+    return <ThemeModeContext.Provider value={value}>{children}</ThemeModeContext.Provider>;
 };
 
-ThemeModeProvider.propTypes = {
-    children: PropTypes.node.isRequired,
-};
+ThemeModeProvider.propTypes = { children: PropTypes.node.isRequired };
