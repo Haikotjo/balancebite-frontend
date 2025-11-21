@@ -26,7 +26,7 @@ const CustomFloatingNumberInput = React.forwardRef(function CustomFloatingNumber
         step,
         disabled = false,
         placeholder,      // optional override; defaults to label
-        suffix = "g",     // <- fixed visual suffix (e.g., "g" or "gram")
+        suffix = "(g)",     // <- fixed visual suffix (e.g., "g" or "gram")
         showSuffix = true,
         ...rest
     },

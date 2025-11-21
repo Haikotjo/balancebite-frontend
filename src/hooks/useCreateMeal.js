@@ -46,6 +46,9 @@ export const useCreateMeal = ({ preview = false } = {}) => {
                 mealTypes: (data.mealTypes || []).map((t) => t.value || t),
                 cuisines: (data.cuisines || []).map((c) => c.value || c),
                 diets: (data.diets || []).map((d) => d.value || d),
+
+                videoUrl: data.videoUrl?.trim(),
+                sourceUrl: data.sourceUrl?.trim(),
             };
 
             const formData = await buildMealFormData(

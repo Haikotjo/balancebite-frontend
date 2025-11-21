@@ -54,6 +54,10 @@ const CreateMealForm = () => {
             preparationTime: "",
             imageFile: "",
             imageUrl: "",
+            videoUrl: "",
+            sourceUrl:"",
+            preparationVideoUrl: "",
+            mealPreparation: "",
         },
     });
 
@@ -116,7 +120,7 @@ const CreateMealForm = () => {
             <CustomTextField
                 label="Meal Name"
                 name="name"
-                placeholder="Enter meal name"
+                placeholder="Meal name"
                 {...register("name")}
                 error={!!errors.name}
                 helperText={errors.name?.message}
@@ -131,7 +135,13 @@ const CreateMealForm = () => {
                     <>
                         <CreateMealMealIngredients value={value} onChange={onChange} errors={errors.mealIngredients} />
                         {errors.mealIngredients?.message && (
-                            <p className="text-error text-sm mt-1">{errors.mealIngredients.message}</p>
+                            <CustomTypography
+                                as="p"
+                                variant="small"
+                                className="text-error mt-1"
+                            >
+                                {errors.mealIngredients.message}
+                            </CustomTypography>
                         )}
                     </>
                 )}
@@ -141,12 +151,36 @@ const CreateMealForm = () => {
             <CustomTextField
                 label="Meal Description"
                 name="mealDescription"
-                placeholder="Enter a description or preparation details"
+                placeholder="Enter a description and or short preparation details (optional)"
                 {...register("mealDescription")}
                 error={!!errors.mealDescription}
                 helperText={errors.mealDescription?.message}
                 multiline
+                variant="outlined"
                 rows={6}
+                maxLength={1000}
+            />
+
+            <CustomTextField
+                label="Preparation Video URL"
+                name="preparationVideoUrl"
+                placeholder="Link to a preparation video (e.g. YouTube) (optional)"
+                {...register("preparationVideoUrl")}
+                error={!!errors.preparationVideoUrl}
+                helperText={errors.preparationVideoUrl?.message}
+            />
+
+            <CustomTextField
+                label="Preparation (long text)"
+                name="mealPreparation"
+                placeholder="Step-by-step instructions… (optional)"
+                {...register("mealPreparation")}
+                error={!!errors.mealPreparation}
+                helperText={errors.mealPreparation?.message}
+                multiline
+                variant="outlined"
+                rows={8}
+                maxLength={2000}
             />
 
             {/* Dropdowns (mealTypes, cuisines, diets, preparationTime) */}
@@ -159,12 +193,30 @@ const CreateMealForm = () => {
                 errors={errors}
             />
 
+            <CustomTextField
+                label="Video URL"
+                name="videoUrl"
+                placeholder="Link to a video of the meal (e.g. YouTube, Instagram, etc.) (optional)"
+                {...register("videoUrl")}
+                error={!!errors.videoUrl}
+                helperText={errors.videoUrl?.message}
+            />
+
+            <CustomTextField
+                label="Source URL"
+                name="sourceUrl"
+                placeholder="Original recipe source link (e.g. Allerhande, Foodies, personal blog) (optional)"
+                {...register("sourceUrl")}
+                error={!!errors.sourceUrl}
+                helperText={errors.sourceUrl?.message}
+            />
+
             {/* Submit */}
             <CustomButton
                 type="submit"
                 variant="solid"
                 color="primary"
-                className="px-4 py-2 mt-4 self-stretch"
+                className="px-4 py-2 mt-6 self-stretch"
                 disabled={!(isValid && hasIngredient)}
             >
                 <CustomTypography

@@ -57,8 +57,8 @@ const CreateMealFormCard = () => {
             cuisines: [],
             diets: [],
             preparationTime: "",
-            imageFile: "", // managed by hook
-            imageUrl: "",  // managed by hook
+            imageFile: "",
+            imageUrl: "",
         },
     });
 

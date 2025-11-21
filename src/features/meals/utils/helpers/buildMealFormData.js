@@ -13,6 +13,11 @@ export const buildMealFormData = async (data, capturedImage, uploadedImage, imag
         cuisines: data.cuisines || null,
         diets: data.diets || null,
         preparationTime: data.preparationTime || null,
+
+        videoUrl: data.videoUrl?.trim() || null,
+        sourceUrl: data.sourceUrl?.trim() || null,
+        preparationVideoUrl: data.preparationVideoUrl?.trim() || null,
+        mealPreparation: data.mealPreparation || null,
     };
 
     formData.append("mealInputDTO", JSON.stringify(mealInputDTO));

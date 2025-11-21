@@ -37,6 +37,11 @@ export const mealSchema  = yup.object().shape({
         .string()
         .url("Invalid URL format.")
         .max(2048, "The image URL must not exceed 500 characters."),
+    videoUrl: yup.string().url("Must be a valid URL").max(2048).nullable().optional(),
+    sourceUrl: yup.string().url("Must be a valid URL").max(2048).nullable().optional(),
+    preparationVideoUrl: yup.string().url().max(2048).nullable().optional(),
+    mealPreparation: yup.string().max(20000).nullable().optional(),
+
 });
 
 export const foodItemSchema = yup.object().shape({
