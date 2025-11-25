@@ -47,10 +47,13 @@ const CustomTextField = React.forwardRef(function CustomTextField(
 
     // Styles
     const baseFieldClasses = `
-    w-full py-2 text-sm bg-transparent
-    text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-0
+    w-full py-2 text-sm 
+    bg-transparent
+    text-gray-900 dark:text-gray-100 
+    focus:outline-none focus:ring-0
     ${multiline ? "resize-none" : ""}
-  `;
+`;
+
     const underlineClasses = `
     border-0 border-b
     ${error
@@ -71,12 +74,20 @@ const CustomTextField = React.forwardRef(function CustomTextField(
     return (
         <CustomBox className={`relative w-full mt-4 ${className}`}>
             <CustomBox className={`relative w-full ${variant === "outlined" ? "pt-2" : ""}`}>
+                <CustomTypography
+                    as="label"
+                    htmlFor={name}
+                    variant="xsmallCard"
+                    className="absolute -top-3 left-1 text-gray-600 dark:text-gray-400"
+                >
+                    {label}
+                </CustomTypography>
+
                 <InputComponent
                     id={name}
                     name={name}
                     ref={ref}
                     type={multiline ? undefined : inputType}
-                    placeholder={label}
                     rows={multiline ? rows : undefined}
                     maxLength={maxLength}
                     {...rest}
@@ -101,13 +112,13 @@ const CustomTextField = React.forwardRef(function CustomTextField(
 
                 {/* Border break background (masks the border behind the counter) */}
                 {variant === "outlined" && typeof maxLength === "number" && showRemaining && (
-                    <span
+                    <CustomBox
                         aria-hidden="true"
                         className="
               absolute top-1 right-1.5
               h-5 px-7
               bg-white dark:bg-gray-900
-              rounded-sm
+              rounded-md
               pointer-events-none
               z-[1]
             "
@@ -116,27 +127,31 @@ const CustomTextField = React.forwardRef(function CustomTextField(
 
                 {/* Counter: entered / remaining */}
                 {typeof maxLength === "number" && showRemaining && (
-                    <span
+                    <CustomTypography
+                        as="span"
+                        variant="xsmallCard"
+                        inheritColor
                         className={`
-              absolute ${variant === "outlined" ? "top-1.5 right-2" : "top-0 -translate-y-1/2 right-0"}
-              text-[11px] leading-none px-1
-              text-gray-500 dark:text-gray-400
-              pointer-events-none
-              z-10
-            `}
+            absolute ${variant === "outlined" ? "top-1.5 right-2" : "top-0 -translate-y-1/2 right-0"}
+            text-[11px] leading-none px-1
+            text-gray-500 dark:text-gray-400
+            pointer-events-none
+            z-10
+        `}
                         aria-live="polite"
                     >
-            {entered} / {remaining}
-          </span>
+                        {entered} / {remaining}
+                    </CustomTypography>
                 )}
+
             </CustomBox>
 
             {helperText && (
                 <CustomTypography
                     id={`${name}-helper`}
-                    variant="small"
                     color="text-error"
-                    className="text-xs mt-1"
+                    className="mt-1"
+                    variant="xsmallCard"
                 >
                     {helperText}
                 </CustomTypography>

@@ -120,11 +120,12 @@ const CreateMealForm = () => {
             <CustomTextField
                 label="Meal Name"
                 name="name"
-                placeholder="Meal name"
+                variant="outlined"
                 {...register("name")}
                 error={!!errors.name}
                 helperText={errors.name?.message}
             />
+
 
             {/* Ingredients */}
             <Controller
@@ -164,6 +165,7 @@ const CreateMealForm = () => {
             <CustomTextField
                 label="Preparation Video URL"
                 name="preparationVideoUrl"
+                variant="outlined"
                 placeholder="Link to a preparation video (e.g. YouTube) (optional)"
                 {...register("preparationVideoUrl")}
                 error={!!errors.preparationVideoUrl}
@@ -173,12 +175,12 @@ const CreateMealForm = () => {
             <CustomTextField
                 label="Preparation (long text)"
                 name="mealPreparation"
+                variant="outlined"
                 placeholder="Step-by-step instructions… (optional)"
                 {...register("mealPreparation")}
                 error={!!errors.mealPreparation}
                 helperText={errors.mealPreparation?.message}
                 multiline
-                variant="outlined"
                 rows={8}
                 maxLength={2000}
             />
@@ -196,6 +198,7 @@ const CreateMealForm = () => {
             <CustomTextField
                 label="Video URL"
                 name="videoUrl"
+                variant="outlined"
                 placeholder="Link to a video of the meal (e.g. YouTube, Instagram, etc.) (optional)"
                 {...register("videoUrl")}
                 error={!!errors.videoUrl}
@@ -205,6 +208,7 @@ const CreateMealForm = () => {
             <CustomTextField
                 label="Source URL"
                 name="sourceUrl"
+                variant="outlined"
                 placeholder="Original recipe source link (e.g. Allerhande, Foodies, personal blog) (optional)"
                 {...register("sourceUrl")}
                 error={!!errors.sourceUrl}

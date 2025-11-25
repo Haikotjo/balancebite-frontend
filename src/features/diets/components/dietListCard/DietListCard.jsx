@@ -47,10 +47,6 @@ const DietListCard = ({ diet, compact, isPinned }) => {
                 </CustomBox>
             )}
 
-
-
-
-
             <CustomBox className={twMerge(compact ? "p-4" : "px-4 pb-2")} >
 
                 {/*<DietCardActionButtons diet={diet} viewMode="card" isPinned={isPinned} />*/}

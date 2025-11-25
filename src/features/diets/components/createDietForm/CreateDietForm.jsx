@@ -88,16 +88,17 @@ export default function CreateDietFormFull({ onSuccess }) {
             <CustomTextField
                 label="Diet Name"
                 name="name"
+                variant="outlined"
                 {...register("name")}
                 error={!!errors.name}
                 helperText={errors.name?.message}
-                placeholder="Enter the diet name"
                 required
             />
 
             <CustomTextField
                 label="Description"
                 name="dietDescription"
+                variant="outlined"
                 {...register("dietDescription")}
                 error={!!errors.dietDescription}
                 helperText={errors.dietDescription?.message}
@@ -107,11 +108,16 @@ export default function CreateDietFormFull({ onSuccess }) {
 
 
             {dietDaysFields.map((day, dayIndex) => (
-                <CustomBox key={day.id} className="border p-4 rounded-lg space-y-2 bg-muted">
-                    <CustomTypography variant="h4" bold>Day {dayIndex + 1}</CustomTypography>
+                <CustomBox key={day.id} className="border p-4 rounded-lg space-y-6 bg-muted">
+                    <CustomTypography
+                        variant="h4"
+                        >
+                        Day {dayIndex + 1}
+                    </CustomTypography>
 
                     <CustomTextField
                         label="Day Name"
+                        variant="outlined"
                         {...register(`dietDays.${dayIndex}.dayLabel`)}
                         error={errors?.dietDays?.[dayIndex]?.dayLabel}
                         helperText={errors?.dietDays?.[dayIndex]?.dayLabel?.message}
@@ -120,15 +126,16 @@ export default function CreateDietFormFull({ onSuccess }) {
 
                     <CustomTextField
                         label="Day Description"
+                        variant="outlined"
                         multiline
                         {...register(`dietDays.${dayIndex}.dietDayDescription`)}
                         error={errors?.dietDays?.[dayIndex]?.dietDayDescription}
                         helperText={errors?.dietDays?.[dayIndex]?.dietDayDescription?.message}
-                        placeholder="(optional)"
+                        placeholder="Description of the day (optional)"
                     />
 
                     {days[dayIndex].mealIds.map((id, mealIndex) => (
-                        <CustomBox key={`${dayIndex}-${mealIndex}`} className="flex items-center gap-2">
+                        <CustomBox key={`${dayIndex}-${mealIndex}`} >
                             <CustomFloatingSelect
                                 label={`Meal ${mealIndex + 1}`}
                                 placeholder={mealIndex < 2
@@ -156,7 +163,7 @@ export default function CreateDietFormFull({ onSuccess }) {
                         <CustomTypography variant="xsmallCard" className="text-error italic">
                             {days[dayIndex].mealIds.filter(id => id.trim() !== "").length === 0
                                 ? "Add meals for this day."
-                                : "Select one more meal to continue."
+                                : "Select more meals, add another diet day or create your diet."
                             }
                         </CustomTypography>
                     )}

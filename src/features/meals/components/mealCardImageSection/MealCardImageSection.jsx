@@ -37,7 +37,7 @@ const MealCardImageSection = ({
             >
                 <CustomImage src={imageSrc} alt={meal.name} className="w-full h-full object-cover rounded-md" />
 
-                {/* OVERLAY TOP (prep-time + actions) – omlaag gezet onder de macrosbar */}
+                {/* OVERLAY TOP (prep-time + actions) */}
                 <CustomBox
                     className="absolute top-1 w-full flex items-center justify-between px-2 py-1 z-10
                      pointer-events-auto cursor-default"
@@ -55,35 +55,45 @@ const MealCardImageSection = ({
                         viewMode={viewMode}
                         isPinned={isPinned}
                     />
-
-                    {/* PRICE CHIP – top-right */}
-                    {priceLabel && (
-                        <CustomBox className="absolute top-2 right-2 z-30" onClick={(e) => e.stopPropagation()}>
-                            <CustomTypography as="span" variant="xsmallCard" bold className="rounded-full px-3 py-1 bg-primary text-white">
-                                {priceLabel}
-                            </CustomTypography>
-                        </CustomBox>
-                    )}
-
-
-                    {/* VERTICAL MACROS – right, just under price chip */}
-                    {macros && (
-                        <CustomBox
-                            className="absolute right-2 top-12 z-20 pointer-events-auto"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <MealCardMacrosCompact
-                                macros={macros}
-                                vertical                        // ← stack items vertically
-                                iconSize={18}
-                                textClassName="text-white"
-                                className="text-white"
-                                rowClassName="flex flex-col items-end gap-2" // right-align, nice spacing
-                                // itemClassName default adds per-item chip bg/blur/rounded
-                            />
-                        </CustomBox>
-                    )}
                 </CustomBox>
+
+                {/* RIGHT COLUMN: price + macros, zelfde breedte */}
+                {(priceLabel || macros) && (
+                    <CustomBox
+                        className="absolute top-2 right-2 z-30 pointer-events-auto"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <CustomBox className="inline-flex flex-col items-stretch gap-2">
+                            {priceLabel && (
+                                <CustomBox className="w-full">
+                                    <CustomTypography
+                                        as="span"
+                                        variant="xsmallCard"
+                                        bold
+                                        className="w-full inline-flex justify-center rounded-full px-3 py-1
+                       bg-black/55 backdrop-blur-sm text-white
+                       border border-white"   // ← dunne outline
+                                    >
+                                        {priceLabel}
+                                    </CustomTypography>
+                                </CustomBox>
+                            )}
+
+
+                            {macros && (
+                                <MealCardMacrosCompact
+                                    macros={macros}
+                                    vertical
+                                    iconSize={18}
+                                    textClassName="text-white"
+                                    className="w-full text-white"
+                                    rowClassName="flex flex-col gap-2 items-stretch w-full"
+                                    itemClassName="w-full bg-black/55 backdrop-blur-sm rounded-md px-2 py-1"
+                                />
+                            )}
+                        </CustomBox>
+                    </CustomBox>
+                )}
 
                 {/* OVERLAY BOTTOM (creator info) */}
                 <CustomBox
@@ -96,6 +106,7 @@ const MealCardImageSection = ({
         </CustomBox>
     );
 };
+
 
 MealCardImageSection.propTypes = {
     meal: PropTypes.object.isRequired,

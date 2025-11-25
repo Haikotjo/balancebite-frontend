@@ -69,6 +69,8 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                 <CustomTextField
                     label="Email"
                     name="email"
+                    variant="o"
+
                     {...register("email")}
                     error={!!errors.email}
                     helperText={errors.email?.message}
@@ -78,6 +80,8 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                     label="Password"
                     name="password"
                     type="password"
+                    variant="o"
+
                     {...register("password")}
                     error={!!errors.password}
                     helperText={errors.password?.message}

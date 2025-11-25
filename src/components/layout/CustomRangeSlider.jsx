@@ -60,7 +60,7 @@ const CustomDualSlider = ({
             {label && (
                 <CustomTypography
                     as="label"
-                    variant="h4"
+                    variant="small"
                     font="body"
                     className="block text-center mb-1"
                     weight="normal"
@@ -72,7 +72,7 @@ const CustomDualSlider = ({
 
             {/* min-label boven de slider */}
             <CustomBox className="flex justify-between text-xs px-3 mb-1">
-                <CustomTypography as="span" font="sans" variant="paragraph" weight="bold">
+                <CustomTypography as="span" font="sans" variant="xsmallCard">
                     min
                 </CustomTypography>
                 <CustomBox />
@@ -84,7 +84,7 @@ const CustomDualSlider = ({
             {/* max-label onder de slider */}
             <CustomBox className="flex justify-between text-xs px-3 mt-1">
                 <CustomBox />
-                <CustomTypography as="span" font="sans" variant="paragraph" weight="bold">
+                <CustomTypography as="span" font="sans" variant="xsmallCard">
                     max
                 </CustomTypography>
             </CustomBox>
