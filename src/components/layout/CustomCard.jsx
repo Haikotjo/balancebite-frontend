@@ -5,11 +5,11 @@ const CustomCard = ({ children, className = "", isPinned = false, createdByRole 
     let borderClass = "border-borderLight dark:border-borderDark";
 
     if (isPinned) {
-        borderClass = "border-2 border-yellow-400";
-    } else if (createdByRole === "ADMIN") {
-        borderClass = "border-2 border-[#DD1155]"; // error-kleur
+        borderClass = "border-1 border-yellow-400";
+    // } else if (createdByRole === "ADMIN") {
+    //     borderClass = "border-1 border-[#DD1155]"; // error-kleur
     } else if (createdByRole === "CHEF") {
-        borderClass = "border-2 border-[#71f175]"; // success-kleur
+        borderClass = "border-1 border-[#71f175]"; // success-kleur
     }
 
     return (

@@ -69,8 +69,7 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                 <CustomTextField
                     label="Email"
                     name="email"
-                    variant="o"
-
+                    variant="outlined"
                     {...register("email")}
                     error={!!errors.email}
                     helperText={errors.email?.message}
@@ -80,8 +79,7 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                     label="Password"
                     name="password"
                     type="password"
-                    variant="o"
-
+                    variant="outlined"
                     {...register("password")}
                     error={!!errors.password}
                     helperText={errors.password?.message}
@@ -96,15 +94,18 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                         Login
                     </CustomButton>
 
-                    <CustomButton
-                        type="button"
-                        onClick={onSwitchToRegister}
-                        className="text-primary hover:underline bg-transparent self-start"
-                    >
-                        Don&#39;t have an account? Register
-                    </CustomButton>
+                <CustomTypography
+                    as="button"
+                    onClick={onSwitchToRegister}
+                    variant="paragraph"
+                    weight="bold"
+                    className="text-primary self-start bg-transparent"
+                    inheritColor={true}
+                >
+                    Don't have an account? <span className="underline">Register</span>
+                </CustomTypography>
 
-                    {onClose && (
+                {onClose && (
                         <CustomButton
                             type="button"
                             onClick={onClose}

@@ -63,6 +63,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin, showRoles = false, isAdminCont
                     <CustomTextField
                         label="Username"
                         name="userName"
+                        variant="outlined"
                         {...register("userName")}
                         error={!!errors.userName}
                         helperText={errors.userName?.message}
@@ -72,6 +73,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin, showRoles = false, isAdminCont
                         label="Email"
                         name="email"
                         type="email"
+                        variant="outlined"
                         {...register("email")}
                         error={!!errors.email}
                         helperText={errors.email?.message}
@@ -80,6 +82,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin, showRoles = false, isAdminCont
                     <CustomTextField
                         label="Password"
                         name="password"
+                        variant="outlined"
                         type="password"
                         {...register("password")}
                         error={!!errors.password}
@@ -90,6 +93,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin, showRoles = false, isAdminCont
                         label="Confirm Password"
                         name="confirmPassword"
                         type="password"
+                        variant="outlined"
                         {...register("confirmPassword")}
                         error={!!errors.confirmPassword}
                         helperText={errors.confirmPassword?.message}
@@ -124,12 +128,16 @@ const RegisterForm = ({ onClose, onSwitchToLogin, showRoles = false, isAdminCont
                     </CustomButton>
 
                     {!isAdminContext && (
-                        <CustomButton
+                        <CustomTypography
+                            as="button"
                             onClick={onSwitchToLogin}
-                            className="text-primary hover:underline self-start bg-transparent px-0 py-0"
+                            variant="paragraph"
+                            weight="bold"
+                            className="text-primary self-start bg-transparent"
+                            inheritColor={true}
                         >
-                            Already have an account? Login
-                        </CustomButton>
+                            Already have an account? <span className="underline">Login</span>
+                        </CustomTypography>
                     )}
 
                     {onClose && (
