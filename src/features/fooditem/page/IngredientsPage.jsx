@@ -95,6 +95,18 @@ const IngredientsPage = () => {
         }
     };
 
+    const handleItemUpdated = (updatedItem) => {
+        setGroupedItems((prev) => {
+            const next = { ...prev };
+            for (const cat of Object.keys(next)) {
+                next[cat] = next[cat].map((it) =>
+                    it.id === updatedItem.id ? { ...it, ...updatedItem } : it
+                );
+            }
+            return next;
+        });
+    };
+
 
     return (
         <PageWrapper className="flex flex-col items-center">
@@ -188,6 +200,7 @@ const IngredientsPage = () => {
                                         item={item}
                                         className="h-full"
                                         onClick={() => setExpandedItems((p) => ({ ...p, [item.id]: !p[item.id] }))}
+                                        onItemUpdated={handleItemUpdated}
                                     />
                                 ))}
                             </CustomGrid>

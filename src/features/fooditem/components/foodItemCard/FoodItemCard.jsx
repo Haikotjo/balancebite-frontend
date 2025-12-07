@@ -24,6 +24,7 @@ const FoodItemCard = ({
                           isPinned = false,
                           createdByRole,
                           onClick,
+                          onItemUpdated,
                       }) => {
 
     const { user } = useContext(AuthContext);
@@ -325,9 +326,13 @@ const FoodItemCard = ({
                         foodItemId={item?.id}
                         title={item?.name ? `Update “${item.name}”` : "Update Food Item"}
                         onClose={() => setIsEditOpen(false)}
+                        onUpdated={(updated) => {          // ⬅️ nieuw
+                            onItemUpdated?.(updated);
+                        }}
                     />
                 </CustomBox>
             </CustomModal>
+
         </CustomCard>
     );
 };
@@ -364,6 +369,7 @@ FoodItemCard.propTypes = {
     isPinned: PropTypes.bool,
     createdByRole: PropTypes.string,
     onClick: PropTypes.func,
+    onItemUpdated: PropTypes.func,
 };
 
 export default FoodItemCard;

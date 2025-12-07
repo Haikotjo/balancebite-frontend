@@ -41,7 +41,7 @@ const buildNutrientsFromFields = (values) => {
         .map((e) => ({ nutrientName: e.nutrientName, unitName: e.unitName, value: Number(e.value) }));
 };
 
-const UpdateFoodItemForm = ({ foodItemId, title, onClose }) => {
+const UpdateFoodItemForm = ({ foodItemId, title, onClose, onUpdated }) => {
     // Prefer explicit prop; fallback to route :id
     const { id: routeId } = useParams();
     const effectiveId = String(foodItemId ?? routeId ?? "");
@@ -183,6 +183,9 @@ const UpdateFoodItemForm = ({ foodItemId, title, onClose }) => {
             setSuccess(`Food item updated: ${updated?.name ?? "Unknown"}`);
             setImageUrl(updated?.imageUrl ?? imageUrl);
             setImageFile(null);
+            if (onUpdated) {
+                onUpdated(updated);
+            }
         } catch (err) {
             console.error("[UpdateFoodItemForm] submit error", err);
             setError(getReadableApiError(err));
@@ -302,6 +305,7 @@ UpdateFoodItemForm.propTypes = {
     foodItemId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     title: PropTypes.string,
     onClose: PropTypes.func,
+    onUpdated: PropTypes.func,
 };
 
 export default UpdateFoodItemForm;
