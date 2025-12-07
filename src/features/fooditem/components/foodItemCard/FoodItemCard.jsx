@@ -309,29 +309,44 @@ const FoodItemCard = ({
                 {/*)}*/}
             </CustomBox>
 
-            {/* Modal met Update form */}
+            {/* Modal with Update form */}
             <CustomModal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)}>
-                <CustomBox className="p-3 sm:p-4 max-h-[80vh] overflow-auto bg-lightBackground dark:bg-darkBackground">
+                {/*
+                    The card acts as the visible modal container.
+                    max-h-[80vh] ensures the modal never exceeds the viewport height.
+                    flex-col allows us to create a fixed header + scrollable content section.
+                 */}
+                <CustomCard className="p-3 sm:p-4 max-h-[80vh] flex flex-col">
+
+                    {/*
+                        Fixed header area.
+                        This section does NOT scroll; the close button always stays visible.
+                    */}
                     <CustomBox className="flex justify-end mb-2">
                         <CustomButton
                             variant="outline"
                             color="error"
                             onClick={() => setIsEditOpen(false)}
                         >
-                            Close
+                            Cancel
                         </CustomButton>
                     </CustomBox>
 
-                    <UpdateFoodItemForm
-                        foodItemId={item?.id}
-                        title={item?.name ? `Update “${item.name}”` : "Update Food Item"}
-                        onClose={() => setIsEditOpen(false)}
-                        onUpdated={(updated) => {          // ⬅️ nieuw
-                            onItemUpdated?.(updated);
-                        }}
-                    />
-                </CustomBox>
+                    {/*
+                        Scrollable content area.
+                        overflow-auto allows the form to scroll independently when tall.
+                        This prevents the modal from growing beyond the screen height.
+                    */}
+                    <CustomBox className="overflow-auto">
+                        <UpdateFoodItemForm
+                            foodItemId={item?.id}
+                            title={item?.name ? `Update “${item.name}”` : "Update Food Item"}
+                            onClose={() => setIsEditOpen(false)}
+                        />
+                    </CustomBox>
+                </CustomCard>
             </CustomModal>
+
 
         </CustomCard>
     );

@@ -12,6 +12,7 @@ import FoodItemListItem from "../components/foodItemListItem/FoodItemListItem.js
 
 import CustomModal from "../../../components/layout/CustomModal.jsx";
 import { patchFoodItemPriceApi } from "../../../services/apiService";
+import CustomCard from "../../../components/layout/CustomCard.jsx";
 
 const IngredientsPage = () => {
     const [groupedItems, setGroupedItems] = useState({});
@@ -211,7 +212,7 @@ const IngredientsPage = () => {
 
             {/*  Modal for adjusting price*/}
             <CustomModal isOpen={isModalOpen} onClose={closeEditPrice}>
-                <CustomBox className="p-4 flex flex-col gap-3">
+                <CustomCard className="p-4 flex flex-col gap-3">
                     <CustomTypography as="h3" variant="h4" className="mb-1">
                         Edit price
                     </CustomTypography>
@@ -231,14 +232,14 @@ const IngredientsPage = () => {
                     />
 
                     <CustomBox className="flex justify-end gap-2 mt-2">
-                        <CustomButton onClick={closeEditPrice} variant="outline" color="neutral">
+                        <CustomButton onClick={closeEditPrice} variant="outline" color="error">
                             Cancel
                         </CustomButton>
                         <CustomButton onClick={savePrice} variant="solid" color="primary" disabled={saving}>
                             {saving ? "Saving..." : "Save"}
                         </CustomButton>
                     </CustomBox>
-                </CustomBox>
+                </CustomCard>
             </CustomModal>
         </PageWrapper>
     );
