@@ -1,44 +1,13 @@
-import { useEffect, useState } from "react";
 import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from "recharts";
 import PropTypes from "prop-types";
+import { X } from "lucide-react";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomCard from "../../../../components/layout/CustomCard.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import useIsSmallScreen from "../../../../hooks/useIsSmallScreen.js";
 
 const COLORS = ["#7BE0D1", "#71f175", "#EDB6A3"];
 const NEGATIVE_COLOR = "#DD1155";
-
-/**
- * Small hook to track if the viewport is below the Tailwind `sm` breakpoint (640px).
- * Returns true on small screens, false on larger screens.
- */
-const useIsSmallScreen = () => {
-    const [isSmall, setIsSmall] = useState(false);
-
-    useEffect(() => {
-        // Guard for environments without window (SSR safety)
-        if (typeof window === "undefined" || !window.matchMedia) return;
-
-        const mediaQuery = window.matchMedia("(max-width: 640px)");
-
-        const handleChange = (event) => {
-            setIsSmall(event.matches);
-        };
-
-        // Set initial value
-        handleChange(mediaQuery);
-
-        // Subscribe to changes
-        mediaQuery.addEventListener("change", handleChange);
-
-        // Cleanup on unmount
-        return () => {
-            mediaQuery.removeEventListener("change", handleChange);
-        };
-    }, []);
-
-    return isSmall;
-};
 
 const NutritionPieChart = ({ chartData, sortedNutrients }) => {
     const isSmallScreen = useIsSmallScreen();

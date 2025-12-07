@@ -9,6 +9,8 @@ import CustomBox from "../layout/CustomBox.jsx";
 import CustomCard from "../layout/CustomCard.jsx";
 import NutritionPieChart from "../../features/profile/components/nutritionPieChart/NutritionPieChart.jsx";
 import NutritionTable from "../../features/profile/components/recommendedNutritionDisplay/NutritionTable.jsx";
+import {X} from "lucide-react";
+import CustomButton from "../layout/CustomButton.jsx";
 
 /**
  * NutritionPieOverview
@@ -24,8 +26,9 @@ import NutritionTable from "../../features/profile/components/recommendedNutriti
  * @param {Object} props
  * @param {boolean} [props.useBaseRDI=false] - When true, use base RDI values instead of today's intake.
  * @returns {JSX.Element}
+ * @param {Function} [props.onClose] - Optional close handler for when used inside a modal.
  */
-const NutritionPieOverview = ({ useBaseRDI = false }) => {
+const NutritionPieOverview = ({ useBaseRDI = false, onClose }) => {
     const {
         recommendedNutrition,
         baseNutrition,
@@ -99,9 +102,31 @@ const NutritionPieOverview = ({ useBaseRDI = false }) => {
     return (
         <CustomCard className="max-w-3xl mx-auto p-4 md:p-6">
             <CustomBox className="flex flex-col gap-4">
-                <CustomTypography variant="h2" className="text-center">
-                    {useBaseRDI ? "Recommended" : "Today"}
-                </CustomTypography>
+                <CustomBox className="grid grid-cols-3 items-center">
+                    {/* Lege placeholder links zodat titel exact in het midden blijft */}
+                    <CustomBox></CustomBox>
+
+                    {/* Gecentreerde titel */}
+                    <CustomTypography variant="h2" className="text-center">
+                        {useBaseRDI ? "Recommended" : "Today"}
+                    </CustomTypography>
+
+                    {/* Close button helemaal rechts */}
+                    {onClose ? (
+                        <CustomButton
+                            variant="outline"
+                            color="error"
+                            onClick={onClose}
+                            className="justify-self-end p-1 rounded-full w-7 h-7 flex items-center justify-center"
+                            aria-label="Close"
+                        >
+                            <X size={16} />
+                        </CustomButton>
+                    ) : (
+                        /* placeholder zodat kolom 3 altijd bestaat */
+                        <div></div>
+                    )}
+                </CustomBox>
 
                 {/* Pie chart on top, table below */}
                 <CustomBox className="flex flex-col gap-4">
@@ -134,6 +159,7 @@ const NutritionPieOverview = ({ useBaseRDI = false }) => {
 NutritionPieOverview.propTypes = {
     /** When true, use base RDI values instead of today's intake. */
     useBaseRDI: PropTypes.bool,
+    onClose: PropTypes.func,
 };
 
 export default NutritionPieOverview;

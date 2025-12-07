@@ -4,10 +4,8 @@ import {useConsumeMeal} from "../../../../hooks/useConsumeMeal.js";
 import {useRequireAuthDialog} from "../../../../hooks/useRequireAuthDialog.js";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 import RequireAuthUI from "../../../../components/layout/RequireAuthUI.jsx";
-import NutritionModal from "../../../profile/components/recommendedNutritionDisplay/NutritionModal.jsx";
-import RecommendedNutritionDisplay
-    from "../../../profile/components/recommendedNutritionDisplay/RecommendedNutritionDisplay.jsx";
 import NutritionPieOverview from "../../../../components/nutritionPieOverview/NutritionPieOverview.jsx";
+import CustomModal from "../../../../components/layout/CustomModal.jsx";
 
 const EatButton = ({ meal, refetchRecommendedNutrition }) => {
     const {
@@ -59,9 +57,12 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
             />
 
             {/* Success modal */}
-            <NutritionModal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
-                <NutritionPieOverview />
-            </NutritionModal>
+            <CustomModal
+                isOpen={isModalOpen}
+                onClose={() => setModalOpen(false)}
+            >
+                <NutritionPieOverview onClose={() => setModalOpen(false)} />
+            </CustomModal>
         </>
     );
 };
