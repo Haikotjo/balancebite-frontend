@@ -15,7 +15,11 @@ export function useFormMessages() {
         setSuccessMessage("");
     };
 
-    const renderDialogs = () => (
+    /**
+     * renderDialogs can optionally receive:
+     *  - onSuccessClose → extra callback after closing the success dialog
+     */
+    const renderDialogs = ({ onSuccessClose } = {}) => (
         <>
             {errorMessage && (
                 <ErrorDialog
@@ -25,10 +29,12 @@ export function useFormMessages() {
                     type="error"
                 />
             )}
+
             {successMessage && (
                 <ErrorDialog
                     open
                     onClose={() => setSuccessMessage("")}
+                    onCloseExtra={onSuccessClose}
                     message={successMessage}
                     type="success"
                 />

@@ -1,23 +1,44 @@
 import PropTypes from "prop-types";
 import CustomBox from "./CustomBox.jsx";
 
-const CustomCard = ({ children, className = "", isPinned = false, createdByRole }) => {
-    let borderClass = "border-borderLight dark:border-borderDark";
+const CustomCard = ({
+                        children,
+                        className = "",
+                        hasBorder = false,   // NEW: user decides
+                        isPinned = false,
+                        createdByRole,
+                    }) => {
 
+    // Default: no border
+    let borderClasses = "";
+
+    // Override: pinned card always gets yellow border
     if (isPinned) {
-        borderClass = "border-1 border-yellow-400";
-    // } else if (createdByRole === "ADMIN") {
-    //     borderClass = "border-1 border-[#DD1155]"; // error-kleur
-    } else if (createdByRole === "CHEF") {
-        borderClass = "border-1 border-[#71f175]"; // success-kleur
+        borderClasses = "border border-yellow-400";
+    }
+
+    // Role-based border (only if not pinned)
+
+// } else if (createdByRole === "ADMIN") {
+//     borderClass = "border-1 border-[#DD1155]"; // error-kleur
+
+    else if (createdByRole === "CHEF") {
+        borderClasses = "border border-[#71f175]";
+    }
+
+    // Manual border toggle
+    else if (hasBorder) {
+        borderClasses = "border border-borderLight dark:border-borderDark";
     }
 
     return (
         <CustomBox
-            className={`flex flex-col w-full rounded-xl overflow-hidden 
-                shadow-lg border ${borderClass}
-                bg-cardLight dark:bg-cardDark
-                ${className}`}
+            className={`
+                flex flex-col w-full rounded-xl overflow-hidden 
+                shadow-lg bg-cardLight dark:bg-cardDark
+                ${borderClasses}
+                ${className}
+            `}
         >
             {children}
         </CustomBox>
@@ -27,9 +48,12 @@ const CustomCard = ({ children, className = "", isPinned = false, createdByRole 
 CustomCard.propTypes = {
     children: PropTypes.node.isRequired,
     className: PropTypes.string,
+    hasBorder: PropTypes.bool,     // NEW
     isPinned: PropTypes.bool,
     createdByRole: PropTypes.string,
 };
 
-
 export default CustomCard;
+
+
+

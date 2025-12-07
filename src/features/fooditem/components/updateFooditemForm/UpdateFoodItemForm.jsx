@@ -18,6 +18,7 @@ import { getReadableApiError } from "../../../../utils/helpers/getReadableApiErr
 import { useFormMessages } from "../../../../hooks/useFormMessages.jsx";
 import { getFoodItemById, updateFoodItemApi, getMappedFoodSources } from "../../../../services/apiService.js";
 import { foodCategoryOptions } from "../../../../utils/const/foodCategoryOptions.js";
+import CustomCard from "../../../../components/layout/CustomCard.jsx";
 
 const pickNutrient = (nutrients, name) => {
     if (!Array.isArray(nutrients)) return "";
@@ -40,7 +41,7 @@ const buildNutrientsFromFields = (values) => {
         .map((e) => ({ nutrientName: e.nutrientName, unitName: e.unitName, value: Number(e.value) }));
 };
 
-const UpdateFoodItemForm = ({ foodItemId }) => {
+const UpdateFoodItemForm = ({ foodItemId, title, onClose }) => {
     // Prefer explicit prop; fallback to route :id
     const { id: routeId } = useParams();
     const effectiveId = String(foodItemId ?? routeId ?? "");
@@ -205,87 +206,102 @@ const UpdateFoodItemForm = ({ foodItemId }) => {
     }
 
     return (
-        <CustomBox as="form" onSubmit={handleSubmit(onSubmit)} className="w-full mx-auto p-2 flex flex-col gap-2 mt-4 mb-12 sm:mb-4">
-            <CustomTypography as="h2" variant="h1">
-                Update Food Item
-            </CustomTypography>
+        <CustomCard
+            // Card controls background, rounded corners and shadow
+            className="w-full mx-auto mt-4 mb-12 sm:mb-4 p-4 sm:p-6"
+            hasBorder
+        >
+            <CustomBox
+                as="form"
+                onSubmit={handleSubmit(onSubmit)}
+                className="flex flex-col gap-2"
+            >
+                <CustomTypography as="h2" variant="h1">
+                    {title || "Update Food Item"}
+                </CustomTypography>
 
-            {renderDialogs()}
+                {renderDialogs({
+                    // When success dialog is closed, also close the parent modal if provided
+                    onSuccessClose: onClose,
+                })}
 
-            <CustomTextField label="Name" {...register("name")} error={!!errors.name} helperText={errors.name?.message} placeholder="Enter the food item name" />
-            <CustomTextField label="Portion Description" {...register("portionDescription")} error={!!errors.portionDescription} helperText={errors.portionDescription?.message} placeholder="e.g. One slice (35g)" onFocus={(e) => e.target.select()} />
-            <CustomTextField label="Portion Size (grams)" {...register("gramWeight")} error={!!errors.gramWeight} helperText={errors.gramWeight?.message} placeholder="e.g. 100" type="text" step="any" onFocus={(e) => e.target.select()} />
+                <CustomTextField label="Name" {...register("name")} error={!!errors.name} helperText={errors.name?.message} placeholder="Enter the food item name" />
+                <CustomTextField label="Portion Description" {...register("portionDescription")} error={!!errors.portionDescription} helperText={errors.portionDescription?.message} placeholder="e.g. One slice (35g)" onFocus={(e) => e.target.select()} />
+                <CustomTextField label="Portion Size (grams)" {...register("gramWeight")} error={!!errors.gramWeight} helperText={errors.gramWeight?.message} placeholder="e.g. 100" type="text" step="any" onFocus={(e) => e.target.select()} />
 
-            <CustomFloatingSelect
-                label="Select source"
-                options={foodSourceOptions}
-                value={watch("foodSource") ? foodSourceOptions.find((opt) => opt.value === watch("foodSource")) : null}
-                onChange={(val) => setValue("foodSource", val?.value || "")}
-                placeholder="Select predefined food source"
-            />
+                <CustomFloatingSelect
+                    label="Select source"
+                    options={foodSourceOptions}
+                    value={watch("foodSource") ? foodSourceOptions.find((opt) => opt.value === watch("foodSource")) : null}
+                    onChange={(val) => setValue("foodSource", val?.value || "")}
+                    placeholder="Select predefined food source"
+                />
 
-            <CustomTextField label="Source URL" {...register("source")} error={!!errors.source} helperText={errors.source?.message} placeholder="https://www.example.com/product" />
+                <CustomTextField label="Source URL" {...register("source")} error={!!errors.source} helperText={errors.source?.message} placeholder="https://www.example.com/product" />
 
-            <CustomFloatingSelect
-                label="Select category"
-                options={foodCategoryOptions}
-                value={watch("foodCategory") ? foodCategoryOptions.find((opt) => opt.value === watch("foodCategory")) : null}
-                onChange={(val) => setValue("foodCategory", val?.value || "")}
-                placeholder="Select food category"
-            />
+                <CustomFloatingSelect
+                    label="Select category"
+                    options={foodCategoryOptions}
+                    value={watch("foodCategory") ? foodCategoryOptions.find((opt) => opt.value === watch("foodCategory")) : null}
+                    onChange={(val) => setValue("foodCategory", val?.value || "")}
+                    placeholder="Select food category"
+                />
 
-            <CustomTextField label="Price (€)" {...register("price")} error={!!errors.price} helperText={errors.price?.message} type="text" step="any" placeholder="Price (€) e.g. 2.49" />
-            <CustomTextField label="Package Grams" {...register("grams")} error={!!errors.grams} helperText={errors.grams?.message} type="text" step="any" placeholder="Package Grams e.g. 500" />
+                <CustomTextField label="Price (€)" {...register("price")} error={!!errors.price} helperText={errors.price?.message} type="text" step="any" placeholder="Price (€) e.g. 2.49" />
+                <CustomTextField label="Package Grams" {...register("grams")} error={!!errors.grams} helperText={errors.grams?.message} type="text" step="any" placeholder="Package Grams e.g. 500" />
 
-            <MealImageUploader
-                errors={errors}
-                imageUrl={imageUrl}
-                onImageChange={(image, type) => {
-                    if (type === "uploaded" || type === "captured") {
-                        setImageFile(image);
-                        setValue("imageFile", image);
-                        setValue("imageUrl", "");
-                        setImageUrl("");
-                    } else if (type === "url") {
-                        setImageFile(null);
-                        setValue("imageFile", "");
-                        setValue("imageUrl", image);
-                        setImageUrl(image);
-                    } else {
-                        setImageFile(null);
-                        setValue("imageFile", "");
-                        setValue("imageUrl", "");
-                        setImageUrl("");
-                    }
-                }}
-            />
+                <MealImageUploader
+                    errors={errors}
+                    imageUrl={imageUrl}
+                    onImageChange={(image, type) => {
+                        if (type === "uploaded" || type === "captured") {
+                            setImageFile(image);
+                            setValue("imageFile", image);
+                            setValue("imageUrl", "");
+                            setImageUrl("");
+                        } else if (type === "url") {
+                            setImageFile(null);
+                            setValue("imageFile", "");
+                            setValue("imageUrl", image);
+                            setImageUrl(image);
+                        } else {
+                            setImageFile(null);
+                            setValue("imageFile", "");
+                            setValue("imageUrl", "");
+                            setImageUrl("");
+                        }
+                    }}
+                />
 
-            <Controller
-                name="storeBrand"
-                control={control}
-                defaultValue={false}
-                render={({ field: { value, onChange } }) => (
-                    <CustomCheckbox id="storeBrand" label="Storebrand" checked={!!value} onChange={() => onChange(!value)} />
-                )}
-            />
+                <Controller
+                    name="storeBrand"
+                    control={control}
+                    defaultValue={false}
+                    render={({ field: { value, onChange } }) => (
+                        <CustomCheckbox id="storeBrand" label="Storebrand" checked={!!value} onChange={() => onChange(!value)} />
+                    )}
+                />
 
-            <CustomTextField label="Calories (kcal per 100g)" {...register("calories")} error={!!errors.calories} helperText={errors.calories?.message} type="text" step="any" placeholder="Calories (kcal per 100g) e.g. 250" />
-            <CustomTextField label="Protein (g per 100g)" {...register("protein")} error={!!errors.protein} helperText={errors.protein?.message} type="text" step="any" placeholder="Protein (g per 100g) e.g. 20" />
-            <CustomTextField label="Carbohydrates (g per 100g)" {...register("carbohydrates")} error={!!errors.carbohydrates} helperText={errors.carbohydrates?.message} type="text" step="any" placeholder="Carbohydrates (g per 100g) e.g. 20" />
-            <CustomTextField label="Sugars (g per 100g)" {...register("sugars")} error={!!errors.sugars} helperText={errors.sugars?.message} type="text" step="any" placeholder="Sugars (g per 100g) e.g. 15" />
-            <CustomTextField label="Fat (g per 100g)" {...register("fat")} error={!!errors.fat} helperText={errors.fat?.message} type="text" step="any" placeholder="Fat (g per 100g) e.g. 10" />
-            <CustomTextField label="Saturated Fat (g per 100g)" {...register("saturatedFat")} error={!!errors.saturatedFat} helperText={errors.saturatedFat?.message} type="text" step="any" placeholder="Saturated Fat (g per 100g) e.g. 3" />
-            <CustomTextField label="Unsaturated Fat (g per 100g)" {...register("unsaturatedFat")} error={!!errors.unsaturatedFat} helperText={errors.unsaturatedFat?.message} type="text" step="any" placeholder="Unsaturated Fat (g per 100g) e.g. 4" />
+                <CustomTextField label="Calories (kcal per 100g)" {...register("calories")} error={!!errors.calories} helperText={errors.calories?.message} type="text" step="any" placeholder="Calories (kcal per 100g) e.g. 250" />
+                <CustomTextField label="Protein (g per 100g)" {...register("protein")} error={!!errors.protein} helperText={errors.protein?.message} type="text" step="any" placeholder="Protein (g per 100g) e.g. 20" />
+                <CustomTextField label="Carbohydrates (g per 100g)" {...register("carbohydrates")} error={!!errors.carbohydrates} helperText={errors.carbohydrates?.message} type="text" step="any" placeholder="Carbohydrates (g per 100g) e.g. 20" />
+                <CustomTextField label="Sugars (g per 100g)" {...register("sugars")} error={!!errors.sugars} helperText={errors.sugars?.message} type="text" step="any" placeholder="Sugars (g per 100g) e.g. 15" />
+                <CustomTextField label="Fat (g per 100g)" {...register("fat")} error={!!errors.fat} helperText={errors.fat?.message} type="text" step="any" placeholder="Fat (g per 100g) e.g. 10" />
+                <CustomTextField label="Saturated Fat (g per 100g)" {...register("saturatedFat")} error={!!errors.saturatedFat} helperText={errors.saturatedFat?.message} type="text" step="any" placeholder="Saturated Fat (g per 100g) e.g. 3" />
+                <CustomTextField label="Unsaturated Fat (g per 100g)" {...register("unsaturatedFat")} error={!!errors.unsaturatedFat} helperText={errors.unsaturatedFat?.message} type="text" step="any" placeholder="Unsaturated Fat (g per 100g) e.g. 4" />
 
-            <CustomButton type="submit" className="text-sm px-4 py-2 text-white bg-primary rounded-md mb-5 mt-4 hover:bg-primary/90">
-                Update Food Item
-            </CustomButton>
-        </CustomBox>
+                <CustomButton type="submit" className="text-sm px-4 py-2 text-white bg-primary rounded-md mb-5 mt-4 hover:bg-primary/90">
+                    Update Food Item
+                </CustomButton>
+            </CustomBox>
+        </CustomCard>
     );
 };
 
 UpdateFoodItemForm.propTypes = {
     foodItemId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    title: PropTypes.string,
+    onClose: PropTypes.func,
 };
 
 export default UpdateFoodItemForm;

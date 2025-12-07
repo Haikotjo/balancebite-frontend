@@ -11,6 +11,7 @@ import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomTextField from "../../../../components/layout/CustomTextField.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import clsx from "clsx";
+import CustomCard from "../../../../components/layout/CustomCard.jsx";
 
 const LoginForm = ({ onClose, onSwitchToRegister }) => {
     const [errorMessage, setErrorMessage] = useState("");
@@ -50,9 +51,9 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                 message={errorMessage}
             />
 
-            <CustomBox
+            <CustomCard
                 className={clsx(
-                    "w-full max-w-md p-6 rounded-lg shadow-md border border-primary",
+                    "w-full max-w-md p-6 border border-primary",
                     !onClose && "mt-12"
                 )}
             >
@@ -98,12 +99,24 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                     as="button"
                     onClick={onSwitchToRegister}
                     variant="paragraph"
-                    weight="bold"
-                    className="text-primary self-start bg-transparent"
+                    weight="normal"
                     inheritColor={true}
+                    className="text-primary bg-transparent self-start"
                 >
-                    Don't have an account? <span className="underline">Register</span>
+                    Don't have an account?{" "}
+
+                    <CustomTypography
+                        as="span"
+                        variant="paragraph"
+                        inheritColor={true}
+                        weight="bold"
+                        italic
+                        className="underline"
+                    >
+                        Register
+                    </CustomTypography>
                 </CustomTypography>
+
 
                 {onClose && (
                         <CustomButton
@@ -115,7 +128,7 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                         </CustomButton>
                     )}
                 </form>
-            </CustomBox>
+            </CustomCard>
         </>
     );
 };

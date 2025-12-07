@@ -40,14 +40,15 @@ const CustomModal = ({ isOpen, onClose, children, zIndex = "z-50" }) => {
 
     return ReactDOM.createPortal(
         <CustomBox
-            className={`fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center ${zIndex}`}
+            className={`fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center ${zIndex}`}
             onClick={handleOverlayClick}
         >
             <CustomBox
-                className="bg-lightBackground dark:bg-darkBackground rounded-lg shadow-lg max-w-sm w-full"
-                onClick={(e) => e.stopPropagation()} // Prevent closing the modal when clicking inside the modal content
+                // Wrapper should not control visual styling, only layout constraints.
+                className="w-[90%] max-w-sm"
+                onClick={(e) => e.stopPropagation()} // Prevent modal close when clicking inside the content
             >
-                <CustomBox >{children}</CustomBox> {/* Modal content passed as children */}
+                {children} {/* Render modal content directly */}
             </CustomBox>
         </CustomBox>,
         document.body // Render the modal outside the normal DOM flow

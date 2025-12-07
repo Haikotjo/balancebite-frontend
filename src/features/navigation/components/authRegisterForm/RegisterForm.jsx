@@ -11,6 +11,7 @@ import CustomTypography from "../../../../components/layout/CustomTypography.jsx
 import clsx from "clsx";
 import CustomSelect from "../../../../components/layout/CustomSelect.jsx";
 import {useState} from "react";
+import CustomCard from "../../../../components/layout/CustomCard.jsx";
 
 const RegisterForm = ({ onClose, onSwitchToLogin, showRoles = false, isAdminContext = false }) => {
     const { handleRegistration, errorMessage, successMessage, setErrorMessage, setSuccessMessage } = useRegister();
@@ -44,10 +45,10 @@ const RegisterForm = ({ onClose, onSwitchToLogin, showRoles = false, isAdminCont
                 type={successMessage ? "success" : "error"}
             />
 
-            <CustomBox
+            <CustomCard
                 className={clsx(
-                    "w-full max-w-md p-6 rounded-lg shadow-md border border-primary",
-                    !onClose && "mt-10"
+                    "w-full max-w-md p-6 border border-primary",
+                    !onClose && "mt-12"
                 )}
             >
                 <form onSubmit={handleSubmit((data) => handleRegistration(data, onClose, isAdminContext))} className="flex flex-col
@@ -132,11 +133,22 @@ const RegisterForm = ({ onClose, onSwitchToLogin, showRoles = false, isAdminCont
                             as="button"
                             onClick={onSwitchToLogin}
                             variant="paragraph"
-                            weight="bold"
+                            weight="normal"
                             className="text-primary self-start bg-transparent"
                             inheritColor={true}
                         >
-                            Already have an account? <span className="underline">Login</span>
+                            Already have an account?{" "}
+
+                            <CustomTypography
+                                as="span"
+                                variant="paragraph"
+                                inheritColor={true}
+                                weight="bold"
+                                italic
+                                className="underline"
+                            >
+                                Login
+                            </CustomTypography>
                         </CustomTypography>
                     )}
 
@@ -149,7 +161,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin, showRoles = false, isAdminCont
                         </CustomButton>
                     )}
                 </form>
-            </CustomBox>
+            </CustomCard>
         </>
     );
 };

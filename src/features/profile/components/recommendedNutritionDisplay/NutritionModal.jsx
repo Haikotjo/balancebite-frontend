@@ -31,7 +31,7 @@ const NutritionModal = ({ isOpen, onClose, children }) => {
             onClick={handleOverlayClick}
         >
             <CustomBox
-                className="bg-white dark:bg-cardDark rounded-2xl shadow-2xl max-w-xl w-full mx-4 p-6"
+                className="bg-white dark:bg-cardDark rounded-2xl shadow-2xl max-w-xl w-full mx-4 p-2"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Content bovenin */}

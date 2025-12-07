@@ -7,6 +7,7 @@ import RequireAuthUI from "../../../../components/layout/RequireAuthUI.jsx";
 import NutritionModal from "../../../profile/components/recommendedNutritionDisplay/NutritionModal.jsx";
 import RecommendedNutritionDisplay
     from "../../../profile/components/recommendedNutritionDisplay/RecommendedNutritionDisplay.jsx";
+import NutritionPieOverview from "../../../../components/nutritionPieOverview/NutritionPieOverview.jsx";
 
 const EatButton = ({ meal, refetchRecommendedNutrition }) => {
     const {
@@ -59,7 +60,7 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
 
             {/* Success modal */}
             <NutritionModal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
-                <RecommendedNutritionDisplay />
+                <NutritionPieOverview />
             </NutritionModal>
         </>
     );

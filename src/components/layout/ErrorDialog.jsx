@@ -7,7 +7,7 @@ import { Dialog, DialogPanel, DialogTitle } from "./dialog/Dialog.jsx";
 
 const ErrorDialog = React.forwardRef(
     (
-        { open, onClose, message, actionLabel, onAction, type = "error", children },
+        { open, onClose, onCloseExtra, message, actionLabel, onAction, type = "error", children },
         ref
     ) => (
         <Dialog open={open} onClose={onClose} ref={ref} className="relative z-[1000]">
@@ -54,7 +54,12 @@ const ErrorDialog = React.forwardRef(
 
                     {/* sluitknop */}
                     <CustomButton
-                        onClick={onClose}
+                        onClick={() => {
+                            onClose();            // close the dialog itself
+                            if (onCloseExtra) {   // optional extra close handler
+                                onCloseExtra();   // e.g. close outer modal
+                            }
+                        }}
                         className={`w-full py-2 rounded-md text-sm text-white transition ${
                             type === "success"
                                 ? "bg-success hover:bg-success/90"
@@ -79,6 +84,7 @@ ErrorDialog.propTypes = {
     onAction: PropTypes.func,
     type: PropTypes.oneOf(["error", "success"]),
     children: PropTypes.node,
+    onCloseExtra: PropTypes.func,
 };
 
 export default ErrorDialog;

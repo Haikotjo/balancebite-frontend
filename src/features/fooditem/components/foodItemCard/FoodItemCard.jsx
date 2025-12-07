@@ -310,12 +310,7 @@ const FoodItemCard = ({
 
             {/* Modal met Update form */}
             <CustomModal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)}>
-                <CustomBox className="p-3 sm:p-4 max-h-[80vh] overflow-auto">
-                    <CustomTypography as="h3" variant="h4" className="mb-2">
-                        Update “{item?.name}”
-                    </CustomTypography>
-
-                    {/* Sluitknop (optioneel) */}
+                <CustomBox className="p-3 sm:p-4 max-h-[80vh] overflow-auto bg-lightBackground dark:bg-darkBackground">
                     <CustomBox className="flex justify-end mb-2">
                         <CustomButton
                             variant="outline"
@@ -326,8 +321,11 @@ const FoodItemCard = ({
                         </CustomButton>
                     </CustomBox>
 
-
-                    <UpdateFoodItemForm foodItemId={item?.id} />
+                    <UpdateFoodItemForm
+                        foodItemId={item?.id}
+                        title={item?.name ? `Update “${item.name}”` : "Update Food Item"}
+                        onClose={() => setIsEditOpen(false)}
+                    />
                 </CustomBox>
             </CustomModal>
         </CustomCard>
