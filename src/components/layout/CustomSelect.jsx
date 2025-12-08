@@ -31,7 +31,7 @@ const CustomSelect = ({
                     })}
 
                 disabled={disabled}
-                className={`peer w-full border rounded px-3 pt-5 pb-1 text-sm dark:bg-darkBackground bg-white text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
+                className={`peer w-full border rounded px-3 pt-5 pb-1 text-sm dark:bg-transparent bg-transparent text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
                     error ? "border-error" : "border-primary"
                 } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""}`}
             >
@@ -49,7 +49,7 @@ const CustomSelect = ({
             {label && (
                 <label
                     htmlFor={name}
-                    className="absolute left-3 -top-2 bg-white dark:bg-darkBackground px-1 text-xs text-primary peer-focus:text-primary peer-focus:text-xs peer-focus:-top-2 transition-all duration-200"
+                    className="absolute left-3 -top-2 bg-white dark:bg-cardDark px-1 text-xs text-primary peer-focus:text-primary peer-focus:text-xs peer-focus:-top-2 transition-all duration-200"
                 >
                     {label}
                 </label>

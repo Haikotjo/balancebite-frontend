@@ -12,6 +12,7 @@ import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import UserDetailsFields from "../userDetailsFields/UserDetailsFields.jsx";
 import Spinner from "../../../../components/layout/Spinner.jsx";
+import CustomCard from "../../../../components/layout/CustomCard.jsx";
 
 /**
  * Renders the user details form.
@@ -72,43 +73,49 @@ const UserDetailsForm = () => {
     }
 
     return (
-        <CustomBox as="form" onSubmit={handleSubmit(onSubmit)} className="w-full p-2 flex flex-col gap-4 my-4">
-            <CustomTypography as="h2" variant="h1" className="text-left">
-                Body Metrics
-            </CustomTypography>
+        <CustomCard className="w-full max-w-xl mx-auto my-4" hasBorder>
+            <CustomBox
+                as="form"
+                onSubmit={handleSubmit(onSubmit)}
+                className="w-full p-4 sm:p-6 flex flex-col gap-4"
+            >
+                <CustomTypography as="h2" variant="h1" className="text-left">
+                    Body Metrics
+                </CustomTypography>
 
-            {successMessage && (
-                <ErrorDialog
-                    open={!!successMessage}
-                    onClose={() => setSuccessMessage("")}
-                    message={successMessage}
-                    type="success"
+                {successMessage && (
+                    <ErrorDialog
+                        open={!!successMessage}
+                        onClose={() => setSuccessMessage("")}
+                        message={successMessage}
+                        type="success"
+                    />
+                )}
+
+                <UserDetailsFields
+                    watchedFields={watch()}
+                    register={register}
+                    setValue={setValue}
+                    errors={errors}
+                    isEditable={isEditable}
                 />
-            )}
 
-            <UserDetailsFields
-                watchedFields={watch()}
-                register={register}
-                setValue={setValue}
-                errors={errors}
-                isEditable={isEditable}
-            />
-
-            {isEditable ? (
-                <CustomBox className="flex gap-2">
-                    <CustomButton type="button" onClick={handleCancel} className="bg-gray-400 text-white">
-                        Cancel
+                {isEditable ? (
+                    <CustomBox className="flex gap-2">
+                        <CustomButton type="button" onClick={handleCancel} className="bg-gray-400 text-white">
+                            Cancel
+                        </CustomButton>
+                        <CustomButton type="submit" className="bg-primary text-white">
+                            Save
+                        </CustomButton>
+                    </CustomBox>
+                ) : (
+                    <CustomButton type="button" onClick={handleEdit} className="bg-primary text-white self-start">
+                        Edit
                     </CustomButton>
-                    <CustomButton type="submit" className="bg-primary text-white">
-                        Save
-                    </CustomButton>
-                </CustomBox>
-            ) : (
-                <CustomButton type="button" onClick={handleEdit} className="bg-primary text-white self-start">
-                    Edit
-                </CustomButton>
-            )}
-        </CustomBox>
+                )}
+            </CustomBox>
+        </CustomCard>
     );
 };
 

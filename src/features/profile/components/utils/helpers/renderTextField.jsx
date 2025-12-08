@@ -21,11 +21,11 @@ export const renderTextField = (
     const fieldError = errors[name];
 
     return (
-        <CustomBox className="flex flex-col gap-1">
+        <CustomBox >
             {isSelect ? (
                 <CustomSelect
-                    label={label}
                     name={name}
+                    label={label}
                     value={watchedFields[name] || ""}
                     onChange={(e) => setValue(name, e.target.value)}
                     error={!!fieldError}
@@ -42,6 +42,7 @@ export const renderTextField = (
                     helperText={fieldError?.message}
                     type={type}
                     disabled={!isEditable}
+                    variant="outlined"
                 />
             )}
         </CustomBox>

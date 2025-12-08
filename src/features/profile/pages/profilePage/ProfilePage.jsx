@@ -48,14 +48,11 @@ const ProfilePage = () => {
                 {/* Personal Info & User Details Section */}
                 <CustomBox className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
                     {/* Personal Information Form */}
-                    <CustomCard className="p-4">
-                        <PersonalInfoForm onSubmit={handlePersonalInfoSubmit} />
-                    </CustomCard>
+                    <PersonalInfoForm onSubmit={handlePersonalInfoSubmit} />
 
                     {/* User Details Form */}
-                    <CustomCard className="p-4">
-                        <UserDetailsForm onSubmit={handleUserDetailsSubmit} />
-                    </CustomCard>
+                    <UserDetailsForm onSubmit={handleUserDetailsSubmit} />
+
                 </CustomBox>
 
                 {/* Recommended Nutrition Section */}
