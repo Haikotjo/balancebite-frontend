@@ -16,9 +16,73 @@ const DashboardContent = ({
                               dailyRdiList,
                           }) => {
 
+    // Helper: calculate the remaining days in the current week (Monday–Sunday),
+// excluding today. If no days remain, return 1 to avoid division by zero.
+    const getRemainingDaysInWeek = () => {
+        const today = new Date();
+        const weekday = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+
+        // Days left until Sunday (end of the week).
+        // Example: if today is Friday (5), remaining = (7 - 5) % 7 = 2 (Sat + Sun)
+        const daysUntilSunday = (7 - weekday) % 7;
+
+        return daysUntilSunday || 1; // ensure at least 1
+    };
+
+// Helper: calculate the remaining days in the current month,
+// excluding today. If no days remain, return 1 to avoid division by zero.
+    const getRemainingDaysInMonth = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth(); // 0-indexed (0 = January)
+
+        // Get the last day number of the current month (e.g., 30 or 31)
+        const lastDay = new Date(year, month + 1, 0).getDate();
+        const todayDate = today.getDate();
+
+        const remaining = lastDay - todayDate;
+
+        return remaining > 0 ? remaining : 1; // ensure at least 1
+    };
+
+// Build the "per-day remaining" RDI object for the current week.
+// Takes the total remaining weekly nutrients and distributes them
+// across the remaining days of this week.
+    const weeklyAverageRdi =
+        weeklyRdi && weeklyRdi.nutrients
+            ? {
+                ...weeklyRdi,
+                nutrients: weeklyRdi.nutrients.map(n => ({
+                    ...n,
+                    value:
+                        n.value != null
+                            ? n.value / getRemainingDaysInWeek()
+                            : null,
+                })),
+            }
+            : null;
+
+// Build the "per-day remaining" RDI object for the rest of the month.
+// Takes the total remaining monthly nutrients and distributes them
+// across the remaining days of this month.
+    const monthlyAverageRdi =
+        monthlyRdi && monthlyRdi.nutrients
+            ? {
+                ...monthlyRdi,
+                nutrients: monthlyRdi.nutrients.map(n => ({
+                    ...n,
+                    value:
+                        n.value != null
+                            ? n.value / getRemainingDaysInMonth()
+                            : null,
+                })),
+            }
+            : null;
+
+
 
     return (
-        <CustomBox className="flex flex-col lg:flex-row gap-2 w-full mt-4">
+        <CustomBox className="flex flex-col xl:flex-row gap-2 w-full mt-4">
 
             {/* Middenkolom */}
             <CustomBox className="flex flex-col gap-2 basis-[80%] min-w-0">
@@ -66,7 +130,7 @@ const DashboardContent = ({
 
 
                     {/* Voedingsaanbeveling */}
-                    <CustomBox className="flex flex-col gap-2">
+                    <CustomBox className="flex flex-col gap-2 ">
                         <CustomTypography variant="h3" className="text-center">
                             Goal & Progress Overview
                         </CustomTypography>
@@ -82,18 +146,46 @@ const DashboardContent = ({
 
                             <CustomCard className="w-full pt-4" hasBorder>
                                 <RecommendedNutritionDisplay variant="week" data={weeklyRdi} />
+
+                                <CustomTypography
+                                    variant="xsmallCard"
+                                    className="m-2"
+                                >
+                                    Total recommended nutrients for the remaining days of this week (may be inaccurate if past data is incomplete).
+                                </CustomTypography>
                             </CustomCard>
 
                             <CustomCard className="w-full pt-4" hasBorder>
                                 <RecommendedNutritionDisplay variant="month" data={monthlyRdi} />
+
+                                <CustomTypography
+                                    variant="xsmallCard"
+                                    className="m-2"
+                                >
+                                    Total recommended nutrients for the remaining days of this month (may be inaccurate if past data is incomplete).
+                                </CustomTypography>
                             </CustomCard>
 
                             <CustomCard className="w-full pt-4" hasBorder>
-                                <RecommendedNutritionDisplay variant="weekAverage" data={weeklyRdi} />
+                                <RecommendedNutritionDisplay variant="weekAverage" data={weeklyAverageRdi} />
+
+                                <CustomTypography
+                                    variant="xsmallCard"
+                                    className="m-2"
+                                >
+                                    Calculated daily average for the rest of the week (may be inaccurate if past data is incomplete).
+                                </CustomTypography>
                             </CustomCard>
 
                             <CustomCard className="w-full pt-4" hasBorder>
-                                <RecommendedNutritionDisplay variant="monthAverage" data={monthlyRdi} />
+                                <RecommendedNutritionDisplay variant="monthAverage" data={monthlyAverageRdi} />
+
+                                <CustomTypography
+                                    variant="xsmallCard"
+                                    className="m-2"
+                                >
+                                    Calculated daily average for the rest of the month (may be inaccurate if past data is incomplete).
+                                </CustomTypography>
                             </CustomCard>
                         </CustomBox>
                     </CustomBox>
@@ -102,9 +194,12 @@ const DashboardContent = ({
             </CustomBox>
 
             {/* Sidebar rechts (My Meals) */}
-            <CustomBox className="hidden lg:flex flex-col gap-4 basis-[20%] max-w-[20%] overflow-y-auto px-2">
+            <CustomBox
+                className="hidden lg:flex flex-col gap-4 basis-[20%] max-w-[20%] min-w-[320px] overflow-y-auto px-2"
+            >
 
-                <CustomTypography variant="h4" className="mb-4 font-semibold">
+
+            <CustomTypography variant="h4" className="mb-4 font-semibold">
                     My Meals
                 </CustomTypography>
                 {userMeals

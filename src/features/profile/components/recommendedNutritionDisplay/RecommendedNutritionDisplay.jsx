@@ -13,10 +13,10 @@ const titleMap = {
     today: "Today",
     base: "Recommended",
     date: "Day overview",
-    week: "Last 7 days (total)",
-    weekAverage: "Last 7 days (average)",
-    month: "Last 30 days (total)",
-    monthAverage: "Last 30 days (average)",
+    week: "This week's remaining nutrients",
+    weekAverage: "Per day for the rest of this week",
+    month: "This month's remaining nutrients",
+    monthAverage: "Per day for the rest of this month",
 };
 
 const RecommendedNutritionDisplay = ({
@@ -91,7 +91,7 @@ const RecommendedNutritionDisplay = ({
     return (
         <CustomCard className="max-w-xl mx-auto p-4">
             <CustomBox className="flex flex-col gap-4">
-                <CustomTypography variant="h4" className="text-center">
+                <CustomTypography variant="h5" className="text-center">
                     {title}
                 </CustomTypography>
 

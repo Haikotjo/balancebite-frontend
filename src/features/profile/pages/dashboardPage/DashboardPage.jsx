@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import { RecommendedNutritionContext } from "../../../../context/RecommendedNutritionContext.jsx";
 import { AuthContext } from "../../../../context/AuthContext.jsx";
 import { getSortedNutritionData } from "../../utils/nutritionHelpers.js";
@@ -72,10 +71,10 @@ const DashboardPage = () => {
     }, [token]);
 
     return (
-        <PageWrapper>
+        <PageWrapper className="flex flex-col items-center">
             {/* Center content and allow wider dashboard */}
-            <CustomBox className="max-w-screen-xl mx-auto flex flex-col items-center gap-6">
-                {/* Submenus */}
+            <CustomBox className="w-full mx-auto flex flex-col items-center gap-6">
+            {/* Submenus */}
                 <CustomBox className="flex flex-col md:flex-row gap-12 justify-center">
                     <DietSubMenu
                         isDetailPage
