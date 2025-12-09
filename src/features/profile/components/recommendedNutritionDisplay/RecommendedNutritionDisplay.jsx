@@ -9,21 +9,74 @@ import CustomTypography from "../../../../components/layout/CustomTypography.jsx
 import Spinner from "../../../../components/layout/Spinner.jsx";
 import NutritionTable from "./NutritionTable.jsx";
 
-const RecommendedNutritionDisplay = ({ useBaseRDI = false }) => {
-    const { recommendedNutrition, baseNutrition, loading, setRecommendedNutrition } = useContext(RecommendedNutritionContext);
+const titleMap = {
+    today: "Today",
+    base: "Recommended",
+    date: "Day overview",
+    week: "Last 7 days (total)",
+    weekAverage: "Last 7 days (average)",
+    month: "Last 30 days (total)",
+    monthAverage: "Last 30 days (average)",
+};
+
+const RecommendedNutritionDisplay = ({
+                                         variant = "today", // "today" | "base" | "date" | "week" | "month" | "weekAverage" | "monthAverage"
+                                         data = null,       // gebruikt voor date/week/month varianten
+                                     }) => {
+    const {
+        recommendedNutrition,
+        baseNutrition,
+        loading,
+        setRecommendedNutrition
+    } = useContext(RecommendedNutritionContext);
+
     const { token } = useContext(AuthContext);
 
     useEffect(() => {
         if (!token) {
             setRecommendedNutrition(null);
         }
-    }, [token]);
+    }, [token, setRecommendedNutrition]);
+
+    const wantsContextLoading = variant === "today" || variant === "base";
+    if (wantsContextLoading && loading) {
+        return <Spinner className="mx-auto my-4" />;
+    }
+
+    // Bepaal welke bron en of we base-RDI gebruiken
+    let useBaseRDI = false;
+    let source = null;
+
+    switch (variant) {
+        case "today":
+            useBaseRDI = false;
+            source = recommendedNutrition;
+            break;
+        case "base":
+            useBaseRDI = true;
+            // getSortedNutritionData gebruikt baseNutrition intern wanneer useBaseRDI=true,
+            // dus hier mag recommendedNutrition gewoon mee als "current"
+            source = recommendedNutrition;
+            break;
+        case "date":
+        case "week":
+        case "month":
+        case "weekAverage":
+        case "monthAverage":
+            useBaseRDI = false;
+            source = data;
+            break;
+        default:
+            useBaseRDI = false;
+            source = recommendedNutrition;
+    }
 
     if (loading) {
         return <Spinner className="mx-auto my-4" />;
     }
 
-    const { sortedNutrients, message, createdAt } = getSortedNutritionData(useBaseRDI, baseNutrition, recommendedNutrition);
+    const { sortedNutrients, message, createdAt } =
+        getSortedNutritionData(useBaseRDI, baseNutrition, source);
 
     if (!sortedNutrients) {
         return (
@@ -33,11 +86,13 @@ const RecommendedNutritionDisplay = ({ useBaseRDI = false }) => {
         );
     }
 
+    const title = titleMap[variant] ?? (useBaseRDI ? "Recommended" : "Today");
+
     return (
-        <CustomCard className="max-w-xl mx-auto p-6">
+        <CustomCard className="max-w-xl mx-auto p-4">
             <CustomBox className="flex flex-col gap-4">
-                <CustomTypography variant="h2" className="text-center">
-                    {useBaseRDI ? "Recommended" : "Today"}
+                <CustomTypography variant="h4" className="text-center">
+                    {title}
                 </CustomTypography>
 
                 <NutritionTable
@@ -48,7 +103,10 @@ const RecommendedNutritionDisplay = ({ useBaseRDI = false }) => {
                     useBaseRDI={useBaseRDI}
                 />
 
-                <CustomTypography variant="xsmallCard" className="text-right text-friendlyGray mt-2">
+                <CustomTypography
+                    variant="xsmallCard"
+                    className="text-right text-friendlyGray mt-2"
+                >
                     {createdAt}
                 </CustomTypography>
             </CustomBox>
@@ -57,7 +115,16 @@ const RecommendedNutritionDisplay = ({ useBaseRDI = false }) => {
 };
 
 RecommendedNutritionDisplay.propTypes = {
-    useBaseRDI: PropTypes.bool,
+    variant: PropTypes.oneOf([
+        "today",
+        "base",
+        "date",
+        "week",
+        "month",
+        "weekAverage",
+        "monthAverage",
+    ]),
+    data: PropTypes.object,
 };
 
 export default RecommendedNutritionDisplay;

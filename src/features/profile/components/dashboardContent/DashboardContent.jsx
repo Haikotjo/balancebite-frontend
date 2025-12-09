@@ -35,7 +35,9 @@ const DashboardContent = ({
                             </CustomTypography>
                         </CustomBox>
 
-                        <NutritionPieChart chartData={chartData} sortedNutrients={sortedNutrients} />
+                        <CustomCard hasBorder>
+                            <NutritionPieChart chartData={chartData} sortedNutrients={sortedNutrients} />
+                        </CustomCard>
 
                         <CustomBox className="flex flex-col gap-2 text-center">
                             <CustomTypography variant="h3" className="mt-4">
@@ -50,7 +52,7 @@ const DashboardContent = ({
                                         const label = daysAgo === 1 ? "Yesterday" : `${daysAgo} days ago`;
 
                                         return (
-                                            <CustomCard key={date} className="w-full p-4">
+                                            <CustomCard key={date} className=" pt-4" hasBorder>
                                                 <CustomTypography variant="h5" className="mb-2">
                                                     {label}
                                                 </CustomTypography>
@@ -70,31 +72,27 @@ const DashboardContent = ({
                         </CustomTypography>
 
                         <CustomBox className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
-                            <CustomCard className="w-full p-4">
+                            <CustomCard className="w-full pt-4" hasBorder>
                                 <RecommendedNutritionDisplay variant="today" />
                             </CustomCard>
 
-                            <CustomCard className="w-full p-4">
+                            <CustomCard className="w-full p-4" hasBorder>
                                 <RecommendedNutritionDisplay variant="base" />
                             </CustomCard>
 
-                            <CustomCard className="w-full p-4">
-                                This BETA data may be inaccurate.
+                            <CustomCard className="w-full pt-4" hasBorder>
                                 <RecommendedNutritionDisplay variant="week" data={weeklyRdi} />
                             </CustomCard>
 
-                            <CustomCard className="w-full p-4">
-                                This BETA data may be inaccurate.
+                            <CustomCard className="w-full pt-4" hasBorder>
                                 <RecommendedNutritionDisplay variant="month" data={monthlyRdi} />
                             </CustomCard>
 
-                            <CustomCard className="w-full p-4">
-                                This BETA data may be inaccurate.
+                            <CustomCard className="w-full pt-4" hasBorder>
                                 <RecommendedNutritionDisplay variant="weekAverage" data={weeklyRdi} />
                             </CustomCard>
 
-                            <CustomCard className="w-full p-4">
-                                This BETA data may be inaccurate.
+                            <CustomCard className="w-full pt-4" hasBorder>
                                 <RecommendedNutritionDisplay variant="monthAverage" data={monthlyRdi} />
                             </CustomCard>
                         </CustomBox>
