@@ -5,7 +5,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import useLogin from "../../../../hooks/useLogin.js";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import loginSchema from "./LoginForm.js";
-import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomTextField from "../../../../components/layout/CustomTextField.jsx";
@@ -58,7 +57,7 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                 )}
             >
 
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
                     <CustomTypography
                         as="h2"
                         variant="h1"
@@ -67,65 +66,84 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                         Login
                     </CustomTypography>
 
-                <CustomTextField
-                    label="Email"
-                    name="email"
-                    variant="outlined"
-                    {...register("email")}
-                    error={!!errors.email}
-                    helperText={errors.email?.message}
-                />
+                    <CustomTextField
+                        label="Email"
+                        name="email"
+                        variant="outlined"
+                        {...register("email")}
+                        error={!!errors.email}
+                        helperText={errors.email?.message}
+                    />
 
-                <CustomTextField
-                    label="Password"
-                    name="password"
-                    type="password"
-                    variant="outlined"
-                    {...register("password")}
-                    error={!!errors.password}
-                    helperText={errors.password?.message}
-                />
+                    <CustomTextField
+                        label="Password"
+                        name="password"
+                        type="password"
+                        variant="outlined"
+                        {...register("password")}
+                        error={!!errors.password}
+                        helperText={errors.password?.message}
+                    />
 
 
 
-                <CustomButton
+                    <CustomButton
                         type="submit"
-                        className="bg-primary hover:bg-primary-dark text-white py-2 mt-2  self-stretch"
+                        className="bg-primary hover:bg-primary-dark text-white mt-2 self-stretch"
                     >
-                        Login
+                        <CustomTypography
+                            variant="paragraph"
+                            weight="bold"
+                            as="span"
+                            inheritColor
+                            className="text-center w-full"
+                        >
+                            Login
+                        </CustomTypography>
                     </CustomButton>
 
-                <CustomTypography
-                    as="button"
-                    onClick={onSwitchToRegister}
-                    variant="paragraph"
-                    weight="normal"
-                    inheritColor={true}
-                    className="text-primary bg-transparent self-start"
-                >
-                    Don't have an account?{" "}
 
                     <CustomTypography
-                        as="span"
+                        as="button"
+                        onClick={onSwitchToRegister}
                         variant="paragraph"
+                        weight="normal"
                         inheritColor={true}
-                        weight="bold"
-                        italic
-                        className="underline"
+                        className="text-primary bg-transparent self-start"
                     >
-                        Register
+                        Don't have an account?{" "}
+
+                        <CustomTypography
+                            as="span"
+                            variant="paragraph"
+                            inheritColor={true}
+                            weight="bold"
+
+                            className="underline"
+                        >
+                            Register
+                        </CustomTypography>
                     </CustomTypography>
-                </CustomTypography>
 
 
-                {onClose && (
+                    {onClose && (
                         <CustomButton
+                            variant="outline"
+                            color="error"
                             type="button"
                             onClick={onClose}
-                            className="hover:underline bg-transparent mt-2 self-end text-lightText dark:text-darkText"
+                            className="self-end w-auto text-sm"
                         >
-                            Close
+                            <CustomTypography
+                                variant="small"
+                                weight="bold"
+                                as="span"
+                                inheritColor
+                            >
+                                Close
+                            </CustomTypography>
                         </CustomButton>
+
                     )}
                 </form>
             </CustomCard>

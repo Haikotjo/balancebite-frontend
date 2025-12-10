@@ -11,7 +11,18 @@ const NEGATIVE_COLOR = "#DD1155";
 
 const NutritionPieChart = ({ chartData, sortedNutrients }) => {
     const isSmallScreen = useIsSmallScreen();
-    const outerRadius = isSmallScreen ? 80 : 100;
+    const isLargeScreen = window.innerWidth >= 1280;
+    const outerRadius = isSmallScreen
+        ? 80      // small
+        : isLargeScreen
+            ? 150 // large screens
+            : 100; // medium screens
+
+    const chartHeight = isSmallScreen
+        ? 300     // small
+        : isLargeScreen
+            ? 500 // large screens
+            : 330; // medium
 
     const allNegative = chartData?.every((entry) => entry.value < 0);
 
@@ -30,7 +41,7 @@ const NutritionPieChart = ({ chartData, sortedNutrients }) => {
     return (
         <CustomCard className="w-full p-2 h-fit">
             <CustomBox className="w-full my-2">
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="100%" height={chartHeight}>
                     <PieChart>
                         <Pie
                             data={filteredChartData}

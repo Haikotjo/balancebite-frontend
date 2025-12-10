@@ -37,6 +37,18 @@ const WEIGHT_STYLES = {
     black: "font-black",
 };
 
+export const Inline = ({ children, color, weight }) => (
+    <span
+        style={{
+            color,
+            fontWeight: weight,
+        }}
+    >
+        {children}
+    </span>
+);
+
+
 /**
  * CustomTypography
  *

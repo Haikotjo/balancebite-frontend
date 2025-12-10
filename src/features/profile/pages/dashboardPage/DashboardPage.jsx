@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { RecommendedNutritionContext } from "../../../../context/RecommendedNutritionContext.jsx";
 import { AuthContext } from "../../../../context/AuthContext.jsx";
-import { getSortedNutritionData } from "../../utils/nutritionHelpers.js";
+import { getSortedNutritionData } from "../../utils/helpers/nutritionHelpers.js";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import DietSubMenu from "../../../diets/components/subMenu/DietsSubMenu.jsx";
 import MealsSubMenu from "../../../meals/components/subMenu/MealsSubMenu.jsx";

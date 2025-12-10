@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useContext, useEffect } from "react";
 import { RecommendedNutritionContext } from "../../../../context/RecommendedNutritionContext.jsx";
 import { AuthContext } from "../../../../context/AuthContext.jsx";
-import { getSortedNutritionData } from "../../utils/nutritionHelpers.js";
+import { getSortedNutritionData } from "../../utils/helpers/nutritionHelpers.js";
 import CustomCard from "../../../../components/layout/CustomCard.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
@@ -10,8 +10,8 @@ import Spinner from "../../../../components/layout/Spinner.jsx";
 import NutritionTable from "./NutritionTable.jsx";
 
 const titleMap = {
-    today: "Today",
-    base: "Recommended",
+    today: "Today's remaining nutrients",
+    base: "Base Nutrition",
     date: "Day overview",
     week: "This week's remaining nutrients",
     weekAverage: "Per day for the rest of this week",

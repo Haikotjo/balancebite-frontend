@@ -3,7 +3,7 @@ import { useContext, useEffect, useMemo } from "react";
 import { RecommendedNutritionContext } from "../../context/RecommendedNutritionContext.jsx";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import Spinner from "../layout/Spinner.jsx";
-import { getSortedNutritionData } from "../../features/profile/utils/nutritionHelpers.js";
+import { getSortedNutritionData } from "../../features/profile/utils/helpers/nutritionHelpers.js";
 import CustomTypography from "../layout/CustomTypography.jsx";
 import CustomBox from "../layout/CustomBox.jsx";
 import CustomCard from "../layout/CustomCard.jsx";
