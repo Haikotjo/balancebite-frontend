@@ -79,11 +79,14 @@ const RecommendedNutritionDisplay = ({
     }
 
     const title = titleMap[variant] ?? (useBaseRDI ? "Recommended" : "Today");
-    const customTitle = newCustomTitle ?? title;
+    const customTitle =
+        variant === "date" && createdAt
+            ? createdAt
+            : (newCustomTitle ?? title);
 
     return (
         <CustomBox className="flex flex-col gap-2">
-            {/* Titelbalk als ‘pill’ binnen de card van buitenaf */}
+
             <CustomBox className="w-full px-4 py-2 bg-darkBackground dark:bg-lightBackground rounded-md mb-4">
                 <CustomTypography
                     variant="paragraph"
@@ -104,13 +107,6 @@ const RecommendedNutritionDisplay = ({
                 useBaseRDI={useBaseRDI}
             />
 
-            <CustomTypography
-                variant="xsmallCard"
-                className="text-right text-friendlyGray m-2"
-                italic
-            >
-                {createdAt}
-            </CustomTypography>
         </CustomBox>
     );
 };

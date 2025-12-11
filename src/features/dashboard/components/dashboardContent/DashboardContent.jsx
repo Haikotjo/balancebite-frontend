@@ -38,7 +38,7 @@ const DashboardContent = ({
             {/* -------------------------------------------------------- */}
 
             <CustomBox className="hidden lg:flex flex-col gap-2 basis-[80%] min-w-0">
-                <CustomBox className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <CustomBox className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                     {/* LEFT COLUMN */}
                     <CustomBox className="flex flex-col gap-2">
@@ -46,7 +46,7 @@ const DashboardContent = ({
                             <CustomTypography variant="h3">
                                 Today’s Nutrition Overview
                             </CustomTypography>
-                            <CustomTypography className="text-sm text-muted mt-1">
+                            <CustomTypography className="text-sm text-muted mt-1 mb-2">
                                 Showing your remaining intake for today based on your goals
                             </CustomTypography>
                         </CustomBox>
@@ -65,7 +65,7 @@ const DashboardContent = ({
                             <CustomTypography variant="h3" className="text-center">
                                 Goal & Progress Overview
                             </CustomTypography>
-                            <CustomTypography className="text-sm text-muted mt-1">
+                            <CustomTypography className="text-sm text-muted mt-1 mb-2">
                                 Overview of averages and remaining nutrients.
                             </CustomTypography>
                         </CustomBox>

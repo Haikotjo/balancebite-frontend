@@ -24,20 +24,14 @@ const LastWeekOverview = ({ dailyRdiList }) => {
             <CustomBox className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {[...dailyRdiList]
                     .sort((a, b) => new Date(b.date) - new Date(a.date))
-                    .map(({ date, data }) => {
-                        const daysAgo = Math.floor((new Date() - new Date(date)) / 86400000);
-                        const label = daysAgo === 1 ? "Yesterday" : `${daysAgo} days ago`;
-
-                        return (
-                            <CustomCard key={date} hasBorder>
-                                <RecommendedNutritionDisplay
-                                    variant="date"
-                                    data={data}
-                                    newCustomTitle={label}
-                                />
-                            </CustomCard>
-                        );
-                    })}
+                    .map(({ date, data }) => (
+                        <CustomCard key={date} hasBorder>
+                            <RecommendedNutritionDisplay
+                                variant="date"
+                                data={data}
+                            />
+                        </CustomCard>
+                    ))}
             </CustomBox>
         </CustomBox>
     );

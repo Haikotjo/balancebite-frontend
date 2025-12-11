@@ -14,7 +14,7 @@ const MAX_BAR_WIDTH = 80; // max px length of bar on either side
 const NUTRIENT_ICON_CONFIG = {
     "Energy kcal": {
         icon: Flame,
-        className: "text-primary",
+        className: "text-error",
     },
     Protein: {
         icon: Dumbbell,
@@ -22,17 +22,17 @@ const NUTRIENT_ICON_CONFIG = {
     },
     Carbohydrates: {
         icon: ChartColumnIncreasing,
-        className: "text-primary",
+        className: "text-success",
     },
     "Total lipid (fat)": {
         icon: Droplet,
-        className: "text-primary",
+        className: "text-secondary",
     },
 };
 
 const NutritionTable = ({ sortedNutrients, useBaseRDI }) => {
     return (
-        <CustomBox className="flex flex-col gap-3 w-full">
+        <CustomBox className="flex flex-col gap-3 w-full mb-4">
             {sortedNutrients.map((nutrient) => {
                 const isSubNutrient = [
                     "Saturated and Trans fats",
@@ -112,7 +112,7 @@ const NutritionTable = ({ sortedNutrients, useBaseRDI }) => {
                                             backgroundColor: barColor,
                                         }}
                                     />
-                                )}`
+                                )}
                             </CustomBox>
                         )}
 

@@ -12,7 +12,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        lightText: "#3e434c",
+        lightText: "#111827",
         darkText: "#F9FAFB",
         // lightText: "#aa0411",
         // darkText: "#007df6",
