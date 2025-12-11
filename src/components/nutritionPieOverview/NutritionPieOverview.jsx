@@ -3,12 +3,12 @@ import { useContext, useEffect, useMemo } from "react";
 import { RecommendedNutritionContext } from "../../context/RecommendedNutritionContext.jsx";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import Spinner from "../layout/Spinner.jsx";
-import { getSortedNutritionData } from "../../features/profile/utils/helpers/nutritionHelpers.js";
+import { getSortedNutritionData } from "../../features/dashboard/utils/helpers/nutritionHelpers.js";
 import CustomTypography from "../layout/CustomTypography.jsx";
 import CustomBox from "../layout/CustomBox.jsx";
 import CustomCard from "../layout/CustomCard.jsx";
-import NutritionPieChart from "../../features/profile/components/nutritionPieChart/NutritionPieChart.jsx";
-import NutritionTable from "../../features/profile/components/recommendedNutritionDisplay/NutritionTable.jsx";
+import NutritionPieChart from "../../features/dashboard/components/nutritionPieChart/NutritionPieChart.jsx";
+import NutritionTable from "../../features/dashboard/components/recommendedNutritionDisplay/NutritionTable.jsx";
 import {X} from "lucide-react";
 import CustomButton from "../layout/CustomButton.jsx";
 

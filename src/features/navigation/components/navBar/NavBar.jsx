@@ -82,7 +82,6 @@ const NavBar = () => {
                                         setStartInRegisterMode(true);
                                         setShowLoginForm(true);
                                     }}
-                                    iconColor="text.light"
                                 />
                             </CustomBox>
                         </CustomBox>
