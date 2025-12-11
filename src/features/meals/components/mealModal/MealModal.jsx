@@ -14,18 +14,21 @@
 
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
-import { useEffect, useMemo } from "react";
+import {useEffect, useMemo, useRef} from "react";
 import { useModal } from "../../../../context/useModal.js";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import MealCard from "../mealCard/MealCard.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import ModalScrollToTopButton from "../../../../components/modalScrollToTopButton/ModalScrollToTopButton.jsx";
 
 const MealModal = ({ meal, isPinned = false, mode = "view", onCancel, onConfirm }) => {
     const { closeModal } = useModal();
 
     // Compute flags before any conditional returns so hooks always run
     const isPreview = useMemo(() => mode === "preview", [mode]);
+
+    const contentRef = useRef(null);
 
     // Block ESC in preview-mode; allow ESC in view-mode.
     useEffect(() => {
@@ -73,6 +76,7 @@ const MealModal = ({ meal, isPinned = false, mode = "view", onCancel, onConfirm 
             {/* Modal surface */}
             <CustomBox
                 as="div"
+                ref={contentRef}
                 className=" relative z-[2147483001] w-[90%] max-w-4xl max-h-[70vh] sm:max-h-[70vh] md:max-h-[85vh] overflow-y-auto rounded-xl shadow-lg bg-lightBackground dark:bg-darkBackground "
                 onClick={(e) => e.stopPropagation()}
                 role="dialog"
@@ -132,6 +136,7 @@ const MealModal = ({ meal, isPinned = false, mode = "view", onCancel, onConfirm 
 
                 {/* Bottom action bar removed: buttons are always at the top now */}
             </CustomBox>
+            <ModalScrollToTopButton targetRef={contentRef} />
         </CustomBox>,
         document.body
     );
