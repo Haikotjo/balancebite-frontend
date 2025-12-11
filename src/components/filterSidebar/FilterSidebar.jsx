@@ -42,7 +42,7 @@ const FilterSidebar = ({ isOpen = false, onFilter, filters }) => {
                     icon={<SlidersHorizontal size={28} />}
                     disableScale={true}
                     size={40}
-                    bgColor="bg-primary hover:bg-primary-dark"
+                    bgColor="bg-darkBackground dark:bg-primary hover:bg-primary-dark"
                     className="fixed top-[30%] right-0 z-[1500] text-white rounded-r-none rounded-tl-md rounded-bl-md shadow-md origin-center"
                 />
             )}
@@ -54,17 +54,18 @@ const FilterSidebar = ({ isOpen = false, onFilter, filters }) => {
                 width="w-[220px] sm:w-[300px] md:w-[400px] lg:w-[520px]"
             >
                 <CustomBox
-                    className="w-full h-screen p-1 sm:p-2 md:p-3 lg:p-4 flex flex-col overflow-y-auto pb-5"
+                    className="w-full h-screen p-1 sm:p-2 md:p-3 lg:p-4 flex flex-col overflow-y-auto pb-5
+               border-l border-borderDark dark:border-borderLight"
                 >
 
-                    {/* Sidebar Header with Close Button */}
+                {/* Sidebar Header with Close Button */}
                     <SidebarHeader title="Filters" onClose={toggleSidebar} />
 
                     {/* Loading Indicator */}
                     {loading ? (
                         <Spinner className="self-center my-2" />
                     ) : (
-                        <>
+                        <CustomBox className="ml-2">
                             {/* Filter Sections */}
                             <FilterSection
                                 title="Types"
@@ -89,7 +90,7 @@ const FilterSidebar = ({ isOpen = false, onFilter, filters }) => {
                                 category="cuisines"
                                 onFilterClick={handleFilterClick}
                             />
-                        </>
+                        </CustomBox>
                     )}
                 </CustomBox>
             </CustomDrawer>

@@ -19,7 +19,7 @@ const SidebarHeader = ({ onClose, title }) => (
         <CustomTypography
             as="h2"
             variant="h4"
-            className="text-primary font-bold"
+            className="font-bold"
         >
             {title}
         </CustomTypography>

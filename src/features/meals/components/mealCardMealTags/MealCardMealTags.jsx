@@ -7,6 +7,7 @@ import clsx from "clsx";
 import CustomCardChip from "../../../../components/layout/customCardChip.jsx";
 import {formatEnum} from "../../../../utils/helpers/formatEnum.js";
 import {ModalContext} from "../../../../context/ModalContext.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 
 const MealCardMealTags = ({
                               cuisines,
@@ -14,7 +15,6 @@ const MealCardMealTags = ({
                               mealTypes,
                               size = "default",
                               onFilter,
-                              forceExpand = true,           // ← default: always expanded
                           }) => {
     const { closeModal } = useContext(ModalContext);
 
@@ -30,8 +30,6 @@ const MealCardMealTags = ({
         cuisines,
         diets,
         mealTypes,
-        expanded: true,             // ← force expanded
-        forceExpand: true,          // ← force expanded
     });
 
     return (
@@ -54,10 +52,12 @@ const MealCardMealTags = ({
                                 : "border-primary hover:bg-primary/10 text-primary",
                         size === "small" ? "px-[6px] py-[3px]" : "px-[8px] py-[3px]"
                     )}
-                    textClassName="text-[0.6rem] "
                 >
-                    {formatEnum(tag.value)}
+                    <CustomTypography variant="paragraphCard" inheritColor>
+                        {formatEnum(tag.value)}
+                    </CustomTypography>
                 </CustomCardChip>
+
             ))}
         </CustomBox>
     );
@@ -68,7 +68,6 @@ MealCardMealTags.propTypes = {
     diets: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.string]),
     mealTypes: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.string]),
     size: PropTypes.oneOf(["small", "default"]),
-    forceExpand: PropTypes.bool,
     onFilter: PropTypes.func.isRequired,
 };
 
