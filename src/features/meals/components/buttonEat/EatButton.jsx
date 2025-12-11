@@ -60,6 +60,7 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
             <CustomModal
                 isOpen={isModalOpen}
                 onClose={() => setModalOpen(false)}
+                contentClassName="max-w-sm md:max-w-2xl lg:max-w-3xl"
             >
                 <NutritionPieOverview onClose={() => setModalOpen(false)} />
             </CustomModal>

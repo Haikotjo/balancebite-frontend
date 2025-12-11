@@ -69,7 +69,7 @@ const NutritionTable = ({ sortedNutrients, useBaseRDI }) => {
                                     variant="small"
                                     className={isSubNutrient ? "pl-4 italic" : ""}
                                 >
-                                    {nutrient.name}
+                                    {nutrient.name} :
                                 </CustomTypography>
                             </CustomBox>
 

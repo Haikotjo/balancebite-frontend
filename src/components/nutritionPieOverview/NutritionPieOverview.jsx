@@ -108,7 +108,7 @@ const NutritionPieOverview = ({ useBaseRDI = false, onClose }) => {
 
                     {/* Gecentreerde titel */}
                     <CustomTypography variant="h2" className="text-center">
-                        {useBaseRDI ? "Recommended" : "Today"}
+                        {useBaseRDI ? "Recommended" : "Remaining Nutrients"}
                     </CustomTypography>
 
                     {/* Close button helemaal rechts */}
@@ -129,7 +129,7 @@ const NutritionPieOverview = ({ useBaseRDI = false, onClose }) => {
                 </CustomBox>
 
                 {/* Pie chart on top, table below */}
-                <CustomBox className="flex flex-col gap-4">
+                <CustomBox className="flex flex-col gap-2">
                     <NutritionPieChart
                         chartData={chartData}
                         sortedNutrients={sortedNutrients}
