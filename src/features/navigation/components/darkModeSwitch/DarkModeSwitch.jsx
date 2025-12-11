@@ -41,7 +41,7 @@ const DarkModeSwitch = ({
                 onKeyDown={handleKey}
                 className={clsx(
                     "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10 flex items-center justify-center",
-                    isDark ? "text-white" : "text-gray-800",
+                    isDark ? "text-white" : "text-darkBackground",
                     className
                 )}
             >

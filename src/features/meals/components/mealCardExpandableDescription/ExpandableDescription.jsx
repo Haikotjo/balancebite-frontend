@@ -13,10 +13,10 @@ import CustomTypography from "../../../../components/layout/CustomTypography.jsx
  * @param {"page"|"list"|"mobile"} props.viewMode - Controls rendering behavior.
  * @returns {JSX.Element}
  */
-const MealCardExpandableDescription = ({ description, viewMode }) => {
+const MealCardExpandableDescription = ({ description, viewMode, forceExpanded = false  }) => {
     const [expanded, setExpanded] = useState(false);
     const isLongText = description.length > 100;
-    const showAll = viewMode === "page";
+    const showAll = viewMode === "page" || forceExpanded;
 
     return (
         <CustomBox>
@@ -59,7 +59,6 @@ const MealCardExpandableDescription = ({ description, viewMode }) => {
                         </CustomTypography>
                     </>
                 )}
-
             </CustomTypography>
         </CustomBox>
     );
@@ -68,6 +67,7 @@ const MealCardExpandableDescription = ({ description, viewMode }) => {
 MealCardExpandableDescription.propTypes = {
     description: PropTypes.string.isRequired,
     viewMode: PropTypes.oneOf(["page", "list", "mobile"]).isRequired,
+    forceExpanded: PropTypes.bool,
 };
 
 export default MealCardExpandableDescription;

@@ -31,7 +31,7 @@
  */
 
 import PropTypes from "prop-types";
-import { useContext } from "react";
+import {useContext, useMemo} from "react";
 import { useNavigate } from "react-router-dom";
 
 import MealCardIngredients from "../mealCardIngredients/MealCardIngredients.jsx";
@@ -52,6 +52,8 @@ import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 
 import { AuthContext } from "../../../../context/AuthContext.jsx";
 import MealShareForm from "../mealshareform/MealShareForm.jsx";
+import CustomGrid from "../../../../components/layout/CustomGrid.jsx";
+import FoodItemCard from "../../../fooditem/components/foodItemCard/FoodItemCard.jsx";
 
 const useAuth = () => useContext(AuthContext);
 
@@ -104,116 +106,185 @@ const MealCard = ({
     // Debugging (keep if useful during integration)
     console.log("MealCard.disableActions =", disableActions);
 
-    return (
-        <CustomBox
-            className={`max-w-4xl w-full lg:flex bg-cardLight dark:bg-cardDark rounded-xl shadow-md overflow-hidden border ${
-                isPinned ? "border-yellow-500" : "border-border"
-            }`}
-            role="region"
-            aria-label="Meal card"
-        >
-            {/* Left: Image section with top/bottom overlays */}
-            <CustomBox className="h-48 lg:h-auto lg:w-[50%] flex-none relative">
-                {/* Meal image */}
-                <CustomImage src={imageSrc} alt={meal.name} className="w-full h-full object-cover" />
+    // Build unique food items from meal ingredients for the grid
+    const ingredientFoodItems = useMemo(() => {
+        const arr = Array.isArray(meal?.mealIngredients) ? meal.mealIngredients : [];
 
-                {/* Top overlay: timer + action buttons */}
-                <CustomBox
-                    className="absolute top-0 left-0 w-full flex items-center justify-between px-2 py-1 z-10 pointer-events-auto cursor-default"
-                    onClick={(e) => e.stopPropagation()} // prevent bubbling to parent containers
-                >
-                    <CustomBox className="absolute inset-0 rounded-md z-0" />
-                    <CustomBox className="flex items-center justify-between w-full z-10">
-                        {meal.preparationTime && (
-                            <PreparationTimeIcon preparationTime={meal.preparationTime} layout="inline" />
+        const foodItems = arr
+            .map((mi) => mi?.foodItem)
+            .filter((fi) => fi && fi.id != null);
+
+        // Deduplicate by id
+        const uniqueById = new Map();
+        foodItems.forEach((fi) => {
+            if (!uniqueById.has(fi.id)) {
+                uniqueById.set(fi.id, fi);
+            }
+        });
+
+        return Array.from(uniqueById.values());
+    }, [meal?.mealIngredients]);
+
+    const priceLabel =
+        typeof meal.mealPrice === "number"
+            ? `€ ${meal.mealPrice.toFixed(2)}`
+            : null;
+
+    return (
+        <CustomBox className="w-full flex flex-col items-center">
+            <CustomBox
+                className={`max-w-4xl w-full lg:flex bg-cardLight dark:bg-cardDark rounded-xl shadow-md overflow-hidden border ${
+                    isPinned ? "border-yellow-500" : "border-border"
+                }`}
+                role="region"
+                aria-label="Meal card"
+            >
+                {/* Left: Image section with top/bottom overlays */}
+                <CustomBox className="h-48 lg:h-auto lg:w-[50%] flex-none relative">
+                    {/* Meal image */}
+                    <CustomImage src={imageSrc} alt={meal.name} className="w-full h-full object-cover" />
+
+                    {/* Top overlay: timer + action buttons */}
+                    <CustomBox
+                        className="absolute top-0 left-0 w-full flex items-center justify-between px-2 py-1 z-10 pointer-events-auto cursor-default"
+                        onClick={(e) => e.stopPropagation()} // prevent bubbling to parent containers
+                    >
+                        <CustomBox className="absolute inset-0 rounded-md z-0" />
+                        <CustomBox className="flex items-center justify-between w-full z-10">
+                            {meal.preparationTime && (
+                                <PreparationTimeIcon preparationTime={meal.preparationTime} layout="inline" />
+                            )}
+
+                            {/**
+                             * Action buttons are wrapped in a container that:
+                             * - Applies pointer-events: none when locked, so clicks do nothing
+                             * - Reduces opacity for visual feedback
+                             * - Marks the region as aria-disabled for accessibility
+                             */}
+                            <CustomBox
+                                className={disableActions ? "pointer-events-none opacity-60" : ""}
+                                aria-disabled={disableActions}
+                            >
+                                <MealCardActionButtons
+                                    meal={meal}
+                                    showUpdateButton={true}
+                                    viewMode={viewMode}
+                                    onClose={onClose}
+                                    // Note: we do NOT need to pass disableActions; the wrapper already blocks clicks.
+                                    // If you want per-button disabled styles, you can still pass it down later.
+                                />
+                            </CustomBox>
+                        </CustomBox>
+                    </CustomBox>
+
+                    {/* Bottom overlay: compact info strip */}
+                    <CustomBox
+                        className="absolute bottom-0 left-0 w-full z-10 pointer-events-auto cursor-default"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <MealInfoOverlay meal={meal} fontSize="0.8rem" />
+                    </CustomBox>
+                </CustomBox>
+
+                {/* Right: Content section */}
+                <CustomBox className="p-4 flex flex-col justify-between leading-normal">
+                    <CustomBox className="mb-4">
+                        <CustomTypography className="text-4xl font-bold text-primary mb-2">
+                            {meal.name}
+                        </CustomTypography>
+
+                        {/* Price pill direct onder de naam */}
+                        {priceLabel && (
+                            <CustomBox className="mb-4">
+                                <CustomTypography
+                                    as="span"
+                                    variant="xsmallCard"
+                                    bold
+                                    className="inline-flex justify-center rounded-full px-3 py-1
+                                               bg-black/55 backdrop-blur-sm text-white
+                                               border border-white"
+                                >
+                                    {priceLabel}
+                                </CustomTypography>
+                            </CustomBox>
                         )}
 
+                        <CustomDivider className="my-6" />
+
+                        {/* Optional share form (creator + dietitian only, and not in locked state) */}
+                        {canShare && (
+                            <CustomBox className="mt-4">
+                                <MealShareForm mealId={meal.id} />
+                            </CustomBox>
+                        )}
+
+                        <CustomTypography className=" italic">{meal.mealDescription}</CustomTypography>
+                        <CustomDivider className="my-6" />
+
+                        <MealCardIngredients ingredients={meal.mealIngredients} />
+                        <CustomDivider className="my-6" />
+
+                        <CustomTypography variant="h4" bold>
+                            Nutrients
+                        </CustomTypography>
+                        <MealCardMacrosSection macros={macros} />
+                        <CustomDivider className="my-6" />
+
                         {/**
-                         * Action buttons are wrapped in a container that:
-                         * - Applies pointer-events: none when locked, so clicks do nothing
-                         * - Reduces opacity for visual feedback
-                         * - Marks the region as aria-disabled for accessibility
+                         * Tags row:
+                         * - We lock interactions by:
+                         *   a) wrapping in `pointer-events-none` when disableActions = true
+                         *   b) guarding the onFilter handler to a no-op in lock state
                          */}
                         <CustomBox
-                            className={disableActions ? "pointer-events-none opacity-60" : ""}
+                            className={[
+                                "flex px-2 py-1 mt-2",
+                                disableActions ? "pointer-events-none opacity-60" : "",
+                            ].join(" ")}
                             aria-disabled={disableActions}
                         >
-                            <MealCardActionButtons
-                                meal={meal}
-                                showUpdateButton={true}
-                                viewMode={viewMode}
-                                onClose={onClose}
-                                // Note: we do NOT need to pass disableActions; the wrapper already blocks clicks.
-                                // If you want per-button disabled styles, you can still pass it down later.
+                            <MealCardMealTags
+                                cuisines={meal.cuisines}
+                                diets={meal.diets}
+                                mealTypes={meal.mealTypes}
+                                onFilter={
+                                    disableActions
+                                        ? () => {} // No-op while locked
+                                        : (category, value) => {
+                                            handleFilterRedirect(category, value);
+                                            if (viewMode === "page" && onClose) onClose?.();
+                                        }
+                                }
+                                forceExpand
                             />
                         </CustomBox>
                     </CustomBox>
                 </CustomBox>
-
-                {/* Bottom overlay: compact info strip */}
-                <CustomBox
-                    className="absolute bottom-0 left-0 w-full z-10 pointer-events-auto cursor-default"
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    <MealInfoOverlay meal={meal} fontSize="0.8rem" />
-                </CustomBox>
             </CustomBox>
+            {ingredientFoodItems.length > 0 && (
+                <CustomBox className="max-w-4xl w-full mt-4">
+                    <CustomDivider className="my-6" />
 
-            {/* Right: Content section */}
-            <CustomBox className="p-4 flex flex-col justify-between leading-normal">
-                <CustomBox className="mb-4">
-                    <CustomTypography className="text-4xl font-bold text-primary mb-2">
-                        {meal.name}
+                    <CustomTypography
+                        as="h3"
+                        variant="h3"
+                        className="mb-4"
+                    >
+                        Ingredients overview
                     </CustomTypography>
 
-                    <CustomDivider className="my-6" />
-
-                    {/* Optional share form (creator + dietitian only, and not in locked state) */}
-                    {canShare && (
-                        <CustomBox className="mt-4">
-                            <MealShareForm mealId={meal.id} />
-                        </CustomBox>
-                    )}
-
-                    <CustomTypography className=" italic">{meal.mealDescription}</CustomTypography>
-                    <CustomDivider className="my-6" />
-
-                    <MealCardIngredients ingredients={meal.mealIngredients} />
-                    <CustomDivider className="my-6" />
-
-                    <MealCardMacrosSection macros={macros} />
-                    <CustomDivider className="my-6" />
-
-                    {/**
-                     * Tags row:
-                     * - We lock interactions by:
-                     *   a) wrapping in `pointer-events-none` when disableActions = true
-                     *   b) guarding the onFilter handler to a no-op in lock state
-                     */}
-                    <CustomBox
-                        className={[
-                            "flex px-2 py-1 mt-2",
-                            disableActions ? "pointer-events-none opacity-60" : "",
-                        ].join(" ")}
-                        aria-disabled={disableActions}
-                    >
-                        <MealCardMealTags
-                            cuisines={meal.cuisines}
-                            diets={meal.diets}
-                            mealTypes={meal.mealTypes}
-                            onFilter={
-                                disableActions
-                                    ? () => {} // No-op while locked
-                                    : (category, value) => {
-                                        handleFilterRedirect(category, value);
-                                        if (viewMode === "page" && onClose) onClose?.();
-                                    }
-                            }
-                            forceExpand
-                        />
+                    <CustomBox className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                        {ingredientFoodItems.map((fi) => (
+                            <FoodItemCard
+                                key={fi.id}
+                                item={fi}
+                                className="h-full"
+                            />
+                        ))}
                     </CustomBox>
                 </CustomBox>
-            </CustomBox>
+            )}
+
         </CustomBox>
     );
 };

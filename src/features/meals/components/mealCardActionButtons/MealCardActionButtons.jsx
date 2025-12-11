@@ -28,7 +28,9 @@ const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page", onClose
     `;
 
     return (
-        <CustomBox className="flex flex-row items-center justify-between w-full">
+        <CustomBox className="flex flex-col w-full">
+
+            {/* BOVEN: alle icon-buttons naast elkaar */}
             <CustomBox className="flex flex-row items-center gap-2">
                 {(!meal.isRestricted || isCreatedByUser) && (
                     <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
@@ -62,8 +64,9 @@ const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page", onClose
                 )}
             </CustomBox>
 
+            {/* ONDER: privacy toggles (alleen bij page + eigen meal) */}
             {viewMode === "page" && isCreatedByUser && (
-                <CustomBox className="ml-auto">
+                <CustomBox className="mt-2">
                     <PrivacyToggles
                         mealId={meal.id}
                         initialMealPrivate={!!meal.isPrivate}
@@ -73,6 +76,7 @@ const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page", onClose
             )}
         </CustomBox>
     );
+
 
 };
 

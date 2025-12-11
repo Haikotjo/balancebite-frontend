@@ -5,7 +5,6 @@ import {useContext, useMemo, useState} from "react";
 import MealCardImageSection from "../mealCardImageSection/MealCardImageSection.jsx";
 import MealCardExpandableDescription from "../mealCardExpandableDescription/ExpandableDescription.jsx";
 import ExpandableTitle from "../mealCardexpandableTitle/ExpandableTitle.jsx";
-import MealCardMacrosCompact from "../mealCardMacrosCompact/MealCardMacrosCompact.jsx";
 import { calculateMacrosPer100g } from "../../utils/helpers/calculateMacrosPer100g.js";
 import { buildMacrosObject } from "../../utils/helpers/buildMacrosObject.js";
 import MealCardMealTags from "../mealCardMealTags/MealCardMealTags.jsx";
@@ -16,10 +15,8 @@ import CustomCard from "../../../../components/layout/CustomCard.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 import HorizontalScrollSection from "../../../../components/horizontalScrollSection/HorizontalScrollSection.jsx";
-import MealShareForm from "../mealshareform/MealShareForm.jsx";
 import CustomLink from "../../../../components/layout/CustomLink.jsx";
 import { ExternalLink } from "lucide-react";
-import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 
@@ -128,6 +125,7 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
                 <MealCardExpandableDescription
                     description={mealToRender.mealDescription}
                     viewMode={viewMode}
+                    forceExpanded={isListItem && showMoreInfo}
                 />
 
 

@@ -1,7 +1,5 @@
 import { useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-
-import MealDetailCard from "../../components/mealCardLarge/MealDetailCard.jsx";
 import MealCard from "../../components/mealCard/MealCard.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import Spinner from "../../../../components/layout/Spinner.jsx";
@@ -75,14 +73,13 @@ const MealDetailsPage = () => {
         <PageWrapper>
             <CustomBox className="max-w-screen-xl mx-auto">
                 <MealsSubMenu isDetailPage />
-                <CustomBox className="block md:hidden justify-center mt-6">
-                    <MealDetailCard meal={meal} viewMode="page" />
-                </CustomBox>
-                <CustomBox className="hidden md:flex justify-center mt-6">
-                    <MealCard meal={meal} />
+
+                <CustomBox className="flex justify-center mt-6">
+                    <MealCard meal={meal} viewMode="page" />
                 </CustomBox>
             </CustomBox>
         </PageWrapper>
+
     );
 };
 

@@ -73,25 +73,18 @@ const MealModal = ({ meal, isPinned = false, mode = "view", onCancel, onConfirm 
             {/* Modal surface */}
             <CustomBox
                 as="div"
-                className="
-    relative z-[2147483001]
-    w-[90%] max-w-4xl
-    max-h-[70vh] sm:max-h-[70vh] md:max-h-[85vh]
-    overflow-y-auto
-    rounded-xl shadow-lg
-    bg-lightBackground dark:bg-darkBackground
-  "
+                className=" relative z-[2147483001] w-[90%] max-w-4xl max-h-[70vh] sm:max-h-[70vh] md:max-h-[85vh] overflow-y-auto rounded-xl shadow-lg bg-lightBackground dark:bg-darkBackground "
                 onClick={(e) => e.stopPropagation()}
                 role="dialog"
                 aria-modal="true"
                 aria-label={isPreview ? 'Meal preview (actions limited)' : 'Meal view'}
             >
-            {/* Always-on TOP action bar in preview (sticky, very high z-index) */}
+                {/* Always-on TOP action bar in preview (sticky, very high z-index) */}
                 {isPreview && (
                     <>
                         <CustomBox
                             className="sticky top-0 z-[2147483002] p-3 sm:p-4 bg-lightBackground/90 dark:bg-darkBackground/90 backdrop-blur"
-                            /* English comment: sticky top bar with actions */
+                            /* Sticky top bar with actions */
                         >
                             <CustomTypography as="div" variant="h1" font="sans" weight="bold" className="opacity-80 text-center w-full">
                                 Meal Preview

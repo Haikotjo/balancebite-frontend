@@ -51,10 +51,10 @@ const MealInfoOverlay = ({ meal, onNameClick }) => {
                 className="flex items-center gap-2 cursor-pointer hover:underline"
                 onClick={handleClick}
             >
-                <CustomTypography as="span" variant="xsmallCard" className="text-xs text-white">
+                <CustomTypography as="span" variant="xsmallCard" className="text-white">
                 {meal.createdBy?.userName}
                 </CustomTypography>
-                <UserPen size={14} />
+                <UserPen size={14} className="text-white"/>
             </CustomTypography>
 
             {meal.isTemplate && (
