@@ -32,6 +32,12 @@ const MealCardMealTags = ({
         mealTypes,
     });
 
+    const colorClasses = {
+        primary: "border-primary hover:bg-primary/10 ",
+        secondary: "border-secondary hover:bg-secondary/10 ",
+        success: "border-success hover:bg-success/10 dark:hover:bg-success-dark/20 ",
+    };
+
     return (
         <CustomBox
             className={clsx(
@@ -45,15 +51,11 @@ const MealCardMealTags = ({
                     key={tag.value}
                     onClick={() => handleFilterClick(tag.category, tag.value)}
                     className={clsx(
-                        tag.color === "success"
-                            ? "border-green-600 hover:bg-green-100 dark:hover:bg-green-900/20 text-green-600"
-                            : tag.color === "secondary"
-                                ? "border-secondary hover:bg-secondary/10 text-secondary"
-                                : "border-primary hover:bg-primary/10 text-primary",
+                        colorClasses[tag.color],
                         size === "small" ? "px-[6px] py-[3px]" : "px-[8px] py-[3px]"
                     )}
                 >
-                    <CustomTypography variant="paragraphCard" inheritColor>
+                    <CustomTypography variant="paragraphCard" weight="extralight" inheritColor>
                         {formatEnum(tag.value)}
                     </CustomTypography>
                 </CustomCardChip>
