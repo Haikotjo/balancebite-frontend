@@ -62,7 +62,17 @@ function MealList({ filters, sortBy, selectedMeal, pinnedMeals = [] }) {
     }, [pinnedMeals, filteredMeals]);
 
     return (
-        <CustomGrid>
+        <CustomBox
+            as="div"
+            className="
+            grid
+            grid-cols-1
+            md:grid-cols-[repeat(auto-fill,minmax(325px,1fr))]
+            gap-4
+            py-4
+            mx-auto
+        "
+        >
             {combinedMeals.map(meal => (
                 <CustomBox key={meal.id} className="mb-4 break-inside-avoid">
                     <MealDetailCard
@@ -72,8 +82,9 @@ function MealList({ filters, sortBy, selectedMeal, pinnedMeals = [] }) {
                     />
                 </CustomBox>
             ))}
-        </CustomGrid>
+        </CustomBox>
     );
+
 }
 
 MealList.propTypes = {

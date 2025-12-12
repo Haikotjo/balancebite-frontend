@@ -83,7 +83,11 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
 
 
     return (
-        <CustomCard isPinned={isPinned} createdByRole={role} className="flex w-full box-border">
+        <CustomCard
+            isPinned={isPinned}
+            createdByRole={role}
+            className="flex w-full min-w-[325px] box-border"
+        >
             {/* Left column: main image + horizontal thumbnails */}
             <CustomBox className="flex flex-col">
                 <MealCardImageSection
