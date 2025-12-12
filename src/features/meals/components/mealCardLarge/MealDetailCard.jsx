@@ -19,6 +19,8 @@ import CustomLink from "../../../../components/layout/CustomLink.jsx";
 import { ExternalLink } from "lucide-react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
+import {ModalContext} from "../../../../context/ModalContext.jsx";
+import MealModal from "../mealModal/MealModal.jsx";
 
 const useAuth = () => useContext(AuthContext);
 
@@ -37,6 +39,7 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
     const canShare = isCreator && (isDietitian || isAdmin);
     const [infoOpen, setInfoOpen] = useState(false);
     const [showMoreInfo, setShowMoreInfo] = useState(false);
+    const { openModal } = useContext(ModalContext);
 
     const isListItem = viewMode === "list";
 
@@ -74,6 +77,11 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
 
     const showUpdateButton = userMeals.some((m) => m.id === meal.id);
 
+    const handleOpenMealModal = () => {
+        openModal(<MealModal meal={mealToRender} />, "meal", mealToRender);
+    };
+
+
     return (
         <CustomCard isPinned={isPinned} createdByRole={role} className="flex w-full box-border">
             {/* Left column: main image + horizontal thumbnails */}
@@ -97,8 +105,7 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
                         <CustomBox className="flex items-center gap-2">
                             <ExpandableTitle
                                 title={mealToRender.name}
-                                mealId={String(mealToRender.id)}
-                                viewMode={viewMode}
+                                onClick={handleOpenMealModal}
                             />
 
                             <CustomLink
@@ -107,7 +114,7 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
                                 title="Open new window"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                rightIcon={<ExternalLink className="w-3 h-3" aria-hidden="true" />}
+                                rightIcon={<ExternalLink className="w-5 h-5" aria-hidden="true" />}
                                 onClick={(e) => e.stopPropagation()}
                                 className="text-muted-foreground hover:text-primary"
                             >

@@ -1,15 +1,11 @@
+// ExpandableTitle.jsx
 import PropTypes from "prop-types";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 
-const ExpandableTitle = ({ title, mealId }) => {
-    const handleNavigate = () => {
-        const url = `${window.location.origin}/meal/${mealId}`;
-        window.open(url, "_blank");
-    };
-
+const ExpandableTitle = ({ title, onClick }) => {
     return (
         <CustomTypography
-            onClick={handleNavigate}
+            onClick={onClick}
             variant="h3"
             className="cursor-pointer hover:text-primary line-clamp-2"
         >
@@ -18,10 +14,9 @@ const ExpandableTitle = ({ title, mealId }) => {
     );
 };
 
-
 ExpandableTitle.propTypes = {
     title: PropTypes.string.isRequired,
-    mealId: PropTypes.string.isRequired,
+    onClick: PropTypes.func, // optional
 };
 
 export default ExpandableTitle;
