@@ -10,7 +10,7 @@ import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomTextField from "../../../../components/layout/CustomTextField.jsx";
 import CustomFloatingSelect from "../../../../components/layout/CustomFloatingSelect.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
-import {Apple} from "lucide-react";
+import {CookingPot } from "lucide-react";
 
 export default function CreateDietFormFull({ onSuccess }) {
     const { mealOptions, loading: mealsLoading, error: mealsError } = useFetchMeals();
@@ -79,7 +79,7 @@ export default function CreateDietFormFull({ onSuccess }) {
         >
             {/* Form header: icon + title */}
             <CustomBox className="flex flex-col items-center gap-3 mb-2">
-                <Apple className="w-16 h-16 sm:w-24 sm:h-24 text-primary" aria-hidden="true" />
+                <CookingPot  className="w-16 h-16 sm:w-24 sm:h-24 text-primary" aria-hidden="true" />
                 <CustomTypography as="h2" variant="h1" className="text-center">
                     Create New Diet Plan
                 </CustomTypography>

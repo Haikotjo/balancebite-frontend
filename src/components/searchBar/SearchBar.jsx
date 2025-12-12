@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import useDebouncedSearch from "../../hooks/useDebouncedSearch.js";
-import { Apple, Soup, User, Search } from "lucide-react";
+import { CookingPot , Soup, User, Search } from "lucide-react";
 import CustomBox from "../layout/CustomBox.jsx";
 import CustomTypography from "../layout/CustomTypography.jsx";
 import CustomAutocomplete from "../layout/CustomAutocomplete.jsx";
@@ -39,7 +39,7 @@ const SearchBar = ({ onSearch, onQuerySubmit, placeholder = "Search..." }) => {
                 placeholder={placeholder}
                 freeSolo={true}
                 renderOption={(opt) => {
-                    const Icon = opt.type === "user" ? User : opt.type === "diet" ? Apple : Soup;
+                    const Icon = opt.type === "user" ? User : opt.type === "diet" ? CookingPot  : Soup;
                     return (
                         <CustomBox className="flex items-center gap-2 px-2 py-1">
                             <Icon className="w-4 h-4 text-primary" />
@@ -51,7 +51,7 @@ const SearchBar = ({ onSearch, onQuerySubmit, placeholder = "Search..." }) => {
                 renderGroup={({ key, group, children }) => {
                     let Icon, label;
                     if (group === "meal") { Icon = Soup; label = "Meals"; }
-                    else if (group === "diet") { Icon = Apple; label = "Diets"; }
+                    else if (group === "diet") { Icon = CookingPot ; label = "Diets"; }
                     else { Icon = User; label = "Users"; }
                     return (
                         <CustomBox key={key} className="mt-1">

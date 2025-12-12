@@ -7,7 +7,7 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomDropdownWeb from "../../../../components/layout/CustomDropdownWeb.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
-import { ChevronDown, ChevronUp, Apple, Pencil, UserCheck, BookOpen, UserPen } from "lucide-react";
+import { ChevronDown, ChevronUp, CookingPot , Pencil, UserCheck, BookOpen, UserPen } from "lucide-react";
 
 const DietsMenu = ({ compact = false }) => {
     const [open, setOpen] = useState(false);
@@ -23,14 +23,14 @@ const DietsMenu = ({ compact = false }) => {
 
     // Build trigger UI depending on compact mode
     const trigger = compact ? (
-        // Icon-only trigger (desktop look): apple + chevron, same size as other icons
+        // Icon-only trigger (desktop look): CookingPot  + chevron, same size as other icons
         <CustomBox
             onClick={() => setOpen(!open)}
             className="relative p-2 pr-8 rounded-md hover:bg-white/10 cursor-pointer text-white"
             aria-haspopup="menu"
             aria-expanded={open}
         >
-            <Apple className="w-8 h-8 mx-auto" fill="currentColor" />
+            <CookingPot  className="w-8 h-8 mx-auto" fill="currentColor" />
             {open ? (
                 <>
                     <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-5 h-5 md:hidden pointer-events-none" />
@@ -52,7 +52,7 @@ const DietsMenu = ({ compact = false }) => {
             <CustomTypography bold font="sans" className="text-xs sm:text-sm text-white mr-2 md:inline">
                 Diets
             </CustomTypography>
-            <Apple className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="currentColor" />
+            <CookingPot  className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="currentColor" />
             {open ? (
                 <>
                     <ChevronDown className="text-white w-5 h-5 mr-2 md:hidden" />

@@ -3,7 +3,7 @@ import {
     PlusSquare,
     Utensils,
     Settings,
-    Apple
+    CookingPot
 } from "lucide-react";
 
 // Form components
@@ -48,7 +48,7 @@ const AdminPage = () => {
         { label: "Food Item", icon: <PlusSquare className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
         { label: "Meals", icon: <Utensils className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
         { label: "Users", icon: <Settings className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
-        { label: "Diets", icon: <Apple className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
+        { label: "Diets", icon: <CookingPot  className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
         { label: "Settings", icon: <Settings className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
     ];
 
