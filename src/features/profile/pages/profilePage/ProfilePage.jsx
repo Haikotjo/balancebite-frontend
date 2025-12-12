@@ -3,9 +3,9 @@ import RecommendedNutritionDisplay from "../../../dashboard/components/recommend
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import PersonalInfoForm from "../../components/personalInfoForm/PersonalInfoForm.jsx";
-import CustomCard from "../../../../components/layout/CustomCard.jsx";
 import PageWrapper from "../../../../components/layout/PageWrapper.jsx";
 import {UserCircle} from "lucide-react";
+import CustomCard from "../../../../components/layout/CustomCard.jsx";
 
 /**
  * ProfilePage component
@@ -63,12 +63,12 @@ const ProfilePage = () => {
 
                     {/* Displaying both user-specific and base recommended nutrition */}
                     <CustomBox className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                        <CustomBox>
-                            <RecommendedNutritionDisplay />
-                        </CustomBox>
-                        <CustomBox>
+                        <CustomCard hasBorder>
+                            <RecommendedNutritionDisplay variant="base"/>
+                        </CustomCard>
+                        <CustomCard hasBorder>
                             <RecommendedNutritionDisplay useBaseRDI={true} />
-                        </CustomBox>
+                        </CustomCard>
                     </CustomBox>
                 </CustomBox>
             </CustomBox>
