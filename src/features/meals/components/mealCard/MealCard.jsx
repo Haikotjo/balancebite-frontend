@@ -52,7 +52,6 @@ import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 
 import { AuthContext } from "../../../../context/AuthContext.jsx";
 import MealShareForm from "../mealshareform/MealShareForm.jsx";
-import CustomGrid from "../../../../components/layout/CustomGrid.jsx";
 import FoodItemCard from "../../../fooditem/components/foodItemCard/FoodItemCard.jsx";
 
 const useAuth = () => useContext(AuthContext);
@@ -133,7 +132,7 @@ const MealCard = ({
     return (
         <CustomBox className="w-full flex flex-col items-center">
             <CustomBox
-                className={`max-w-4xl w-full lg:flex bg-cardLight dark:bg-cardDark rounded-xl shadow-md overflow-hidden border ${
+                className={`max-w-6xl w-full lg:flex bg-cardLight dark:bg-cardDark rounded-xl shadow-md overflow-hidden border ${
                     isPinned ? "border-yellow-500" : "border-border"
                 }`}
                 role="region"
@@ -262,7 +261,7 @@ const MealCard = ({
                 </CustomBox>
             </CustomBox>
             {ingredientFoodItems.length > 0 && (
-                <CustomBox className="max-w-4xl w-full mt-4">
+                <CustomBox className="max-w-6xl w-full p-4">
                     <CustomDivider className="my-6" />
 
                     <CustomTypography

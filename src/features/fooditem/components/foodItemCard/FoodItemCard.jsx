@@ -180,6 +180,7 @@ const FoodItemCard = ({
                         icon={<Pencil />}
                         size={22}
                         bgColor="bg-transparent"
+                        className="text-lightText dark:text-darkText"
                         onClick={(e) => { e.stopPropagation(); setIsEditOpen(true); }}
                     />
                 )}
