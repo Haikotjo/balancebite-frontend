@@ -10,7 +10,6 @@ import MealsMenu from "../mealsMenu/MealsMenu.jsx";
 import DietsMenu from "../dietsMenu/DietsMenu.jsx";
 import ProfileMenu from "../profileMenu/ProfileMenu.jsx";
 import HamburgerMenu from "../hamburgerMenu/HamburgerMenu.jsx";
-import { useThemeMode } from "../../../../themes/useThemeMode.js";
 import Logo from "../../../../components/logo/Logo.jsx";
 import DarkModeSwitch from "../darkModeSwitch/DarkModeSwitch.jsx";
 
@@ -29,7 +28,6 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const isAdmin = !!user && Array.isArray(user.roles) && user.roles.includes("ADMIN");
-    const { mode, toggleTheme } = useThemeMode();
     const vh = useViewportHeight();
 
     // Hide some icons when the available height is tight

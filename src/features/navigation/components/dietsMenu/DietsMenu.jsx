@@ -138,6 +138,7 @@ const DietsMenu = ({ compact = false, showLabel = true  }) => {
 DietsMenu.propTypes = {
     /** Compact icon-only variant for DesktopMenu */
     compact: PropTypes.bool,
+    showLabel: PropTypes.bool,
 };
 
 export default DietsMenu;

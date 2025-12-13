@@ -49,7 +49,7 @@ const ProfileMenu = ({
             )}
         </CustomBox>
     ) : (
-        // Default trigger with text (mobile/overal)
+        // Default trigger with text (mobile/overall)
         <CustomBox
             onClick={() => setOpen(!open)}
             className="w-full flex justify-between items-center cursor-pointer text-white"
@@ -134,6 +134,7 @@ ProfileMenu.propTypes = {
     onLoginClick: PropTypes.func.isRequired,
     onRegisterClick: PropTypes.func.isRequired,
     compact: PropTypes.bool,
+    showLabel: PropTypes.bool,
 };
 
 export default ProfileMenu;

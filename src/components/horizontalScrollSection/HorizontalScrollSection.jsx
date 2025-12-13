@@ -1,18 +1,28 @@
+import { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
-import { ChevronLeft, ChevronRight, ArrowRight  } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import CustomBox from "../layout/CustomBox";
-import {useEffect, useRef, useState} from "react";
 import CustomTypography from "../layout/CustomTypography.jsx";
 import CustomIconButton from "../layout/CustomIconButton.jsx";
-import {twMerge} from "tailwind-merge";
-import {useDragScroll} from "../../hooks/useDragScroll.js";
+import { twMerge } from "tailwind-merge";
+import { useDragScroll } from "../../hooks/useDragScroll.js";
 
-const HorizontalScrollSection = ({ title, items, renderItem, onTitleClick, className ="" }) => {
+const HorizontalScrollSection = ({
+                                     title,
+                                     items,
+                                     renderItem,
+                                     onTitleClick,
+                                     className = "",
+                                     autoScroll = false,
+                                     scrollSpeed = 1,
+                                     autoScrollDirection = "right"
+                                 }) => {
     const scrollRef = useRef(null);
+    const intervalRef = useRef(null);
+
     useDragScroll(scrollRef);
 
     const [canScroll, setCanScroll] = useState(false);
-
 
     const scroll = (direction) => {
         const scrollAmount = 300;
@@ -33,21 +43,68 @@ const HorizontalScrollSection = ({ title, items, renderItem, onTitleClick, class
         };
 
         checkScroll();
-
         window.addEventListener("resize", checkScroll);
         return () => window.removeEventListener("resize", checkScroll);
     }, [items]);
 
+    // Optionele auto-scroll (zoals ImageScrollSection)
+    useEffect(() => {
+        if (!autoScroll) return;
+
+        const container = scrollRef.current;
+        if (!container) return;
+
+        const isSmallScreen = window.innerWidth < 1024;
+
+        const startAutoScroll = () => {
+            if (!isSmallScreen) return;
+            if (intervalRef.current) return;
+
+            intervalRef.current = setInterval(() => {
+                if (autoScrollDirection === "right") {
+                    // ✔ content naar rechts
+                    if (container.scrollLeft <= 0) {
+                        container.scrollLeft = container.scrollWidth - container.clientWidth;
+                    } else {
+                        container.scrollLeft -= scrollSpeed;
+                    }
+                } else {
+                    // ✔ content naar links
+                    if (container.scrollLeft + container.clientWidth >= container.scrollWidth) {
+                        container.scrollLeft = 0;
+                    } else {
+                        container.scrollLeft += scrollSpeed;
+                    }
+                }
+            }, 100);
+        };
+
+        const stopAutoScroll = () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
+            }
+        };
+
+        startAutoScroll();
+        container.addEventListener("mouseenter", stopAutoScroll);
+        container.addEventListener("mouseleave", startAutoScroll);
+
+        return () => {
+            stopAutoScroll();
+            container.removeEventListener("mouseenter", stopAutoScroll);
+            container.removeEventListener("mouseleave", startAutoScroll);
+        };
+    }, [autoScroll, scrollSpeed, autoScrollDirection, items.length]);
+
 
     return (
         <CustomBox className={twMerge("w-full my-6", className)}>
-
-        {title && (
+            {title && (
                 <CustomTypography
                     as="h2"
                     variant="h4"
                     className="mb-2 px-2 text-left text-base sm:text-lg md:text-xl"
-
                 >
                     {onTitleClick ? (
                         <CustomBox
@@ -63,11 +120,10 @@ const HorizontalScrollSection = ({ title, items, renderItem, onTitleClick, class
                 </CustomTypography>
             )}
 
-            <CustomBox className="relative py-2 rounded-xl" >
-
+            <CustomBox className="relative py-2 rounded-xl">
                 <CustomBox
                     ref={scrollRef}
-                    className="flex gap-2 overflow-x-auto scrollbar-hide px-2 py-1"
+                    className="flex gap-2 overflow-x-auto scrollbar-hide px-2 py-1 cursor-grab active:cursor-grabbing"
                 >
                     {items.map((item, index) => (
                         <CustomBox key={index} className="shrink-0">
@@ -75,7 +131,6 @@ const HorizontalScrollSection = ({ title, items, renderItem, onTitleClick, class
                         </CustomBox>
                     ))}
                 </CustomBox>
-
 
                 {canScroll && (
                     <CustomIconButton
@@ -91,15 +146,11 @@ const HorizontalScrollSection = ({ title, items, renderItem, onTitleClick, class
                     <CustomIconButton
                         onClick={() => scroll("right")}
                         icon={<ChevronRight size={20} className="text-white" />}
-
                         size={36}
                         className="absolute right-2 top-[50%] translate-y-[-50%] z-10"
                         useMotion={false}
                     />
                 )}
-
-
-
             </CustomBox>
         </CustomBox>
     );
@@ -111,7 +162,9 @@ HorizontalScrollSection.propTypes = {
     renderItem: PropTypes.func.isRequired,
     onTitleClick: PropTypes.func,
     className: PropTypes.string,
+    autoScroll: PropTypes.bool,
+    scrollSpeed: PropTypes.number,
+    autoScrollDirection: PropTypes.oneOf(["left", "right"]),
 };
-
 
 export default HorizontalScrollSection;
