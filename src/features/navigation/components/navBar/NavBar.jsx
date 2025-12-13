@@ -2,7 +2,7 @@ import {useContext, useEffect, useState} from "react";
 import PropTypes from "prop-types";
 import { AuthContext } from "../../../../context/AuthContext.jsx";
 import useLogout from "../../../../hooks/useLogout.js";
-import { Menu, Apple } from "lucide-react";
+import { Menu, Apple, Gauge } from "lucide-react";
 import CustomAppBar from "../../../../components/layout/CustomAppBar.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import MealsMenu from "../mealsMenu/MealsMenu.jsx";
@@ -15,6 +15,7 @@ import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import {useLocation, useNavigate} from "react-router-dom";
 import LoginRegisterForm from "../authLoginRegisterForm/LoginRegisterForm.jsx";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
+import Logo from "../../../../components/logo/Logo.jsx";
 
 const NavBar = () => {
     const { user } = useContext(AuthContext);
@@ -54,12 +55,24 @@ const NavBar = () => {
                 {showMobileMenu && (
                     <CustomBox className="bg-appBarColor px-4 py-2">
                         <CustomBox className="flex items-center justify-between w-full">
-                            <CustomBox className="flex items-center gap-2">
+                            <CustomBox className="flex items-center gap-4">
+
+
+                                <Logo size={30} className=" text-white mr-1" to="/" />
+
+
                                 <MealsMenu showLabel={false}/>
                                 <DietsMenu showLabel={false}/>
                                 <CustomIconButton
                                     icon={<Apple className="text-white" />}
                                     onClick={() => navigate("/ingredients")}
+                                    bgColor="bg-transparent"
+                                    size={32}
+                                    className="mr-2"
+                                />
+                                <CustomIconButton
+                                    icon={<Gauge className="text-white" />}
+                                    onClick={() => navigate("/dashboard")}
                                     bgColor="bg-transparent"
                                     size={32}
                                     className="mr-2"
