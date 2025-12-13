@@ -9,6 +9,8 @@ import CustomIconButton from "../layout/CustomIconButton.jsx";
 import CustomDrawer from "../layout/CustomDrawer.jsx";
 import CustomBox from "../layout/CustomBox.jsx";
 import Spinner from "../layout/Spinner.jsx";
+import CustomButton from "../layout/CustomButton.jsx";
+import CustomTypography from "../layout/CustomTypography.jsx";
 
 /**
  * FilterSidebar component - Displays a sidebar with filtering options for meals.
@@ -37,15 +39,47 @@ const FilterSidebar = ({ isOpen = false, onFilter, filters }) => {
         <>
             {/* Floating filter button to open the sidebar */}
             {!open && (
-                <CustomIconButton
+                <CustomButton
                     onClick={toggleSidebar}
-                    icon={<SlidersHorizontal size={28} />}
-                    disableScale={true}
-                    size={40}
-                    bgColor="bg-darkBackground dark:bg-primary hover:bg-primary-dark"
-                    className="fixed top-[30%] right-0 z-[1500] text-white rounded-r-none rounded-tl-md rounded-bl-md shadow-md origin-center"
-                />
+                    variant="outline"
+                    color="neutral"
+                    className="
+                                fixed top-[20%] right-0 z-[1500]
+                                rounded-r-none rounded-tl-md rounded-bl-md
+                                shadow-md origin-center
+
+                                /* background */
+                                bg-white dark:bg-darkBackground
+
+                                /* border color */
+                                border-darkBackground dark:border-primary
+
+                                /* text/icon color */
+                                text-darkBackground dark:text-primary
+
+                                transition-transform duration-150
+                                hover:scale-110
+
+                                flex items-center gap-2 px-3 py-2
+        "
+                >
+                    <SlidersHorizontal
+                        size={18}
+                        className="text-darkBackground dark:text-primary"
+                    />
+
+                    <CustomTypography
+                        as="span"
+                        variant="small"
+                        weight="medium"
+                        inheritColor
+                        className="whitespace-nowrap text-darkBackground dark:text-primary"
+                    >
+                        Filters
+                    </CustomTypography>
+                </CustomButton>
             )}
+
 
             {/* Sidebar Drawer - Contains filter options */}
             <CustomDrawer
@@ -58,7 +92,7 @@ const FilterSidebar = ({ isOpen = false, onFilter, filters }) => {
                border-l border-borderDark dark:border-borderLight"
                 >
 
-                {/* Sidebar Header with Close Button */}
+                    {/* Sidebar Header with Close Button */}
                     <SidebarHeader title="Filters" onClose={toggleSidebar} />
 
                     {/* Loading Indicator */}
