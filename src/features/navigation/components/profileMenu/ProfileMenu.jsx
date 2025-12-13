@@ -23,6 +23,7 @@ const ProfileMenu = ({
                          onLoginClick,
                          onRegisterClick,
                          compact = false,
+                         showLabel = true
                      }) => {
     const [open, setOpen] = useState(false);
 
@@ -55,9 +56,11 @@ const ProfileMenu = ({
             aria-haspopup="menu"
             aria-expanded={open}
         >
-            <CustomTypography bold font="sans" className="text-xs sm:text-sm text-white mr-2 md:inline">
-                Profile
-            </CustomTypography>
+            {showLabel && (
+                <CustomTypography bold font="sans" className="text-xs sm:text-sm text-white mr-2 md:inline">
+                    Profile
+                </CustomTypography>
+            )}
             <UserCog className="text-white w-5 h-5 sm:w-6 sm:h-6" />
             {open ? (
                 <>

@@ -9,7 +9,7 @@ import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import { ChevronDown, ChevronUp, CookingPot , Pencil, UserCheck, BookOpen, UserPen } from "lucide-react";
 
-const DietsMenu = ({ compact = false }) => {
+const DietsMenu = ({ compact = false, showLabel = true  }) => {
     const [open, setOpen] = useState(false);
     const [authMsg, setAuthMsg] = useState(null);
     const { user } = useContext(AuthContext);
@@ -49,9 +49,11 @@ const DietsMenu = ({ compact = false }) => {
             onClick={() => setOpen(!open)}
             className="w-full flex justify-between items-center cursor-pointer text-white"
         >
-            <CustomTypography bold font="sans" className="text-xs sm:text-sm text-white mr-2 md:inline">
-                Diets
-            </CustomTypography>
+            {showLabel && (
+                <CustomTypography bold font="sans" className="text-xs sm:text-sm text-white mr-2 md:inline">
+                    Diets
+                </CustomTypography>
+            )}
             <CookingPot  className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="currentColor" />
             {open ? (
                 <>

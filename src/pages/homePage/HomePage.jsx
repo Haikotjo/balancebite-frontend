@@ -91,7 +91,7 @@ function HomePage() {
             const enriched = applyUserCopies(data, userMeals);
             setAllMeals(enriched.sort(() => 0.5 - Math.random()).slice(0, 12));
         });
-    }, [fetchDietsData, userMeals]);
+    }, [fetchDietsData, userMeals, applyUserCopies]);
 
 
     return (

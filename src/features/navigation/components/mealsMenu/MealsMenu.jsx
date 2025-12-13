@@ -9,7 +9,7 @@ import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import { ChevronDown, ChevronUp, Soup, Pencil, UserPen, BookOpen } from "lucide-react";
 
-const MealsMenu = ({ compact = false }) => {
+const MealsMenu = ({ compact = false, showLabel = true }) => {
     const [open, setOpen] = useState(false);
     const [authMsg, setAuthMsg] = useState(null);
     const { user } = useContext(AuthContext);
@@ -51,9 +51,12 @@ const MealsMenu = ({ compact = false }) => {
             aria-haspopup="menu"
             aria-expanded={open}
         >
-            <CustomTypography bold font="sans" className="text-xs sm:text-sm text-white mr-2 md:inline">
-                Meals
-            </CustomTypography>
+            {showLabel && (
+                <CustomTypography bold font="sans" className="text-xs sm:text-sm text-white mr-2 md:inline">
+                    Meals
+                </CustomTypography>
+            )}
+
             <Soup className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="currentColor" />
             {open ? (
                 <>
@@ -138,6 +141,7 @@ const MealsMenu = ({ compact = false }) => {
 MealsMenu.propTypes = {
     /** Compact icon-only variant for DesktopMenu */
     compact: PropTypes.bool,
+    showLabel: PropTypes.bool,
 };
 
 export default MealsMenu;

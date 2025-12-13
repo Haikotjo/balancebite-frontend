@@ -5,7 +5,6 @@ import useFetchMealEnums from "../../hooks/useFetchMealEnums.js";
 import FilterSection from "./filterSection/FilterSection.jsx";
 import useFilterSelection from "../../hooks/useFilterSelection.js";
 import SidebarHeader from "./sidebarHeader/SidebarHeader.jsx";
-import CustomIconButton from "../layout/CustomIconButton.jsx";
 import CustomDrawer from "../layout/CustomDrawer.jsx";
 import CustomBox from "../layout/CustomBox.jsx";
 import Spinner from "../layout/Spinner.jsx";

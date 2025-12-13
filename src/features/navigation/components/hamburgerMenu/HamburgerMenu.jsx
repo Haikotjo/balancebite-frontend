@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router-dom";
-import { MenuIcon, Home, Info, LogIn, LogOut, UserPlus, Settings, Soup, CookingPot , Gauge } from "lucide-react";
+import { MenuIcon, Home, Info, LogIn, LogOut, UserPlus, Settings, Soup, CookingPot, Gauge, Apple } from "lucide-react";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
@@ -87,7 +87,7 @@ const HamburgerMenu = ({
                 const rect = posRef.current.getBoundingClientRect();
                 const viewportH = window.innerHeight;
 
-                // Available room from dropdown's top to the bottom of the viewport, minus small margin
+                // Available room from dropdowns top to the bottom of the viewport, minus small margin
                 const available = Math.max(160, viewportH - rect.top - 16);
                 // Cap to 80vh so the menu never becomes excessively tall
                 const computed = Math.min(Math.floor(viewportH * 0.8), Math.floor(available));
@@ -107,6 +107,7 @@ const HamburgerMenu = ({
         { label: "About", icon: Info, path: "/about" },
         { label: "Meals", icon: Soup, path: "/meals" },
         { label: "Diets", icon: CookingPot , path: "/diets" },
+        { label: "Ingredients", icon: Apple, path: "/ingredients" },
         isAdmin && { label: "Admin", icon: Settings, path: "/admin" },
         !user && { label: "Login", icon: LogIn, action: onLoginClick },
         !user && { label: "Register", icon: UserPlus, action: onRegisterClick },

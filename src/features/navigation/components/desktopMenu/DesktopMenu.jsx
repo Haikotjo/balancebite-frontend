@@ -2,7 +2,7 @@
 import { Fragment, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Home, LogIn, LogOut, Gauge, ShieldUser, Info, Sun, Moon, UserCircle } from "lucide-react";
+import { Home, LogIn, LogOut, Gauge, ShieldUser, Info, Apple, UserCircle } from "lucide-react";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import clsx from "clsx";
 import CustomTooltip from "../../../../components/layout/CustomTooltip.jsx";
@@ -67,6 +67,17 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                 onRegisterClick={onRegisterClick}
                 text="Profile"
             />
+            <CustomTooltip text="Ingredients" position="right">
+                <CustomBox
+                    onClick={() => navigate("/ingredients")}
+                    className={clsx(
+                        "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
+                        isActive("/ingredients") ? "text-primary" : "text-white"
+                    )}
+                >
+                    <Apple className="w-8 h-8 mx-auto" />
+                </CustomBox>
+            </CustomTooltip>
         </CustomBox>
     );
 
