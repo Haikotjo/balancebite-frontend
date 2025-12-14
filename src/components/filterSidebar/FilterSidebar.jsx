@@ -43,40 +43,29 @@ const FilterSidebar = ({ isOpen = false, onFilter, filters }) => {
                     variant="outline"
                     color="neutral"
                     className="
-                                fixed top-[20%] right-0 z-[1500]
-                                rounded-r-none rounded-tl-md rounded-bl-md
-                                shadow-md origin-center
-
-                                /* background */
-                                bg-white dark:bg-darkBackground
-
-                                /* border color */
-                                border-darkBackground dark:border-primary
-
-                                /* text/icon color */
-                                text-darkBackground dark:text-primary
-
-                                transition-transform duration-150
-                                hover:scale-110
-
-                                flex items-center gap-2 px-3 py-2
-        "
+        fixed top-[20%] right-0 z-[1500]
+        px-3 py-2
+        rounded-r-none rounded-tl-md rounded-bl-md
+        shadow-md origin-center
+        bg-white dark:bg-darkBackground
+        border-darkBackground dark:border-primary
+        text-darkBackground dark:text-primary
+        transition-transform duration-150
+        hover:scale-110
+        flex items-center justify-center
+    "
                 >
                     <SlidersHorizontal
-                        size={18}
-                        className="text-darkBackground dark:text-primary"
+                        className="
+        text-darkBackground dark:text-primary
+        w-4 h-4
+        sm:w-6 sm:h-6
+        md:w-7 md:h-7
+        lg:w-8 lg:h-8
+    "
                     />
-
-                    <CustomTypography
-                        as="span"
-                        variant="small"
-                        weight="medium"
-                        inheritColor
-                        className="whitespace-nowrap text-darkBackground dark:text-primary"
-                    >
-                        Filters
-                    </CustomTypography>
                 </CustomButton>
+
             )}
 
 
