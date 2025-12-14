@@ -162,25 +162,42 @@ const HamburgerMenu = ({
                         ].join(" ")}
                         style={{ maxHeight }}
                     >
-                        {menuItems.map(({ label, icon: Icon, path, action }, index) => (
-                            <CustomBox key={label}>
-                                <CustomButton
-                                    onClick={() => {
-                                        if (path && !isActive(path)) navigate(path);
-                                        if (action) action();
-                                        closeMenu();
-                                    }}
-                                    className="w-full flex items-center justify-start gap-6 px-4 py-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-                                >
-                                    <Icon className="w-4 h-4 text-[#5b616e] dark:text-[#F9FAFB]" />
-                                    <CustomTypography as="span">{label}</CustomTypography>
-                                </CustomButton>
+                        {menuItems.map(({ label, icon: Icon, path, action }, index) => {
+                            const active = path && isActive(path);
 
-                                {index < menuItems.length - 1 && (
-                                    <CustomDivider className="bg-gray-200 dark:bg-gray-600" />
-                                )}
-                            </CustomBox>
-                        ))}
+                            return (
+                                <CustomBox key={label}>
+                                    <CustomButton
+                                        onClick={() => {
+                                            if (path && !active) navigate(path);
+                                            if (action) action();
+                                            closeMenu();
+                                        }}
+                                        className={`w-full flex items-center justify-start gap-6 px-4 py-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 ${active ? "bg-gray-100 dark:bg-gray-700" : ""}`}
+                                    >
+                                        <Icon
+                                            className={`w-4 h-4 ${
+                                                active
+                                                    ? "text-primary dark:text-primary"
+                                                    : "text-lightText dark:text-darkText"
+                                            }`}
+                                        />
+                                        <CustomTypography
+                                            as="span"
+                                            variant="small"
+                                            className={active ? "font-semibold" : ""}
+                                        >
+                                            {label}
+                                        </CustomTypography>
+                                    </CustomButton>
+
+                                    {index < menuItems.length - 1 && (
+                                        <CustomDivider className="bg-gray-200 dark:bg-gray-600" />
+                                    )}
+                                </CustomBox>
+                            );
+                        })}
+
 
                         {/* Theme toggle */}
                         <CustomDivider className="bg-gray-200 dark:bg-gray-600" />
