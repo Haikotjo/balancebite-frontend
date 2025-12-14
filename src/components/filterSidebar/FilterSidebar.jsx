@@ -43,7 +43,7 @@ const FilterSidebar = ({ isOpen = false, onFilter, filters }) => {
                     variant="outline"
                     color="neutral"
                     className="
-        fixed top-[20%] right-0 z-[1500]
+        fixed top-[10%] right-0 z-[1500]
         px-3 py-2
         rounded-r-none rounded-tl-md rounded-bl-md
         shadow-md origin-center
