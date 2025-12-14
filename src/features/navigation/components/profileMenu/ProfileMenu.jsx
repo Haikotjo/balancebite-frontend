@@ -5,6 +5,8 @@ import CustomDropdownWeb from "../../../../components/layout/CustomDropdownWeb.j
 import {UserCog, LogIn, LogOut, UserPlus, UserCircle, ShieldUser , Gauge } from "lucide-react";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import ChevronToggle from "../../../../components/chevronToggle/ChevronToggle.jsx";
+import {useLocation} from "react-router-dom";
+import clsx from "clsx";
 
 /**
  * ProfileMenu shows a dropdown with “Profile”, “Login / Register” or “Logout”
@@ -28,12 +30,21 @@ const ProfileMenu = ({
                      }) => {
     const [open, setOpen] = useState(false);
     const isAdmin = !!user && Array.isArray(user.roles) && user.roles.includes("ADMIN");
+    const location = useLocation();
+
+    const isProfileSectionActive =
+        location.pathname.startsWith("/profile") ||
+        location.pathname.startsWith("/dashboard") ||
+        location.pathname.startsWith("/admin");
 
     const trigger = compact ? (
         // Icon-only trigger for DesktopMenu: user + chevron
         <CustomBox
             onClick={() => setOpen(!open)}
-            className="relative p-2 pr-8 rounded-md hover:bg-white/10 cursor-pointer text-white"
+            className={clsx(
+                "relative p-2 pr-8 rounded-md cursor-pointer text-white",
+                isProfileSectionActive && "bg-white/25"
+            )}
             aria-haspopup="menu"
             aria-expanded={open}
         >

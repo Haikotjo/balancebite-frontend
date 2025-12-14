@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import PropTypes from "prop-types";
 import { AuthContext } from "../../../../context/AuthContext.jsx";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
@@ -9,6 +9,7 @@ import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import { Soup, Pencil, UserPen, BookOpen } from "lucide-react";
 import ChevronToggle from "../../../../components/chevronToggle/ChevronToggle.jsx";
+import clsx from "clsx";
 
 const MealsMenu = ({ compact = false, showLabel = true }) => {
     const [open, setOpen] = useState(false);
@@ -16,6 +17,12 @@ const MealsMenu = ({ compact = false, showLabel = true }) => {
     const { user } = useContext(AuthContext);
     const { setActiveOption } = useContext(UserMealsContext);
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const isDietSectionActive =
+        location.pathname.startsWith("/meals") ||
+        location.pathname.startsWith("/create-meal") ||
+        location.pathname.startsWith("/meal");
 
     const showAuth = (label) => {
         setAuthMsg(`Please log in to access ${label.toLowerCase()}.`);
@@ -27,7 +34,10 @@ const MealsMenu = ({ compact = false, showLabel = true }) => {
         // Icon-only trigger for DesktopMenu: soup + chevron, same size as other icons
         <CustomBox
             onClick={() => setOpen(!open)}
-            className="relative p-2 pr-8 rounded-md hover:bg-white/10 cursor-pointer text-white"
+            className={clsx(
+                "relative p-2 pr-8 rounded-md cursor-pointer text-white",
+                isDietSectionActive && "bg-white/25"
+            )}
             aria-haspopup="menu"
             aria-expanded={open}
         >

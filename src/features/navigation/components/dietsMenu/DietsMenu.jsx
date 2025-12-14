@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import PropTypes from "prop-types";
 import { AuthContext } from "../../../../context/AuthContext.jsx";
 import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
@@ -7,8 +7,9 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomDropdownWeb from "../../../../components/layout/CustomDropdownWeb.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
-import { ChevronDown, ChevronUp, CookingPot , Pencil, UserCheck, BookOpen, UserPen } from "lucide-react";
+import { CookingPot , Pencil, UserCheck, BookOpen, UserPen } from "lucide-react";
 import ChevronToggle from "../../../../components/chevronToggle/ChevronToggle.jsx";
+import clsx from "clsx";
 
 const DietsMenu = ({ compact = false, showLabel = true  }) => {
     const [open, setOpen] = useState(false);
@@ -16,6 +17,12 @@ const DietsMenu = ({ compact = false, showLabel = true  }) => {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
     const { setActiveOption } = useContext(UserDietsContext);
+    const location = useLocation();
+
+    const isDietSectionActive =
+        location.pathname.startsWith("/diets") ||
+        location.pathname.startsWith("/create-diet") ||
+        location.pathname.startsWith("/diet");
 
     const showAuth = (label) => {
         setAuthMsg(`Please log in to access ${label.toLowerCase()}.`);
@@ -27,7 +34,10 @@ const DietsMenu = ({ compact = false, showLabel = true  }) => {
         // Icon-only trigger (desktop look): CookingPot  + chevron, same size as other icons
         <CustomBox
             onClick={() => setOpen(!open)}
-            className="relative p-2 pr-8 rounded-md hover:bg-white/10 cursor-pointer text-white"
+            className={clsx(
+                "relative p-2 pr-8 rounded-md cursor-pointer text-white",
+                isDietSectionActive && "bg-white/25"
+            )}
             aria-haspopup="menu"
             aria-expanded={open}
         >
