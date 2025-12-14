@@ -8,6 +8,7 @@ import CustomDropdownWeb from "../../../../components/layout/CustomDropdownWeb.j
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import { ChevronDown, ChevronUp, CookingPot , Pencil, UserCheck, BookOpen, UserPen } from "lucide-react";
+import ChevronToggle from "../../../../components/chevronToggle/ChevronToggle.jsx";
 
 const DietsMenu = ({ compact = false, showLabel = true  }) => {
     const [open, setOpen] = useState(false);
@@ -31,17 +32,7 @@ const DietsMenu = ({ compact = false, showLabel = true  }) => {
             aria-expanded={open}
         >
             <CookingPot  className="w-8 h-8 mx-auto" fill="currentColor" />
-            {open ? (
-                <>
-                    <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-5 h-5 md:hidden pointer-events-none" />
-                    <ChevronUp   className="absolute right-1.5 top-1/2 -translate-y-1/2 w-5 h-5 hidden md:block pointer-events-none" />
-                </>
-            ) : (
-                <>
-                    <ChevronUp   className="absolute right-1.5 top-1/2 -translate-y-1/2 w-5 h-5 md:hidden pointer-events-none" />
-                    <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-5 h-5 hidden md:block pointer-events-none" />
-                </>
-            )}
+            <ChevronToggle open={open} />
         </CustomBox>
     ) : (
         // Default trigger with text (mobile/elsewhere)
@@ -55,17 +46,7 @@ const DietsMenu = ({ compact = false, showLabel = true  }) => {
                 </CustomTypography>
             )}
             <CookingPot  className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="currentColor" />
-            {open ? (
-                <>
-                    <ChevronDown className="text-white w-5 h-5 mr-2 md:hidden" />
-                    <ChevronUp className="text-white w-5 h-5 mr-2 hidden md:block" />
-                </>
-            ) : (
-                <>
-                    <ChevronUp className="text-white w-5 h-5 mr-2 md:hidden" />
-                    <ChevronDown className="text-white w-5 h-5 mr-2 hidden md:block" />
-                </>
-            )}
+            <ChevronToggle open={open} />
         </CustomBox>
     );
 

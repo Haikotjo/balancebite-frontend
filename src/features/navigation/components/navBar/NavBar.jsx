@@ -2,7 +2,7 @@ import {useContext, useEffect, useState} from "react";
 import PropTypes from "prop-types";
 import { AuthContext } from "../../../../context/AuthContext.jsx";
 import useLogout from "../../../../hooks/useLogout.js";
-import { Menu, Apple, Gauge } from "lucide-react";
+import { Menu, Apple, Gauge, Home } from "lucide-react";
 import CustomAppBar from "../../../../components/layout/CustomAppBar.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import MealsMenu from "../mealsMenu/MealsMenu.jsx";
@@ -16,6 +16,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import LoginRegisterForm from "../authLoginRegisterForm/LoginRegisterForm.jsx";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 import Logo from "../../../../components/logo/Logo.jsx";
+
 
 const NavBar = () => {
     const { user } = useContext(AuthContext);
@@ -53,30 +54,16 @@ const NavBar = () => {
 
                 {/* Menu-balk */}
                 {showMobileMenu && (
-                    <CustomBox className="bg-appBarColor px-4 py-2">
-                        <CustomBox className="flex items-center justify-between w-full">
-                            <CustomBox className="flex items-center gap-4">
+                    <CustomBox className="bg-appBarColor px-2 pt-1 pb-1">
+                        <CustomBox className="flex items-center w-full justify-between">
 
+                            {/* Left: Home */}
+                            <Logo size={34} className="block text-white" to="/" />
 
-                                <Logo size={30} className=" text-white mr-1" to="/" />
-
-
-                                <MealsMenu showLabel={false}/>
-                                <DietsMenu showLabel={false}/>
-                                <CustomIconButton
-                                    icon={<Apple className="text-white" />}
-                                    onClick={() => navigate("/ingredients")}
-                                    bgColor="bg-transparent"
-                                    size={32}
-                                    className="mr-2"
-                                />
-                                <CustomIconButton
-                                    icon={<Gauge className="text-white" />}
-                                    onClick={() => navigate("/dashboard")}
-                                    bgColor="bg-transparent"
-                                    size={32}
-                                    className="mr-2"
-                                />
+                            {/* MIDDLE: all menu’s */}
+                            <CustomBox className="flex items-center gap-3">
+                                <MealsMenu showLabel={false} />
+                                <DietsMenu showLabel={false} />
                                 <ProfileMenu
                                     showLabel={false}
                                     user={user}
@@ -89,29 +76,41 @@ const NavBar = () => {
                                         setStartInRegisterMode(true);
                                         setShowLoginForm(true);
                                     }}
-                                    text="Profile"
                                 />
-                            </CustomBox>
-                            <CustomBox className="relative">
-                                <HamburgerMenu
-                                    user={user}
-                                    onLogout={handleLogout}
-                                    onLoginClick={() => {
-                                        setStartInRegisterMode(false);
-                                        setShowLoginForm(true);
-                                    }}
-                                    onRegisterClick={() => {
-                                        setStartInRegisterMode(true);
-                                        setShowLoginForm(true);
-                                    }}
+                                <CustomIconButton
+                                    icon={<Apple className="text-white" />}
+                                    onClick={() => navigate("/ingredients")}
+                                    bgColor="bg-transparent"
+                                    size={32}
                                 />
+                                <CustomIconButton
+                                    icon={<Gauge className="text-white" />}
+                                    onClick={() => navigate("/dashboard")}
+                                    bgColor="bg-transparent"
+                                    size={32}
+                                />
+
                             </CustomBox>
+
+                            {/* Right: Hamburger */}
+                            <HamburgerMenu
+                                user={user}
+                                onLogout={handleLogout}
+                                onLoginClick={() => {
+                                    setStartInRegisterMode(false);
+                                    setShowLoginForm(true);
+                                }}
+                                onRegisterClick={() => {
+                                    setStartInRegisterMode(true);
+                                    setShowLoginForm(true);
+                                }}
+                            />
+
                         </CustomBox>
                     </CustomBox>
                 )}
+
             </CustomBox>
-
-
 
             {/* Desktop layout */}
             <CustomBox className="hidden md:flex md:h-full">

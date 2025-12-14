@@ -4,6 +4,7 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomDropdownWeb from "../../../../components/layout/CustomDropdownWeb.jsx";
 import {UserCog, LogIn, LogOut, UserPlus, UserCircle, ChevronDown, ChevronUp, Gauge } from "lucide-react";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import ChevronToggle from "../../../../components/chevronToggle/ChevronToggle.jsx";
 
 /**
  * ProfileMenu shows a dropdown with “Profile”, “Login / Register” or “Logout”
@@ -36,17 +37,7 @@ const ProfileMenu = ({
             aria-expanded={open}
         >
             <UserCog className="w-8 h-8 mx-auto" />
-            {open ? (
-                <>
-                    <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-5 h-5 md:hidden pointer-events-none" />
-                    <ChevronUp   className="absolute right-1.5 top-1/2 -translate-y-1/2 w-5 h-5 hidden md:block pointer-events-none" />
-                </>
-            ) : (
-                <>
-                    <ChevronUp   className="absolute right-1.5 top-1/2 -translate-y-1/2 w-5 h-5 md:hidden pointer-events-none" />
-                    <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-5 h-5 hidden md:block pointer-events-none" />
-                </>
-            )}
+            <ChevronToggle open={open} />
         </CustomBox>
     ) : (
         // Default trigger with text (mobile/overall)
@@ -62,17 +53,7 @@ const ProfileMenu = ({
                 </CustomTypography>
             )}
             <UserCog className="text-white w-5 h-5 sm:w-6 sm:h-6" />
-            {open ? (
-                <>
-                    <ChevronDown className="text-white w-5 h-5 mr-2 md:hidden" />
-                    <ChevronUp className="text-white w-5 h-5 mr-2 hidden md:block" />
-                </>
-            ) : (
-                <>
-                    <ChevronUp className="text-white w-5 h-5 mr-2 md:hidden" />
-                    <ChevronDown className="text-white w-5 h-5 mr-2 hidden md:block" />
-                </>
-            )}
+            <ChevronToggle open={open} />
         </CustomBox>
     );
 
