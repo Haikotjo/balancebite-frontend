@@ -10,6 +10,7 @@ import CustomTypography from "../../../../components/layout/CustomTypography.jsx
 import { Soup, Pencil, UserPen, BookOpen } from "lucide-react";
 import ChevronToggle from "../../../../components/chevronToggle/ChevronToggle.jsx";
 import clsx from "clsx";
+import {getActiveSection} from "../../utils/helpers/navSectionHelpers.js";
 
 const MealsMenu = ({ compact = false, showLabel = true }) => {
     const [open, setOpen] = useState(false);
@@ -19,10 +20,9 @@ const MealsMenu = ({ compact = false, showLabel = true }) => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const isDietSectionActive =
-        location.pathname.startsWith("/meals") ||
-        location.pathname.startsWith("/create-meal") ||
-        location.pathname.startsWith("/meal");
+    const section = getActiveSection(location.pathname);
+    const isMealsSectionActive =
+   section === "meals"
 
     const showAuth = (label) => {
         setAuthMsg(`Please log in to access ${label.toLowerCase()}.`);
@@ -36,7 +36,7 @@ const MealsMenu = ({ compact = false, showLabel = true }) => {
             onClick={() => setOpen(!open)}
             className={clsx(
                 "relative p-2 pr-8 rounded-md cursor-pointer text-white",
-                isDietSectionActive && "bg-white/25"
+                isMealsSectionActive && "bg-white/25"
             )}
             aria-haspopup="menu"
             aria-expanded={open}

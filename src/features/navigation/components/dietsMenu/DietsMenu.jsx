@@ -10,6 +10,7 @@ import CustomTypography from "../../../../components/layout/CustomTypography.jsx
 import { CookingPot , Pencil, UserCheck, BookOpen, UserPen } from "lucide-react";
 import ChevronToggle from "../../../../components/chevronToggle/ChevronToggle.jsx";
 import clsx from "clsx";
+import {getActiveSection} from "../../utils/helpers/navSectionHelpers.js";
 
 const DietsMenu = ({ compact = false, showLabel = true  }) => {
     const [open, setOpen] = useState(false);
@@ -19,10 +20,9 @@ const DietsMenu = ({ compact = false, showLabel = true  }) => {
     const { setActiveOption } = useContext(UserDietsContext);
     const location = useLocation();
 
+    const section = getActiveSection(location.pathname);
     const isDietSectionActive =
-        location.pathname.startsWith("/diets") ||
-        location.pathname.startsWith("/create-diet") ||
-        location.pathname.startsWith("/diet");
+        section === "diets"
 
     const showAuth = (label) => {
         setAuthMsg(`Please log in to access ${label.toLowerCase()}.`);

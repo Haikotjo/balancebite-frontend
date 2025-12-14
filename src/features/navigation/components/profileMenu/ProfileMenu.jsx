@@ -7,6 +7,7 @@ import CustomTypography from "../../../../components/layout/CustomTypography.jsx
 import ChevronToggle from "../../../../components/chevronToggle/ChevronToggle.jsx";
 import {useLocation} from "react-router-dom";
 import clsx from "clsx";
+import {getActiveSection} from "../../utils/helpers/navSectionHelpers.js";
 
 /**
  * ProfileMenu shows a dropdown with “Profile”, “Login / Register” or “Logout”
@@ -32,10 +33,9 @@ const ProfileMenu = ({
     const isAdmin = !!user && Array.isArray(user.roles) && user.roles.includes("ADMIN");
     const location = useLocation();
 
+    const section = getActiveSection(location.pathname);
     const isProfileSectionActive =
-        location.pathname.startsWith("/profile") ||
-        location.pathname.startsWith("/dashboard") ||
-        location.pathname.startsWith("/admin");
+        section === "profile" || section === "dashboard"
 
     const trigger = compact ? (
         // Icon-only trigger for DesktopMenu: user + chevron

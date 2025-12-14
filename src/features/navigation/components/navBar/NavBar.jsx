@@ -16,6 +16,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import LoginRegisterForm from "../authLoginRegisterForm/LoginRegisterForm.jsx";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 import Logo from "../../../../components/logo/Logo.jsx";
+import {getActiveSection} from "../../utils/helpers/navSectionHelpers.js";
 
 
 const NavBar = () => {
@@ -26,6 +27,15 @@ const NavBar = () => {
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
+    const section = getActiveSection(location.pathname);
+
+    const isProfileSectionActive = section === "profile";
+    const isMealsSectionActive = section === "meals";
+    const isDietSectionActive = section === "diets";
+    const isIngredientsActive = section === "ingredients";
+    const isDashboardActive = section === "dashboard";
+    const isHomeActive = section === "home";
+
 
     useEffect(() => {
         setShowMobileMenu(false);
@@ -58,39 +68,71 @@ const NavBar = () => {
                         <CustomBox className="flex items-center w-full justify-between">
 
                             {/* Left: Home */}
-                            <Logo size={34} className="block text-white" to="/" />
+                            <CustomBox
+                                className={clsx(
+                                    "rounded-md",
+                                    isHomeActive && "bg-white/25 p-2"
+                                )}
+                            >
+                                <Logo size={34} className="block text-white" to="/" />
+                            </CustomBox>
 
                             {/* MIDDLE: all menu’s */}
                             <CustomBox className="flex items-center gap-3">
-                                <MealsMenu showLabel={false} />
-                                <DietsMenu showLabel={false} />
-                                <ProfileMenu
-                                    showLabel={false}
-                                    user={user}
-                                    onLogout={handleLogout}
-                                    onLoginClick={() => {
-                                        setStartInRegisterMode(false);
-                                        setShowLoginForm(true);
-                                    }}
-                                    onRegisterClick={() => {
-                                        setStartInRegisterMode(true);
-                                        setShowLoginForm(true);
-                                    }}
-                                />
+                                <CustomBox
+                                    className={clsx(
+                                        "rounded-md",
+                                        isMealsSectionActive && "bg-white/25 p-2"
+                                    )}
+                                >
+                                    <MealsMenu showLabel={false} />
+                                </CustomBox>
+
+                                <CustomBox
+                                    className={clsx(
+                                        "rounded-md",
+                                        isDietSectionActive && "bg-white/25 p-2"
+                                    )}
+                                >
+                                    <DietsMenu showLabel={false} />
+                                </CustomBox>
+
+                                <CustomBox
+                                    className={clsx(
+                                        "rounded-md",
+                                        isProfileSectionActive && "bg-white/25 p-2"
+                                    )}
+                                >
+                                    <ProfileMenu
+                                        showLabel={false}
+                                        user={user}
+                                        onLogout={handleLogout}
+                                        onLoginClick={() => {
+                                            setStartInRegisterMode(false);
+                                            setShowLoginForm(true);
+                                        }}
+                                        onRegisterClick={() => {
+                                            setStartInRegisterMode(true);
+                                            setShowLoginForm(true);
+                                        }}
+                                    />
+                                </CustomBox>
+
                                 <CustomIconButton
                                     icon={<Apple className="text-white" />}
                                     onClick={() => navigate("/ingredients")}
-                                    bgColor="bg-transparent"
-                                    size={32}
-                                />
-                                <CustomIconButton
-                                    icon={<Gauge className="text-white" />}
-                                    onClick={() => navigate("/dashboard")}
-                                    bgColor="bg-transparent"
+                                    bgColor={isIngredientsActive ? "bg-white/25 p-2" : "bg-transparent"}
                                     size={32}
                                 />
 
+                                <CustomIconButton
+                                    icon={<Gauge className="text-white" />}
+                                    onClick={() => navigate("/dashboard")}
+                                    bgColor={isDashboardActive ? "bg-white/25" : "bg-transparent"}
+                                    size={32}
+                                />
                             </CustomBox>
+
 
                             {/* Right: Hamburger */}
                             <HamburgerMenu
