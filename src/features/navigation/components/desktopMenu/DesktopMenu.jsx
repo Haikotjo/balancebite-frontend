@@ -65,29 +65,30 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                 onRegisterClick={onRegisterClick}
                 text="Profile"
             />
-            <CustomTooltip text="Ingredients" position="right">
-                <CustomBox
-                    onClick={() => navigate("/ingredients")}
-                    className={clsx(
-                        "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                        isActive("/ingredients") ? "text-primary" : "text-white"
-                    )}
-                >
-                    <Apple className="w-8 h-8 mx-auto" />
-                </CustomBox>
-            </CustomTooltip>
         </CustomBox>
     );
 
     // 3) Profile / Dashboard / Admin (hidden when short)
     const GroupPrimary = isShort ? null : (
-        <CustomBox className="flex flex-col items-center">
+        <CustomBox className="flex flex-col items-center gap-1">
+            <CustomTooltip text="Ingredients" position="right">
+                <CustomBox
+                    onClick={() => navigate("/ingredients")}
+                    className={clsx(
+                        "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
+                        isActive("/ingredients") && "border border-white"
+                    )}
+                >
+                    <Apple className="w-8 h-8 mx-auto" />
+                </CustomBox>
+            </CustomTooltip>
+
             <CustomTooltip text="Profile" position="right">
                 <CustomBox
                     onClick={() => (user ? navigate("/profile") : onLoginClick())}
                     className={clsx(
                         "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                        isActive("/profile") ? "text-primary" : "text-white"
+                        isActive("/profile") && "border border-white"
                     )}
                     title={user ? "Open profile" : "Login/Register"}
                 >
@@ -101,7 +102,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                         onClick={() => navigate("/dashboard")}
                         className={clsx(
                             "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                            isActive("/dashboard") ? "text-primary" : "text-white"
+                            isActive("/dashboard") && "border border-white"
                         )}
                     >
                         <Gauge className="w-8 h-8 mx-auto" />
@@ -115,7 +116,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                         onClick={() => navigate("/admin")}
                         className={clsx(
                             "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                            isActive("/admin") ? "text-primary" : "text-white"
+                            isActive("/admin") && "border border-white"
                         )}
                     >
                         <ShieldUser className="w-8 h-8 mx-auto" />
@@ -133,7 +134,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     onClick={() => navigate("/")}
                     className={clsx(
                         "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                        isActive("/") ? "text-primary" : "text-white"
+                        isActive("/") && "border border-white"
                     )}
                 >
                     <Home className="w-8 h-8 mx-auto" />
@@ -145,7 +146,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     onClick={() => navigate("/about")}
                     className={clsx(
                         "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                        isActive("/about") ? "text-primary" : "text-white"
+                        isActive("/about") && "border border-white"
                     )}
                 >
                     <Info className="w-8 h-8 mx-auto" />

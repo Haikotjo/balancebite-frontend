@@ -31,9 +31,16 @@ const DietsMenu = ({ compact = false, showLabel = true  }) => {
             aria-haspopup="menu"
             aria-expanded={open}
         >
-            <CookingPot  className="w-8 h-8 mx-auto" fill="currentColor" />
-            <ChevronToggle open={open} />
+            <CookingPot className="w-8 h-8 mx-auto" fill="currentColor" />
+            <ChevronToggle
+                open={open}
+                mobileSize={16}
+                desktopSize={20}
+                mobileClassName="absolute right-1.5 top-1/2 -translate-y-1/2 md:hidden pointer-events-none"
+                desktopClassName="absolute right-1.5 top-1/2 -translate-y-1/2 hidden md:block pointer-events-none"
+            />
         </CustomBox>
+
     ) : (
         // Default trigger with text (mobile/elsewhere)
         <CustomBox

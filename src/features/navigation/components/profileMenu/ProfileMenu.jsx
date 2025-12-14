@@ -2,7 +2,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomDropdownWeb from "../../../../components/layout/CustomDropdownWeb.jsx";
-import {UserCog, LogIn, LogOut, UserPlus, UserCircle, ChevronDown, ChevronUp, Gauge } from "lucide-react";
+import {UserCog, LogIn, LogOut, UserPlus, UserCircle, ShieldUser , Gauge } from "lucide-react";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import ChevronToggle from "../../../../components/chevronToggle/ChevronToggle.jsx";
 
@@ -27,6 +27,7 @@ const ProfileMenu = ({
                          showLabel = true
                      }) => {
     const [open, setOpen] = useState(false);
+    const isAdmin = !!user && Array.isArray(user.roles) && user.roles.includes("ADMIN");
 
     const trigger = compact ? (
         // Icon-only trigger for DesktopMenu: user + chevron
@@ -37,8 +38,15 @@ const ProfileMenu = ({
             aria-expanded={open}
         >
             <UserCog className="w-8 h-8 mx-auto" />
-            <ChevronToggle open={open} />
+            <ChevronToggle
+                open={open}
+                mobileSize={16}
+                desktopSize={20}
+                mobileClassName="absolute right-1.5 top-1/2 -translate-y-1/2 md:hidden pointer-events-none"
+                desktopClassName="absolute right-1.5 top-1/2 -translate-y-1/2 hidden md:block pointer-events-none"
+            />
         </CustomBox>
+
     ) : (
         // Default trigger with text (mobile/overall)
         <CustomBox
@@ -78,6 +86,14 @@ const ProfileMenu = ({
                     onClick: () => {
                         setOpen(false);
                         window.location.href = "/dashboard";
+                    },
+                },
+                isAdmin && {
+                    label: "Admin",
+                    icon: ShieldUser,
+                    onClick: () => {
+                        setOpen(false);
+                        window.location.href = "/admin";
                     },
                 },
                 !user && {

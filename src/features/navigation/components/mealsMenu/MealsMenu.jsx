@@ -7,7 +7,7 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomDropdownWeb from "../../../../components/layout/CustomDropdownWeb.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
-import { ChevronDown, ChevronUp, Soup, Pencil, UserPen, BookOpen } from "lucide-react";
+import { Soup, Pencil, UserPen, BookOpen } from "lucide-react";
 import ChevronToggle from "../../../../components/chevronToggle/ChevronToggle.jsx";
 
 const MealsMenu = ({ compact = false, showLabel = true }) => {
@@ -32,8 +32,15 @@ const MealsMenu = ({ compact = false, showLabel = true }) => {
             aria-expanded={open}
         >
             <Soup className="w-8 h-8 mx-auto" fill="currentColor" />
-            <ChevronToggle open={open} />
+            <ChevronToggle
+                open={open}
+                mobileSize={16}
+                desktopSize={20}
+                mobileClassName="absolute right-1.5 top-1/2 -translate-y-1/2 md:hidden pointer-events-none"
+                desktopClassName="absolute right-1.5 top-1/2 -translate-y-1/2 hidden md:block pointer-events-none"
+            />
         </CustomBox>
+
     ) : (
         // Default trigger with text (mobile/overal)
         <CustomBox
