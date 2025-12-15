@@ -50,7 +50,7 @@ export default {
         cardAccentDark: "#191e23",
 
         borderLight: "#d8d8d8",
-        borderDark: "#344875",
+        borderDark: "#111827",
 
         friendlyGray: "#8f8f8f",
         softIvory: "#F0EAE2",

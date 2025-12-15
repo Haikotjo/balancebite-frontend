@@ -5,14 +5,23 @@ import clsx from 'clsx';
 import CustomBox from './CustomBox.jsx';
 
 /**
- * CustomDrawer — een simpel slide‑in paneel vanaf rechts
- * @param {boolean} open      – of het paneel open staat
- * @param {Function} onClose  – callback om het paneel te sluiten
- * @param {number|string} width – breedte van het paneel (bv. '300px' of 'w-[300px]')
- * @param {React.ReactNode} children – inhoud van het paneel
+ * CustomDrawer – A simple slide-in panel from the right side of the viewport.
+ *
+ * Handles:
+ * - Slide-in / slide-out animation based on the `open` state.
+ * - Closing the drawer when clicking outside its container.
+ * - A scrollable inner content area.
+ *
+ * @param {boolean} open - Controls whether the drawer is visible.
+ * @param {Function} onClose - Callback invoked when the drawer should close (e.g. outside click).
+ * @param {string} [width='w-[300px]'] - Tailwind width classes for the drawer container
+ *                                      (e.g. 'w-[300px]', 'w-[220px] sm:w-[300px]').
+ * @param {React.ReactNode} children - The content to render inside the drawer.
+ * @param {string} [contentClassName] - Optional additional Tailwind classes for the inner
+ *                                      scrollable content container.
  */
-const CustomDrawer = ({ open, onClose, width = 'w-[300px]', children }) => {
-    const containerRef = useRef();
+const CustomDrawer = ({ open, onClose, width = 'w-[300px]', children, contentClassName = "" }) => {
+    const containerRef = useRef(null);
 
     useEffect(() => {
         const handler = e => {
@@ -27,13 +36,20 @@ const CustomDrawer = ({ open, onClose, width = 'w-[300px]', children }) => {
     return (
         <CustomBox
             className={clsx(
-                'fixed top-0 right-0 h-full bg-white dark:bg-gray-800 z-50 transform transition-transform duration-300 ease-in-out',
+                'fixed top-0 right-0 h-full bg-lightBackground dark:bg-darkBackground z-50 transform transition-transform duration-1000 ease-in-out',
                 width,
                 open ? 'translate-x-0' : 'translate-x-full'
             )}
             ref={containerRef}
         >
-            {children}
+            <CustomBox
+                className={clsx(
+                    "w-full h-full flex flex-col overflow-y-auto",
+                    contentClassName
+                )}
+            >
+                {children}
+            </CustomBox>
         </CustomBox>
     );
 };
@@ -43,6 +59,7 @@ CustomDrawer.propTypes = {
     onClose: PropTypes.func.isRequired,
     width: PropTypes.string,
     children: PropTypes.node,
+    contentClassName: PropTypes.string,
 };
 
 export default CustomDrawer;

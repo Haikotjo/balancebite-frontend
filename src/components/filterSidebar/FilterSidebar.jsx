@@ -9,7 +9,6 @@ import CustomDrawer from "../layout/CustomDrawer.jsx";
 import CustomBox from "../layout/CustomBox.jsx";
 import Spinner from "../layout/Spinner.jsx";
 import CustomButton from "../layout/CustomButton.jsx";
-import CustomTypography from "../layout/CustomTypography.jsx";
 
 /**
  * FilterSidebar component - Displays a sidebar with filtering options for meals.
@@ -47,9 +46,9 @@ const FilterSidebar = ({ isOpen = false, onFilter, filters }) => {
         px-3 py-2
         rounded-r-none rounded-tl-md rounded-bl-md
         shadow-md origin-center
-        bg-white dark:bg-darkBackground
-        border-darkBackground dark:border-primary
-        text-darkBackground dark:text-primary
+        bg-lightBackground/50 dark:bg-darkBackground/50
+        border-borderDark dark:border-borderLight
+
         transition-transform duration-150
         hover:scale-110
         flex items-center justify-center
@@ -57,7 +56,7 @@ const FilterSidebar = ({ isOpen = false, onFilter, filters }) => {
                 >
                     <SlidersHorizontal
                         className="
-        text-darkBackground dark:text-primary
+        text-lightText dark:text-darkText
         w-4 h-4
         sm:w-6 sm:h-6
         md:w-7 md:h-7
@@ -74,14 +73,12 @@ const FilterSidebar = ({ isOpen = false, onFilter, filters }) => {
                 open={open}
                 onClose={toggleSidebar}
                 width="w-[220px] sm:w-[300px] md:w-[400px] lg:w-[520px]"
+                contentClassName="p-1 sm:p-2 md:p-3 lg:p-4 pb-5 border-l border-borderDark dark:border-borderLight"
             >
-                <CustomBox
-                    className="w-full h-screen p-1 sm:p-2 md:p-3 lg:p-4 flex flex-col overflow-y-auto pb-5
-               border-l border-borderDark dark:border-borderLight"
-                >
 
-                    {/* Sidebar Header with Close Button */}
-                    <SidebarHeader title="Filters" onClose={toggleSidebar} />
+
+            {/* Sidebar Header with Close Button */}
+                    <SidebarHeader title="Filter" onClose={toggleSidebar} />
 
                     {/* Loading Indicator */}
                     {loading ? (
@@ -114,7 +111,7 @@ const FilterSidebar = ({ isOpen = false, onFilter, filters }) => {
                             />
                         </CustomBox>
                     )}
-                </CustomBox>
+
             </CustomDrawer>
         </>
     );

@@ -18,7 +18,7 @@ const SidebarHeader = ({ onClose, title }) => (
     <CustomBox className="flex justify-between items-center">
         <CustomTypography
             as="h2"
-            variant="h4"
+            variant="h2"
             className="font-bold"
         >
             {title}
@@ -26,9 +26,11 @@ const SidebarHeader = ({ onClose, title }) => (
 
         <CustomIconButton
             onClick={onClose}
-            icon={<X size={18} />}
-            bgColor="bg-transparent"
+            icon={<X size={20} strokeWidth={2} className="error" />}
+            bgColor="bg-transparent border border-error"
+            className="text-error mr-2 mt-2"
         />
+
     </CustomBox>
 );
 
