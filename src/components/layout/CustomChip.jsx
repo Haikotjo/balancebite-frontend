@@ -19,6 +19,11 @@ import clsx from "clsx";
  * @param {string} [props.labelPosition="bottom"] - "top" or "bottom" label placement.
  * @param {string} [props.className] - Optional outer class.
  */
+
+/**
+ * CustomChip component: A manually styled chip using Tailwind, ready for React Native transition.
+ * Supports icon, label, dynamic sizing, and visual selection.
+ */
 const CustomChip = ({
                         icon,
                         label,
@@ -32,7 +37,6 @@ const CustomChip = ({
     const spacingClass = iconMargin ? `px-[${iconMargin}px]` : "px-3";
     const chipHeight = iconSize + 10;
     const dimensionClass = `w-[${chipHeight}px] h-[${chipHeight}px]`;
-
 
     return (
         <CustomBox
@@ -52,7 +56,6 @@ const CustomChip = ({
                         "text-center",
                         labelPosition === "top" ? "mb-1" : "mt-1.5"
                     )}
-
                 >
                     {label}
                 </CustomTypography>
@@ -64,8 +67,8 @@ const CustomChip = ({
                     dimensionClass,
                     spacingClass,
                     selected
-                        ? "bg-primary border-primary text-white"
-                        : "bg-white dark:bg-gray-800 border-primary text-primary"
+                        ? "bg-darkBackground dark:bg-lightBackground text-darkText dark:text-lightText"
+                        : "bg-white dark:bg-gray-800 border-borderDark dark:border-borderLight text-lightText dark:text-darkText"
                 )}
             >
                 {icon}

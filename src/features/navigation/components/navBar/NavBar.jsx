@@ -2,7 +2,7 @@ import {useContext, useEffect, useState} from "react";
 import PropTypes from "prop-types";
 import { AuthContext } from "../../../../context/AuthContext.jsx";
 import useLogout from "../../../../hooks/useLogout.js";
-import { Menu, Apple, Gauge, Home } from "lucide-react";
+import { Menu, Apple, Gauge } from "lucide-react";
 import CustomAppBar from "../../../../components/layout/CustomAppBar.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import MealsMenu from "../mealsMenu/MealsMenu.jsx";

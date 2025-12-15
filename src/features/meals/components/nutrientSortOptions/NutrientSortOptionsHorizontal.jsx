@@ -33,25 +33,37 @@ import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 const NutrientSortOptionsHorizontal = ({ onSort }) => {
     const { activeOption } = useContext(UserMealsContext);
     const [currentSort, setCurrentSort] = useState({ key: null, order: "asc" });
+    const iconBase = "w-5 h-5 sm:w-6 sm:h-6 md:w-6 md:h-6 m-1";
 
     // Returns appropriate sort direction icon based on current state
     const getSortIcon = (key) => {
-        const iconClass = "w-5 h-5 sm:w-6 sm:h-6 md:w-6 md:h-6 m-1";
-        if (!key) return <ArrowDownUp className={iconClass} />;
+        const base = iconBase;
+
+        const unselectedClass = `${base} text-lightText dark:text-darkText`;
+        const selectedClass   = `${base} text-darkText dark:text-lightText`;
+
+        const cls = key ? selectedClass : unselectedClass;
+
+        if (!key) {
+            return <ArrowDownUp className={cls} />;
+        }
+
         return currentSort.order === "asc"
-            ? <ArrowUpNarrowWide className={iconClass} />
-            : <ArrowDownNarrowWide className={iconClass} />;
+            ? <ArrowUpNarrowWide className={cls} />
+            : <ArrowDownNarrowWide className={cls} />;
     };
+
 
     // Define the available nutrients and their display info
     const nutrients = [
-        { name: "Energy", label: "Kcal", icon: <Flame className="w-5 h-5 sm:w-6 sm:h-6 md:w-6 md:h-6 m-1" />, sortKey: "calories" },
-        { name: "Protein", label: "Protein", icon: <Dumbbell className="w-5 h-5 sm:w-6 sm:h-6 md:w-6 md:h-6 m-1" />, sortKey: "protein" },
-        { name: "Carbs", label: "Carbs", icon: <ChartColumnIncreasing className="w-5 h-5 sm:w-6 sm:h-6 md:w-6 md:h-6 m-1" />, sortKey: "carbs" },
-        { name: "Fat", label: "Fat", icon: <Droplet className="w-5 h-5 sm:w-6 sm:h-6 md:w-6 md:h-6 m-1" />, sortKey: "fat" },
-        { name: "All Time", label: "All Time", icon: <ChartNoAxesColumnIncreasing />,   sortKey: "saveCount" },
-        { name: "This Week", label: "This Week", icon: <TrendingUp  />, sortKey: "weeklySaveCount" },
-        { name: "This Month", label: "This Month", icon: <TrendingDown />, sortKey: "monthlySaveCount" },
+        { name: "Energy",  label: "Kcal",       icon: <Flame className={`${iconBase} text-error`} />,    sortKey: "calories" },
+        { name: "Protein", label: "Protein",    icon: <Dumbbell className={`${iconBase} text-primary`} />, sortKey: "protein" },
+        { name: "Carbs",   label: "Carbs",      icon: <ChartColumnIncreasing className={`${iconBase} text-success`} />, sortKey: "carbs" },
+        { name: "Fat",     label: "Fat",        icon: <Droplet className={`${iconBase} text-secondary`} />, sortKey: "fat" },
+
+        { name: "All Time", label: "All Time",  icon: <ChartNoAxesColumnIncreasing className="text-primary"/>,   sortKey: "saveCount" },
+        { name: "This Week", label: "This Week", icon: <TrendingUp className="text-primary"/>,  sortKey: "weeklySaveCount" },
+        { name: "This Month", label: "This Month", icon: <TrendingDown className="text-primary"/>, sortKey: "monthlySaveCount" },
     ];
 
     // Called when a nutrient chip is clicked

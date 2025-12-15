@@ -56,9 +56,14 @@ const SortControls = ({ className = "", sortKey, sortOrder, onSortChange, filter
                                 className="w-auto py-1 flex-row"
                                 icon={
                                     <CustomBox className="flex items-center">
-                                        <CustomTypography variant="small" className="my-1 sm:mr-1">
+                                        <CustomTypography
+                                            variant="small"
+                                            inheritColor
+                                            className="my-1 sm:mr-1"
+                                        >
                                             {label}
                                         </CustomTypography>
+
                                         {arrowIcon}
                                     </CustomBox>
                                 }
