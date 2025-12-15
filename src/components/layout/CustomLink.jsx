@@ -1,4 +1,3 @@
-// src/components/layout/CustomLink.jsx
 import PropTypes from "prop-types";
 import clsx from "clsx";
 
@@ -14,7 +13,7 @@ const CustomLink = ({
                         onClick,
                         truncate = false,
                         target = "_blank",
-                        rel = "noopener noreferrer",
+                        rel = "noopener noreferrer"
                     }) => {
     return (
         <a

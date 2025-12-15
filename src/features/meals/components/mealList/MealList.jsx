@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import MealDetailCard from "../mealCardLarge/MealDetailCard.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
-import CustomGrid from "../../../../components/layout/CustomGrid.jsx";
 
 /**
  * MealList — presentational-ish list that still syncs filters/sort with context,

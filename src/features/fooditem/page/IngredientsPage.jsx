@@ -173,7 +173,6 @@ const IngredientsPage = () => {
                                             }
                                             formatMoney={formatMoney}
                                             formatGrams={formatGrams}
-                                            // ⬇️ nieuw: geef handler door
                                             onEditPrice={openEditPrice}
                                         />
                                     ))}

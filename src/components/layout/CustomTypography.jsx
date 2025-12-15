@@ -48,6 +48,13 @@ export const Inline = ({ children, color, weight }) => (
     </span>
 );
 
+Inline.propTypes = {
+    children: PropTypes.node.isRequired,
+    color: PropTypes.string,
+    weight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+};
+
+
 
 /**
  * CustomTypography
@@ -99,7 +106,7 @@ CustomTypography.propTypes = {
     italic: PropTypes.bool,
     font: PropTypes.oneOf(Object.keys(FONT_MAP)),
     className: PropTypes.string,
-    as: PropTypes.string,
+    as: PropTypes.elementType,
     weight: PropTypes.oneOf([
         "thin",
         "extralight",

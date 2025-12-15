@@ -5,9 +5,9 @@ import clsx from "clsx";
 import CustomBox from "./CustomBox.jsx";
 
 /**
- * CustomCardChip — volledig flexibel.
- * Styling bepaal je bij implementatie via `className` en `textClassName`.
- * Inhoud via `children`.
+ * CustomCardChip — fully flexible.
+ * Styling is defined at implementation level via `className` and `textClassName`.
+ * Content is provided via `children`.
  */
 const CustomCardChip = ({
                             children,
