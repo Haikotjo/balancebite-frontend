@@ -58,10 +58,10 @@ const SubMenuChip = ({
             <CustomBox
                 style={chipStyle}
                 className={clsx(
-                    "rounded-full border-2 flex items-center justify-center transition-colors duration-200",
+                    "rounded-full border-2 flex items-center justify-center transition-colors duration-200 ",
                     selected
-                        ? "bg-primary border-primary text-white"
-                        : "bg-white dark:bg-gray-800 border-primary text-primary"
+                        ? "bg-darkBackground dark:bg-lightBackground border-borderDark dark:border-borderLight text-darkText dark:text-lightText"
+                        : "bg-lightBackground dark:bg-darkBackground border-borderDark dark:border-borderLight text-lightText dark:text-darkText"
                 )}
             >
                 {icon}

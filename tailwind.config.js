@@ -25,6 +25,8 @@ export default {
         lightBackground: "#F9FAFB",
         darkBackground: "#111827",
 
+        borderLight: "#d8d8d8",
+        borderDark: "#111827",
 
         primary: "#38adb5",
         "primary-dark": "#298073",
@@ -48,9 +50,6 @@ export default {
         cardDark: "#192339",
         cardAccentLight: "#F9FAFB",
         cardAccentDark: "#191e23",
-
-        borderLight: "#d8d8d8",
-        borderDark: "#111827",
 
         friendlyGray: "#8f8f8f",
         softIvory: "#F0EAE2",

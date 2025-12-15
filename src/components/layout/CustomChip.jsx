@@ -68,7 +68,7 @@ const CustomChip = ({
                     spacingClass,
                     selected
                         ? "bg-darkBackground dark:bg-lightBackground text-darkText dark:text-lightText"
-                        : "bg-white dark:bg-gray-800 border-borderDark dark:border-borderLight text-lightText dark:text-darkText"
+                        : "bg-lightBackground dark:bg-darkBackground border-borderDark dark:border-borderLight text-lightText dark:text-darkText"
                 )}
             >
                 {icon}

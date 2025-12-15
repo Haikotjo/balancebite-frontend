@@ -31,7 +31,7 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
                         key={label}
                         icon={
                             <Icon
-                                className={`${selected ? "text-white" : "text-primary"} w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8`}
+                                className=" w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-primary"
                             />
                         }
                         label={label}
