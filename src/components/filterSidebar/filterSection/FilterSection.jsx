@@ -34,7 +34,7 @@ const FilterSection = ({ title, items, selectedFilters, category, onFilterClick 
 
 
             {/* Divider with dynamic color based on theme mode */}
-            <CustomDivider className="my-2 mb-[15px] bg-gray-300 dark:bg-gray-500" />
+            <CustomDivider className="my-2 mb-[15px] bg-borderDark dark:bg-borderLight" />
 
             {/* Render filter options as selectable Chips */}
             <CustomBox className="flex flex-wrap gap-1 mb-1">
@@ -47,8 +47,8 @@ const FilterSection = ({ title, items, selectedFilters, category, onFilterClick 
                             className={clsx(
                                 "border px-2 py-[4px] text-[0.7rem] sm:text-[0.8rem] md:text-[0.9rem]",
                                 isSelected
-                                    ? "bg-primary border-primary text-white hover:bg-primary/90"
-                                    : "border-primary text-primary hover:bg-gray-100 dark:hover:bg-gray-700"
+                                    ? "bg-primary border-borderDark dark:border-borderLight text-darkText hover:bg-primary/90"
+                                    : "border-primary text-lightText dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-700"
                             )}
                             textClassName="px-[4px] sm:px-[8px]"
                         >
