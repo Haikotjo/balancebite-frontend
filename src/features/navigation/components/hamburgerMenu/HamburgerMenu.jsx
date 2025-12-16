@@ -1,170 +1,138 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import PropTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router-dom";
-import { MenuIcon, Home, Info, LogIn, LogOut, UserPlus, Settings, Soup, CookingPot, Gauge, Apple } from "lucide-react";
+import {
+    MenuIcon, Home, Info, LogIn, LogOut, UserPlus, Settings,
+    Soup, CookingPot, Gauge, Apple
+} from "lucide-react";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 import DarkModeSwitch from "../darkModeSwitch/DarkModeSwitch.jsx";
 
-/**
- * HamburgerMenu
- * - Desktop: dropdown opens to the right, top-aligned with the button, grows downward.
- * - Mobile: dropdown opens upward, right-aligned to the button (unchanged).
- * - Dropdown is scrollable when tall; maxHeight is recomputed on open and resize.
- * - Enter/exit animations for the dropdown; icon rotates on open/close.
- */
-const HamburgerMenu = ({
-                           user,
-                           onLogout,
-                           onLoginClick,
-                           onRegisterClick,
-                           variant = "mobile",        // "mobile" | "desktop"
-                           iconColor = "text-white",
-                           className = "",
-                           desktopOffsetY = 8,        // extra downward offset (px) for desktop dropdown
-                           desktopOffsetX = 8,        // extra right offset (px) for desktop dropdown
-                       }) => {
-    // Mounted/animation states
-    const [show, setShow] = useState(false);    // controls whether dropdown is mounted
-    const [animIn, setAnimIn] = useState(false); // controls enter/exit classes
-    const [mountAnim, setMountAnim] = useState(true); // one-time initial icon spin
+const HamburgerMenu = forwardRef(({
+                                      user,
+                                      onLogout,
+                                      onLoginClick,
+                                      onRegisterClick,
+                                      variant = "mobile",
+                                      iconColor = "text-white",
+                                      className = "",
+                                      desktopOffsetY = 8,
+                                      desktopOffsetXmd = 16,   // extra offset voor MD
+                                      desktopOffsetXlg = 124,   // kleinere offset voor LG
+                                  }, ref) => {
+
+    const [show, setShow] = useState(false);
+    const [animIn, setAnimIn] = useState(false);
+    const [mountAnim, setMountAnim] = useState(true);
     const [maxHeight, setMaxHeight] = useState("80vh");
 
-    const isAdmin = user?.roles.includes("ADMIN");
-    const isDesktop = variant === "desktop";
-
-    const menuRef = useRef(null);       // wrapper around button + dropdown
-    const posRef = useRef(null);        // outer positioner (used for measuring top)
+    const menuRef = useRef(null);
+    const posRef = useRef(null);
     const navigate = useNavigate();
     const location = useLocation();
 
+    const isDesktop = variant === "desktop";
     const isActive = (path) => location.pathname === path;
 
-    // One-time icon spin on mount (optional flair)
     useEffect(() => {
         const t = setTimeout(() => setMountAnim(false), 700);
         return () => clearTimeout(t);
     }, []);
 
-    // Open/close helpers with exit animation
     const openMenu = () => {
         setShow(true);
-        // Wait a frame so CSS transitions can kick in
         requestAnimationFrame(() => setAnimIn(true));
     };
+
     const closeMenu = () => {
         setAnimIn(false);
-        // Unmount after exit animation completes
         setTimeout(() => setShow(false), 200);
     };
 
-    // Close on outside click
+    // 🔥 DIT is wat DesktopMenu nodig heeft
+    useImperativeHandle(ref, () => ({
+        toggle() {
+            show ? closeMenu() : openMenu();
+        }
+    }));
+
     useEffect(() => {
         if (!show) return;
-        const handleClickOutside = (e) => {
+        const handler = (e) => {
             if (menuRef.current && !menuRef.current.contains(e.target)) closeMenu();
         };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
+        document.addEventListener("mousedown", handler);
+        return () => document.removeEventListener("mousedown", handler);
     }, [show]);
 
-    // Close on route change
     useEffect(() => {
         if (show) closeMenu();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.pathname]);
 
-    // Recompute a safe max-height when opened or on resize so the dropdown can scroll if needed
     useEffect(() => {
         if (!show) return;
-
-        const computeMaxHeight = () => {
-            // Measure the positioner (outer container that defines top-left)
-            requestAnimationFrame(() => {
-                if (!posRef.current) return;
-                const rect = posRef.current.getBoundingClientRect();
-                const viewportH = window.innerHeight;
-
-                // Available room from dropdowns top to the bottom of the viewport, minus small margin
-                const available = Math.max(160, viewportH - rect.top - 16);
-                // Cap to 80vh so the menu never becomes excessively tall
-                const computed = Math.min(Math.floor(viewportH * 0.8), Math.floor(available));
-                setMaxHeight(`${computed}px`);
-            });
-        };
-
-        computeMaxHeight();
-        window.addEventListener("resize", computeMaxHeight);
-        return () => window.removeEventListener("resize", computeMaxHeight);
+        requestAnimationFrame(() => {
+            if (!posRef.current) return;
+            const rect = posRef.current.getBoundingClientRect();
+            const viewport = window.innerHeight;
+            const available = Math.max(160, viewport - rect.top - 16);
+            setMaxHeight(`${Math.min(Math.floor(viewport * 0.8), available)}px`);
+        });
     }, [show]);
 
-    // Menu entries
     const menuItems = [
         { label: "Home", icon: Home, path: "/" },
         user && { label: "Dashboard", icon: Gauge, path: "/dashboard" },
         { label: "About", icon: Info, path: "/about" },
         { label: "Meals", icon: Soup, path: "/meals" },
-        { label: "Diets", icon: CookingPot , path: "/diets" },
+        { label: "Diets", icon: CookingPot, path: "/diets" },
         { label: "Ingredients", icon: Apple, path: "/ingredients" },
-        isAdmin && { label: "Admin", icon: Settings, path: "/admin" },
+        user?.roles?.includes("ADMIN") && { label: "Admin", icon: Settings, path: "/admin" },
         !user && { label: "Login", icon: LogIn, action: onLoginClick },
         !user && { label: "Register", icon: UserPlus, action: onRegisterClick },
         user && { label: "Logout", icon: LogOut, action: onLogout },
     ].filter(Boolean);
 
-    // Positioning classes:
-    // - Desktop: right of the button, top-aligned (`top-0`), then nudged down by desktopOffsetY
-    // - Mobile: above the button, right-aligned
-    const dropdownPosClasses = isDesktop
-        ? "absolute left-full top-0"
-        : "absolute bottom-full mb-2 right-0";
-
-    // Inline style to nudge desktop dropdown down/right (keeps relative positioning)
-    const desktopStyle = isDesktop
-        ? {
-            marginLeft: `${desktopOffsetX}px`,
-            transform: `translateY(${desktopOffsetY}px)`, // top-aligned + push down
-        }
-        : {};
-
-    // Icon rotation: one-time spin on mount, then 0/90deg on open/close
-    const iconTransformClass = mountAnim
-        ? "duration-700 rotate-[360deg]"
-        : show
-            ? "duration-200 rotate-90"
-            : "duration-200 rotate-0";
-
     return (
-        <CustomBox ref={menuRef} className={isDesktop ? "relative self-center" : "relative"}>
-            {/* Toggle button */}
+        <CustomBox ref={menuRef} className="relative">
             <CustomButton
                 onClick={() => (show ? closeMenu() : openMenu())}
-                className={`transition-transform ease-in-out ${iconTransformClass} ${className}`}
+                className={`transition-transform ${className} ${
+                    mountAnim ? "duration-700 rotate-[360deg]" :
+                        show ? "duration-200 rotate-90" : "duration-200 rotate-0"
+                }`}
             >
                 <MenuIcon className={`w-8 h-8 ${iconColor}`} />
             </CustomButton>
 
-            {/* Dropdown (two layers: positioner -> animated panel) */}
             {show && (
                 <CustomBox
                     ref={posRef}
-                    className={`${dropdownPosClasses} z-50`}
-                    style={{ ...desktopStyle }}
+                    className={`${isDesktop ? "absolute left-full top-0" : "absolute bottom-full mb-2 right-0"} z-50`}
+                    style={
+                        isDesktop
+                            ? {
+                                marginLeft:
+                                    window.innerWidth < 1024
+                                        ? desktopOffsetXmd
+                                        : desktopOffsetXlg,
+                                transform: `translateY(${desktopOffsetY}px)`
+                            }
+                            : {}
+                    }
+
                 >
                     <CustomBox
-                        className={[
-                            "w-64 max-w-[90vw] rounded-xl bg-white dark:bg-gray-800 shadow-lg overflow-y-auto",
-                            // Enter/exit animation for the panel
-                            "transition-[opacity,transform] duration-200 ease-out",
-                            animIn ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-1 pointer-events-none",
-                        ].join(" ")}
+                        className={`w-64 max-w-[90vw] rounded-xl bg-white dark:bg-gray-800 shadow-lg overflow-y-auto
+                            transition-all duration-200 ease-out
+                            ${animIn ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"}`}
                         style={{ maxHeight }}
                     >
-                        {menuItems.map(({ label, icon: Icon, path, action }, index) => {
+                        {menuItems.map(({ label, icon: Icon, path, action }, i) => {
                             const active = path && isActive(path);
-
                             return (
                                 <CustomBox key={label}>
                                     <CustomButton
@@ -173,50 +141,37 @@ const HamburgerMenu = ({
                                             if (action) action();
                                             closeMenu();
                                         }}
-                                        className={`w-full flex items-center justify-start gap-6 px-4 py-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 ${active ? "bg-gray-100 dark:bg-gray-700" : ""}`}
+                                        className={`w-full flex items-center gap-6 px-4 py-3 text-sm
+                                            ${active ? "bg-gray-100 dark:bg-gray-700" : ""}
+                                            hover:bg-gray-100 dark:hover:bg-gray-700`}
                                     >
-                                        <Icon
-                                            className={`w-4 h-4 ${
-                                                active
-                                                    ? "text-primary dark:text-primary"
-                                                    : "text-lightText dark:text-darkText"
-                                            }`}
-                                        />
-                                        <CustomTypography
-                                            as="span"
-                                            variant="small"
-                                            className={active ? "font-semibold" : ""}
-                                        >
-                                            {label}
-                                        </CustomTypography>
+                                        <Icon className={`w-4 h-4 ${active ? "text-primary" : ""}`} />
+                                        <CustomTypography>{label}</CustomTypography>
                                     </CustomButton>
 
-                                    {index < menuItems.length - 1 && (
+                                    {i < menuItems.length - 1 && (
                                         <CustomDivider className="bg-gray-200 dark:bg-gray-600" />
                                     )}
                                 </CustomBox>
                             );
                         })}
 
-
-                        {/* Theme toggle */}
                         <CustomDivider className="bg-gray-200 dark:bg-gray-600" />
-                        <CustomButton className="w-full flex items-center justify-start gap-6 px-4 py-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <DarkModeSwitch className="text-gray-800 dark:text-white" />
+                        <CustomButton className="w-full flex items-center gap-6 px-4 py-3">
+                            <DarkModeSwitch />
                         </CustomButton>
-
                     </CustomBox>
                 </CustomBox>
             )}
         </CustomBox>
     );
-};
+});
 
 HamburgerMenu.propTypes = {
     user: PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        roles: PropTypes.arrayOf(PropTypes.string).isRequired,
-        type: PropTypes.string.isRequired,
+        id: PropTypes.string,
+        roles: PropTypes.arrayOf(PropTypes.string),
+        type: PropTypes.string,
     }),
     onLogout: PropTypes.func.isRequired,
     onLoginClick: PropTypes.func.isRequired,
@@ -225,7 +180,11 @@ HamburgerMenu.propTypes = {
     iconColor: PropTypes.string,
     className: PropTypes.string,
     desktopOffsetY: PropTypes.number,
-    desktopOffsetX: PropTypes.number,
+    desktopOffsetXmd: PropTypes.number,
+    desktopOffsetXlg: PropTypes.number,
 };
 
+HamburgerMenu.displayName = "HamburgerMenu";
+
 export default HamburgerMenu;
+
