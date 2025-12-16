@@ -37,7 +37,7 @@ const FilterSection = ({ title, items, selectedFilters, category, onFilterClick 
             <CustomDivider className="my-2 mb-[15px] bg-borderDark dark:bg-borderLight" />
 
             {/* Render filter options as selectable Chips */}
-            <CustomBox className="flex flex-wrap gap-1 mb-1">
+            <CustomBox className="flex flex-wrap gap-1.5 mb-1">
             {items.map(item => {
                     const isSelected = selectedFilters[category] === item;
                     return (
@@ -45,11 +45,13 @@ const FilterSection = ({ title, items, selectedFilters, category, onFilterClick 
                             key={item}
                             onClick={() => onFilterClick(category, item)}
                             className={clsx(
-                                "border px-2 py-[4px] text-[0.7rem] sm:text-[0.8rem] md:text-[0.9rem]",
+                                "border px-2 py-[4px] text-[0.7rem] sm:text-[0.8rem] md:text-[0.9rem] transition-transform duration-200",
+                                isSelected && "scale-[1.1]",
                                 isSelected
-                                    ? "bg-primary border-borderDark dark:border-borderLight text-darkText hover:bg-primary/90"
-                                    : "border-primary text-lightText dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-700"
+                                    ? "border-primary border-2"
+                                    : "border-borderDark dark:border-borderLight"
                             )}
+
                             textClassName="px-[4px] sm:px-[8px]"
                         >
                             {formatEnum(item)}

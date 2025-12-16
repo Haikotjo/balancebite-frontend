@@ -23,7 +23,10 @@ export default {
         // navInactive: "#ffffff",
 
         lightBackground: "#F9FAFB",
+        lightBackgroundAccent: "#F3F4F6",
         darkBackground: "#111827",
+        darkBackgroundAccentDarker: "#0B1220",
+        darkBackgroundAccentLighter: "#1F2937",
 
         borderLight: "#d8d8d8",
         borderDark: "#111827",

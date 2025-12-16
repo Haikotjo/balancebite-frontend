@@ -25,12 +25,13 @@ const SidebarHeader = ({ onClose, title }) => (
         </CustomTypography>
 
         <CustomIconButton
+            icon={<X />}
             onClick={onClose}
-            icon={<X size={20} strokeWidth={2} className="error" />}
+            sizeClassName="w-8 h-8 "
+            iconSize={18}
             bgColor="bg-transparent border border-error"
             className="text-error mr-2 mt-2"
         />
-
     </CustomBox>
 );
 

@@ -40,7 +40,7 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
         const base = iconBase;
 
         const unselectedClass = `${base} text-lightText dark:text-darkText`;
-        const selectedClass   = `${base} text-darkText dark:text-lightText`;
+        const selectedClass   = `${base} text-lightText dark:text-darkText`;
 
         const cls = key ? selectedClass : unselectedClass;
 
@@ -65,6 +65,17 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
         { name: "This Week", label: "This Week", icon: <TrendingUp className="text-primary"/>,  sortKey: "weeklySaveCount" },
         { name: "This Month", label: "This Month", icon: <TrendingDown className="text-primary"/>, sortKey: "monthlySaveCount" },
     ];
+
+    const borderBySortKey = {
+        calories: "border-error dark:border-error",
+        protein: "border-primary dark:border-primary",
+        carbs: "border-success dark:border-success",
+        fat: "border-secondary dark:border-secondary",
+        saveCount: "border-primary dark:border-primary",
+        weeklySaveCount: "border-primary dark:border-primary",
+        monthlySaveCount: "border-primary dark:border-primary",
+    };
+
 
     // Called when a nutrient chip is clicked
     const handleSort = (sortKey) => {
@@ -104,26 +115,22 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
         <CustomBox className="flex flex-col items-center w-full gap-2 mb-4 mt-4">
             <CustomBox className="flex flex-wrap justify-center gap-3 w-full max-w-full">
 
-                {nutrients.slice(0, 4).map((nutrient) => (
+                {nutrients.slice(0, 4).map((n) => (
                     <CustomChip
-                        key={nutrient.label}
-                        icon={nutrient.icon}
-                        label={nutrient.label}
-                        selected={currentSort.key === nutrient.sortKey}
-                        onClick={() => handleSort(nutrient.sortKey)}
+                        key={n.label}
+                        icon={n.icon}
+                        label={n.label}
+                        selected={currentSort.key === n.sortKey}
+                        selectedBorderClass={borderBySortKey[n.sortKey]}   // <-- DIT toevoegen
+                        onClick={() => handleSort(n.sortKey)}
                         labelPosition="bottom"
                     />
                 ))}
                 <CustomChip
                     icon={getSortIcon(currentSort.key)}
-                    label={
-                        !currentSort.key
-                            ? "Direction"
-                            : currentSort.order === "asc"
-                                ? "Low > High"
-                                : "High > Low"
-                    }
+                    label={!currentSort.key ? "Direction" : currentSort.order === "asc" ? "Low > High" : "High > Low"}
                     selected={!!currentSort.key}
+                    selectedBorderClass={currentSort.key ? borderBySortKey[currentSort.key] : ""}  // <-- DIT toevoegen
                     onClick={handleSortOrderClick}
                     labelPosition="bottom"
                 />
@@ -133,13 +140,14 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
                 <>
                     <CustomBox className="flex items-center gap-6 w-full justify-center flex-wrap mt-1">
                         <CustomBox className="flex flex-wrap justify-center gap-6">
-                            {nutrients.slice(4).map((nutrient) => (
+                            {nutrients.slice(4).map((n) => (
                                 <CustomChip
-                                    key={nutrient.label}
-                                    icon={nutrient.icon}
-                                    label={nutrient.label}
-                                    selected={currentSort.key === nutrient.sortKey}
-                                    onClick={() => handleSort(nutrient.sortKey)}
+                                    key={n.label}
+                                    icon={n.icon}
+                                    label={n.label}
+                                    selected={currentSort.key === n.sortKey}
+                                    selectedBorderClass={borderBySortKey[n.sortKey]}   // <-- DIT toevoegen
+                                    onClick={() => handleSort(n.sortKey)}
                                     labelPosition="bottom"
                                 />
                             ))}

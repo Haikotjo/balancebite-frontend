@@ -24,15 +24,17 @@ import clsx from "clsx";
  * CustomChip component: A manually styled chip using Tailwind, ready for React Native transition.
  * Supports icon, label, dynamic sizing, and visual selection.
  */
+// CustomChip.jsx
 const CustomChip = ({
                         icon,
                         label,
                         selected = false,
                         onClick,
+                        selectedBorderClass = "",   // NEW
                         iconMargin = 0,
                         iconSize = 24,
                         labelPosition = "bottom",
-                        className = ""
+                        className = "",
                     }) => {
     const spacingClass = iconMargin ? `px-[${iconMargin}px]` : "px-3";
     const chipHeight = iconSize + 10;
@@ -52,10 +54,7 @@ const CustomChip = ({
                     as="span"
                     font="sans"
                     variant="xsmallCard"
-                    className={clsx(
-                        "text-center",
-                        labelPosition === "top" ? "mb-1" : "mt-1.5"
-                    )}
+                    className={clsx("text-center", labelPosition === "top" ? "mb-1" : "mt-1.5")}
                 >
                     {label}
                 </CustomTypography>
@@ -66,16 +65,26 @@ const CustomChip = ({
                     "rounded-full border-2 flex items-center justify-center transition-colors duration-200",
                     dimensionClass,
                     spacingClass,
-                    selected
-                        ? "bg-darkBackground dark:bg-lightBackground text-darkText dark:text-lightText"
-                        : "bg-lightBackground dark:bg-darkBackground border-borderDark dark:border-borderLight text-lightText dark:text-darkText"
+
+                    // background stays ALWAYS the same
+                    "bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText",
+
+                    // default border
+                    "border-borderDark dark:border-borderLight",
+
+                    // ONLY border changes when selected
+                    selected && selectedBorderClass,
+                    selected && "scale-[1.1]"
                 )}
             >
-                {icon}
+               <span className={clsx("transition-transform duration-200", selected && "scale-110")}>
+    {icon}
+  </span>
             </CustomBox>
         </CustomBox>
     );
 };
+
 
 CustomChip.propTypes = {
     icon: PropTypes.element.isRequired,
@@ -86,6 +95,8 @@ CustomChip.propTypes = {
     iconSize: PropTypes.number,
     labelPosition: PropTypes.oneOf(["top", "bottom"]),
     className: PropTypes.string,
+    selectedBorderClass: PropTypes.string,
+
 };
 
 export default CustomChip;

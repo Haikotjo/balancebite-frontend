@@ -42,26 +42,25 @@ const FilterSidebar = ({ isOpen = false, onFilter, filters }) => {
                     variant="outline"
                     color="neutral"
                     className="
-        fixed top-[10%] right-0 z-[1500]
-        px-3 py-2
-        rounded-r-none rounded-tl-md rounded-bl-md
-        shadow-md origin-center
-        bg-lightBackground/50 dark:bg-darkBackground/50
-        border-borderDark dark:border-borderLight
-
-        transition-transform duration-150
-        hover:scale-110
-        flex items-center justify-center
-    "
+                    fixed top-[10%] right-0 z-[1500]
+                    px-3 py-2
+                    rounded-r-none rounded-tl-md rounded-bl-md
+                    shadow-md origin-center
+                    bg-lightBackground/50 dark:bg-darkBackground/50
+                    border-borderDark dark:border-borderLight
+                    transition-transform duration-150
+                    hover:scale-110
+                    flex items-center justify-center
+                    "
                 >
                     <SlidersHorizontal
                         className="
-        text-lightText dark:text-darkText
-        w-4 h-4
-        sm:w-6 sm:h-6
-        md:w-7 md:h-7
-        lg:w-8 lg:h-8
-    "
+                        text-lightText dark:text-darkText
+                        w-4 h-4
+                        sm:w-6 sm:h-6
+                        md:w-7 md:h-7
+                        lg:w-8 lg:h-8
+                        "
                     />
                 </CustomButton>
 
@@ -77,40 +76,40 @@ const FilterSidebar = ({ isOpen = false, onFilter, filters }) => {
             >
 
 
-            {/* Sidebar Header with Close Button */}
-                    <SidebarHeader title="Filter" onClose={toggleSidebar} />
+                {/* Sidebar Header with Close Button */}
+                <SidebarHeader title="Filter" onClose={toggleSidebar} />
 
-                    {/* Loading Indicator */}
-                    {loading ? (
-                        <Spinner className="self-center my-2" />
-                    ) : (
-                        <CustomBox className="ml-2">
-                            {/* Filter Sections */}
-                            <FilterSection
-                                title="Types"
-                                items={mealTypes}
-                                selectedFilters={selectedFilters}
-                                category="mealTypes"
-                                onFilterClick={handleFilterClick}
-                            />
+                {/* Loading Indicator */}
+                {loading ? (
+                    <Spinner className="self-center my-2" />
+                ) : (
+                    <CustomBox className="ml-2">
+                        {/* Filter Sections */}
+                        <FilterSection
+                            title="Types"
+                            items={mealTypes}
+                            selectedFilters={selectedFilters}
+                            category="mealTypes"
+                            onFilterClick={handleFilterClick}
+                        />
 
-                            <FilterSection
-                                title="Diets"
-                                items={diets}
-                                selectedFilters={selectedFilters}
-                                category="diets"
-                                onFilterClick={handleFilterClick}
-                            />
+                        <FilterSection
+                            title="Diets"
+                            items={diets}
+                            selectedFilters={selectedFilters}
+                            category="diets"
+                            onFilterClick={handleFilterClick}
+                        />
 
-                            <FilterSection
-                                title="Cuisine"
-                                items={cuisines}
-                                selectedFilters={selectedFilters}
-                                category="cuisines"
-                                onFilterClick={handleFilterClick}
-                            />
-                        </CustomBox>
-                    )}
+                        <FilterSection
+                            title="Cuisine"
+                            items={cuisines}
+                            selectedFilters={selectedFilters}
+                            category="cuisines"
+                            onFilterClick={handleFilterClick}
+                        />
+                    </CustomBox>
+                )}
 
             </CustomDrawer>
         </>
