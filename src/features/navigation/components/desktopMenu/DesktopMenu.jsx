@@ -185,9 +185,9 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
 
     return (
         // Sidebar container
-        <CustomBox className="flex h-full min-h-full w-full flex-col justify-between font-body font-bold text-white">
+        <CustomBox className="flex h-full min-h-full w-full flex-col justify-between text-white">
             {/* Header (fixed top): Logo */}
-            <CustomBox className="flex items-center justify-center py-4">
+            <CustomBox className="flex items-center justify-center pt-4">
                 <Logo size={40} className="block text-white" to="/" />
             </CustomBox>
 
@@ -200,12 +200,12 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                     <Fragment key={idx}>
                         {node}
                         {/* Spacer between groups (equal space) */}
-                        {idx < groups.length - 1 && <div className="flex-1" />}
+                        {idx < groups.length - 1 && <CustomBox className="flex-1" />}
                     </Fragment>
                 ))}
 
                 {/* Spacer after the last group so spacing above Theme equals others; Theme stays at bottom */}
-                <div className="flex-1" />
+                <CustomBox className="flex-1" />
             </CustomBox>
 
             {/* Footer (fixed bottom): theme toggle) */}

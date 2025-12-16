@@ -155,7 +155,7 @@ const HamburgerMenu = ({
                 >
                     <CustomBox
                         className={[
-                            "w-64 max-w-[90vw] rounded-xl bg-white dark:bg-gray-800 shadow-lg px-4 py-2 overflow-y-auto",
+                            "w-64 max-w-[90vw] rounded-xl bg-white dark:bg-gray-800 shadow-lg overflow-y-auto",
                             // Enter/exit animation for the panel
                             "transition-[opacity,transform] duration-200 ease-out",
                             animIn ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-1 pointer-events-none",

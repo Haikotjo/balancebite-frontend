@@ -32,7 +32,7 @@ export default function PageWrapper({ children, className = "", narrow = false }
                 "pb-[calc(72px+env(safe-area-inset-bottom))] md:pb-20",
 
                 // Desktop: leave space for fixed left sidebar (72px)
-                "md:ml-[72px]",
+                "md:ml-20 lg:ml-44",
 
                 // Additional classes passed in
                 className

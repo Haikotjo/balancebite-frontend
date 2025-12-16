@@ -45,36 +45,40 @@ const NavBar = () => {
         <CustomAppBar
             className={clsx(
                 "fixed bottom-0 w-full z-50",
-                "md:top-0 md:left-0 md:bottom-auto md:h-screen md:w-[72px] md:max-w-none bg-appBarColor"
+                // Desktop: verticale sidebar
+                "md:top-0 md:left-0 md:bottom-auto md:h-screen md:max-w-none bg-appBarColor",
+                // Breedte: smal op md, breed op lg+
+                "md:w-20 lg:w-44"
             )}
             bgColor="bg-appBarColor"
         >
 
-            {/* Mobile layout */}
+
+        {/* Mobile layout */}
             <CustomBox className="fixed bottom-0 left-0 right-0 z-50 md:hidden transition-transform duration-300">
                 {/* Menu-button */}
-                <CustomBox className="relative">
-                    <CustomButton
-                        onClick={() => setShowMobileMenu((prev) => !prev)}
-                        className="absolute -top-8 left-1/2 -translate-x-1/2 rounded-t-xl rounded-b-none px-4 pt-1 pb-2 bg-appBarColor text-white text-sm font-bold flex items-center gap-2"
-                    >
-                        <Menu size={26} />
-                    </CustomButton>
-                </CustomBox>
+                {/*<CustomBox className="relative">*/}
+                {/*    <CustomButton*/}
+                {/*        onClick={() => setShowMobileMenu((prev) => !prev)}*/}
+                {/*        className="absolute -top-8 left-1/2 -translate-x-1/2 rounded-t-xl rounded-b-none px-4 pt-1 pb-2 bg-appBarColor text-white"*/}
+                {/*    >*/}
+                {/*        <Menu size={26} />*/}
+                {/*    </CustomButton>*/}
+                {/*</CustomBox>*/}
 
                 {/* Menu-balk */}
-                {showMobileMenu && (
-                    <CustomBox className="bg-appBarColor px-2 pt-1 pb-1">
+                {/*{showMobileMenu && (*/}
+                    <CustomBox className="bg-appBarColor px-2 py-1">
                         <CustomBox className="flex items-center w-full justify-between">
 
                             {/* Left: Home */}
                             <CustomBox
                                 className={clsx(
                                     "rounded-md",
-                                    isHomeActive && "bg-white/25 p-2"
+                                    isHomeActive && "bg-white/25"
                                 )}
                             >
-                                <Logo size={34} className="block text-white" to="/" />
+                                <Logo size={30} className="block text-white" to="/" />
                             </CustomBox>
 
                             {/* MIDDLE: all menu’s */}
@@ -150,7 +154,7 @@ const NavBar = () => {
 
                         </CustomBox>
                     </CustomBox>
-                )}
+                {/*)}*/}
 
             </CustomBox>
 
