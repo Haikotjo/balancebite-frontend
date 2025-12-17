@@ -8,9 +8,11 @@ import CustomDropdownWeb from "../../../../components/layout/CustomDropdownWeb.j
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import { Soup, Pencil, UserPen, BookOpen } from "lucide-react";
-import ChevronToggle from "../../../../components/chevronToggle/ChevronToggle.jsx";
 import clsx from "clsx";
 import { getActiveSection } from "../../utils/helpers/navSectionHelpers.js";
+import SidebarActionButton from "../../../../components/layout/SidebarActionButton.jsx";
+import SidebarSectionTrigger from "../../../../components/layout/SidebarSectionTrigger.jsx";
+import {buildSidebarItems} from "../../../../utils/helpers/buildSidebarItems.js";
 
 const MealsMenu = ({ compact = false, showLabel = true }) => {
     const [open, setOpen] = useState(false);
@@ -50,49 +52,42 @@ const MealsMenu = ({ compact = false, showLabel = true }) => {
         navigate("/create-meal");
     };
 
-    // Trigger voor dropdown (sm + md)
     const trigger = (
-        <CustomBox
-            onClick={() => setOpen(!open)}
-            className="w-full flex items-center cursor-pointer text-white justify-between md:justify-start md:gap-1"
-            aria-haspopup="menu"
-            aria-expanded={open}
-        >
-            {showLabel && (
-                <CustomTypography
-                    bold
-                    font="sans"
-                    className="hidden sm:inline md:hidden lg:inline text-xs sm:text-sm text-white mr-2"
-                >
-                    Meals
-                </CustomTypography>
-            )}
-
-            <Soup className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="currentColor" />
-            <ChevronToggle open={open} />
-        </CustomBox>
+        <SidebarSectionTrigger
+            label="Meals"
+            Icon={Soup}
+            open={open}
+            onToggle={() => setOpen(!open)}
+            compact={false}
+            active={isMealsSectionActive}
+            showLabel={showLabel}
+        />
     );
 
     const compactTrigger = (
-        <CustomBox
-            onClick={() => setOpen(!open)}
-            className={clsx(
-                "flex items-center justify-center w-10 h-10 rounded-md cursor-pointer transition-all hover:bg-white/10",
-                isMealsSectionActive && "bg-white/25"
-            )}
-        >
-            <Soup className="w-6 h-6 text-white" />
-            <ChevronToggle
-                open={open}
-                mobileSize={14}
-                desktopSize={16}
-                className="ml-1"
-            />
-        </CustomBox>
+        <SidebarSectionTrigger
+            label="Meals"
+            Icon={Soup}
+            open={open}
+            onToggle={() => setOpen(!open)}
+            compact
+            active={isMealsSectionActive}
+            showLabel={false}
+        />
     );
 
+    const dropdownItems = buildSidebarItems({
+        user,
+        close: () => setOpen(false),
+        items: [
+            { label: "Explore Meals", icon: BookOpen, onClick: handleExploreMeals },
+            { label: "My Meals", icon: Soup, onClick: handleMyMeals, requiresAuth: true },
+            { label: "Created Meals", icon: UserPen, onClick: handleCreatedMeals, requiresAuth: true },
+            { label: "Create Meal", icon: Pencil, onClick: handleCreateMeal, requiresAuth: true },
+        ]
+    });
 
-    // ---------- COMPACT: lg+ vaste lijst, sm/md dropdown ----------
+    // ---------- COMPACT MODE ----------
     if (compact) {
         return (
             <>
@@ -101,57 +96,25 @@ const MealsMenu = ({ compact = false, showLabel = true }) => {
                     <CustomDropdownWeb
                         open={open}
                         onOpenChange={setOpen}
-                        className="absolute bottom-full left-0 min-w-[10rem] max-w-[90vw] md:left-full md:top-0 md:bottom-auto"
+                        className="
+                                    absolute z-50
+                                    bottom-full left-0 mb-2
+                                    md:bottom-auto md:top-0
+                                    md:left-full md:ml-5
+                        "
                         trigger={compactTrigger}
-                        items={[
-                            {
-                                label: "Explore Meals",
-                                icon: BookOpen,
-                                onClick: () => {
-                                    setOpen(false);
-                                    handleExploreMeals();
-                                },
-                            },
-                            {
-                                label: "My Meals",
-                                icon: Soup,
-                                disabled: !user,
-                                onClick: () => {
-                                    setOpen(false);
-                                    handleMyMeals();
-                                },
-                            },
-                            {
-                                label: "Created Meals",
-                                icon: UserPen,
-                                disabled: !user,
-                                onClick: () => {
-                                    setOpen(false);
-                                    handleCreatedMeals();
-                                },
-                            },
-                            {
-                                label: "Create Meal",
-                                icon: Pencil,
-                                disabled: !user,
-                                onClick: () => {
-                                    setOpen(false);
-                                    handleCreateMeal();
-                                },
-                            },
-                        ]}
+                        items={dropdownItems}
                     />
                 </CustomBox>
 
-                {/* lg+: vaste lijst zoals je nu wilde voor de brede navbar */}
-                <CustomBox className="hidden lg:block w-full text-white">
+                <CustomBox className="hidden lg:block w-full text-white mb-2">
                     <CustomBox
                         className={clsx(
                             "flex items-center gap-2 px-3 py-2 rounded-md",
                             isMealsSectionActive && "bg-white/25"
                         )}
                     >
-                        <Soup className="w-5 h-5" fill="currentColor" />
+                        <Soup className="w-5 h-5" />
                         <CustomTypography
                             bold
                             font="sans"
@@ -163,42 +126,17 @@ const MealsMenu = ({ compact = false, showLabel = true }) => {
                     </CustomBox>
 
                     <CustomBox className="mt-1 ml-7 flex flex-col gap-1">
-                        <button
-                            type="button"
-                            onClick={handleExploreMeals}
-                            className="flex items-center gap-2 text-xs px-2 py-1 rounded-md hover:bg-white/10 text-left"
-                        >
-                            <BookOpen className="w-4 h-4" />
-                            <span>Explore Meals</span>
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={handleMyMeals}
-                            className="flex items-center gap-2 text-xs px-2 py-1 rounded-md hover:bg-white/10 text-left"
-                        >
-                            <Soup className="w-4 h-4" />
-                            <span>My Meals</span>
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={handleCreatedMeals}
-                            className="flex items-center gap-2 text-xs px-2 py-1 rounded-md hover:bg-white/10 text-left"
-                        >
-                            <UserPen className="w-4 h-4" />
-                            <span>Created Meals</span>
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={handleCreateMeal}
-                            className="flex items-center gap-2 text-xs px-2 py-1 rounded-md hover:bg-white/10 text-left"
-                        >
-                            <Pencil className="w-4 h-4" />
-                            <span>Create Meal</span>
-                        </button>
+                        {dropdownItems.map(item => (
+                            <SidebarActionButton
+                                key={item.label}
+                                icon={item.icon}
+                                label={item.label}
+                                onClick={item.onClick}
+                                disabled={item.disabled}
+                            />
+                        ))}
                     </CustomBox>
+
                 </CustomBox>
 
                 <ErrorDialog
@@ -221,46 +159,11 @@ const MealsMenu = ({ compact = false, showLabel = true }) => {
             <CustomDropdownWeb
                 open={open}
                 onOpenChange={setOpen}
-                className="absolute bottom-full left-0 min-w-[10rem] max-w-[90vw] md:left-full md:top-0 md:bottom-auto"
+                className="absolute bottom-full mb-4 min-w-[10rem] max-w-[90vw]"
                 trigger={trigger}
-                items={[
-                    {
-                        label: "Explore Meals",
-                        icon: BookOpen,
-                        onClick: () => {
-                            setOpen(false);
-                            handleExploreMeals();
-                        },
-                    },
-                    {
-                        label: "My Meals",
-                        icon: Soup,
-                        disabled: !user,
-                        onClick: () => {
-                            setOpen(false);
-                            handleMyMeals();
-                        },
-                    },
-                    {
-                        label: "Created Meals",
-                        icon: UserPen,
-                        disabled: !user,
-                        onClick: () => {
-                            setOpen(false);
-                            handleCreatedMeals();
-                        },
-                    },
-                    {
-                        label: "Create Meal",
-                        icon: Pencil,
-                        disabled: !user,
-                        onClick: () => {
-                            setOpen(false);
-                            handleCreateMeal();
-                        },
-                    },
-                ]}
+                items={dropdownItems}
             />
+
 
             <ErrorDialog
                 open={!!authMsg}

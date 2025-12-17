@@ -22,6 +22,7 @@ import HamburgerMenu from "../hamburgerMenu/HamburgerMenu.jsx";
 import Logo from "../../../../components/logo/Logo.jsx";
 import DarkModeSwitch from "../darkModeSwitch/DarkModeSwitch.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import NavItem from "../navItem/NavItem.jsx";
 
 // ---- Hook voor md-layout (oude versie) ----
 function useViewportHeight() {
@@ -48,34 +49,6 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
         path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
 
     // ---- lg+ NavItem component (nieuwe versie) ----
-    const NavItem = ({ icon, label, active, onClick }) => (
-        <CustomTooltip text={label} position="right">
-            <button
-                type="button"
-                onClick={onClick}
-                className={clsx(
-                    "w-full cursor-pointer rounded-md px-3 py-2",
-                    "flex items-center justify-center lg:justify-start gap-3",
-                    "transition-all hover:bg-white/10",
-                    active && "bg-white/25"
-                )}
-            >
-                <span className="flex items-center justify-center">
-                    {icon}
-                </span>
-                <span className="hidden lg:inline text-sm font-medium">
-                    {label}
-                </span>
-            </button>
-        </CustomTooltip>
-    );
-
-    NavItem.propTypes = {
-        icon: PropTypes.node.isRequired,
-        label: PropTypes.string.isRequired,
-        active: PropTypes.bool,
-        onClick: PropTypes.func.isRequired,
-    };
 
     // ---------------- RENDER ----------------
     return (
@@ -84,7 +57,7 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
             <CustomBox className="hidden md:flex lg:hidden h-full w-full flex-col justify-between font-body font-bold">
                 {/* Header: logo */}
                 <CustomBox className="flex items-center justify-center pt-4">
-                    <Logo size={40} className="block text-white" to="/" />
+                    <Logo size={30} className="block text-white" to="/" />
                 </CustomBox>
 
                 {/* Midden: groepen met flex-1 spacers */}
@@ -129,14 +102,13 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                                         onClick={() => navigate("/ingredients")}
                                         className={clsx(
                                             "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                                            isActive("/ingredients")
-                                                ? "text-primary"
-                                                : "text-white"
+                                            isActive("/ingredients") && "bg-white/20"
                                         )}
                                     >
-                                        <Apple className="w-6 h-6 mx-auto" />
+                                        <Apple className="w-6 h-6 mx-auto text-white" />
                                     </CustomBox>
                                 </CustomTooltip>
+
                                 <CustomTooltip text="Profile" position="right">
                                     <CustomBox
                                         onClick={() =>
@@ -144,15 +116,14 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                                         }
                                         className={clsx(
                                             "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                                            isActive("/profile")
-                                                ? "text-primary"
-                                                : "text-white"
+                                            isActive("/profile") && "bg-white/20"
                                         )}
                                         title={user ? "Open profile" : "Login/Register"}
                                     >
-                                        <UserCircle className="w-6 h-6 mx-auto" />
+                                        <UserCircle className="w-6 h-6 mx-auto text-white" />
                                     </CustomBox>
                                 </CustomTooltip>
+
 
                                 {user && (
                                     <CustomTooltip text="Dashboard" position="right">
@@ -160,14 +131,13 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                                             onClick={() => navigate("/dashboard")}
                                             className={clsx(
                                                 "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                                                isActive("/dashboard")
-                                                    ? "text-primary"
-                                                    : "text-white"
+                                                isActive("/dashboard") && "bg-white/20"
                                             )}
                                         >
-                                            <Gauge className="w-6 h-6 mx-auto" />
+                                            <Gauge className="w-6 h-6 mx-auto text-white" />
                                         </CustomBox>
                                     </CustomTooltip>
+
                                 )}
 
                                 {isAdmin && (
@@ -176,12 +146,10 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                                             onClick={() => navigate("/admin")}
                                             className={clsx(
                                                 "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                                                isActive("/admin")
-                                                    ? "text-primary"
-                                                    : "text-white"
+                                                isActive("/admin") && "bg-white/20"   // transparante active background
                                             )}
                                         >
-                                            <ShieldUser className="w-6 h-6 mx-auto" />
+                                            <ShieldUser className="w-6 h-6 mx-auto text-white" />
                                         </CustomBox>
                                     </CustomTooltip>
                                 )}
@@ -196,28 +164,26 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                                         onClick={() => navigate("/")}
                                         className={clsx(
                                             "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                                            isActive("/")
-                                                ? "text-primary"
-                                                : "text-white"
+                                            isActive("/") && "bg-white/20"   // transparante active achtergrond
                                         )}
                                     >
-                                        <Home className="w-6 h-6 mx-auto" />
+                                        <Home className="w-6 h-6 mx-auto text-white" />
                                     </CustomBox>
                                 </CustomTooltip>
+
 
                                 <CustomTooltip text="About" position="right">
                                     <CustomBox
                                         onClick={() => navigate("/about")}
                                         className={clsx(
                                             "cursor-pointer p-2 rounded-md transition-all hover:bg-white/10",
-                                            isActive("/about")
-                                                ? "text-primary"
-                                                : "text-white"
+                                            isActive("/about") && "bg-white/20"
                                         )}
                                     >
-                                        <Info className="w-6 h-6 mx-auto" />
+                                        <Info className="w-6 h-6 mx-auto text-white" />
                                     </CustomBox>
                                 </CustomTooltip>
+
 
                             </CustomBox>
 
@@ -268,30 +234,30 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                 <CustomBox className="flex-1 flex flex-col gap-2 items-stretch px-1">
 
                     {/* Menu met label */}
-                    <CustomTooltip text="Menu" position="right">
-                        <CustomBox
-                            onClick={() => hamburgerRef.current.toggle()}   // <— hele rij opent menu
-                            className={clsx(
-                                "w-full rounded-md",
-                                "flex items-center justify-center lg:justify-start gap-3",
-                                "transition-all hover:bg-white/10"
-                            )}
-                        >
-                            <HamburgerMenu
-                                ref={hamburgerRef}
-                                user={user}
-                                onLogout={onLogout}
-                                onLoginClick={onLoginClick}
-                                onRegisterClick={onRegisterClick}
-                                variant="desktop"
-                                iconColor="text-white"
-                            />
-                            <CustomTypography bold color="white" className="hidden lg:inline text-sm">
-                                Menu
-                            </CustomTypography>
-                        </CustomBox>
 
-                    </CustomTooltip>
+                    <CustomBox
+                        onClick={() => hamburgerRef.current.toggle()}
+                        className={clsx(
+                            "w-full rounded-md cursor-pointer",
+                            "flex items-center justify-center lg:justify-start gap-3",
+                            "transition-all hover:bg-white/10"
+                        )}
+                    >
+                        <HamburgerMenu
+                            ref={hamburgerRef}
+                            user={user}
+                            onLogout={onLogout}
+                            onLoginClick={onLoginClick}
+                            onRegisterClick={onRegisterClick}
+                            variant="desktop"
+                            iconColor="text-white"
+                        />
+                        <CustomTypography bold color="white" className="hidden lg:inline text-sm">
+                            Menu
+                        </CustomTypography>
+                    </CustomBox>
+
+
 
                     {/* Home */}
                     <NavItem

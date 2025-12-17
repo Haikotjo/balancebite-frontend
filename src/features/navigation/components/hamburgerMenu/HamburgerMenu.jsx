@@ -20,8 +20,8 @@ const HamburgerMenu = forwardRef(({
                                       iconColor = "text-white",
                                       className = "",
                                       desktopOffsetY = 8,
-                                      desktopOffsetXmd = 16,   // extra offset voor MD
-                                      desktopOffsetXlg = 124,   // kleinere offset voor LG
+                                      desktopOffsetXmd = 16,
+                                      desktopOffsetXlg = 124,
                                   }, ref) => {
 
     const [show, setShow] = useState(false);
@@ -145,8 +145,12 @@ const HamburgerMenu = forwardRef(({
                                             ${active ? "bg-gray-100 dark:bg-gray-700" : ""}
                                             hover:bg-gray-100 dark:hover:bg-gray-700`}
                                     >
-                                        <Icon className={`w-4 h-4 ${active ? "text-primary" : ""}`} />
-                                        <CustomTypography>{label}</CustomTypography>
+                                        <Icon className={`w-4 h-4 ${active ? "text-primary" : "text-lightText dark:text-darkText"}`} />
+                                        <CustomTypography
+                                            className={`${active ? "text-primary dark:text-primary" : "text-lightText dark:text-darkText"}`}
+                                        >
+                                            {label}
+                                        </CustomTypography>
                                     </CustomButton>
 
                                     {i < menuItems.length - 1 && (

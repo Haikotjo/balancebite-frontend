@@ -16,6 +16,9 @@ import ChevronToggle from "../../../../components/chevronToggle/ChevronToggle.js
 import { useLocation, useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { getActiveSection } from "../../utils/helpers/navSectionHelpers.js";
+import SidebarSectionTrigger from "../../../../components/layout/SidebarSectionTrigger.jsx";
+import {buildSidebarItems} from "../../../../utils/helpers/buildSidebarItems.js";
+import SidebarActionButton from "../../../../components/layout/SidebarActionButton.jsx";
 
 const ProfileMenu = ({
                          user,
@@ -40,95 +43,73 @@ const ProfileMenu = ({
 
     // ---------- NORMAL TRIGGER (sm + md) ----------
     const trigger = (
-        <CustomBox
-            onClick={() => setOpen(!open)}
-            className="w-full flex items-center cursor-pointer text-white justify-between md:justify-start md:gap-1"
-            aria-haspopup="menu"
-            aria-expanded={open}
-        >
-            {showLabel && (
-                <CustomTypography
-                    bold
-                    font="sans"
-                    className="hidden sm:inline md:hidden lg:inline text-xs sm:text-sm text-white mr-2"
-                >
-                    Profile
-                </CustomTypography>
-            )}
-            <UserCog className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-            <ChevronToggle open={open} />
-        </CustomBox>
+        <SidebarSectionTrigger
+            label="Profile"
+            Icon={UserCog}
+            open={open}
+            onToggle={() => setOpen(!open)}
+            compact={false}
+            active={isProfileSectionActive}
+            showLabel={showLabel}
+        />
     );
 
-    // ---------- COMPACT TRIGGER (lg+) ----------
+// ---------- COMPACT TRIGGER (lg+) ----------
     const compactTrigger = (
-        <CustomBox
-            onClick={() => setOpen(!open)}
-            className={clsx(
-                "flex items-center justify-center w-10 h-10 rounded-md cursor-pointer transition-all hover:bg-white/10",
-                isProfileSectionActive && "bg-white/25"
-            )}
-        >
-            <UserCog className="w-6 h-6 text-white" />
-            <ChevronToggle
-                open={open}
-                mobileSize={14}
-                desktopSize={16}
-                className="ml-1"
-            />
-        </CustomBox>
+        <SidebarSectionTrigger
+            label="Profile"
+            Icon={UserCog}
+            open={open}
+            onToggle={() => setOpen(!open)}
+            compact
+            active={isProfileSectionActive}
+            showLabel={false}
+        />
     );
 
-    const dropdownItems = [
-        user && {
-            label: "Profile",
-            icon: UserCircle,
-            onClick: () => {
-                setOpen(false);
-                handleProfile();
-            }
-        },
-        user && {
-            label: "Dashboard",
-            icon: Gauge,
-            onClick: () => {
-                setOpen(false);
-                handleDashboard();
-            }
-        },
-        isAdmin && {
-            label: "Admin",
-            icon: ShieldUser,
-            onClick: () => {
-                setOpen(false);
-                handleAdmin();
-            }
-        },
-        !user && {
-            label: "Login",
-            icon: LogIn,
-            onClick: () => {
-                setOpen(false);
-                onLoginClick(false);
-            }
-        },
-        !user && {
-            label: "Register",
-            icon: UserPlus,
-            onClick: () => {
-                setOpen(false);
-                onRegisterClick(true);
-            }
-        },
-        user && {
-            label: "Logout",
-            icon: LogOut,
-            onClick: () => {
-                setOpen(false);
-                onLogout(() => {});
-            }
-        }
-    ].filter(Boolean);
+
+    // bovenin je ProfileMenu-component
+    const dropdownItems = buildSidebarItems({
+        user,
+        close: () => setOpen(false),
+        items: [
+            user && {
+                label: "Profile",
+                icon: UserCircle,
+                onClick: handleProfile,
+                requiresAuth: true,
+            },
+            user && {
+                label: "Dashboard",
+                icon: Gauge,
+                onClick: handleDashboard,
+                requiresAuth: true,
+            },
+            isAdmin && {
+                label: "Admin",
+                icon: ShieldUser,
+                onClick: handleAdmin,
+                requiresAuth: true,
+            },
+            !user && {
+                label: "Login",
+                icon: LogIn,
+                onClick: () => onLoginClick(false),
+            },
+            !user && {
+                label: "Register",
+                icon: UserPlus,
+                onClick: () => onRegisterClick(true),
+            },
+            user && {
+                label: "Logout",
+                icon: LogOut,
+                onClick: () => onLogout(() => {}),
+                requiresAuth: true,
+            },
+        ].filter(Boolean),
+    });
+
 
     // ---------- COMPACT MODE ----------
     if (compact) {
@@ -139,14 +120,18 @@ const ProfileMenu = ({
                     <CustomDropdownWeb
                         open={open}
                         onOpenChange={setOpen}
+                        className="
+                                    absolute z-50
+                                    bottom-full left-0 mb-2
+                                    md:bottom-auto md:top-0
+                                    md:left-full md:ml-5
+                        "
                         trigger={compactTrigger}
-                        className="absolute bottom-full left-0 min-w-[10rem] max-w-[90vw] md:left-full md:top-0 md:bottom-auto"
                         items={dropdownItems}
                     />
                 </CustomBox>
 
-                {/* lg sidebar lijst */}
-                <CustomBox className="hidden lg:block w-full text-white">
+                <CustomBox className="hidden lg:block w-full text-white mb-2">
                     <CustomBox
                         className={clsx(
                             "flex items-center gap-2 px-3 py-2 rounded-md",
@@ -154,24 +139,28 @@ const ProfileMenu = ({
                         )}
                     >
                         <UserCog className="w-5 h-5" />
-                        <CustomTypography bold font="sans" className="text-sm">
+                        <CustomTypography
+                            bold
+                            font="sans"
+                            className="text-sm"
+                            color="white"
+                        >
                             Profile
                         </CustomTypography>
                     </CustomBox>
 
                     <CustomBox className="mt-1 ml-7 flex flex-col gap-1">
-                        {dropdownItems.map((item) => (
-                            <button
+                        {dropdownItems.map(item => (
+                            <SidebarActionButton
                                 key={item.label}
-                                type="button"
+                                icon={item.icon}
+                                label={item.label}
                                 onClick={item.onClick}
-                                className="flex items-center gap-2 text-xs px-2 py-1 rounded-md hover:bg-white/10"
-                            >
-                                <item.icon className="w-4 h-4" />
-                                <span>{item.label}</span>
-                            </button>
+                                disabled={item.disabled}
+                            />
                         ))}
                     </CustomBox>
+
                 </CustomBox>
             </>
         );
@@ -183,7 +172,7 @@ const ProfileMenu = ({
             open={open}
             onOpenChange={setOpen}
             trigger={trigger}
-            className="absolute bottom-full left-0 min-w-[10rem] max-w-[40vw] md:left-full md:top-0"
+            className="absolute bottom-full mb-4 min-w-[10rem] max-w-[90vw]"
             items={dropdownItems}
         />
     );

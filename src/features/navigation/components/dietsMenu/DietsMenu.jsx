@@ -8,9 +8,11 @@ import CustomDropdownWeb from "../../../../components/layout/CustomDropdownWeb.j
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import { CookingPot, Pencil, UserCheck, BookOpen, UserPen } from "lucide-react";
-import ChevronToggle from "../../../../components/chevronToggle/ChevronToggle.jsx";
 import clsx from "clsx";
 import { getActiveSection } from "../../utils/helpers/navSectionHelpers.js";
+import SidebarActionButton from "../../../../components/layout/SidebarActionButton.jsx";
+import SidebarSectionTrigger from "../../../../components/layout/SidebarSectionTrigger.jsx";
+import {buildSidebarItems} from "../../../../utils/helpers/buildSidebarItems.js";
 
 const DietsMenu = ({ compact = false, showLabel = true }) => {
     const [open, setOpen] = useState(false);
@@ -52,98 +54,61 @@ const DietsMenu = ({ compact = false, showLabel = true }) => {
 
     // ---------- NORMAL TRIGGER (sm + md) ----------
     const trigger = (
-        <CustomBox
-            onClick={() => setOpen(!open)}
-            className="w-full flex items-center cursor-pointer text-white justify-between md:justify-start md:gap-1"
-            aria-haspopup="menu"
-            aria-expanded={open}
-        >
-            {showLabel && (
-                <CustomTypography
-                    bold
-                    font="sans"
-                    className="hidden sm:inline md:hidden lg:inline text-xs sm:text-sm text-white mr-2"
-                >
-                    Diets
-                </CustomTypography>
-            )}
-            <CookingPot className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-            <ChevronToggle open={open} />
-        </CustomBox>
+        <SidebarSectionTrigger
+            label="Diets"
+            Icon={CookingPot}
+            open={open}
+            onToggle={() => setOpen(!open)}
+            compact={false}
+            active={isDietSectionActive}
+            showLabel={showLabel}
+        />
     );
 
-    // ---------- COMPACT TRIGGER (lg+) ----------
+// ---------- COMPACT TRIGGER (lg+) ----------
     const compactTrigger = (
-        <CustomBox
-            onClick={() => setOpen(!open)}
-            className={clsx(
-                "flex items-center justify-center w-10 h-10 rounded-md cursor-pointer transition-all hover:bg-white/10",
-                isDietSectionActive && "bg-white/25"
-            )}
-        >
-            <CookingPot className="w-6 h-6 text-white" />
-            <ChevronToggle
-                open={open}
-                mobileSize={14}
-                desktopSize={16}
-                className="ml-1"
-            />
-        </CustomBox>
+        <SidebarSectionTrigger
+            label="Diets"
+            Icon={CookingPot}
+            open={open}
+            onToggle={() => setOpen(!open)}
+            compact
+            active={isDietSectionActive}
+            showLabel={false}
+        />
     );
 
-    const dropdownItems = [
-        {
-            label: "Explore Diets",
-            icon: BookOpen,
-            onClick: () => {
-                setOpen(false);
-                handleExploreDiets();
-            },
-        },
-        {
-            label: "My Diets",
-            icon: UserCheck,
-            disabled: !user,
-            onClick: () => {
-                setOpen(false);
-                handleMyDiets();
-            },
-        },
-        {
-            label: "Created Diets",
-            icon: UserPen,
-            disabled: !user,
-            onClick: () => {
-                setOpen(false);
-                handleCreatedDiets();
-            },
-        },
-        {
-            label: "Create Diet",
-            icon: Pencil,
-            disabled: !user,
-            onClick: () => {
-                setOpen(false);
-                handleCreateDiet();
-            },
-        },
-    ];
+    const dropdownItems = buildSidebarItems({
+        user,
+        close: () => setOpen(false),
+        items: [
+            { label: "Explore Diets", icon: BookOpen, onClick: handleExploreDiets },
+            { label: "My Diets", icon: CookingPot, onClick: handleMyDiets, requiresAuth: true },
+            { label: "Created Diets", icon: UserPen, onClick: handleCreatedDiets, requiresAuth: true },
+            { label: "Create Diet", icon: Pencil, onClick: handleCreateDiet, requiresAuth: true },
+        ]
+    });
 
     // ---------- COMPACT MODE ----------
     if (compact) {
         return (
             <>
-                <CustomBox className="block lg:hidden w-full">
+                <CustomBox className="relative block lg:hidden w-full">
                     <CustomDropdownWeb
                         open={open}
                         onOpenChange={setOpen}
-                        className="absolute bottom-full left-0 min-w-[10rem] max-w-[90vw] md:left-full md:top-0 md:bottom-auto"
+                        className="
+                                    absolute z-50
+                                    bottom-full left-0 mb-2
+                                    md:bottom-auto md:top-0
+                                    md:left-full md:ml-5
+                        "
                         trigger={compactTrigger}
                         items={dropdownItems}
                     />
                 </CustomBox>
 
-                <CustomBox className="hidden lg:block w-full text-white">
+                <CustomBox className="hidden lg:block w-full text-white mb-2">
                     <CustomBox
                         className={clsx(
                             "flex items-center gap-2 px-3 py-2 rounded-md",
@@ -151,47 +116,26 @@ const DietsMenu = ({ compact = false, showLabel = true }) => {
                         )}
                     >
                         <CookingPot className="w-5 h-5" />
-                        <CustomTypography bold font="sans" className="text-sm">
+                        <CustomTypography
+                            bold
+                            font="sans"
+                            className="text-sm"
+                            color="white"
+                        >
                             Diets
                         </CustomTypography>
                     </CustomBox>
 
                     <CustomBox className="mt-1 ml-7 flex flex-col gap-1">
-                        <button
-                            type="button"
-                            onClick={handleExploreDiets}
-                            className="flex items-center gap-2 text-xs px-2 py-1 rounded-md hover:bg-white/10"
-                        >
-                            <BookOpen className="w-4 h-4" />
-                            <span>Explore Diets</span>
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={handleMyDiets}
-                            className="flex items-center gap-2 text-xs px-2 py-1 rounded-md hover:bg-white/10"
-                        >
-                            <UserCheck className="w-4 h-4" />
-                            <span>My Diets</span>
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={handleCreatedDiets}
-                            className="flex items-center gap-2 text-xs px-2 py-1 rounded-md hover:bg-white/10"
-                        >
-                            <UserPen className="w-4 h-4" />
-                            <span>Created Diets</span>
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={handleCreateDiet}
-                            className="flex items-center gap-2 text-xs px-2 py-1 rounded-md hover:bg-white/10"
-                        >
-                            <Pencil className="w-4 h-4" />
-                            <span>Create Diet</span>
-                        </button>
+                        {dropdownItems.map(item => (
+                            <SidebarActionButton
+                                key={item.label}
+                                icon={item.icon}
+                                label={item.label}
+                                onClick={item.onClick}
+                                disabled={item.disabled}
+                            />
+                        ))}
                     </CustomBox>
                 </CustomBox>
 
@@ -215,7 +159,7 @@ const DietsMenu = ({ compact = false, showLabel = true }) => {
             <CustomDropdownWeb
                 open={open}
                 onOpenChange={setOpen}
-                className="absolute bottom-full left-0 min-w-[10rem] max-w-[90vw] md:left-full md:top-0 md:bottom-auto"
+                className="absolute bottom-full mb-4 min-w-[10rem] max-w-[90vw]"
                 trigger={trigger}
                 items={dropdownItems}
             />

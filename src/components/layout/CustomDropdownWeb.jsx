@@ -33,9 +33,11 @@ export default function CustomDropdownWeb({
             {/* Dropdown panel */}
             {open && (
                 <CustomBox
-                    className={`absolute z-[9999] w-56 rounded-xl bg-white shadow-lg dark:bg-gray-800 ${className}`}
+                    className={`absolute z-[9999] w-56 rounded-xl bg-white shadow-lg dark:bg-gray-800 
+            border-t border-b border-r border-gray-500 ${className}`}
+
                 >
-                    {items.map(({ label, onClick, icon: Icon, disabled }, index) => (
+                {items.map(({ label, onClick, icon: Icon, disabled }, index) => (
                         <CustomBox key={index}>
                             <CustomBox
                                 onClick={
