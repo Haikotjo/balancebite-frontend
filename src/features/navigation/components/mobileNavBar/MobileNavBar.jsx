@@ -97,12 +97,14 @@ const MobileNavBar = ({
                             size={32}
                         />
 
-                        <CustomIconButton
-                            icon={<Gauge className="text-white" />}
-                            onClick={() => navigate("/dashboard")}
-                            bgColor={isDashboardActive ? "bg-white/25" : "bg-transparent"}
-                            size={32}
-                        />
+                        {user && (
+                            <CustomIconButton
+                                icon={<Gauge className="text-white" />}
+                                onClick={() => navigate("/dashboard")}
+                                bgColor={isDashboardActive ? "bg-white/25" : "bg-transparent"}
+                                size={32}
+                            />
+                        )}
                     </CustomBox>
 
                     {/* Right: Hamburger */}
