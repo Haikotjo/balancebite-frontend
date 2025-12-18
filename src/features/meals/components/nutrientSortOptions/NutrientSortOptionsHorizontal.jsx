@@ -1,21 +1,14 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import {
-    Flame,
-    ChartColumnIncreasing,
-    Dumbbell,
-    Droplet,
     ArrowDownUp,
     ArrowUpNarrowWide,
     ArrowDownNarrowWide,
-    TrendingUp,
-    ChartNoAxesColumnIncreasing,
-    TrendingDown,
 } from "lucide-react";
 import PropTypes from "prop-types";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomChip from "../../../../components/layout/CustomChip.jsx";
-import { useContext } from "react";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
+import {borderBySortKey, getNutrients} from "../../utils/helpers/nutrientSortConfig.jsx";
 
 /**
  * NutrientSortOptionsHorizontal
@@ -34,6 +27,7 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
     const { activeOption } = useContext(UserMealsContext);
     const [currentSort, setCurrentSort] = useState({ key: null, order: "asc" });
     const iconBase = "w-5 h-5 sm:w-6 sm:h-6 md:w-6 md:h-6 m-1";
+    const nutrients = getNutrients(iconBase);
 
     // Returns appropriate sort direction icon based on current state
     const getSortIcon = (key) => {
@@ -52,30 +46,6 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
             ? <ArrowUpNarrowWide className={cls} />
             : <ArrowDownNarrowWide className={cls} />;
     };
-
-
-    // Define the available nutrients and their display info
-    const nutrients = [
-        { name: "Energy",  label: "Kcal",       icon: <Flame className={`${iconBase} text-error`} />,    sortKey: "calories" },
-        { name: "Protein", label: "Protein",    icon: <Dumbbell className={`${iconBase} text-primary`} />, sortKey: "protein" },
-        { name: "Carbs",   label: "Carbs",      icon: <ChartColumnIncreasing className={`${iconBase} text-success`} />, sortKey: "carbs" },
-        { name: "Fat",     label: "Fat",        icon: <Droplet className={`${iconBase} text-secondary`} />, sortKey: "fat" },
-
-        { name: "All Time", label: "All Time",  icon: <ChartNoAxesColumnIncreasing className="text-primary"/>,   sortKey: "saveCount" },
-        { name: "This Week", label: "This Week", icon: <TrendingUp className="text-primary"/>,  sortKey: "weeklySaveCount" },
-        { name: "This Month", label: "This Month", icon: <TrendingDown className="text-primary"/>, sortKey: "monthlySaveCount" },
-    ];
-
-    const borderBySortKey = {
-        calories: "border-error dark:border-error",
-        protein: "border-primary dark:border-primary",
-        carbs: "border-success dark:border-success",
-        fat: "border-secondary dark:border-secondary",
-        saveCount: "border-primary dark:border-primary",
-        weeklySaveCount: "border-primary dark:border-primary",
-        monthlySaveCount: "border-primary dark:border-primary",
-    };
-
 
     // Called when a nutrient chip is clicked
     const handleSort = (sortKey) => {
@@ -110,14 +80,13 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
         onSort(currentSort.key, newOrder);
     };
 
-
     return (
         <CustomBox className="flex flex-col items-center w-full gap-2 mb-4 mt-4">
             <CustomBox className="flex flex-wrap justify-center gap-2 w-full max-w-full">
 
                 {nutrients.slice(0, 4).map((n) => (
                     <CustomChip
-                        key={n.label}
+                        key={n.sortKey}
                         icon={n.icon}
                         label={n.label}
                         selected={currentSort.key === n.sortKey}
@@ -142,7 +111,7 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
                         <CustomBox className="flex flex-wrap justify-center gap-6">
                             {nutrients.slice(4).map((n) => (
                                 <CustomChip
-                                    key={n.label}
+                                    key={n.sortKey}
                                     icon={n.icon}
                                     label={n.label}
                                     selected={currentSort.key === n.sortKey}

@@ -30,7 +30,7 @@ const CustomChip = ({
                         label,
                         selected = false,
                         onClick,
-                        selectedBorderClass = "",   // NEW
+                        selectedBorderClass = "",
                         iconMargin = 0,
                         iconSize = 24,
                         labelPosition = "bottom",
