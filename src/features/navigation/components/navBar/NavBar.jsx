@@ -9,6 +9,7 @@ import clsx from "clsx";
 import {useLocation} from "react-router-dom";
 import LoginRegisterForm from "../authLoginRegisterForm/LoginRegisterForm.jsx";
 import MobileNavBar from "../mobileNavBar/MobileNavBar.jsx";
+import DesktopMenuMd from "../desktopMenuMd/DesktopMenuMd.jsx";
 
 const NavBar = () => {
     const { user } = useContext(AuthContext);
@@ -17,6 +18,7 @@ const NavBar = () => {
     const [startInRegisterMode, setStartInRegisterMode] = useState(false);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const location = useLocation();
+
 
     const handleLoginClick = () => {
         setStartInRegisterMode(false);
@@ -36,14 +38,11 @@ const NavBar = () => {
         <CustomAppBar
             className={clsx(
                 "fixed bottom-0 w-full z-50",
-                // Desktop: verticale sidebar
                 "md:top-0 md:left-0 md:bottom-auto md:h-screen md:max-w-none bg-appBarColor",
-                // Breedte: smal op md, breed op lg+
                 "md:w-20 lg:w-44"
             )}
             bgColor="bg-appBarColor"
         >
-
 
         {/* Mobile layout */}
             <MobileNavBar
@@ -55,20 +54,22 @@ const NavBar = () => {
                 setShowMobileMenu={setShowMobileMenu}
             />
 
+            {/* MD layout */}
+            <DesktopMenuMd
+                user={user}
+                onLogout={handleLogout}
+                onLoginClick={handleLoginClick}
+                onRegisterClick={handleRegisterClick}
+            />
+
             {/* Desktop layout */}
-            <CustomBox className="hidden md:flex md:h-full">
+            <CustomBox className="hidden lg:flex lg:h-full">
                 <CustomBox className="h-full w-full">
                     <DesktopMenu
                         user={user}
                         onLogout={handleLogout}
-                        onLoginClick={() => {
-                            setStartInRegisterMode(false);
-                            setShowLoginForm(true);
-                        }}
-                        onRegisterClick={() => {
-                            setStartInRegisterMode(true);
-                            setShowLoginForm(true);
-                        }}
+                        onLoginClick={handleLoginClick}
+                        onRegisterClick={handleRegisterClick}
                     />
                 </CustomBox>
             </CustomBox>

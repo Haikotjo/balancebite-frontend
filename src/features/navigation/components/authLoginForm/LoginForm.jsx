@@ -89,7 +89,7 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
 
                     <CustomButton
                         type="submit"
-                        className="bg-primary hover:bg-primary-dark text-white mt-2 self-stretch"
+                        className="bg-primary hover:bg-primary-light text-white mt-2 self-stretch"
                     >
                         <CustomTypography
                             variant="paragraph"
@@ -106,16 +106,17 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                     <CustomTypography
                         as="button"
                         onClick={onSwitchToRegister}
-                        variant="paragraph"
+                        variant="small"
                         weight="normal"
                         inheritColor={true}
                         className="text-primary bg-transparent self-start"
                     >
-                        Don't have an account?{" "}
+                        Don&#39;t have an account?{" "}
 
                         <CustomTypography
                             as="span"
-                            variant="paragraph"
+                            variant="small"
+                            italic
                             inheritColor={true}
                             weight="bold"
 
@@ -136,7 +137,6 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                         >
                             <CustomTypography
                                 variant="small"
-                                weight="bold"
                                 as="span"
                                 inheritColor
                             >

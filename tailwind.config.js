@@ -32,6 +32,7 @@ export default {
         borderDark: "#111827",
 
         primary: "#38adb5",
+        "primary-light": "#5fc3c9",
         "primary-dark": "#298073",
 
         borderPrimary: "#41D3BD",

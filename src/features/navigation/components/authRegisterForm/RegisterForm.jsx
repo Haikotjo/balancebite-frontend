@@ -123,16 +123,24 @@ const RegisterForm = ({ onClose, onSwitchToLogin, showRoles = false, isAdminCont
 
                     <CustomButton
                         type="submit"
-                        className="bg-primary hover:bg-primary-dark text-white py-2 mt-2 self-stretch"
+                        className="bg-primary hover:bg-primary-light text-white py-2 mt-2 self-stretch"
                     >
-                        Register
+                        <CustomTypography
+                            variant="paragraph"
+                            weight="bold"
+                            as="span"
+                            inheritColor
+                            className="text-center w-full"
+                        >
+                            Register
+                        </CustomTypography>
                     </CustomButton>
 
                     {!isAdminContext && (
                         <CustomTypography
                             as="button"
                             onClick={onSwitchToLogin}
-                            variant="paragraph"
+                            variant="small"
                             weight="normal"
                             className="text-primary self-start bg-transparent"
                             inheritColor={true}
@@ -141,7 +149,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin, showRoles = false, isAdminCont
 
                             <CustomTypography
                                 as="span"
-                                variant="paragraph"
+                                variant="small"
                                 inheritColor={true}
                                 weight="bold"
                                 italic
@@ -154,11 +162,21 @@ const RegisterForm = ({ onClose, onSwitchToLogin, showRoles = false, isAdminCont
 
                     {onClose && (
                         <CustomButton
+                            variant="outline"
+                            color="error"
+                            type="button"
                             onClick={onClose}
-                            className=" hover:underline self-end bg-transparent px-0 py-0 text-lightText dark:text-darkText"
+                            className="self-end w-auto text-sm"
                         >
-                            Close
+                            <CustomTypography
+                                variant="small"
+                                as="span"
+                                inheritColor
+                            >
+                                Close
+                            </CustomTypography>
                         </CustomButton>
+
                     )}
                 </form>
             </CustomCard>
