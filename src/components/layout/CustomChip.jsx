@@ -30,7 +30,7 @@ const CustomChip = ({
                         label,
                         selected = false,
                         onClick,
-                        selectedBorderClass = "",
+                        selectedBorderClass = "",   // NEW
                         iconMargin = 0,
                         iconSize = 24,
                         labelPosition = "bottom",
@@ -73,13 +73,10 @@ const CustomChip = ({
                     "border-borderDark dark:border-borderLight",
 
                     // ONLY border changes when selected
-                    selected && selectedBorderClass,
-                    selected && "scale-[1.08]"
+                    selected && selectedBorderClass
                 )}
             >
-               <span className={clsx("transition-transform duration-200", selected && "scale-110")}>
-    {icon}
-  </span>
+                {icon}
             </CustomBox>
         </CustomBox>
     );
