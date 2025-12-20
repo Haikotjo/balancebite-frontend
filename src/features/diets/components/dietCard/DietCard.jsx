@@ -16,7 +16,7 @@ import {AuthContext} from "../../../../context/AuthContext.jsx";
 import DietPlanShareForm from "../dietplanshareform/DietPlanShareForm.jsx";
 
 const useAuth = () => useContext(AuthContext);
-const DietCard = ({ diet, viewMode = "card", isPinned = false }) => {
+const DietCard = ({ diet, viewMode = "card", isPinned = false, cardRef, actionsAnchorRef }) => {
     const { setCreatorIdFilter, setActiveOption } = useContext(UserDietsContext);
     const navigate = useNavigate();
     const imageUrls = diet.dietDays.flatMap((day) =>
@@ -34,6 +34,7 @@ const DietCard = ({ diet, viewMode = "card", isPinned = false }) => {
 
     return (
         <CustomBox
+            ref={cardRef}
             className={`w-full rounded-xl shadow-md bg-cardLight dark:bg-cardDark overflow-hidden ${
                 isPinned ? "border-2 border-yellow-500" : ""
             }`}
@@ -45,16 +46,27 @@ const DietCard = ({ diet, viewMode = "card", isPinned = false }) => {
             )}
 
             <CustomBox className="p-4">
-                <CustomBox className="flex flex-wrap justify-between items-start gap-y-2 mb-2">
+                <CustomBox className={`flex flex-wrap items-start gap-y-2 mb-2 w-full     ${(viewMode === "page" || viewMode === "modal")
+                    ? "flex-col-reverse sm:flex-row"
+                    : ""}
+  `}
+                >
                     <CustomTypography
                         variant="h1"
                         bold
-                        className="mr-4 break-words max-w-full"
+                        className="mr-4 break-words min-w-0 flex-1"
                     >
                         {diet.name}
                     </CustomTypography>
-                    <DietCardActionButtons diet={diet} viewMode={viewMode} />
+
+                    <CustomBox
+                        ref={actionsAnchorRef}
+                        className="w-full sm:w-auto flex-1 min-w-[220px]"
+                    >
+                        <DietCardActionButtons diet={diet} viewMode={viewMode} />
+                    </CustomBox>
                 </CustomBox>
+
                 {canShare && (
                     <CustomBox className="mt-2">
                         <DietPlanShareForm dietPlanId={diet.id} />
@@ -139,6 +151,16 @@ DietCard.propTypes = {
     diet: PropTypes.object.isRequired,
     viewMode: PropTypes.oneOf(["page", "modal", "card"]),
     isPinned: PropTypes.bool,
+
+    cardRef: PropTypes.oneOfType([
+        PropTypes.func,
+        PropTypes.shape({ current: PropTypes.any }),
+    ]),
+    actionsAnchorRef: PropTypes.oneOfType([
+        PropTypes.func,
+        PropTypes.shape({ current: PropTypes.any }),
+    ]),
 };
+
 
 export default DietCard;

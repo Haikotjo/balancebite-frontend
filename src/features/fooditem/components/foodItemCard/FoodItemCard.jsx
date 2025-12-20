@@ -123,7 +123,7 @@ const FoodItemCard = ({
                     />
                 ) : (
                     <CustomBox
-                        className="w-14 h-14 rounded-md flex-shrink-0 border border-borderLight dark:border-borderDark bg-muted flex items-center justify-center"
+                        className="w-14 h-14 rounded-md flex-shrink-0 border border-borderLight dark:border-borderDark bg-muted flex items-center justify-center dark:text-white"
                         aria-label="No image available"
                         role="img"
                     >

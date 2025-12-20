@@ -1,16 +1,18 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import PropTypes from "prop-types";
 import {
     updateDietPlanPrivacyApi,
     updateMealPrivacyApi,
     updateMealRestrictionApi,
-    updateDietPlanRestrictionApi
+    updateDietPlanRestrictionApi,
 } from "../../services/apiService.js";
 import CustomCheckbox from "../layout/CustomCheckbox.jsx";
 import CustomBox from "../layout/CustomBox.jsx";
 import ErrorDialog from "../layout/ErrorDialog.jsx";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import { UserDietsContext } from "../../context/UserDietContext.jsx";
+import VisibilityToggle from "../visibilityToggle/VisibilityToggle.jsx";
+
 
 const PrivacyToggles = ({
                             mealId,
@@ -18,13 +20,13 @@ const PrivacyToggles = ({
                             initialMealPrivate,
                             initialDietPrivate,
                             initialMealRestricted,
-                            initialDietRestricted
+                            initialDietRestricted,
                         }) => {
     const { role } = useContext(AuthContext);
     const { replaceDietInDiets, userDiets } = useContext(UserDietsContext);
 
-    const [mealShared, setMealShared] = useState(!initialMealPrivate);
-    const [dietShared, setDietShared] = useState(!initialDietPrivate);
+    const [mealShared, setMealShared] = useState(!initialMealPrivate); // true = public
+    const [dietShared, setDietShared] = useState(!initialDietPrivate); // true = public
     const [mealRestricted, setMealRestricted] = useState(!!initialMealRestricted);
     const [dietRestricted, setDietRestricted] = useState(!!initialDietRestricted);
     const [loading, setLoading] = useState(false);
@@ -36,8 +38,8 @@ const PrivacyToggles = ({
     const handleMealToggle = async () => {
         try {
             setLoading(true);
-            const newShared = !mealShared;
-            await updateMealPrivacyApi(mealId, !newShared);
+            const newShared = !mealShared; // true = public
+            await updateMealPrivacyApi(mealId, !newShared); // API expects isPrivate
             setMealShared(newShared);
         } catch (err) {
             console.error("❌ Failed to update meal privacy", err);
@@ -55,11 +57,11 @@ const PrivacyToggles = ({
     const handleDietToggle = async () => {
         try {
             setLoading(true);
-            const newShared = !dietShared;
-            await updateDietPlanPrivacyApi(dietPlanId, !newShared);
+            const newShared = !dietShared; // true = public
+            await updateDietPlanPrivacyApi(dietPlanId, !newShared); // API expects isPrivate
             setDietShared(newShared);
 
-            const existing = userDiets.find(d => d.id === dietPlanId);
+            const existing = userDiets.find((d) => d.id === dietPlanId);
             if (existing) {
                 replaceDietInDiets(dietPlanId, { ...existing, private: !newShared });
             }
@@ -98,28 +100,16 @@ const PrivacyToggles = ({
 
     return (
         <CustomBox className="space-y-4">
+            {/* Public/Private as Eye icons */}
             {mealId && (
-                <CustomCheckbox
-                    checked={mealShared}
-                    onChange={handleMealToggle}
-                    label={mealShared ? "Public" : "Private"}
-                    id="mealPrivacy"
-                    disabled={loading}
-                    className={mealShared ? "border-primary" : "border-[#DD1155]"}
-                />
+                <VisibilityToggle isPublic={mealShared} onClick={handleMealToggle} disabled={loading} />
             )}
 
             {dietPlanId && (
-                <CustomCheckbox
-                    checked={dietShared}
-                    onChange={handleDietToggle}
-                    label={dietShared ? "Public" : "Private"}
-                    id="dietPrivacy"
-                    disabled={loading}
-                    className={dietShared ? "border-primary" : "border-[#DD1155]"}
-                />
+                <VisibilityToggle isPublic={dietShared} onClick={handleDietToggle} disabled={loading} />
             )}
 
+            {/* Restricted toggles stay as checkboxes */}
             {isRestaurantOrDietitian && mealId && (
                 <CustomCheckbox
                     checked={mealRestricted}
@@ -158,7 +148,7 @@ PrivacyToggles.propTypes = {
     initialMealPrivate: PropTypes.bool,
     initialDietPrivate: PropTypes.bool,
     initialMealRestricted: PropTypes.bool,
-    initialDietRestricted: PropTypes.bool
+    initialDietRestricted: PropTypes.bool,
 };
 
 export default PrivacyToggles;

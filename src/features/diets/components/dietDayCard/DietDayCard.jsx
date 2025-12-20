@@ -9,8 +9,6 @@ import {macroIconClasses, macroIcons} from "../../../../utils/helpers/macroIcons
 import {formatEnum} from "../../../../utils/helpers/formatEnum.js";
 import HorizontalScrollSection from "../../../../components/horizontalScrollSection/HorizontalScrollSection.jsx";
 import MacroSummary from "../macroSummary/MacroSummary.jsx";
-import CustomButton from "../../../../components/layout/CustomButton.jsx";
-import { ExternalLink } from "lucide-react";
 import PromotionInfo from "../../../../components/promotioninfo/PromotionInfo.jsx";
 
 const DietDayCard = ({ day }) => {
@@ -48,7 +46,9 @@ const DietDayCard = ({ day }) => {
                     <HorizontalScrollSection
                         items={day.meals}
                         className="-mt-2 mb-2"
-                        renderItem={(meal) => <MealCardCompact meal={meal} />}
+                        renderItem={(meal) => (
+                            <MealCardCompact meal={meal} hideOpenButton />
+                        )}
                     />
                 ) : (
                     <CustomBox className="flex justify-center items-center min-h-[20vh]">
@@ -181,7 +181,54 @@ const DietDayCard = ({ day }) => {
 };
 
 DietDayCard.propTypes = {
-    day: PropTypes.object.isRequired,
+    day: PropTypes.shape({
+        dayLabel: PropTypes.string,
+        dietDayDescription: PropTypes.string,
+
+        totalCalories: PropTypes.number,
+        totalProtein: PropTypes.number,
+        totalCarbs: PropTypes.number,
+        totalFat: PropTypes.number,
+        totalSaturatedFat: PropTypes.number,
+        totalUnsaturatedFat: PropTypes.number,
+        totalSugars: PropTypes.number,
+
+        meals: PropTypes.arrayOf(
+            PropTypes.shape({
+                id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+                name: PropTypes.string,
+                mealDescription: PropTypes.string,
+                preparationTime: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+
+                totalCalories: PropTypes.number,
+                totalProtein: PropTypes.number,
+                totalCarbs: PropTypes.number,
+                totalFat: PropTypes.number,
+                totalSaturatedFat: PropTypes.number,
+                totalUnsaturatedFat: PropTypes.number,
+                totalSugars: PropTypes.number,
+
+                mealTypes: PropTypes.array,
+                cuisines: PropTypes.array,
+                diets: PropTypes.array,
+
+                mealIngredients: PropTypes.arrayOf(
+                    PropTypes.shape({
+                        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+                        foodItemName: PropTypes.string,
+                        quantity: PropTypes.number,
+                        foodItem: PropTypes.shape({
+                            promoted: PropTypes.bool,
+                            promotionStartDate: PropTypes.string,
+                            promotionEndDate: PropTypes.string,
+                            source: PropTypes.string,
+                        }),
+                    })
+                ),
+            })
+        ),
+    }).isRequired,
 };
+
 
 export default DietDayCard;

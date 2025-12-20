@@ -63,7 +63,7 @@ export default {
         promote: '#facc15',
 
 
-        // 🎨 User-configurable kleuren (via CSS variables)
+        // 🎨 User-configurable colors (via CSS variables)
         userPrimary: "var(--user-primary)",
         userSecondary: "var(--user-secondary)",
         userBackground: "var(--user-background)",

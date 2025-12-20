@@ -32,7 +32,7 @@ const CustomIconButton = ({
             <CustomBox
                 onClick={onClick}
                 className={`cursor-pointer ${bgColor} rounded-xl flex items-center justify-center ${sizeClassName} ${className}`}
-                style={sizeClassName ? undefined : { width: size, height: size }} // ← belangrijk
+                style={sizeClassName ? undefined : { width: size, height: size }}
             >
                 {finalIcon}
             </CustomBox>

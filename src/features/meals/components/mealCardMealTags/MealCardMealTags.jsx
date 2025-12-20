@@ -55,7 +55,11 @@ const MealCardMealTags = ({
                         size === "small" ? "px-[6px] py-[3px]" : "px-[8px] py-[3px]"
                     )}
                 >
-                    <CustomTypography variant="small" inheritColor>
+                    <CustomTypography
+                        variant="small"
+                        inheritColor
+                        className="text-lightText dark:text-darkText"
+                    >
                         {formatEnum(tag.value)}
                     </CustomTypography>
                 </CustomCardChip>

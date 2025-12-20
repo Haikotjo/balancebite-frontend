@@ -9,6 +9,7 @@ import ButtonOpenShoppingCart from "../buttonOpenShoppingCart/ButtonOpenShopping
 import PrivacyToggles from "../../../../components/privacytoggles/PrivacyToggles.jsx";
 import {AuthContext} from "../../../../context/AuthContext.jsx";
 import ViewDietButton from "../viewdietbutton/ViewDietButton.jsx";
+import ButtonCloseDietModal from "../../../../components/buttonCloseModal/ButtonCloseDietModal.jsx";
 
 /**
  * Displays a horizontal group of diet-related action buttons.
@@ -75,6 +76,12 @@ const DietCardActionButtons = ({ diet, iconSize = 35, viewMode = "card", isPinne
                         initialDietPrivate={!!diet.isPrivate}
                         initialDietRestricted={!!diet.isRestricted}
                     />
+                </CustomBox>
+            )}
+
+            {viewMode === "modal" && (
+                <CustomBox className="lg:hidden">
+                    <ButtonCloseDietModal iconSize={20} size={35} />
                 </CustomBox>
             )}
         </CustomBox>

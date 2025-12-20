@@ -59,13 +59,8 @@ const useAuth = () => useContext(AuthContext);
 /**
  * Component definition
  */
-const MealCard = ({
-                      meal,
-                      viewMode = "page",
-                      onClose,
-                      isPinned = false,
-                      disableActions = false,
-                  }) => {
+const MealCard = ({ meal, viewMode="page", onClose, isPinned=false, disableActions=false, cardRef, actionsAnchorRef }) => {
+
     // Derive image and navigation
     const imageSrc = getImageSrc(meal);
     const navigate = useNavigate();
@@ -130,7 +125,7 @@ const MealCard = ({
             : null;
 
     return (
-        <CustomBox className="w-full flex flex-col items-center">
+        <CustomBox ref={cardRef} className="w-full flex flex-col items-center">
             <CustomBox
                 className={`max-w-6xl w-full lg:flex bg-cardLight dark:bg-cardDark rounded-xl shadow-md overflow-hidden border ${
                     isPinned ? "border-yellow-500" : "border-border"
@@ -164,14 +159,20 @@ const MealCard = ({
                                 className={disableActions ? "pointer-events-none opacity-60" : ""}
                                 aria-disabled={disableActions}
                             >
-                                <MealCardActionButtons
-                                    meal={meal}
-                                    showUpdateButton={true}
-                                    viewMode={viewMode}
-                                    onClose={onClose}
-                                    // Note: we do NOT need to pass disableActions; the wrapper already blocks clicks.
-                                    // If you want per-button disabled styles, you can still pass it down later.
-                                />
+                                <CustomBox
+                                    ref={actionsAnchorRef}
+                                    className={disableActions ? "pointer-events-none opacity-60" : ""}
+                                    aria-disabled={disableActions}
+                                >
+                                    <MealCardActionButtons
+                                        meal={meal}
+                                        showUpdateButton={true}
+                                        viewMode={viewMode}
+                                        onClose={onClose}
+                                        // Note: we do NOT need to pass disableActions; the wrapper already blocks clicks.
+                                        // If you want per-button disabled styles, you can still pass it down later.
+                                    />
+                                </CustomBox>
                             </CustomBox>
                         </CustomBox>
                     </CustomBox>
@@ -192,7 +193,7 @@ const MealCard = ({
                             {meal.name}
                         </CustomTypography>
 
-                        {/* Price pill direct onder de naam */}
+                        {/* Price pill under name */}
                         {priceLabel && (
                             <CustomBox className="mb-4">
                                 <CustomTypography
@@ -289,16 +290,21 @@ const MealCard = ({
 };
 
 MealCard.propTypes = {
-    /** The meal data to render */
     meal: PropTypes.object.isRequired,
-    /** Visual/behavioral mode of the card */
     viewMode: PropTypes.oneOf(["page", "list", "modal"]),
-    /** Optional close handler (used when navigation should also close a parent modal) */
     onClose: PropTypes.func,
-    /** Whether to display the card with a pinned border highlight */
     isPinned: PropTypes.bool,
-    /** When true, all interactive actions in this card are disabled (used for preview/lock) */
     disableActions: PropTypes.bool,
+
+    // 🔧 ADD THESE
+    cardRef: PropTypes.oneOfType([
+        PropTypes.func,
+        PropTypes.shape({ current: PropTypes.any }),
+    ]),
+    actionsAnchorRef: PropTypes.oneOfType([
+        PropTypes.func,
+        PropTypes.shape({ current: PropTypes.any }),
+    ]),
 };
 
 export default MealCard;

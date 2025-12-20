@@ -20,13 +20,12 @@ const MealDetailsPage = () => {
         const fetchMeal = async () => {
             try {
                 setLoading(true);
+                setMeal(null);
+                setError(null);
+
                 const result = await getMealById(mealId);
-                if (result) {
-                    setMeal(result);
-                    setError(null);
-                } else {
-                    setError("Meal not found");
-                }
+                if (result) setMeal(result);
+                else setError("Meal not found");
             } catch (err) {
                 console.error("Failed to fetch meal:", err);
                 setError("Meal not found");
@@ -35,11 +34,8 @@ const MealDetailsPage = () => {
             }
         };
 
-        if (mealId) {
-            fetchMeal();
-        }
+        if (mealId) void fetchMeal();
     }, [mealId, getMealById]);
-
 
     if (loading) {
         return (

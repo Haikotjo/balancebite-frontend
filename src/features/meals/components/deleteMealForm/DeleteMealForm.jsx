@@ -18,21 +18,24 @@ const DeleteMealForm = () => {
             try {
                 const token = getAccessToken();
                 const response = await getAllMealsApi(token);
-                const options = response.map(meal => {
-                    const createdBy = meal.createdBy?.userName ?? 'unknown';
-                    const adjustedBy = meal.adjustedBy?.userName;
-                    const ownerPart = adjustedBy ? `, Owned by: ${adjustedBy}` : '';
+                const options = response.map((meal) => {
+                    const { adjustedBy } = meal; // ✅ helps IDE
+                    const createdBy = meal.createdBy?.userName ?? "unknown";
+                    const ownerName = adjustedBy?.userName;
+                    const ownerPart = ownerName ? `, Owned by: ${ownerName}` : "";
+
                     return {
                         value: meal.id.toString(),
                         label: `${meal.name} (ID: ${meal.id}, Created by: ${createdBy}${ownerPart})`,
                     };
                 });
+
                 setMeals(options);
             } catch (error) {
                 handleApiError(error);
             }
         };
-        fetchMeals();
+        void fetchMeals();
     }, []);
 
     const handleDelete = async () => {

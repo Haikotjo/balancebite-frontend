@@ -1,4 +1,5 @@
 // src/hooks/useMeals.js
+// For admin use
 import { useState, useEffect } from "react";
 import { getAccessToken } from "../utils/helpers/getAccessToken";
 import { getAllMealsApi } from "../services/apiService";
