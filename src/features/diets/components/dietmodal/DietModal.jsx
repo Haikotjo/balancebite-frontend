@@ -73,19 +73,17 @@ const DietModal = ({ diet, isPinned = false }) => {
                     {/* Floating actions bar (visually inside card) */}
                     {showFloatingActions && (
                         <CustomBox
-                            className="fixed top-0 z-[2147483002] pointer-events-none"
-                            style={{ left: floatingStyle.left, width: floatingStyle.width }}
+                            className="fixed z-[2147483002] pointer-events-none"
+                            style={{ left: floatingStyle.left, width: floatingStyle.width, top: floatingStyle.top }}
                         >
-                            <CustomBox
-                                className="
-                  mx-0
-                  bg-cardLight/95 dark:bg-cardDark/95
-                  backdrop-blur
-                  border-b border-borderDark/30 dark:border-borderLight/30
-                  shadow-md
-                  pointer-events-auto
-                  rounded-t-xl
-                "
+                            <CustomBox className="
+                                                    bg-cardLight/95 dark:bg-cardDark/95
+                                                    backdrop-blur
+                                                    border-b border-borderDark/30 dark:border-borderLight/30
+                                                    shadow-md
+                                                    pointer-events-auto
+                                                    rounded-b-xl
+                                                  "
                             >
                                 <CustomBox className="p-2 flex">
                                     <DietCardActionButtons diet={diet} viewMode="modal" />
