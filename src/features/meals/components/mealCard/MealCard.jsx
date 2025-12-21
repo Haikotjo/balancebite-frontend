@@ -97,9 +97,6 @@ const MealCard = ({ meal, viewMode="page", onClose, isPinned=false, disableActio
     const calculatedMacros = calculateMacrosPer100g(meal);
     const macros = buildMacrosObject(meal, calculatedMacros);
 
-    // Debugging (keep if useful during integration)
-    console.log("MealCard.disableActions =", disableActions);
-
     // Build unique food items from meal ingredients for the grid
     const ingredientFoodItems = useMemo(() => {
         const arr = Array.isArray(meal?.mealIngredients) ? meal.mealIngredients : [];

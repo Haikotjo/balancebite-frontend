@@ -31,6 +31,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     </UserDietsProvider>
                 </UserMealsProvider>
             </AuthProvider>
-        </BrowserRouter> {/* ✅ SLUIT AF */}
+        </BrowserRouter>
     </React.StrictMode>
 );

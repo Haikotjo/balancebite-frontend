@@ -16,7 +16,6 @@ import PromotionInfo from "../../../../components/promotioninfo/PromotionInfo.js
 const MealCardIngredients = ({ ingredients }) => {
     if (!ingredients?.length) return null;
 
-    console.log("MealCardIngredients received:", ingredients);
 
     return (
         <>
