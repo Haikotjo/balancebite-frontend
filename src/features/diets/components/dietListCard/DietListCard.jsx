@@ -30,7 +30,6 @@ const DietListCard = ({ diet, compact, isPinned }) => {
     );
     const { openModal } = useModal();
 
-    console.log("DietListCard compact:", compact);
     return (
         <CustomCard isPinned={isPinned} createdByRole={role} className="overflow-hidden">
 

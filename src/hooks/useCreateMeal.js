@@ -1,6 +1,6 @@
 // useCreateMeal.js
 import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { useFormMessages } from "./useFormMessages.jsx";
 import { UserMealsContext } from "../context/UserMealsContext.jsx";
 import { createMealApi } from "../services/apiService.js";
@@ -12,30 +12,27 @@ export const useCreateMeal = ({ preview = false } = {}) => {
     const { addMealToUserMeals, setMeals } = useContext(UserMealsContext);
     const { setError, setSuccess, clear, renderDialogs } = useFormMessages();
 
-    const [capturedImage, setCapturedImage] = useState(null);
-    const [uploadedImage, setUploadedImage] = useState(null);
-    const [imageUrl, setImageUrl] = useState("");
+    /**
+     * Sets imageFiles[] and primaryIndex in react-hook-form.
+     * - files: Array<File>
+     * - primaryIndex: number | null
+     * Default behavior: if files exist and primaryIndex is null -> set primaryIndex = 0
+     */
+    const handleImagesChange = (files, primaryIndex, setValue) => {
+        const safeFiles = Array.isArray(files) ? files.filter(Boolean) : [];
 
-    const handleImageChange = (image, type, setValue) => {
-        if (type === "uploaded" || type === "captured") {
-            setCapturedImage(image);
-            setUploadedImage(type === "uploaded" ? image : null);
-            setImageUrl("");
-            setValue("imageFile", image);
-            setValue("imageUrl", "");
-        } else if (type === "url") {
-            setCapturedImage(null);
-            setUploadedImage(null);
-            setImageUrl(image);
-            setValue("imageUrl", image);
-            setValue("imageFile", "");
-        } else if (type === "reset") {
-            setCapturedImage(null);
-            setUploadedImage(null);
-            setImageUrl("");
-            setValue("imageFile", "");
-            setValue("imageUrl", "");
+        // Default primary to first image if user did not pick one
+        let safePrimaryIndex = primaryIndex ?? null;
+        if (safeFiles.length > 0 && safePrimaryIndex == null) safePrimaryIndex = 0;
+
+        // Clamp primaryIndex to valid range
+        if (safePrimaryIndex != null) {
+            if (safePrimaryIndex < 0) safePrimaryIndex = 0;
+            if (safePrimaryIndex >= safeFiles.length) safePrimaryIndex = safeFiles.length - 1;
         }
+
+        setValue("imageFiles", safeFiles, { shouldValidate: true, shouldDirty: true });
+        setValue("primaryIndex", safePrimaryIndex, { shouldValidate: true, shouldDirty: true });
     };
 
     const onSubmit = async (data) => {
@@ -51,13 +48,7 @@ export const useCreateMeal = ({ preview = false } = {}) => {
                 sourceUrl: data.sourceUrl?.trim(),
             };
 
-            const formData = await buildMealFormData(
-                mealData,
-                capturedImage,
-                uploadedImage,
-                imageUrl
-            );
-
+            const formData = await buildMealFormData(mealData);
             const response = await createMealApi(formData);
 
             if (preview) {
@@ -77,8 +68,7 @@ export const useCreateMeal = ({ preview = false } = {}) => {
 
     return {
         onSubmit,
-        handleImageChange,
-        imageUrl,
+        handleImagesChange,
         renderDialogs,
     };
 };

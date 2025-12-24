@@ -1,4 +1,4 @@
-export const buildMealFormData = async (data, capturedImage, uploadedImage, imageUrl) => {
+export const buildMealFormData = async (data) => {
     const formData = new FormData();
 
     const mealInputDTO = {
@@ -8,7 +8,7 @@ export const buildMealFormData = async (data, capturedImage, uploadedImage, imag
             foodItemId: parseInt(ingredient.foodItemId, 10),
             quantity: parseFloat(ingredient.quantity),
         })),
-        imageUrl: imageUrl || data.imageUrl || null,
+        primaryIndex: data.primaryIndex ?? null,
         mealTypes: data.mealTypes || null,
         cuisines: data.cuisines || null,
         diets: data.diets || null,
@@ -20,38 +20,31 @@ export const buildMealFormData = async (data, capturedImage, uploadedImage, imag
         mealPreparation: data.mealPreparation || null,
     };
 
-    formData.append("mealInputDTO", JSON.stringify(mealInputDTO));
-
     console.log("MealInputDTO before adding files:", mealInputDTO);
 
-    if (capturedImage) {
-        console.log("Processing Captured Image...");
-        const blob = await fetch(capturedImage).then((res) => res.blob());
-        formData.append("imageFile", blob, "captured-image.jpg");
-        console.log("Captured image added to formData.");
-    } else if (uploadedImage) {
-        console.log("Processing Uploaded Image...");
-        const blob = await fetch(uploadedImage).then((res) => res.blob());
-        formData.append("imageFile", blob, "uploaded-image.jpg");
-    } else if (data.image && data.image[0]) {
-        console.log("Processing File Input Image...");
-        formData.append("imageFile", data.image[0]);
-    } else {
-        console.log("No image provided.");
+    formData.append("mealInputDTO", JSON.stringify(mealInputDTO));
+
+    if (Array.isArray(data.imageFiles)) {
+        data.imageFiles.forEach((file) => {
+            if (file) {
+                formData.append("imageFiles", file);
+            }
+        });
     }
 
-    // Eén optioneel e-mailadres meesturen
+    // Optional: attach a shared email address
     if (data.email && data.email.trim() !== "") {
         formData.append("sharedEmails", data.email.trim().toLowerCase());
     }
 
-    // sharedUserIds eventueel behouden (optioneel)
+    // Optional: attach shared user IDs
     if (Array.isArray(data.sharedUserIds)) {
         data.sharedUserIds.forEach((id) => {
             if (id) formData.append("sharedUserIds", id);
         });
     }
 
+    // Debug: inspect final FormData
     formData.forEach((value, key) => {
         console.log(`${key}:`, value);
     });

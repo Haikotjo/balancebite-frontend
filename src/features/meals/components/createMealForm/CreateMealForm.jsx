@@ -52,8 +52,8 @@ const CreateMealForm = () => {
             cuisines: [],
             diets: [],
             preparationTime: "",
-            imageFile: "",
-            imageUrl: "",
+            imageFiles: [],
+            primaryIndex: null,
             videoUrl: "",
             sourceUrl:"",
             preparationVideoUrl: "",
@@ -68,7 +68,7 @@ const CreateMealForm = () => {
 
     // IMPORTANT:
     // useCreateMeal must support { preview: true } and return created MealDTO instead of navigating.
-    const { onSubmit, handleImageChange, imageUrl, renderDialogs } = useCreateMeal({ preview: true });
+    const { onSubmit, handleImagesChange, renderDialogs } = useCreateMeal({ preview: true });
 
     const { openModal } = useModal();
     const navigate = useNavigate();
@@ -108,6 +108,10 @@ const CreateMealForm = () => {
                 <CustomTypography as="h2" variant="h1" className="text-center">
                     Create Meal
                 </CustomTypography>
+                <CustomTypography variant="xsmallCard" className="text-center" italic>
+                    (Fields marked with * are required.)
+                </CustomTypography>
+
             </CustomBox>
 
             {cameraError && (
@@ -118,14 +122,14 @@ const CreateMealForm = () => {
 
             {/* Name */}
             <CustomTextField
-                label="Meal Name"
+                className="mb-2"
+                label="Meal Name *"
                 name="name"
                 variant="outlined"
                 {...register("name")}
                 error={!!errors.name}
                 helperText={errors.name?.message}
             />
-
 
             {/* Ingredients */}
             <Controller
@@ -148,6 +152,12 @@ const CreateMealForm = () => {
                 )}
             />
 
+            {/* Image uploader */}
+            <MealImageUploader
+                errors={errors}
+                onImagesChange={(files, primaryIndex) => handleImagesChange(files, primaryIndex, setValue)}
+            />
+
             {/* Description */}
             <CustomTextField
                 label="Meal Description"
@@ -162,15 +172,8 @@ const CreateMealForm = () => {
                 maxLength={1000}
             />
 
-            <CustomTextField
-                label="Preparation Video URL"
-                name="preparationVideoUrl"
-                variant="outlined"
-                placeholder="Link to a preparation video (e.g. YouTube) (optional)"
-                {...register("preparationVideoUrl")}
-                error={!!errors.preparationVideoUrl}
-                helperText={errors.preparationVideoUrl?.message}
-            />
+            {/* Dropdowns (mealTypes, cuisines, diets, preparationTime) */}
+            <CreateMealDropdowns control={control} errors={errors} />
 
             <CustomTextField
                 label="Preparation (long text)"
@@ -185,14 +188,14 @@ const CreateMealForm = () => {
                 maxLength={2000}
             />
 
-            {/* Dropdowns (mealTypes, cuisines, diets, preparationTime) */}
-            <CreateMealDropdowns control={control} errors={errors} />
-
-            {/* Image uploader */}
-            <MealImageUploader
-                imageUrl={imageUrl}
-                onImageChange={(image, type) => handleImageChange(image, type, setValue)}
-                errors={errors}
+            <CustomTextField
+                label="Preparation Video URL"
+                name="preparationVideoUrl"
+                variant="outlined"
+                placeholder="Link to a preparation video (e.g. YouTube) (optional)"
+                {...register("preparationVideoUrl")}
+                error={!!errors.preparationVideoUrl}
+                helperText={errors.preparationVideoUrl?.message}
             />
 
             <CustomTextField

@@ -5,7 +5,7 @@ import CustomBox from "./CustomBox.jsx";
 import CustomTypography from "./CustomTypography.jsx";
 
 /**
- * Underlined number-like input with a fixed visual suffix (e.g., "g").
+ * Number-like input with a fixed visual suffix (e.g., "(g)").
  * - Keeps onChange(e) signature intact: e.target.value is CLEAN numeric string.
  * - Visual suffix is NOT part of the value.
  * - Prevents wheel changing while focused.
@@ -25,9 +25,10 @@ const CustomFloatingNumberInput = React.forwardRef(function CustomFloatingNumber
         max,
         step,
         disabled = false,
-        placeholder,      // optional override; defaults to label
-        suffix = "(g)",     // <- fixed visual suffix (e.g., "g" or "gram")
+        placeholder, // optional override; defaults to label
+        suffix = "(g)", // fixed visual suffix (e.g., "g" or "gram")
         showSuffix = true,
+        variant = "underline", // "underline" | "outlined"
         ...rest
     },
     ref
@@ -48,9 +49,7 @@ const CustomFloatingNumberInput = React.forwardRef(function CustomFloatingNumber
     // Sanitize to a decimal number string (allows one dot)
     const sanitize = (raw) => {
         if (raw == null) return "";
-        // Replace comma with dot, drop invalid chars
         let s = String(raw).replace(/,/g, ".").replace(/[^0-9.]/g, "");
-        // Keep only first dot
         const firstDot = s.indexOf(".");
         if (firstDot !== -1) {
             s = s.slice(0, firstDot + 1) + s.slice(firstDot + 1).replace(/\./g, "");
@@ -60,13 +59,51 @@ const CustomFloatingNumberInput = React.forwardRef(function CustomFloatingNumber
 
     const handleChange = (e) => {
         const clean = sanitize(e.target.value);
-        // Emit a minimal event-like object so parent can read target.value
         onChange({ target: { value: clean, name } });
     };
 
+    const baseFieldClasses = `
+        w-full
+        py-2 text-sm
+        bg-transparent
+        text-gray-900 dark:text-gray-100
+        focus:outline-none focus:ring-0
+        ${showSuffix ? "pr-8" : "pr-2"}
+        ${disabled ? "cursor-not-allowed opacity-70" : ""}
+    `;
+
+    const underlineClasses = `
+        border-0
+        border-b
+        ${error
+        ? "border-error focus:border-error"
+        : "border-gray-400 dark:border-gray-600 focus:border-primary dark:focus:border-primary"}
+        focus:border-b-2
+    `;
+
+    const outlinedClasses = `
+        border
+        rounded-md
+        px-3
+        ${error
+        ? "border-error focus:border-error"
+        : "border-gray-400 dark:border-gray-600 focus:border-primary dark:focus:border-primary"}
+        focus:ring-2 focus:ring-primary/20
+    `;
+
     return (
         <CustomBox className={`relative w-full mt-4 ${className}`}>
-            <CustomBox className="relative w-full">
+            <CustomBox className={`relative w-full ${variant === "outlined" ? "pt-2" : ""}`}>
+                {/* Floating label (matches CustomTextField) */}
+                <CustomTypography
+                    as="label"
+                    htmlFor={name}
+                    variant="xsmallCard"
+                    className="absolute -top-3 left-1 text-gray-600 dark:text-gray-400"
+                >
+                    {label}
+                </CustomTypography>
+
                 <input
                     id={name}
                     name={name}
@@ -75,10 +112,10 @@ const CustomFloatingNumberInput = React.forwardRef(function CustomFloatingNumber
                         if (typeof ref === "function") ref(node);
                         else if (ref) ref.current = node;
                     }}
-                    type="text"                 // keep style consistent
+                    type="text"
                     inputMode="decimal"
                     pattern="[0-9]*[.,]?[0-9]*"
-                    placeholder={placeholder ?? label}
+                    placeholder={variant === "outlined" ? undefined : label}
                     value={value ?? ""}
                     onChange={handleChange}
                     onBlur={onBlur}
@@ -87,34 +124,21 @@ const CustomFloatingNumberInput = React.forwardRef(function CustomFloatingNumber
                     data-max={max}
                     data-step={step}
                     {...rest}
-                    className={`
-            w-full
-            border-0
-            border-b
-            ${error
-                        ? "border-error focus:border-error"
-                        : "border-gray-400 dark:border-gray-600 focus:border-primary dark:focus:border-primary"}
-            focus:border-b-2
-            py-2 text-sm
-            bg-transparent
-            text-gray-900 dark:text-gray-100
-            focus:outline-none
-            focus:ring-0
-            ${showSuffix ? "pr-8" : "pr-2"}   // space for suffix
-            ${disabled ? "cursor-not-allowed opacity-70" : ""}
-          `}
+                    className={`${baseFieldClasses} ${
+                        variant === "outlined" ? outlinedClasses : underlineClasses
+                    }`}
                     aria-invalid={!!error}
                     aria-describedby={helperText ? `${name || label}-helper` : undefined}
                 />
 
                 {/* Visual suffix (not in value) */}
                 {showSuffix && (
-                    <span
-                        className="absolute right-0 top-1/2 -translate-y-1/2 text-xs text-gray-500 dark:text-gray-400 select-none pointer-events-none"
+                    <CustomBox
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-500 dark:text-gray-400 select-none pointer-events-none"
                         aria-hidden="true"
                     >
-            {suffix}
-          </span>
+                        {suffix}
+                    </CustomBox>
                 )}
             </CustomBox>
 
@@ -148,6 +172,7 @@ CustomFloatingNumberInput.propTypes = {
     placeholder: PropTypes.string,
     suffix: PropTypes.string,
     showSuffix: PropTypes.bool,
+    variant: PropTypes.oneOf(["underline", "outlined"]),
 };
 
 export default CustomFloatingNumberInput;

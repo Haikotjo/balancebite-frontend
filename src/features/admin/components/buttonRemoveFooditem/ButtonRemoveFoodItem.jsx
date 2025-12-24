@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Trash2 } from "lucide-react";
+import { X } from "lucide-react";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 
 /**
@@ -17,7 +17,7 @@ import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx
 const ButtonRemoveFoodItem = ({ value, index, onRemove }) => (
     <CustomIconButton
         // Trash icon styled with red color (error)
-        icon={<Trash2 size={20} className="text-error" />}
+        icon={<X size={20} className="text-error" />}
         // Calls the onRemove callback with the current index
         onClick={() => onRemove(index)}
         // Transparent background for visual integration
