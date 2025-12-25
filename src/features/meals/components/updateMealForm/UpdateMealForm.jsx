@@ -23,7 +23,6 @@ export default function UpdateMealForm() {
     const navigate = useNavigate();
     const { fetchUserMealsData } = useContext(UserMealsContext);
     const [successMessage, setSuccessMessage] = useState("");
-    const [formImageFile, setFormImageFile] = useState(null);
 
     const {
         register,
@@ -39,7 +38,7 @@ export default function UpdateMealForm() {
         defaultValues: {},
     });
 
-    const { loading, imageUrl, setImageUrl } = useMealFormData(mealId, reset);
+    const { loading } = useMealFormData(mealId, reset);
 
     // watch voor ingredienten
     const mealIngredients = watch("mealIngredients") || [];
@@ -51,24 +50,30 @@ export default function UpdateMealForm() {
         try {
             const mealDataToUpdate = {
                 ...data,
+
                 mealTypes: (data.mealTypes || []).map((t) => t.value || t),
                 cuisines: (data.cuisines || []).map((c) => c.value || c),
                 diets: (data.diets || []).map((d) => d.value || d),
+
+                // IMPORTANT: these are provided by MealImageUploader via setValue(...)
+                keepImageIds: data.keepImageIds ?? [],
+                replaceOrderIndexes: data.replaceOrderIndexes ?? [],
+                primaryIndex: data.primaryIndex ?? null,
             };
-            const formData = await buildMealFormData(
-                mealDataToUpdate,
-                null,
-                formImageFile,
-                imageUrl
-            );
+
+            const formData = await buildMealFormData(mealDataToUpdate);
+
             const responseData = await updateMealApi(mealId, formData);
             setSuccessMessage(`Meal updated: ${responseData.name}`);
+
             await refreshMealsList(fetchUserMealsData);
             setTimeout(() => navigate(`/meal/${responseData.id}`), 1500);
         } catch (err) {
             handleApiError(err);
         }
     };
+
+
 
     if (loading) {
         return (
@@ -138,26 +143,14 @@ export default function UpdateMealForm() {
             <CreateMealDropdowns control={control} errors={errors} />
 
             <MealImageUploader
-                imageUrl={imageUrl}
-                onImageChange={(image, type) => {
-                    if (type === "uploaded" || type === "captured") {
-                        setFormImageFile(image);
-                        setValue("imageFile", image);
-                        setValue("imageUrl", "");
-                    } else if (type === "url") {
-                        setFormImageFile(null);
-                        setImageUrl(image);
-                        setValue("imageFile", "");
-                        setValue("imageUrl", image);
-                    } else {
-                        setFormImageFile(null);
-                        setImageUrl("");
-                        setValue("imageFile", "");
-                        setValue("imageUrl", "");
-                    }
-                }}
                 errors={errors}
-                register={register}
+                initialImages={watch("images") || []}
+                onImagesChange={({ imageFiles, replaceOrderIndexes, keepImageIds, primaryIndex }) => {
+                    setValue("imageFiles", imageFiles);
+                    setValue("replaceOrderIndexes", replaceOrderIndexes);
+                    setValue("keepImageIds", keepImageIds);
+                    setValue("primaryIndex", primaryIndex);
+                }}
             />
 
             <CustomButton

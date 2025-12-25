@@ -8,7 +8,7 @@
 // - Camera option converts the captured data URL to a File (no base64 storage).
 
 import PropTypes from "prop-types";
-import { useMemo, useRef, useState } from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import { Camera as CameraIcon, ImagePlus, Link2, Upload, X, Star, Trash2 } from "lucide-react";
 
 import CustomBox from "../../../../../components/layout/CustomBox.jsx";
@@ -34,7 +34,9 @@ const urlToFile = async (url, filename = "url-image.jpg") => {
     return new File([blob], filename, { type: blob.type || "image/jpeg" });
 };
 
-const MealImageUploader = ({ errors, onImagesChange }) => {
+const MealImageUploader = ({ errors, onImagesChange, initialImages = [] }) => {
+
+
     // slots: { file: File|null, previewUrl: string|null }
     const [slots, setSlots] = useState(Array.from({ length: MAX_SLOTS }, () => ({ file: null, previewUrl: null })));
     const [primaryIndex, setPrimaryIndex] = useState(null);
@@ -58,17 +60,27 @@ const MealImageUploader = ({ errors, onImagesChange }) => {
         return primaryIndex;
     }, [filesArray.length, primaryIndex]);
 
-    const emitChange = (nextSlots, nextPrimaryIndex) => {
-        const nextFiles = nextSlots.map((s) => s.file).filter(Boolean);
+    const emitChange = (nextSlots, nextPrimarySlot) => {
+        const keepImageIds = nextSlots
+            .filter(s => !s.file && s.id)   // bestaande images
+            .map(s => s.id);
 
-        let p = nextPrimaryIndex ?? null;
-        if (nextFiles.length > 0 && p == null) p = 0;
-        if (p != null) {
-            if (p < 0) p = 0;
-            if (p >= nextFiles.length) p = nextFiles.length - 1;
-        }
+        const replaceOrderIndexes = nextSlots
+            .map((s, idx) => (s.file ? idx : null))
+            .filter(v => v !== null);
 
-        onImagesChange(nextFiles, p);
+        const imageFiles = replaceOrderIndexes.map(
+            idx => nextSlots[idx].file
+        );
+
+        const primary = nextPrimarySlot ?? null;
+
+        onImagesChange({
+            imageFiles,
+            replaceOrderIndexes,
+            keepImageIds,
+            primaryIndex: primary,
+        });
     };
 
     const openChooser = (index) => {
@@ -96,7 +108,7 @@ const MealImageUploader = ({ errors, onImagesChange }) => {
             }
 
             const previewUrl = file ? URL.createObjectURL(file) : null;
-            next[slotIndex] = { file, previewUrl };
+            next[slotIndex] = { ...next[slotIndex], file, previewUrl };
 
             // If we add the first file and primary isn't set, default to 0 at emit time
             emitChange(next, primaryIndex);
@@ -129,17 +141,11 @@ const MealImageUploader = ({ errors, onImagesChange }) => {
     };
 
     const setPrimaryBySlot = (slotIndex) => {
-        // PrimaryIndex is based on the order of filesArray, not slot index.
-        // We define primary as: "the first non-empty slot index ordering".
-        const fileSlots = slots
-            .map((s, i) => ({ ...s, slotIndex: i }))
-            .filter((s) => !!s.file);
+        const isFilled = !!slots[slotIndex]?.file || !!slots[slotIndex]?.previewUrl;
+        if (!isFilled) return;
 
-        const idxInFiles = fileSlots.findIndex((s) => s.slotIndex === slotIndex);
-        if (idxInFiles === -1) return;
-
-        setPrimaryIndex(idxInFiles);
-        onImagesChange(fileSlots.map((s) => s.file), idxInFiles);
+        setPrimaryIndex(slotIndex);
+        emitChange(slots, slotIndex);
     };
 
     const triggerUpload = () => {
@@ -183,24 +189,38 @@ const MealImageUploader = ({ errors, onImagesChange }) => {
         }
     };
 
-    const hasAny = slots.some((s) => !!s.file);
+    const hasAny = slots.some((s) => !!s.file || !!s.previewUrl);
+
+
+    useEffect(() => {
+        // initialImages: [{id, imageUrl, orderIndex, primary}]
+        const next = Array.from({ length: MAX_SLOTS }, () => ({ file: null, previewUrl: null, id: null }));
+
+        const sorted = [...(initialImages || [])].sort((a,b) => a.orderIndex - b.orderIndex);
+
+        sorted.slice(0, MAX_SLOTS).forEach((img, idx) => {
+            next[idx] = { file: null, previewUrl: img.imageUrl, id: img.id };
+        });
+
+        setSlots(next);
+
+        const p = sorted.find(i => i.primary)?.orderIndex ?? (sorted.length ? 0 : null);
+        setPrimaryIndex(p);
+
+        // IMPORTANT: existing images are not files, so emit empty files array but keep primary
+        emitChange(next, p);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [JSON.stringify(initialImages)]);
 
     return (
         <CustomBox className="flex flex-col gap-3 w-full my-8">
             {/* Slots grid */}
             <CustomBox className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full">
                 {slots.map((slot, i) => {
-                    const isFilled = !!slot.file;
-                    const isPrimary =
-                        isFilled &&
-                        (() => {
-                            // Determine if this slot corresponds to the current primaryIndex in filesArray ordering
-                            const fileSlots = slots
-                                .map((s, idx) => ({ file: s.file, slotIndex: idx }))
-                                .filter((x) => !!x.file);
-                            const idxInFiles = fileSlots.findIndex((x) => x.slotIndex === i);
-                            return idxInFiles !== -1 && idxInFiles === effectivePrimaryIndex;
-                        })();
+                    const isFilled = !!slot.file || !!slot.previewUrl;
+
+                    const isPrimary = isFilled && i === effectivePrimaryIndex;
+
 
                     return (
                         <CustomBox
@@ -282,7 +302,12 @@ const MealImageUploader = ({ errors, onImagesChange }) => {
                                 });
                                 const next = Array.from({ length: MAX_SLOTS }, () => ({ file: null, previewUrl: null }));
                                 setPrimaryIndex(null);
-                                onImagesChange([], null);
+                                onImagesChange({
+                                    imageFiles: [],
+                                    replaceOrderIndexes: [],
+                                    keepImageIds: [],
+                                    primaryIndex: null,
+                                });
                                 return next;
                             });
                         }}

@@ -3,6 +3,8 @@ import { fetchMealById } from "../services/apiService";
 
 export const useMealFormData = (mealId, reset) => {
     const [loading, setLoading] = useState(true);
+
+    // Legacy state (can stay, but no longer leading for multi-images)
     const [imageUrl, setImageUrl] = useState("");
 
     useEffect(() => {
@@ -11,32 +13,55 @@ export const useMealFormData = (mealId, reset) => {
                 const data = await fetchMealById(mealId);
                 console.log("Fetched meal data:", data);
 
-                const mappedIngredients = data.mealIngredients?.map(ing => ({
-                    foodItemId: String(ing.foodItemId),
-                    quantity: ing.quantity,
-                })) ?? [{ foodItemId: "", quantity: 0 }];
+                // Ingredients mapping for your form fields
+                const mappedIngredients =
+                    data.mealIngredients?.map((ing) => ({
+                        foodItemId: String(ing.foodItemId),
+                        quantity: ing.quantity,
+                    })) ?? [{ foodItemId: "", quantity: 0 }];
 
+                // ✅ Multi-image mapping (THIS is what your uploader needs)
+                const images = (data.images ?? [])
+                    .slice()
+                    .sort((a, b) => a.orderIndex - b.orderIndex);
+
+                const primaryIndex =
+                    images.find((i) => i.primary)?.orderIndex ??
+                    (images.length ? 0 : null);
+
+                // ✅ Reset form values INCLUDING images + primaryIndex
                 reset({
-                    name: data.name,
-                    mealDescription: data.mealDescription,
+                    name: data.name ?? "",
+                    mealDescription: data.mealDescription ?? "",
                     mealIngredients: mappedIngredients,
-                    mealTypes: data.mealTypes,
-                    cuisines: data.cuisines,
-                    diets: data.diets,
+
+                    mealTypes: data.mealTypes ?? [],
+                    cuisines: data.cuisines ?? [],
+                    diets: data.diets ?? [],
                     preparationTime: data.preparationTime || "",
+
+                    // 🔴 the missing fields
+                    images,
+                    primaryIndex,
+
+                    // optional fields if they exist in your schema
+                    videoUrl: data.videoUrl ?? "",
+                    sourceUrl: data.sourceUrl ?? "",
+                    preparationVideoUrl: data.preparationVideoUrl ?? "",
+                    mealPreparation: data.mealPreparation ?? "",
                 });
 
-                if (data.imageUrl) {
-                    setImageUrl(data.imageUrl);
-                }
-            } catch {
-                // Error wordt afgehandeld in handleApiError bij submit
+                // Legacy: set to first image url if you still show it somewhere
+                setImageUrl(images[0]?.imageUrl ?? "");
+            } catch (e) {
+                console.error("Failed to load meal for form:", e);
             } finally {
                 setLoading(false);
             }
         };
+
         loadMeal();
     }, [mealId, reset]);
 
     return { loading, imageUrl, setImageUrl };
-}
+};
