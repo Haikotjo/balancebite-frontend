@@ -14,6 +14,7 @@ import { useFormMessages } from "../../../../hooks/useFormMessages.jsx";
 import { getReadableApiError } from "../../../../utils/helpers/getReadableApiError.js";
 import MealImageUploader from "../../../meals/components/createMealForm/mealImageUploader/MealImageUploader.jsx";
 import CustomCheckbox from "../../../../components/layout/CustomCheckbox.jsx";
+import FoodItemImageUploader from "../../../fooditem/components/foodItemImageUploader/FoodItemImageUploader.jsx";
 
 const CreateFoodItemForm = () => {
     const {
@@ -167,11 +168,13 @@ const CreateFoodItemForm = () => {
                 placeholder="Package Grams e.g. 500"
             />
 
-            {/* Image: file OR url OR camera (base64). Hook ensures exclusivity and builds FormData */}
-            <MealImageUploader
+            <FoodItemImageUploader
                 errors={errors}
-                imageUrl={imageUrl}
-                onImageChange={(image, type) => handleImageChange(image, type, setValue)}
+                valueUrl={watch("imageUrl")}
+                onChange={({ imageFile, imageUrl }) => {
+                    setValue("imageFile", imageFile || "");
+                    setValue("imageUrl", imageUrl || "");
+                }}
             />
 
             <Controller

@@ -1,5 +1,6 @@
 import * as yup from "yup";
 import {transformToNumber} from "./transforms.js";
+import normalizeUrl from "../../features/meals/utils/helpers/normalizeUrl.js";
 
 // Validation schema for Create Meal Form
 export const mealSchema  = yup.object().shape({
@@ -37,9 +38,24 @@ export const mealSchema  = yup.object().shape({
         .string()
         .url("Invalid URL format.")
         .max(2048, "The image URL must not exceed 500 characters."),
-    videoUrl: yup.string().url("Must be a valid URL").max(2048).nullable().optional(),
-    sourceUrl: yup.string().url("Must be a valid URL").max(2048).nullable().optional(),
-    preparationVideoUrl: yup.string().url().max(2048).nullable().optional(),
+    videoUrl: yup
+        .string()
+        .transform(v => normalizeUrl(v))
+        .nullable()
+        .url("Must be a valid URL"),
+
+    sourceUrl: yup
+        .string()
+        .transform(v => normalizeUrl(v))
+        .nullable()
+        .url("Must be a valid URL"),
+
+    preparationVideoUrl: yup
+        .string()
+        .transform(v => normalizeUrl(v))
+        .nullable()
+        .url("Must be a valid URL"),
+
     mealPreparation: yup.string().max(20000).nullable().optional(),
 
 });

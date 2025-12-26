@@ -1,3 +1,5 @@
+import normalizeUrl from "./normalizeUrl.js";
+
 export const buildMealFormData = async (data) => {
     const formData = new FormData();
 
@@ -19,9 +21,9 @@ export const buildMealFormData = async (data) => {
         diets: data.diets || null,
         preparationTime: data.preparationTime || null,
 
-        videoUrl: data.videoUrl?.trim() || null,
-        sourceUrl: data.sourceUrl?.trim() || null,
-        preparationVideoUrl: data.preparationVideoUrl?.trim() || null,
+        videoUrl: normalizeUrl(data.videoUrl),
+        sourceUrl: normalizeUrl(data.sourceUrl),
+        preparationVideoUrl: normalizeUrl(data.preparationVideoUrl),
         mealPreparation: data.mealPreparation || null,
     };
 

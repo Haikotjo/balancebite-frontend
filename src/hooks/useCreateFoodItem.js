@@ -49,7 +49,11 @@ export const useCreateFoodItem = (reset) => {
             : "";
         const fullName = `${data.name}${formattedFoodSource}`;
 
+        const urlToSend = data.imageUrl?.trim() ? data.imageUrl.trim() : null;
+        const fileToSend = data.imageFile instanceof File ? data.imageFile : null;
+
         // JSON payload (exact 1 imagebron: URL óf file)
+
         const dto = {
             name: fullName,
             gramWeight: data.gramWeight ? parseFloat(data.gramWeight) : null,
@@ -60,8 +64,8 @@ export const useCreateFoodItem = (reset) => {
             storeBrand: !!data.storeBrand,
             price: data.price ? parseFloat(data.price) : null,
             grams: data.grams ? parseFloat(data.grams) : null,
-            imageUrl: imageUrl || null, // wordt op nul gezet als we een file meesturen
-            image: null,                // geen base64 opslaan als we file uploaden
+            imageUrl: fileToSend ? null : urlToSend,
+            image: null,
             nutrients: [
                 { nutrientName: "Energy", value: data.calories ? parseFloat(data.calories) : null, unitName: "kcal", nutrientId: 1008 },
                 { nutrientName: "Protein", value: data.protein ? parseFloat(data.protein) : null, unitName: "g", nutrientId: 1003 },
@@ -73,22 +77,7 @@ export const useCreateFoodItem = (reset) => {
             ],
         };
 
-        // Bepaal fileToSend (upload File, upload base64, of camera base64)
-        let fileToSend = null;
-        if (uploadedImage instanceof File) {
-            fileToSend = uploadedImage;
-        } else if (typeof uploadedImage === "string" && uploadedImage.startsWith("data:")) {
-            fileToSend = dataUrlToFile(uploadedImage, "upload.jpg");
-        } else if (typeof capturedImage === "string" && capturedImage.startsWith("data:")) {
-            fileToSend = dataUrlToFile(capturedImage, "camera.jpg");
-        }
 
-        if (fileToSend) {
-            dto.imageUrl = null; // file heeft voorrang
-            dto.image = null;
-        }
-
-        // FormData bouwen (exact dezelfde keys als meals, maar JSON key is foodItemInputDTO)
         const fd = new FormData();
         fd.append("foodItemInputDTO", new Blob([JSON.stringify(dto)], { type: "application/json" }));
         if (fileToSend) fd.append("imageFile", fileToSend);
