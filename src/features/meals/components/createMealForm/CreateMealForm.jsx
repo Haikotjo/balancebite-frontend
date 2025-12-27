@@ -155,8 +155,20 @@ const CreateMealForm = () => {
             {/* Image uploader */}
             <MealImageUploader
                 errors={errors}
-                onImagesChange={(files, primaryIndex) => handleImagesChange(files, primaryIndex, setValue)}
+                onImagesChange={(payloadOrFiles, maybePrimaryIndex) => {
+                    // Supports BOTH:
+                    // 1) onImagesChange(filesArray, primaryIndex)
+                    // 2) onImagesChange({ imageFiles, primaryIndex, ... })
+                    if (Array.isArray(payloadOrFiles)) {
+                        handleImagesChange(payloadOrFiles, maybePrimaryIndex ?? null, setValue);
+                        return;
+                    }
+
+                    const payload = payloadOrFiles || {};
+                    handleImagesChange(payload.imageFiles || [], payload.primaryIndex ?? null, setValue);
+                }}
             />
+
 
             {/* Description */}
             <CustomTextField

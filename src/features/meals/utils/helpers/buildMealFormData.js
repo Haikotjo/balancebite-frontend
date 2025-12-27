@@ -11,7 +11,6 @@ export const buildMealFormData = async (data) => {
             quantity: parseFloat(ingredient.quantity),
         })),
 
-        // 🔴 NODIG VOOR UPDATE
         keepImageIds: data.keepImageIds ?? [],
         replaceOrderIndexes: data.replaceOrderIndexes ?? [],
         primaryIndex: data.primaryIndex ?? null,

@@ -50,7 +50,7 @@ const FoodItemImageUploader = ({ errors, valueUrl = "", onChange }) => {
 
     const clearAll = () => {
         if (previewUrl?.startsWith("blob:")) {
-            try { URL.revokeObjectURL(previewUrl); } catch (e) { /* ignore */ }
+            URL.revokeObjectURL(previewUrl);
         }
         setPreviewUrl(null);
         setUrlValue("");

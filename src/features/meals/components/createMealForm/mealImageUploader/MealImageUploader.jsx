@@ -8,7 +8,7 @@
 // - Camera option converts the captured data URL to a File (no base64 storage).
 
 import PropTypes from "prop-types";
-import {useEffect, useMemo, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import { Camera as CameraIcon, ImagePlus, Link2, Upload, X, Star, Trash2 } from "lucide-react";
 
 import CustomBox from "../../../../../components/layout/CustomBox.jsx";
@@ -18,28 +18,14 @@ import CustomButton from "../../../../../components/layout/CustomButton.jsx";
 import CustomTextField from "../../../../../components/layout/CustomTextField.jsx";
 
 import Camera from "../../camera/Camera.jsx";
-
-const MAX_SLOTS = 4;
-
-const dataUrlToFile = async (dataUrl, filename = "captured-image.jpg") => {
-    const res = await fetch(dataUrl);
-    const blob = await res.blob();
-    return new File([blob], filename, { type: blob.type || "image/jpeg" });
-};
-
-const urlToFile = async (url, filename = "url-image.jpg") => {
-    const res = await fetch(url, { mode: "cors" });
-    if (!res.ok) throw new Error(`Failed to fetch image (${res.status})`);
-    const blob = await res.blob();
-    return new File([blob], filename, { type: blob.type || "image/jpeg" });
-};
+import {
+    dataUrlToFile,
+    MAX_SLOTS,
+    urlToFile
+} from "../../../utils/helpers/mealImageHelpers.js";
+import {useMealImageSlots} from "../../../utils/hooks/useMealImageSlots.js";
 
 const MealImageUploader = ({ errors, onImagesChange, initialImages = [] }) => {
-
-
-    // slots: { file: File|null, previewUrl: string|null }
-    const [slots, setSlots] = useState(Array.from({ length: MAX_SLOTS }, () => ({ file: null, previewUrl: null })));
-    const [primaryIndex, setPrimaryIndex] = useState(null);
 
     // chooser modal state
     const [chooserOpen, setChooserOpen] = useState(false);
@@ -52,36 +38,18 @@ const MealImageUploader = ({ errors, onImagesChange, initialImages = [] }) => {
     // file input ref for uploads
     const fileInputRef = useRef(null);
 
-    const filesArray = useMemo(() => slots.map((s) => s.file).filter(Boolean), [slots]);
+    const {
+        slots,
+        setSlots,
+        setPrimaryIndex,
+        effectivePrimaryIndex,
+        setSlotFile,
+        clearSlot,
+        setPrimaryBySlot,
+        emitChange,
+    } = useMealImageSlots({ maxSlots: MAX_SLOTS, onImagesChange });
 
-    const effectivePrimaryIndex = useMemo(() => {
-        // If user never selected a primary but there is at least one image, default to first image.
-        if (filesArray.length > 0 && primaryIndex == null) return 0;
-        return primaryIndex;
-    }, [filesArray.length, primaryIndex]);
 
-    const emitChange = (nextSlots, nextPrimarySlot) => {
-        const keepImageIds = nextSlots
-            .filter(s => !s.file && s.id)   // bestaande images
-            .map(s => s.id);
-
-        const replaceOrderIndexes = nextSlots
-            .map((s, idx) => (s.file ? idx : null))
-            .filter(v => v !== null);
-
-        const imageFiles = replaceOrderIndexes.map(
-            idx => nextSlots[idx].file
-        );
-
-        const primary = nextPrimarySlot ?? null;
-
-        onImagesChange({
-            imageFiles,
-            replaceOrderIndexes,
-            keepImageIds,
-            primaryIndex: primary,
-        });
-    };
 
     const openChooser = (index) => {
         setActiveSlotIndex(index);
@@ -95,57 +63,6 @@ const MealImageUploader = ({ errors, onImagesChange, initialImages = [] }) => {
         setActiveSlotIndex(null);
         setUrlValue("");
         setUrlError("");
-    };
-
-    const setSlotFile = (slotIndex, file) => {
-        setSlots((prev) => {
-            const next = [...prev];
-
-            // Clean up old preview URL if needed
-            const oldPreview = next[slotIndex]?.previewUrl;
-            if (oldPreview && oldPreview.startsWith("blob:")) {
-                try { URL.revokeObjectURL(oldPreview); } catch (e) { /* ignore */ }
-            }
-
-            const previewUrl = file ? URL.createObjectURL(file) : null;
-            next[slotIndex] = { ...next[slotIndex], file, previewUrl };
-
-            // If we add the first file and primary isn't set, default to 0 at emit time
-            emitChange(next, primaryIndex);
-
-            return next;
-        });
-    };
-
-    const clearSlot = (slotIndex) => {
-        setSlots((prev) => {
-            const next = [...prev];
-
-            const oldPreview = next[slotIndex]?.previewUrl;
-            if (oldPreview && oldPreview.startsWith("blob:")) {
-                try { URL.revokeObjectURL(oldPreview); } catch (e) { /* ignore */ }
-            }
-
-            next[slotIndex] = { file: null, previewUrl: null };
-
-            // If the cleared slot was primary, reset primaryIndex
-            let nextPrimary = primaryIndex;
-            const nextFiles = next.map((s) => s.file).filter(Boolean);
-            if (nextFiles.length === 0) nextPrimary = null;
-
-            // If primary was explicitly set, keep it but clamp via emitChange
-            emitChange(next, nextPrimary);
-
-            return next;
-        });
-    };
-
-    const setPrimaryBySlot = (slotIndex) => {
-        const isFilled = !!slots[slotIndex]?.file || !!slots[slotIndex]?.previewUrl;
-        if (!isFilled) return;
-
-        setPrimaryIndex(slotIndex);
-        emitChange(slots, slotIndex);
     };
 
     const triggerUpload = () => {
@@ -166,7 +83,7 @@ const MealImageUploader = ({ errors, onImagesChange, initialImages = [] }) => {
             const file = await dataUrlToFile(dataUrl, `captured-${Date.now()}.jpg`);
             setSlotFile(activeSlotIndex, file);
             closeChooser();
-        } catch (e) {
+        } catch {
             setUrlError("Failed to process captured image.");
         }
     };
@@ -183,14 +100,12 @@ const MealImageUploader = ({ errors, onImagesChange, initialImages = [] }) => {
             const file = await urlToFile(url, `url-${Date.now()}.jpg`);
             setSlotFile(activeSlotIndex, file);
             closeChooser();
-        } catch (e) {
-            // CORS is common here; keep the error simple.
+        } catch {
             setUrlError("Could not download this URL (often CORS). Upload the file instead.");
         }
     };
 
     const hasAny = slots.some((s) => !!s.file || !!s.previewUrl);
-
 
     useEffect(() => {
         // initialImages: [{id, imageUrl, orderIndex, primary}]
@@ -293,14 +208,22 @@ const MealImageUploader = ({ errors, onImagesChange, initialImages = [] }) => {
                     <CustomIconButton
                         icon={<X size={20} className="text-error" />}
                         onClick={() => {
-                            // Clear all slots
                             setSlots((prev) => {
                                 prev.forEach((s) => {
                                     if (s.previewUrl && s.previewUrl.startsWith("blob:")) {
-                                        try { URL.revokeObjectURL(s.previewUrl); } catch (e) { /* ignore */ }
+                                        try {
+                                            URL.revokeObjectURL(s.previewUrl);
+                                        } catch {
+                                            // ignore
+                                        }
                                     }
                                 });
-                                const next = Array.from({ length: MAX_SLOTS }, () => ({ file: null, previewUrl: null }));
+
+                                const next = Array.from(
+                                    { length: MAX_SLOTS },
+                                    () => ({ file: null, previewUrl: null })
+                                );
+
                                 setPrimaryIndex(null);
                                 onImagesChange({
                                     imageFiles: [],
@@ -308,12 +231,14 @@ const MealImageUploader = ({ errors, onImagesChange, initialImages = [] }) => {
                                     keepImageIds: [],
                                     primaryIndex: null,
                                 });
+
                                 return next;
                             });
                         }}
                         bgColor="bg-transparent"
                         ariaLabel="Clear all images"
                     />
+
                 </CustomBox>
             )}
 
@@ -428,8 +353,16 @@ const MealImageUploader = ({ errors, onImagesChange, initialImages = [] }) => {
 
 MealImageUploader.propTypes = {
     errors: PropTypes.object,
-    // onImagesChange(filesArray, primaryIndex)
     onImagesChange: PropTypes.func.isRequired,
+    initialImages: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.number,
+            imageUrl: PropTypes.string,
+            orderIndex: PropTypes.number,
+            primary: PropTypes.bool,
+        })
+    ),
 };
+
 
 export default MealImageUploader;

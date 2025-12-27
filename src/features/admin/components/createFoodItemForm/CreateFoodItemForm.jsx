@@ -12,7 +12,6 @@ import CustomTypography from "../../../../components/layout/CustomTypography.jsx
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import { useFormMessages } from "../../../../hooks/useFormMessages.jsx";
 import { getReadableApiError } from "../../../../utils/helpers/getReadableApiError.js";
-import MealImageUploader from "../../../meals/components/createMealForm/mealImageUploader/MealImageUploader.jsx";
 import CustomCheckbox from "../../../../components/layout/CustomCheckbox.jsx";
 import FoodItemImageUploader from "../../../fooditem/components/foodItemImageUploader/FoodItemImageUploader.jsx";
 
@@ -51,8 +50,6 @@ const CreateFoodItemForm = () => {
         onSubmit: createFoodItem,
         foodSourceOptions,
         foodCategoryOptions,
-        handleImageChange,
-        imageUrl,
     } = useCreateFoodItem(reset);
 
     // Submit handler
@@ -143,8 +140,6 @@ const CreateFoodItemForm = () => {
                 onChange={(val) => setValue("foodCategory", val?.value || "")}
                 placeholder="Select food category"
             />
-
-            {/* NEW fields: brand / price / grams */}
 
             <CustomTextField
                 label="Price (€)"
