@@ -53,6 +53,7 @@ import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 import { AuthContext } from "../../../../context/AuthContext.jsx";
 import MealShareForm from "../mealshareform/MealShareForm.jsx";
 import FoodItemCard from "../../../fooditem/components/foodItemCard/FoodItemCard.jsx";
+import MealCardMediaSection from "../MealCardMediaSection/MealCardMediaSection.jsx";
 
 const useAuth = () => useContext(AuthContext);
 
@@ -258,6 +259,9 @@ const MealCard = ({ meal, viewMode="page", onClose, isPinned=false, disableActio
                     </CustomBox>
                 </CustomBox>
             </CustomBox>
+
+            <MealCardMediaSection meal={meal} />
+
             {ingredientFoodItems.length > 0 && (
                 <CustomBox className="max-w-6xl w-full p-4">
                     <CustomDivider className="my-6" />
