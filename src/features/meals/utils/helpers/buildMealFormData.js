@@ -14,6 +14,7 @@ export const buildMealFormData = async (data) => {
         keepImageIds: data.keepImageIds ?? [],
         replaceOrderIndexes: data.replaceOrderIndexes ?? [],
         primaryIndex: data.primaryIndex ?? null,
+        primaryImageId: data.primaryImageId ?? null,
 
         mealTypes: data.mealTypes || null,
         cuisines: data.cuisines || null,

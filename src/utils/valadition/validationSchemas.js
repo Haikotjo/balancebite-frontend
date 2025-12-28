@@ -58,6 +58,10 @@ export const mealSchema  = yup.object().shape({
 
     mealPreparation: yup.string().max(20000).nullable().optional(),
 
+    primaryIndex: yup.number().nullable().optional(),
+    keepImageIds: yup.array().of(yup.number()).nullable().optional(),
+    replaceOrderIndexes: yup.array().of(yup.number()).nullable().optional(),
+    imageFiles: yup.array().nullable().optional(),
 });
 
 export const foodItemSchema = yup.object().shape({

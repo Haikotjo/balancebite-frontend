@@ -145,13 +145,15 @@ export default function UpdateMealForm() {
             <MealImageUploader
                 errors={errors}
                 initialImages={watch("images") || []}
-                onImagesChange={({ imageFiles, replaceOrderIndexes, keepImageIds, primaryIndex }) => {
+                onImagesChange={({ imageFiles, replaceOrderIndexes, keepImageIds, primaryIndex, primaryImageId }) => {
                     setValue("imageFiles", imageFiles);
                     setValue("replaceOrderIndexes", replaceOrderIndexes);
                     setValue("keepImageIds", keepImageIds);
                     setValue("primaryIndex", primaryIndex);
+                    setValue("primaryImageId", primaryImageId);
                 }}
             />
+
 
             <CustomButton
                 type="submit"
