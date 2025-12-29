@@ -131,34 +131,8 @@ const MealCardMediaSection = ({ meal }) => {
 
     return (
         <CustomBox className="max-w-6xl w-full p-4">
-            <CustomBox className="bg-cardLight dark:bg-cardDark rounded-xl border border-border shadow-sm p-4">
-                <CustomTypography variant="h3" bold className="mb-4">
-                    Media & voorbereiding
-                </CustomTypography>
 
-                {/* Extra images (excluding primary) */}
-                {extraImages.length > 0 && (
-                    <CustomBox className="mb-6">
-                        <CustomTypography bold className="mb-2">
-                            Extra afbeeldingen
-                        </CustomTypography>
 
-                        <CustomBox className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
-                            {extraImages.map((url, idx) => (
-                                <CustomBox
-                                    key={`${url}-${idx}`}
-                                    className="rounded-xl overflow-hidden border border-border"
-                                >
-                                    <CustomImage
-                                        src={url}
-                                        alt={`Meal image ${idx + 1}`}
-                                        className="w-full h-24 object-cover"
-                                    />
-                                </CustomBox>
-                            ))}
-                        </CustomBox>
-                    </CustomBox>
-                )}
 
                 {(meal?.preparationVideoUrl || meal?.videoUrl) && <CustomDivider className="my-6" />}
 
@@ -201,7 +175,7 @@ const MealCardMediaSection = ({ meal }) => {
                         </CustomBox>
                     </>
                 )}
-            </CustomBox>
+
         </CustomBox>
     );
 

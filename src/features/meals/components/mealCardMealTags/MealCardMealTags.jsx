@@ -1,6 +1,6 @@
 // MealCardMealTags.jsx
 import PropTypes from "prop-types";
-import {useContext} from "react";
+import {useContext, useMemo} from "react";
 import {buildMealTags} from "../../utils/helpers/buildMealTags.js";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import clsx from "clsx";
@@ -26,11 +26,12 @@ const MealCardMealTags = ({
     };
 
     // Always request full list
-    const { shuffledTags } = buildMealTags({
-        cuisines,
-        diets,
-        mealTypes,
-    });
+
+    const { shuffledTags } = useMemo(
+        () => buildMealTags({ cuisines, diets, mealTypes }),
+        [cuisines, diets, mealTypes]
+    );
+
 
     const colorClasses = {
         primary: "border-primary hover:bg-primary/10 ",

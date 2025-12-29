@@ -54,7 +54,7 @@ const MealCardCompact = ({ meal, hideOpenButton = false }) => {
                 className="absolute bottom-0 left-0 w-full bg-[rgba(0,0,0,0.5)] p-1 z-20"
                 onClick={(e) => e.stopPropagation()}
             >
-                <CustomTypography variant="small" className="text-darkText truncate text-left pl-1">
+                <CustomTypography variant="paragraphCard" color="text-darkText" className=" truncate text-left pl-1">
                     {meal.name}
                 </CustomTypography>
             </CustomBox>

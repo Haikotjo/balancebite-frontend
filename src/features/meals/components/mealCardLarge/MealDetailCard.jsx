@@ -101,11 +101,10 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
 
             </CustomBox>
 
-            {/* Right column: details */}
             <CustomBox className="p-4 flex-1">
-                <CustomBox className="mb-2">
+
                     {/* Title + price row */}
-                    <CustomBox className="flex items-start justify-between gap-3">
+                    <CustomBox className="flex items-start justify-between gap-3 ">
                         <CustomBox className="flex items-center gap-2">
                             <ExpandableTitle
                                 title={mealToRender.name}
@@ -125,12 +124,9 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
                             </CustomLink>
                         </CustomBox>
 
-
                     </CustomBox>
 
-                </CustomBox>
-
-                <CustomDivider className="mb-2" />
+                <CustomDivider className="my-4" />
 
                 {/* Description */}
                 <MealCardExpandableDescription
@@ -139,39 +135,22 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
                     forceExpanded={isListItem && showMoreInfo}
                 />
 
-
                 {/*{canShare && <MealShareForm mealId={mealToRender.id} />}*/}
-
 
                 {isListItem && (
                     <>
-                        {/* Toggle */}
-                        <CustomBox className={`mt-4 ${showMoreInfo ? "mb-4" : "mb-0"} w-full flex justify-center`}>
-                            <CustomIconButton
-                                icon={showMoreInfo ? <ChevronUp className="text-primary" /> : <ChevronDown className="text-primary" />}
-                                onClick={() => setShowMoreInfo(v => !v)}
-                                size={28}
-                                bgColor="bg-transparent hover:bg-primary/10"
-                                className="border border-primary/60 hover:border-primary text-primary rounded-xl focus:outline-none"
-                                disableScale
-                            />
-
-                        </CustomBox>
-
-                        {/* Verborgen content pas tonen bij expand */}
                         {showMoreInfo && (
                             <>
-
-                                <MealCardMealTags
-                                    cuisines={mealToRender.cuisines}
-                                    diets={mealToRender.diets}
-                                    mealTypes={mealToRender.mealTypes}
-                                    onFilter={handleFilterRedirect}
-                                    viewMode={viewMode}
-                                    size="small"
-                                />
-
-                                <CustomDivider className="my-4" />
+                                <CustomBox className="my-6">
+                                    <MealCardMealTags
+                                        cuisines={mealToRender.cuisines}
+                                        diets={mealToRender.diets}
+                                        mealTypes={mealToRender.mealTypes}
+                                        onFilter={handleFilterRedirect}
+                                        viewMode={viewMode}
+                                        size="small"
+                                    />
+                                </CustomBox>
 
                                 {ingredientThumbs.length > 0 && (
                                     <HorizontalScrollSection
@@ -188,8 +167,21 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
                                         )}
                                     />
                                 )}
+
                             </>
                         )}
+                        {/* Toggle */}
+                        <CustomBox className={`mt-2 ${showMoreInfo ? "mb-2" : "mb-0"} w-full flex justify-center`}>
+                            <CustomIconButton
+                                icon={showMoreInfo ? <ChevronUp className="text-primary" /> : <ChevronDown className="text-primary" />}
+                                onClick={() => setShowMoreInfo(v => !v)}
+                                size={28}
+                                bgColor="bg-transparent hover:bg-primary/10"
+                                className="border border-primary/60 hover:border-primary text-primary rounded-xl focus:outline-none"
+                                disableScale
+                            />
+
+                        </CustomBox>
                     </>
                 )}
 

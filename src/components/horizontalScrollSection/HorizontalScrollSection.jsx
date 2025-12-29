@@ -47,7 +47,6 @@ const HorizontalScrollSection = ({
         return () => window.removeEventListener("resize", checkScroll);
     }, [items]);
 
-    // Optionele auto-scroll (zoals ImageScrollSection)
     useEffect(() => {
         if (!autoScroll) return;
 
@@ -133,24 +132,33 @@ const HorizontalScrollSection = ({
                 </CustomBox>
 
                 {canScroll && (
-                    <CustomIconButton
-                        onClick={() => scroll("left")}
-                        icon={<ChevronLeft size={20} className="text-white" />}
-                        size={36}
-                        className="absolute left-2 top-[50%] translate-y-[-50%] z-10"
-                        useMotion={false}
-                    />
+                    <CustomBox className="absolute left-2 top-1/2 -translate-y-1/2 z-10">
+                        <CustomIconButton
+                            icon={<ChevronLeft />}
+                            onClick={() => scroll("left")}
+                            bgColor="bg-[rgba(0,0,0,0.5)]"
+                            sizeClassName="w-6 h-6 sm:w-7 sm:h-7 lg:w-9 lg:h-9"
+                            iconSize={18}
+                            className="text-white"
+                            useMotion
+                        />
+                    </CustomBox>
                 )}
 
                 {canScroll && (
-                    <CustomIconButton
-                        onClick={() => scroll("right")}
-                        icon={<ChevronRight size={20} className="text-white" />}
-                        size={36}
-                        className="absolute right-2 top-[50%] translate-y-[-50%] z-10"
-                        useMotion={false}
-                    />
+                    <CustomBox className="absolute right-2 top-1/2 -translate-y-1/2 z-10">
+                        <CustomIconButton
+                            icon={<ChevronRight />}
+                            onClick={() => scroll("right")}
+                            bgColor="bg-[rgba(0,0,0,0.5)]"
+                            sizeClassName="w-6 h-6 sm:w-7 sm:h-7 lg:w-9 lg:h-9"
+                            iconSize={18}
+                            className="text-white"
+                            useMotion
+                        />
+                    </CustomBox>
                 )}
+
             </CustomBox>
         </CustomBox>
     );

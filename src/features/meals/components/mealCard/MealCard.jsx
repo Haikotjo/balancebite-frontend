@@ -31,7 +31,7 @@
  */
 
 import PropTypes from "prop-types";
-import {useContext, useMemo} from "react";
+import {useContext, useEffect, useMemo, useState} from "react";
 import { useNavigate } from "react-router-dom";
 
 import MealCardIngredients from "../mealCardIngredients/MealCardIngredients.jsx";
@@ -43,10 +43,8 @@ import MealCardMealTags from "../mealCardMealTags/MealCardMealTags.jsx";
 
 import { calculateMacrosPer100g } from "../../utils/helpers/calculateMacrosPer100g.js";
 import { buildMacrosObject } from "../../utils/helpers/buildMacrosObject.js";
-import { getImageSrc } from "../../utils/helpers/getImageSrc.js";
 
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
-import CustomImage from "../../../../components/layout/CustomImage.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 
@@ -54,6 +52,10 @@ import { AuthContext } from "../../../../context/AuthContext.jsx";
 import MealShareForm from "../mealshareform/MealShareForm.jsx";
 import FoodItemCard from "../../../fooditem/components/foodItemCard/FoodItemCard.jsx";
 import MealCardMediaSection from "../MealCardMediaSection/MealCardMediaSection.jsx";
+import MealImageCarousel from "../mealImageCarousel/MealImageCarousel.jsx";
+import CustomImage from "../../../../components/layout/CustomImage.jsx";
+import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
+import CustomLink from "../../../../components/layout/CustomLink.jsx";
 
 const useAuth = () => useContext(AuthContext);
 
@@ -63,7 +65,6 @@ const useAuth = () => useContext(AuthContext);
 const MealCard = ({ meal, viewMode="page", onClose, isPinned=false, disableActions=false, cardRef, actionsAnchorRef }) => {
 
     // Derive image and navigation
-    const imageSrc = getImageSrc(meal);
     const navigate = useNavigate();
 
     // Current user / role checks
@@ -117,10 +118,47 @@ const MealCard = ({ meal, viewMode="page", onClose, isPinned=false, disableActio
         return Array.from(uniqueById.values());
     }, [meal?.mealIngredients]);
 
+    const images = useMemo(() => {
+        const arr = Array.isArray(meal?.images) ? meal.images : [];
+        if (arr.length > 0) {
+            return [...arr]
+                .sort((a, b) => (a?.orderIndex ?? 0) - (b?.orderIndex ?? 0))
+                .map((img) => img?.imageUrl?.trim())
+                .filter(Boolean);
+        }
+        const urls = Array.isArray(meal?.imageUrls) ? meal.imageUrls : [];
+        return urls.map((u) => (u ?? "").trim()).filter(Boolean);
+    }, [meal?.images, meal?.imageUrls]);
+
+    const primaryIndex = useMemo(() => {
+        const arr = Array.isArray(meal?.images) ? meal.images : [];
+        if (arr.length === 0) return 0;
+
+        const sorted = [...arr].sort((a, b) => (a?.orderIndex ?? 0) - (b?.orderIndex ?? 0));
+        const idx = sorted.findIndex((img) => img?.primary && img?.imageUrl?.trim());
+        return idx >= 0 ? idx : 0;
+    }, [meal?.images]);
+
+    const [activeImageIndex, setActiveImageIndex] = useState(primaryIndex);
+
+    useEffect(() => {
+        setActiveImageIndex(primaryIndex);
+    }, [primaryIndex, meal?.id, images.length]);
+
+
     const priceLabel =
         typeof meal.mealPrice === "number"
             ? `€ ${meal.mealPrice.toFixed(2)}`
             : null;
+
+    const toSafeLinkText = (url) => {
+        try {
+            const u = new URL(url);
+            return u.hostname.replace(/^www\./, "");
+        } catch {
+            return url;
+        }
+    };
 
     return (
         <CustomBox ref={cardRef} className="w-full flex flex-col items-center">
@@ -134,7 +172,14 @@ const MealCard = ({ meal, viewMode="page", onClose, isPinned=false, disableActio
                 {/* Left: Image section with top/bottom overlays */}
                 <CustomBox className="h-48 lg:h-auto lg:w-[50%] flex-none relative">
                     {/* Meal image */}
-                    <CustomImage src={imageSrc} alt={meal.name} className="w-full h-full object-cover" />
+                    <MealImageCarousel
+                        meal={meal}
+                        alt={meal.name}
+                        className="w-full h-full"
+                        activeIndex={activeImageIndex}
+                        onChangeIndex={setActiveImageIndex}
+                        disableActions={disableActions}
+                    />
 
                     {/* Top overlay: timer + action buttons */}
                     <CustomBox
@@ -185,6 +230,41 @@ const MealCard = ({ meal, viewMode="page", onClose, isPinned=false, disableActio
                 </CustomBox>
 
                 {/* Right: Content section */}
+                {/* Mobile/Tablet thumbnails above the name (hidden on lg+) */}
+                {images.length > 1 && (
+                    <CustomBox
+                        className={`flex lg:hidden justify-between gap-4 overflow-x-auto m-2 mt-4 ${
+                            disableActions ? "pointer-events-none opacity-60" : ""
+                        }`}
+                    >
+                    {images.map((url, idx) => {
+                            const isActive = idx === activeImageIndex;
+
+                            return (
+                                <CustomIconButton
+                                    key={`${url}-${idx}`}
+                                    icon={
+                                        <CustomImage
+                                            src={url}
+                                            alt=""
+                                            className={[
+                                                "w-16 h-12 object-cover rounded-lg",
+                                                isActive ? "opacity-100" : "opacity-70 hover:opacity-100",
+                                            ].join(" ")}
+                                        />
+                                    }
+                                    onClick={() => setActiveImageIndex(idx)}
+                                    bgColor="bg-transparent"
+                                    sizeClassName="w-16 h-12"
+                                    disableScale
+                                    useMotion={false}
+                                    className={isActive ? "ring-2 ring-primary" : "ring-1 ring-border"}
+                                />
+                            );
+                        })}
+                    </CustomBox>
+                )}
+
                 <CustomBox className="p-4 flex flex-col justify-between leading-normal">
                     <CustomBox className="mb-4">
                         <CustomTypography className="text-4xl font-bold text-primary mb-2">
@@ -255,7 +335,20 @@ const MealCard = ({ meal, viewMode="page", onClose, isPinned=false, disableActio
                                 }
                                 forceExpand
                             />
+
                         </CustomBox>
+                        {meal?.sourceUrl && (
+                            <>
+                                <CustomLink
+                                    href={meal.sourceUrl}
+                                    title={meal.sourceUrl}
+                                    truncate
+                                >
+                                    {toSafeLinkText(meal.sourceUrl)}
+                                </CustomLink>
+
+                            </>
+                        )}
                     </CustomBox>
                 </CustomBox>
             </CustomBox>

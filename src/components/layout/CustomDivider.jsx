@@ -8,7 +8,7 @@ const CustomDivider = ({ className = "my-4" }) => {
         <CustomBox
             className={clsx(
                 "w-full h-px",
-                !className.includes("bg-") && "bg-borderLight dark:bg-borderDark",
+                !className.includes("bg-") && "bg-borderDark dark:bg-borderLight",
                 className
             )}
         />

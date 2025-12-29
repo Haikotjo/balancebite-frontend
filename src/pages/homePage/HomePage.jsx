@@ -134,7 +134,7 @@ function HomePage() {
                     title="Vegetarian Meals"
                     items={vegetarianMeals}
                     autoScroll={true}
-                    scrollSpeed={2}
+                    scrollSpeed={1}
                     autoScrollDirection="right"
                     onTitleClick={() => navigate("/meals?diets=VEGETARIAN")}
                     renderItem={(meal) => <MealCardCompact meal={meal}/>}
@@ -144,7 +144,7 @@ function HomePage() {
                     title="High Protein"
                     items={vegetarianMeals}
                     autoScroll={true}
-                    scrollSpeed={2}
+                    scrollSpeed={1}
                     autoScrollDirection="left"
                     onTitleClick={() => navigate("/meals?diets=HIGH_PROTEIN")}
                     renderItem={(meal) => <MealCardCompact meal={meal}/>}
