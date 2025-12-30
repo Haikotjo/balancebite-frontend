@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
     PlusSquare,
     Utensils,
-    Settings,
+    Promote,
     CookingPot
 } from "lucide-react";
 
@@ -49,7 +49,7 @@ const AdminPage = () => {
         { label: "Meals", icon: <Utensils className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
         { label: "Users", icon: <Settings className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
         { label: "Diets", icon: <CookingPot  className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
-        { label: "Settings", icon: <Settings className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
+        { label: "Promote", icon: <Settings className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
     ];
 
     /**
@@ -149,7 +149,7 @@ const AdminPage = () => {
         }
 
 
-        if (activeOption === "Settings") {
+        if (activeOption === "Promote") {
             return (
                 <CustomBox>
                     <CustomTypography

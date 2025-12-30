@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import registerSchema from "../../../../utils/helpers/registerSchema.js";
-import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import useRegister from "../../../../hooks/useRegister.js";

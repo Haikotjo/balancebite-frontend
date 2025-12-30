@@ -78,6 +78,7 @@ const CreateStickyItemForm = () => {
                         { value: "MEAL", label: "Meal" },
                         { value: "DIET_PLAN", label: "Diet Plan" },
                     ]}
+                    className="py-2 sm:py-3"
                 />
 
                 <CustomFloatingSelect
