@@ -34,22 +34,23 @@ export const useMealFormData = (mealId, reset) => {
                     name: data.name ?? "",
                     mealDescription: data.mealDescription ?? "",
                     mealIngredients: mappedIngredients,
-
                     mealTypes: data.mealTypes ?? [],
                     cuisines: data.cuisines ?? [],
                     diets: data.diets ?? [],
                     preparationTime: data.preparationTime || "",
 
-                    // 🔴 the missing fields
                     images,
                     primaryIndex,
 
-                    // optional fields if they exist in your schema
+                    keepImageIds: images.map((img) => img.id),
+                    primaryImageId: images.find((img) => img.primary)?.id ?? null,
+
                     videoUrl: data.videoUrl ?? "",
                     sourceUrl: data.sourceUrl ?? "",
                     preparationVideoUrl: data.preparationVideoUrl ?? "",
                     mealPreparation: data.mealPreparation ?? "",
                 });
+
 
                 // Legacy: set to first image url if you still show it somewhere
                 setImageUrl(images[0]?.imageUrl ?? "");

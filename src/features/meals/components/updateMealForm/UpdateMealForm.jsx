@@ -56,9 +56,16 @@ export default function UpdateMealForm() {
                 diets: (data.diets || []).map((d) => d.value || d),
 
                 // IMPORTANT: these are provided by MealImageUploader via setValue(...)
-                keepImageIds: data.keepImageIds ?? [],
-                replaceOrderIndexes: data.replaceOrderIndexes ?? [],
-                primaryIndex: data.primaryIndex ?? null,
+                ...(data.keepImageIds !== undefined ? { keepImageIds: data.keepImageIds } : {}),
+                ...(data.replaceOrderIndexes !== undefined ? { replaceOrderIndexes: data.replaceOrderIndexes } : {}),
+                ...(data.primaryIndex !== undefined ? { primaryIndex: data.primaryIndex } : {}),
+                ...(data.primaryImageId !== undefined ? { primaryImageId: data.primaryImageId } : {}),
+
+                videoUrl: data.videoUrl ?? "",
+                sourceUrl: data.sourceUrl ?? "",
+                preparationVideoUrl: data.preparationVideoUrl ?? "",
+                mealPreparation: data.mealPreparation ?? "",
+
             };
 
             const formData = await buildMealFormData(mealDataToUpdate);
@@ -130,18 +137,6 @@ export default function UpdateMealForm() {
                 )}
             />
 
-            <CustomTextField
-                label="Meal Description"
-                placeholder="Enter a description or preparation details"
-                {...register("mealDescription")}
-                error={!!errors.mealDescription}
-                helperText={errors.mealDescription?.message}
-                multiline
-                rows={6}
-            />
-
-            <CreateMealDropdowns control={control} errors={errors} />
-
             <MealImageUploader
                 errors={errors}
                 initialImages={watch("images") || []}
@@ -154,6 +149,61 @@ export default function UpdateMealForm() {
                 }}
             />
 
+            <CustomTextField
+                label="Meal Description"
+                placeholder="Enter a description or preparation details"
+                {...register("mealDescription")}
+                error={!!errors.mealDescription}
+                helperText={errors.mealDescription?.message}
+                multiline
+                rows={6}
+            />
+
+            <CreateMealDropdowns control={control} errors={errors} />
+
+            <CustomTextField
+                label="Preparation (long text)"
+                name="mealPreparation"
+                variant="outlined"
+                placeholder="Step-by-step instructions… (optional)"
+                {...register("mealPreparation")}
+                error={!!errors.mealPreparation}
+                helperText={errors.mealPreparation?.message}
+                multiline
+                rows={8}
+                maxLength={2000}
+            />
+
+
+            <CustomTextField
+                label="Preparation Video URL"
+                name="preparationVideoUrl"
+                variant="outlined"
+                placeholder="Link to a preparation video (e.g. YouTube) (optional)"
+                {...register("preparationVideoUrl")}
+                error={!!errors.preparationVideoUrl}
+                helperText={errors.preparationVideoUrl?.message}
+            />
+
+            <CustomTextField
+                label="Video URL"
+                name="videoUrl"
+                variant="outlined"
+                placeholder="Link to a video of the meal (optional)"
+                {...register("videoUrl")}
+                error={!!errors.videoUrl}
+                helperText={errors.videoUrl?.message}
+            />
+
+            <CustomTextField
+                label="Source URL"
+                name="sourceUrl"
+                variant="outlined"
+                placeholder="Original recipe source link (optional)"
+                {...register("sourceUrl")}
+                error={!!errors.sourceUrl}
+                helperText={errors.sourceUrl?.message}
+            />
 
             <CustomButton
                 type="submit"

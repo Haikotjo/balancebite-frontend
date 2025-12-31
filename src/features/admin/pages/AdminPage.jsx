@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
     PlusSquare,
     Utensils,
-    Promote,
+    Settings,
     CookingPot
 } from "lucide-react";
 
