@@ -37,7 +37,6 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
     const isDietitian = Array.isArray(user?.roles) && user.roles.includes("DIETITIAN");
     const isAdmin = Array.isArray(user?.roles) && user.roles.includes("ADMIN");
     const canShare = isCreator && (isDietitian || isAdmin);
-    const [infoOpen, setInfoOpen] = useState(false);
     const [showMoreInfo, setShowMoreInfo] = useState(false);
     const { openModal } = useContext(ModalContext);
 

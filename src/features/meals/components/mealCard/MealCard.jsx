@@ -56,6 +56,8 @@ import MealImageCarousel from "../mealImageCarousel/MealImageCarousel.jsx";
 import CustomImage from "../../../../components/layout/CustomImage.jsx";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 import CustomLink from "../../../../components/layout/CustomLink.jsx";
+import {toYoutubeEmbedUrl} from "../../utils/helpers/toYoutubeEmbedUrl.js";
+import MealCardExpandableDescription from "../mealCardExpandableDescription/ExpandableDescription.jsx";
 
 const useAuth = () => useContext(AuthContext);
 
@@ -71,6 +73,7 @@ const MealCard = ({ meal, viewMode="page", onClose, isPinned=false, disableActio
     const { user } = useAuth();
     const isCreator = String(user?.id) === String(meal?.createdBy?.id);
     const isDietitian = Array.isArray(user?.roles) && user.roles.includes("DIETITIAN");
+
 
     /**
      * Sharing is only allowed when:
@@ -296,7 +299,10 @@ const MealCard = ({ meal, viewMode="page", onClose, isPinned=false, disableActio
                             </CustomBox>
                         )}
 
-                        <CustomTypography className=" italic">{meal.mealDescription}</CustomTypography>
+                        <CustomTypography className="italic break-words whitespace-pre-wrap break-all">
+                            {meal.mealDescription}
+                        </CustomTypography>
+
                         <CustomDivider className="my-6" />
 
                         <MealCardIngredients ingredients={meal.mealIngredients} />
@@ -353,7 +359,51 @@ const MealCard = ({ meal, viewMode="page", onClose, isPinned=false, disableActio
                 </CustomBox>
             </CustomBox>
 
-            <MealCardMediaSection meal={meal} />
+            {(meal?.preparationVideoUrl || meal?.videoUrl) && (
+                <CustomBox className="max-w-6xl w-full px-4 mt-12">
+                    <CustomBox className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {meal?.preparationVideoUrl && (
+                            <CustomBox className="w-full aspect-video rounded-xl overflow-hidden border border-border">
+                                <iframe
+                                    title="Preparation video"
+                                    src={toYoutubeEmbedUrl(meal.preparationVideoUrl)}
+                                    className="w-full h-full"
+                                    allow="autoplay; encrypted-media; picture-in-picture"
+                                    allowFullScreen
+                                />
+                            </CustomBox>
+                        )}
+
+                        {meal?.videoUrl && (
+                            <CustomBox className="w-full aspect-video rounded-xl overflow-hidden border border-border">
+                                <iframe
+                                    title="Video"
+                                    src={toYoutubeEmbedUrl(meal.videoUrl)}
+                                    className="w-full h-full"
+                                    allow="autoplay; encrypted-media; picture-in-picture"
+                                    allowFullScreen
+                                />
+                            </CustomBox>
+                        )}
+                    </CustomBox>
+
+                    {meal?.mealPreparation && (
+                        <>
+                            <CustomTypography variant="h4" bold className="my-12">
+                                Preparation
+                            </CustomTypography>
+
+                            <CustomTypography className="whitespace-pre-wrap break-all">
+                                {meal.mealPreparation}
+                            </CustomTypography>
+
+                        </>
+                    )}
+                </CustomBox>
+            )}
+
+
+            {/*<MealCardMediaSection meal={meal} />*/}
 
             {ingredientFoodItems.length > 0 && (
                 <CustomBox className="max-w-6xl w-full p-4">
@@ -378,6 +428,7 @@ const MealCard = ({ meal, viewMode="page", onClose, isPinned=false, disableActio
                     </CustomBox>
                 </CustomBox>
             )}
+
 
         </CustomBox>
     );
