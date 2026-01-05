@@ -176,20 +176,20 @@ export default function UpdateMealForm() {
 
 
             <CustomTextField
-                label="Preparation Video URL"
+                label="Preparation Video (YouTube only)"
                 name="preparationVideoUrl"
                 variant="outlined"
-                placeholder="Link to a preparation video (e.g. YouTube) (optional)"
+                placeholder="YouTube link to a preparation video (optional)"
                 {...register("preparationVideoUrl")}
                 error={!!errors.preparationVideoUrl}
                 helperText={errors.preparationVideoUrl?.message}
             />
 
             <CustomTextField
-                label="Video URL"
+                label="Meal Video (YouTube only)"
                 name="videoUrl"
                 variant="outlined"
-                placeholder="Link to a video of the meal (optional)"
+                placeholder="YouTube link to a video of the meal (optional)"
                 {...register("videoUrl")}
                 error={!!errors.videoUrl}
                 helperText={errors.videoUrl?.message}

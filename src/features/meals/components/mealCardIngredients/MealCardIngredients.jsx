@@ -20,7 +20,7 @@ const MealCardIngredients = ({ ingredients }) => {
     return (
         <>
             <CustomTypography variant="h4" bold className="mb-2">
-                Ingredients:
+                Ingredients :
             </CustomTypography>
 
             <CustomBox className="space-y-1">

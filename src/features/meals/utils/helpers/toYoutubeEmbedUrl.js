@@ -1,33 +1,42 @@
 // src/features/meals/utils/helpers/toYoutubeEmbedUrl.js
-export const toYoutubeEmbedUrl = (url) => {
+export const toYoutubeEmbedUrl = (url, { autoplay = false, mute = false, jsapi = false } = {}) => {
     if (!url) return null;
 
     try {
         const u = new URL(url);
         const host = u.hostname.replace(/^www\./, "");
 
-        // youtu.be/<id>
+        let id = null;
+
         if (host === "youtu.be") {
-            const id = u.pathname.replace("/", "").trim();
-            if (!id) return null;
-            return `https://www.youtube.com/embed/${id}?mute=1&rel=0&modestbranding=1`;
+            id = u.pathname.replace("/", "").trim();
+        } else if (host === "youtube.com" || host === "m.youtube.com" || host === "music.youtube.com") {
+            if (u.pathname.startsWith("/embed/")) {
+                id = u.pathname.split("/embed/")[1]?.split("/")[0];
+            } else if (u.pathname.startsWith("/shorts/")) {
+                id = u.pathname.split("/shorts/")[1]?.split("/")[0];
+            } else {
+                id = u.searchParams.get("v");
+            }
         }
 
-        // youtube.com/watch?v=<id>
-        if (host === "youtube.com" || host === "m.youtube.com" || host === "music.youtube.com") {
-            const v = u.searchParams.get("v");
-            if (!v) return null;
-            return `https://www.youtube.com/embed/${v}?mute=1&rel=0&modestbranding=1`;
+        if (!id) return null;
+
+        const params = new URLSearchParams({
+            rel: "0",
+            modestbranding: "1",
+            playsinline: "1",
+            autoplay: autoplay ? "1" : "0",
+            mute: (autoplay || mute) ? "1" : "0",
+        });
+
+        if (jsapi) {
+            params.set("enablejsapi", "1");
+            // Helps YouTube allow JS API calls/events in many setups
+            params.set("origin", window.location.origin);
         }
 
-        // youtube.com/embed/<id>
-        if (host === "youtube.com" && u.pathname.startsWith("/embed/")) {
-            const id = u.pathname.split("/embed/")[1]?.split("/")[0];
-            if (!id) return null;
-            return `https://www.youtube.com/embed/${id}?mute=1&rel=0&modestbranding=1`;
-        }
-
-        return null;
+        return `https://www.youtube.com/embed/${id}?${params.toString()}`;
     } catch {
         return null;
     }

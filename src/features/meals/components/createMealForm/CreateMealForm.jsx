@@ -201,20 +201,20 @@ const CreateMealForm = () => {
             />
 
             <CustomTextField
-                label="Preparation Video URL"
+                label="Preparation Video (YouTube only)"
                 name="preparationVideoUrl"
                 variant="outlined"
-                placeholder="Link to a preparation video (e.g. YouTube) (optional)"
+                placeholder="YouTube link to a preparation video (optional)"
                 {...register("preparationVideoUrl")}
                 error={!!errors.preparationVideoUrl}
                 helperText={errors.preparationVideoUrl?.message}
             />
 
             <CustomTextField
-                label="Video URL"
+                label="Meal Video (YouTube only)"
                 name="videoUrl"
                 variant="outlined"
-                placeholder="Link to a video of the meal (e.g. YouTube, Instagram, etc.) (optional)"
+                placeholder="YouTube link to a video of the meal (optional)"
                 {...register("videoUrl")}
                 error={!!errors.videoUrl}
                 helperText={errors.videoUrl?.message}
@@ -224,7 +224,7 @@ const CreateMealForm = () => {
                 label="Source URL"
                 name="sourceUrl"
                 variant="outlined"
-                placeholder="Original recipe source link (e.g. Allerhande, Foodies, personal blog) (optional)"
+                placeholder="Original recipe source link (e.g. Foodies, personal blog, Allerhande) (optional)"
                 {...register("sourceUrl")}
                 error={!!errors.sourceUrl}
                 helperText={errors.sourceUrl?.message}
