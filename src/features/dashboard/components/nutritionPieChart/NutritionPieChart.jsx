@@ -88,30 +88,43 @@ const NutritionPieChart = ({ chartData, baseChartData }) => {
 
                 <CustomBox className="w-full h-[400px] sm:h-[320px] md:h-[360px] lg:h-[420px] relative">
 
-                    <CustomBox className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center z-0 pointer-events-none">
-
+                    <CustomBox className="absolute top-[53%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center z-0 pointer-events-none">
 
                         {activeName && ActiveIcon && (
-                            <div className="flex flex-col items-center animate-in fade-in zoom-in duration-500">
+                            <CustomBox className="flex flex-col items-center animate-in fade-in zoom-in duration-500">
                                 <ActiveIcon
-                                    size={40}
-                                    style={{ color: byName[activeName]?.fill }}
-                                    className="drop-shadow-md mb-1"
+                                    size={Math.round(byName[activeName].value) === 0 ? 60 : 40}
+                                    style={{
+                                        color: byName[activeName].value < 0
+                                            ? 'currentColor'
+                                            : byName[activeName]?.fill
+                                    }}
+                                    className={`
+            drop-shadow-md mb-1 transition-all duration-300
+            ${byName[activeName].value < 0 ? 'text-darkBackground dark:text-lightBackground' : ''}
+            ${Math.round(byName[activeName].value) === 0 ? 'scale-110' : 'scale-100'}
+        `}
                                 />
-                                <CustomTypography variant="large" bold className="tabular-nums">
+
+                                <CustomTypography
+                                    variant={Math.round(byName[activeName].value) === 0 ? "h1" : "large"}
+                                    bold
+                                    className="tabular-nums transition-all duration-300"
+                                >
                                     {Math.round(byName[activeName].value)}%
                                 </CustomTypography>
-                            </div>
+                            </CustomBox>
                         )}
                     </CustomBox>
 
                     <ResponsiveContainer width="100%" height="100%">
                         <RadialBarChart
                             data={chartDataSafe}
-                            cx="50%" cy="50%"
+                            cx="50%" cy="53%"
                             innerRadius={dynamicInnerRadius}
                             outerRadius={dynamicOuterRadius}
-                            startAngle={180} endAngle={-180}
+                            startAngle={90}
+                            endAngle={-270}
                             onMouseLeave={() => { if (!isClicked) setActiveName(null); }}
                         >
                             <RadialBar
