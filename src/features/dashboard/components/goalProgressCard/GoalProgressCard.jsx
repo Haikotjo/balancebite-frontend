@@ -1,13 +1,41 @@
-// src/features/dashboard/components/goalProgressOverview/GoalProgressCard.jsx
+// src/features/dashboard/components/goalProgressCard/GoalProgressCard.jsx
 import PropTypes from "prop-types";
+import { useMemo, useState } from "react";
+import { useModal } from "../../../../context/useModal.js";
 import CustomCard from "../../../../components/layout/CustomCard.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import RecommendedNutritionDisplay from "../recommendedNutritionDisplay/RecommendedNutritionDisplay.jsx";
+import MealModalById from "../../../meals/components/mealModalById/MealModalById.jsx";
+import ConsumedMealsToggle from "../consumedMealsToggle/ConsumedMealsToggle.jsx";
+import {getSortedConsumedMeals} from "../../utils/helpers/getSortedConsumedMeals.js";
 
 const GoalProgressCard = ({ variant, data, description }) => {
+    const { openModal } = useModal();
+    const [showMeals, setShowMeals] = useState(false);
+
+    const showConsumedMeals = ["today", "date"].includes(variant);
+
+    const consumedMeals = useMemo(() => getSortedConsumedMeals(data), [data]);
+
+
+    const openMealModal = (mealId) => {
+        if (!mealId) return;
+        openModal(<MealModalById mealId={mealId} />, "meal", { id: mealId });
+    };
+
     return (
         <CustomCard hasBorder>
             <RecommendedNutritionDisplay variant={variant} data={data} />
+
+            {showConsumedMeals && (
+                <ConsumedMealsToggle
+                    meals={consumedMeals}
+                    isOpen={showMeals}
+                    onToggle={() => setShowMeals((v) => !v)}
+                    onOpenMeal={openMealModal}
+                />
+            )}
+
             {description && (
                 <CustomTypography variant="xsmallCard" className="m-2" italic>
                     {description}

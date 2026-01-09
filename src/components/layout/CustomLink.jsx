@@ -1,9 +1,10 @@
 import PropTypes from "prop-types";
 import clsx from "clsx";
+import { Link } from "react-router-dom";
 
-/** Reusable external link with optional icons and truncation */
 const CustomLink = ({
                         href,
+                        to,
                         children,
                         className = "",
                         leftIcon = null,
@@ -13,8 +14,32 @@ const CustomLink = ({
                         onClick,
                         truncate = false,
                         target = "_blank",
-                        rel = "noopener noreferrer"
+                        rel = "noopener noreferrer",
                     }) => {
+    const classes = clsx(
+        "text-primary hover:text-blue-600 inline-flex items-center gap-1 underline",
+        truncate && "truncate min-w-0",
+        className
+    );
+
+    // 👉 Internal link
+    if (to) {
+        return (
+            <Link
+                to={to}
+                aria-label={ariaLabel}
+                title={title}
+                onClick={onClick}
+                className={classes}
+            >
+                {leftIcon}
+                {children}
+                {rightIcon}
+            </Link>
+        );
+    }
+
+    // 👉 External link
     return (
         <a
             href={href}
@@ -23,11 +48,7 @@ const CustomLink = ({
             aria-label={ariaLabel}
             title={title}
             onClick={onClick}
-            className={clsx(
-                "text-primary hover:text-blue-600 inline-flex items-center gap-1 underline",
-                truncate && "truncate min-w-0", // allow text to ellipsize
-                className
-            )}
+            className={classes}
         >
             {leftIcon}
             {children}
@@ -37,7 +58,8 @@ const CustomLink = ({
 };
 
 CustomLink.propTypes = {
-    href: PropTypes.string.isRequired,
+    href: PropTypes.string,
+    to: PropTypes.string,
     children: PropTypes.node.isRequired,
     className: PropTypes.string,
     leftIcon: PropTypes.node,

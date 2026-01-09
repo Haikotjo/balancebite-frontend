@@ -4,7 +4,7 @@ import CustomBox from "./CustomBox.jsx";
 const CustomCard = ({
                         children,
                         className = "",
-                        hasBorder = false,   // NEW: user decides
+                        hasBorder = true,   // NEW: user decides
                         isPinned = false,
                         createdByRole,
                     }) => {
@@ -28,7 +28,7 @@ const CustomCard = ({
 
     // Manual border toggle
     else if (hasBorder) {
-        borderClasses = "border border-borderLight dark:border-borderDark";
+        borderClasses = "border border-borderDark dark:border-borderLight";
     }
 
     return (

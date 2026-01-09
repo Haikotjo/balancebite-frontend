@@ -58,32 +58,39 @@ const NutritionPieOverview = ({ useBaseRDI = false, onClose }) => {
         recommendedNutrition
     );
 
-    /**
-     * Build the chart data for the pie chart.
-     * - Hook is always called (no conditional returns before this)
-     * - If `sortedNutrients` is missing, return an empty array
-     */
-    const chartData = useMemo(() => {
-        if (!sortedNutrients) {
-            return [];
-        }
+    const buildChartData = (nutrition) => {
+        const nutrients = nutrition?.nutrients ?? [];
 
-        /**
-         * Helper to find a nutrient by name.
-         * Falls back to an object with value 0 when the nutrient is not present.
-         *
-         * @param {string} name
-         * @returns {{name: string, value: number}}
-         */
-        const pick = (name) =>
-            sortedNutrients.find((n) => n.name === name) || { name, value: 0 };
+        return nutrients
+            .filter((n) =>
+                ["Energy kcal", "Protein", "Carbohydrates", "Total lipid (fat)"].includes(n.name)
+            )
+            .map((n) => ({
+                name: n.name,
+                value: n.value ?? 0,
+            }));
+    };
 
-        return [
-            { name: "Protein", value: pick("Protein").value ?? 0 },
-            { name: "Carbohydrates", value: pick("Carbohydrates").value ?? 0 },
-            { name: "Fat", value: pick("Total lipid (fat)").value ?? 0 },
-        ];
-    }, [sortedNutrients]);
+    const chartData = buildChartData(recommendedNutrition);
+    const baseChartData = buildChartData(baseNutrition);
+
+
+
+// Show a loading indicator while the nutrition data is being fetched.
+    if (loading) {
+        return <Spinner className="mx-auto my-4" />;
+    }
+
+// If there is no data, show the message returned by getSortedNutritionData.
+    if (!sortedNutrients) {
+        return (
+            <CustomTypography variant="h5" className="text-center mt-4">
+                {message}
+            </CustomTypography>
+        );
+    }
+
+
 
     // Show a loading indicator while the nutrition data is being fetched.
     if (loading) {
@@ -130,10 +137,8 @@ const NutritionPieOverview = ({ useBaseRDI = false, onClose }) => {
 
                 {/* Pie chart on top, table below */}
                 <CustomBox className="flex flex-col gap-2">
-                    <NutritionPieChart
-                        chartData={chartData}
-                        sortedNutrients={sortedNutrients}
-                    />
+                    <NutritionPieChart chartData={chartData} baseChartData={baseChartData}/>
+
 
                     <NutritionTable
                         sortedNutrients={sortedNutrients.filter(

@@ -42,14 +42,28 @@ const DashboardPage = () => {
         }
     }, [token]);
 
-    const { sortedNutrients } = getSortedNutritionData(false, baseNutrition, recommendedNutrition);
+    const { sortedNutrients } = getSortedNutritionData(
+        false,
+        baseNutrition,
+        recommendedNutrition
+    );
 
-    const chartData = sortedNutrients
-        ?.filter(n => ["Protein", "Carbohydrates", "Total lipid (fat)"].includes(n.name))
-        .map(n => ({
-            name: n.name,
-            value: n.value || 0,
-        }));
+// Helper to build chart arrays (includes Energy kcal + macros)
+    const buildChartData = (nutrition) => {
+        const nutrients = nutrition?.nutrients ?? [];
+
+        return nutrients
+            .filter((n) =>
+                ["Energy kcal", "Protein", "Carbohydrates", "Total lipid (fat)"].includes(n.name)
+            )
+            .map((n) => ({
+                name: n.name,
+                value: n.value ?? 0,
+            }));
+    };
+
+    const chartData = buildChartData(recommendedNutrition);
+    const baseChartData = buildChartData(baseNutrition);
 
     useEffect(() => {
         const loadDailyRdi = async () => {
@@ -70,6 +84,19 @@ const DashboardPage = () => {
         if (token) loadDailyRdi();
     }, [token]);
 
+    useEffect(() => {
+        dailyRdiList.forEach((day) => {
+            console.group(`DATE: ${day.date}`);
+            console.dir(day.data.consumedMeals, { depth: null });
+            console.groupEnd();
+        });
+    }, [dailyRdiList]);
+
+
+
+    console.log("Dashboard baseNutrition:", baseNutrition);
+    console.log("Dashboard recommendedNutrition:", recommendedNutrition);
+
     return (
         <PageWrapper className="flex flex-col items-center">
             {/* Center content and allow wider dashboard */}
@@ -88,6 +115,7 @@ const DashboardPage = () => {
                     userDiets={userDiets}
                     currentMealId={null}
                     chartData={chartData}
+                    baseChartData={baseChartData}
                     sortedNutrients={sortedNutrients}
                     recommendedNutrition={recommendedNutrition}
                     baseNutrition={baseNutrition}

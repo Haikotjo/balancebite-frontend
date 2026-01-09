@@ -1,9 +1,16 @@
 // goalCardsConfig.js
-export const buildGoalCards = (weeklyAverageRdi, monthlyAverageRdi, weeklyRdi, monthlyRdi) => [
+export const buildGoalCards = (
+    weeklyAverageRdi,
+    monthlyAverageRdi,
+    weeklyRdi,
+    monthlyRdi,
+    baseNutrition,
+    recommendedNutrition
+) => [
     {
         key: "base",
         variant: "base",
-        data: null,
+        data: baseNutrition,
         description:
             "Your baseline daily recommended intake, calculated from your profile settings.",
         accordionTitle: "Base Nutrition",
@@ -11,7 +18,7 @@ export const buildGoalCards = (weeklyAverageRdi, monthlyAverageRdi, weeklyRdi, m
     {
         key: "today",
         variant: "today",
-        data: null,
+        data: recommendedNutrition,
         description:
             "Remaining recommended nutrients for today, based on your current goals.",
         accordionTitle: "Today's remaining nutrients",

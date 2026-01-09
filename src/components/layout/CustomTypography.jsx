@@ -37,8 +37,9 @@ const WEIGHT_STYLES = {
     black: "font-black",
 };
 
-export const Inline = ({ children, color, weight }) => (
+export const Inline = ({ children, color, weight, className = "", italic = false }) => (
     <span
+        className={clsx(italic && "italic", className)}
         style={{
             color,
             fontWeight: weight,
@@ -52,9 +53,9 @@ Inline.propTypes = {
     children: PropTypes.node.isRequired,
     color: PropTypes.string,
     weight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    className: PropTypes.string,
+    italic: PropTypes.bool,
 };
-
-
 
 /**
  * CustomTypography

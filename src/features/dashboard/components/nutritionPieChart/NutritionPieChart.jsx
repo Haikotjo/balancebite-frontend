@@ -1,97 +1,154 @@
-import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from "recharts";
+// NutritionPieChart.jsx
+import { useState, useMemo, useCallback } from "react";
+import { RadialBarChart, RadialBar, ResponsiveContainer } from "recharts";
 import PropTypes from "prop-types";
-import { X } from "lucide-react";
+
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomCard from "../../../../components/layout/CustomCard.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+
+import { buildPercentRadialData } from "../../utils/helpers/nutritionPieChartHelpers.js";
+import StatCard from "../statCard/StatCard.jsx";
+import RenderSector from "../renderSector/RenderSector.jsx";
+
+import { Flame, Dumbbell, ChartColumnIncreasing, Droplet } from "lucide-react";
 import useIsSmallScreen from "../../../../hooks/useIsSmallScreen.js";
 
-const COLORS = ["#7BE0D1", "#71f175", "#EDB6A3"];
-const NEGATIVE_COLOR = "#DD1155";
+const NUTRITION_MAP = [
+    { id: "Energy kcal", icon: Flame, position: "left-3 top-3" },
+    { id: "Protein", icon: Dumbbell, position: "right-3 top-3" },
+    { id: "Carbohydrates", icon: ChartColumnIncreasing, position: "left-3 bottom-3" },
+    { id: "Total lipid (fat)", icon: Droplet, position: "right-3 bottom-3" },
+];
 
-const NutritionPieChart = ({ chartData, sortedNutrients }) => {
-    const isSmallScreen = useIsSmallScreen();
-    const isLargeScreen = window.innerWidth >= 1280;
-    const outerRadius = isSmallScreen
-        ? 80      // small
-        : isLargeScreen
-            ? 150 // large screens
-            : 100; // medium screens
+const NutritionPieChart = ({ chartData, baseChartData }) => {
+    const isSmall = useIsSmallScreen();
+    const dynamicOuterRadius = isSmall ? "80%" : "100%";
+    const dynamicInnerRadius = isSmall ? "45%" : "35%";
+    const dynamicBarSize = isSmall ? 8 : 12;
+    const [activeName, setActiveName] = useState(null);
+    const [isClicked, setIsClicked] = useState(false);
 
-    const chartHeight = isSmallScreen
-        ? 300     // small
-        : isLargeScreen
-            ? 500 // large screens
-            : 330; // medium
+    const { radialData, goalsReached } = useMemo(() => {
+        return buildPercentRadialData({ chartData, baseChartData });
+    }, [chartData, baseChartData]);
 
-    const allNegative = chartData?.every((entry) => entry.value < 0);
+    const items = useMemo(() =>
+            radialData.filter((d) => d.name !== "__scale__"),
+        [radialData]);
 
-    const filteredChartData = allNegative
-        ? [{ name: "Goals reached", value: 1 }]
-        : chartData?.map((entry) => ({
-        ...entry,
-        value: Math.max(entry.value, 0),
-    })) || [];
+    const chartDataSafe = useMemo(() =>
+        radialData.map(d => ({
+            ...d,
+            value: d.value < 0 ? 0 : d.value
+        })), [radialData]);
 
-    const energy =
-        sortedNutrients?.find((n) => n.name === "Energy kcal")?.value ?? 0;
+    const byName = useMemo(() =>
+            Object.fromEntries(items.map((i) => [i.name, i])),
+        [items]);
 
-    if (!filteredChartData.some((entry) => entry.value > 0)) return null;
+    const ActiveIcon = useMemo(() => {
+        return NUTRITION_MAP.find(n => n.id === activeName)?.icon;
+    }, [activeName]);
+
+    const handleToggle = useCallback((name) => {
+        setActiveName((prev) => {
+            const isSame = prev === name;
+            setIsClicked(isSame ? (clicked) => !clicked : true);
+            return isSame && isClicked ? null : name;
+        });
+    }, [isClicked]);
+
+    const handleGlobalReset = useCallback(() => {
+        setActiveName(null);
+        setIsClicked(false);
+    }, []);
+
+    if (items.length === 0) return null;
 
     return (
-        <CustomCard className="w-full p-2 h-fit">
-            <CustomBox className="w-full my-2">
-                <ResponsiveContainer width="100%" height={chartHeight}>
-                    <PieChart>
-                        <Pie
-                            data={filteredChartData}
-                            dataKey="value"
-                            nameKey="name"
-                            cx="50%"
-                            cy="45%"
-                            outerRadius={outerRadius} // 80 on small, 100 otherwise
-                            label
-                        >
-                            {filteredChartData.map((entry, index) => (
-                                <Cell
-                                    key={`cell-${index}`}
-                                    fill={
-                                        allNegative
-                                            ? NEGATIVE_COLOR
-                                            : COLORS[index % COLORS.length]
-                                    }
-                                />
-                            ))}
-                        </Pie>
-                        <Tooltip />
-                        <Legend />
-                    </PieChart>
-                </ResponsiveContainer>
+        <CustomCard hasBorder={true} className="w-full p-3 min-w-0">
+            <CustomBox className="relative w-full min-0" onClick={handleGlobalReset}>
 
-                {allNegative && (
-                    <CustomTypography
-                        variant="small"
-                        className="text-center text-error mt-2"
-                    >
+                {NUTRITION_MAP.map(({ id, icon, position }) => (
+                    <CustomBox key={id} className={`absolute ${position} z-20 transition-all duration-600`}>
+                        <StatCard
+                            item={byName[id]}
+                            icon={icon}
+                            isActive={activeName === id}
+                            onMouseEnter={() => { if (!isClicked) setActiveName(id); }}
+                            onMouseLeave={() => { if (!isClicked) setActiveName(null); }}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleToggle(id);
+                            }}
+                        />
+                    </CustomBox>
+                ))}
+
+                <CustomBox className="w-full h-[400px] sm:h-[320px] md:h-[360px] lg:h-[420px] relative">
+
+                    <CustomBox className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center z-0 pointer-events-none">
+
+
+                        {activeName && ActiveIcon && (
+                            <div className="flex flex-col items-center animate-in fade-in zoom-in duration-500">
+                                <ActiveIcon
+                                    size={40}
+                                    style={{ color: byName[activeName]?.fill }}
+                                    className="drop-shadow-md mb-1"
+                                />
+                                <CustomTypography variant="large" bold className="tabular-nums">
+                                    {Math.round(byName[activeName].value)}%
+                                </CustomTypography>
+                            </div>
+                        )}
+                    </CustomBox>
+
+                    <ResponsiveContainer width="100%" height="100%">
+                        <RadialBarChart
+                            data={chartDataSafe}
+                            cx="50%" cy="50%"
+                            innerRadius={dynamicInnerRadius}
+                            outerRadius={dynamicOuterRadius}
+                            startAngle={180} endAngle={-180}
+                            onMouseLeave={() => { if (!isClicked) setActiveName(null); }}
+                        >
+                            <RadialBar
+                                dataKey="value"
+                                clockWise
+                                barSize={dynamicBarSize}
+                                background={{ fill: 'transparent' }}
+                                cornerRadius={8}
+                                onMouseEnter={(data) => {
+
+                                    if (!isClicked && activeName !== data.name) {
+                                        setActiveName(data.name);
+                                    }
+                                }}
+                                onClick={(data, index, e) => {
+                                    if (e && e.stopPropagation) e.stopPropagation();
+                                    handleToggle(data.name);
+                                }}
+                                shape={(props) => <RenderSector {...props} activeName={activeName}/>}
+                            />
+                        </RadialBarChart>
+                    </ResponsiveContainer>
+                </CustomBox>
+
+                {goalsReached && (
+                    <CustomTypography variant="small" className="text-center text-error mt-2">
                         Nutrition Goals reached – be mindful of extra intake.
                     </CustomTypography>
                 )}
-
-                <CustomTypography
-                    variant="h5"
-                    className="text-center mt-2"
-                    color={energy < 0 ? "text-error" : "text-primary"}
-                >
-                    Energy: {energy} kcal
-                </CustomTypography>
             </CustomBox>
         </CustomCard>
     );
 };
 
 NutritionPieChart.propTypes = {
-    chartData: PropTypes.array.isRequired,
-    sortedNutrients: PropTypes.array,
+    chartData: PropTypes.arrayOf(PropTypes.object).isRequired,
+    baseChartData: PropTypes.array,
 };
 
 export default NutritionPieChart;

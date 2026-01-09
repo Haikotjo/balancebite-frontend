@@ -14,10 +14,12 @@ const DashboardContent = ({
                               userMeals,
                               currentMealId,
                               chartData,
-                              sortedNutrients,
+                              baseChartData,
                               weeklyRdi,
                               monthlyRdi,
                               dailyRdiList,
+                              baseNutrition,
+                              recommendedNutrition
                           }) => {
 
     const weeklyAverageRdi = buildWeeklyAverageRdi(weeklyRdi);
@@ -27,7 +29,9 @@ const DashboardContent = ({
         weeklyAverageRdi,
         monthlyAverageRdi,
         weeklyRdi,
-        monthlyRdi
+        monthlyRdi,
+        baseNutrition,
+        recommendedNutrition
     );
 
     return (
@@ -52,7 +56,7 @@ const DashboardContent = ({
                         </CustomBox>
 
                         <CustomCard hasBorder>
-                            <NutritionPieChart chartData={chartData} sortedNutrients={sortedNutrients} />
+                            <NutritionPieChart chartData={chartData} baseChartData={baseChartData}/>
                         </CustomCard>
 
                         {/* Last Week */}
@@ -105,7 +109,7 @@ const DashboardContent = ({
                     </CustomBox>
 
                     <CustomCard hasBorder>
-                        <NutritionPieChart chartData={chartData} sortedNutrients={sortedNutrients} />
+                        <NutritionPieChart chartData={chartData} baseChartData={baseChartData}/>
                     </CustomCard>
                 </CustomBox>
 
@@ -151,6 +155,7 @@ DashboardContent.propTypes = {
     userDiets: PropTypes.array,
     currentMealId: PropTypes.any,
     chartData: PropTypes.array,
+    baseChartData: PropTypes.array,
     sortedNutrients: PropTypes.array,
     recommendedNutrition: PropTypes.object,
     baseNutrition: PropTypes.object,
