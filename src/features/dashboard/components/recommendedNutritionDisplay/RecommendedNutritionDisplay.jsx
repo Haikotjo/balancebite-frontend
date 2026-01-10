@@ -7,6 +7,11 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import Spinner from "../../../../components/layout/Spinner.jsx";
 import NutritionTable from "./NutritionTable.jsx";
+import {
+    calculateNutritionProgress,
+    getNutritionSourceConfig,
+    mergeNutritionProgress
+} from "../../utils/helpers/nutritionCalculations.js";
 
 const titleMap = {
     today: "Today's remaining nutrients",
@@ -44,76 +49,21 @@ const RecommendedNutritionDisplay = ({
         return <Spinner className="mx-auto my-4" />;
     }
 
-// Berekeningen uitvoeren voor de log
     let nutritionCalculations = null;
-
-    if ((variant === "today" || variant === "date") && chartData && baseChartData) {
-        nutritionCalculations = baseChartData.map((target) => {
-            // In jouw geval is 'current' eigenlijk de 'remaining' waarde uit de chartData
-            const current = chartData.find((c) => c.name === target.name);
-            const remainingValue = current ? current.value : 0;
-
-            // Wat je daadwerkelijk hebt gegeten is het doel minus wat er nog over is
-            const consumedValue = target.value - remainingValue;
-
-            // Bereken percentage van het doel dat al is opgegeten
-            const percentageReached = target.value > 0
-                ? ((consumedValue / target.value) * 100).toFixed(1)
-                : 0;
-
-            return {
-                nutrient: target.name,
-                goal: target.value,
-                leftToEat: remainingValue, // De waarde uit je chartData
-                actuallyConsumed: consumedValue,
-                percentageOfGoalMet: `${percentageReached}%`,
-                status: remainingValue < 0 ? "Goal exceeded" : "Under goal"
-            };
-        });
+    if (variant === "today" || variant === "date") {
+        nutritionCalculations = calculateNutritionProgress(chartData, baseChartData);
     }
 
-    let useBaseRDI = false;
-    let source = null;
-
-    switch (variant) {
-        case "today":
-            useBaseRDI = false;
-            source = recommendedNutrition;
-            break;
-        case "base":
-            useBaseRDI = true;
-            source = recommendedNutrition;
-            break;
-        case "date":
-        case "week":
-        case "month":
-        case "weekAverage":
-        case "monthAverage":
-            useBaseRDI = false;
-            source = data;
-            break;
-        default:
-            useBaseRDI = false;
-            source = recommendedNutrition;
-    }
+    const { useBaseRDI, source } = getNutritionSourceConfig(variant, recommendedNutrition, data);
 
     const { sortedNutrients, message, createdAt } =
         getSortedNutritionData(useBaseRDI, baseNutrition, source);
 
-    if (variant === "date" || variant === "today") {
-        console.log(`Nutrition Analysis [${variant}] - Date: ${createdAt || 'Today'}:`, {
-            calculations: nutritionCalculations,
-            originalData: { chartData, baseChartData }
-        });
+    if (!sortedNutrients) {
+        return <CustomTypography variant="h5" className="text-center mt-4">{message}</CustomTypography>;
     }
 
-    if (!sortedNutrients) {
-        return (
-            <CustomTypography variant="h5" className="text-center mt-4">
-                {message}
-            </CustomTypography>
-        );
-    }
+    const nutrientsWithProgress = mergeNutritionProgress(sortedNutrients, nutritionCalculations);
 
     const title = titleMap[variant] ?? (useBaseRDI ? "Recommended" : "Today");
     const customTitle =
@@ -136,7 +86,7 @@ const RecommendedNutritionDisplay = ({
             </CustomBox>
 
             <NutritionTable
-                sortedNutrients={sortedNutrients.filter(
+                sortedNutrients={nutrientsWithProgress.filter(
                     (n) =>
                         n.name !== "Saturated and Trans fats" &&
                         n.name !== "Mono- and Polyunsaturated fats"

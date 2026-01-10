@@ -23,3 +23,21 @@ export const getSortedNutritionData = (useBaseRDI, baseNutrition, recommendedNut
 
     return { sortedNutrients, message: null, createdAt: nutritionData.createdAtFormatted };
 };
+
+/**
+ * Filters nutrition data to extract only Energy and Macros for charts.
+ * @param {Object} nutrition - The nutrition object containing a nutrients array.
+ * @returns {Array} Array of objects with name and value.
+ */
+export const buildChartData = (nutrition) => {
+    const nutrients = nutrition?.nutrients ?? [];
+
+    return nutrients
+        .filter((n) =>
+            ["Energy kcal", "Protein", "Carbohydrates", "Total lipid (fat)"].includes(n.name)
+        )
+        .map((n) => ({
+            name: n.name,
+            value: n.value ?? 0,
+        }));
+};

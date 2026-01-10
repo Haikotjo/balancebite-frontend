@@ -1,36 +1,19 @@
 import PropTypes from "prop-types";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
-import {
-    Flame,
-    Dumbbell,
-    ChartColumnIncreasing,
-    Droplet,
-} from "lucide-react";
+import {macroIconClasses, macroIcons} from "../../../../utils/helpers/macroIcons.js";
 
-const MAX_BAR_WIDTH = 80; // max px length of bar on either side
-
-// Map backend nutrient names → icon + kleur
-const NUTRIENT_ICON_CONFIG = {
-    "Energy kcal": {
-        icon: Flame,
-        className: "text-error",
-    },
-    Protein: {
-        icon: Dumbbell,
-        className: "text-primary",
-    },
-    Carbohydrates: {
-        icon: ChartColumnIncreasing,
-        className: "text-success",
-    },
-    "Total lipid (fat)": {
-        icon: Droplet,
-        className: "text-secondary",
-    },
-};
 
 const NutritionTable = ({ sortedNutrients, useBaseRDI }) => {
+
+    const getMacroKey = (name) => {
+        if (name.includes("Energy")) return "Calories";
+        if (name.includes("Protein")) return "Protein";
+        if (name.includes("Carbohydrates")) return "Carbs";
+        if (name.includes("lipid") || name.includes("fat")) return "Fats";
+        return null;
+    };
+
     return (
         <CustomBox className="flex flex-col gap-3 w-full mb-4">
             {sortedNutrients.map((nutrient) => {
@@ -40,82 +23,80 @@ const NutritionTable = ({ sortedNutrients, useBaseRDI }) => {
                 ].includes(nutrient.name);
 
                 const hasValue = typeof nutrient.value === "number";
-                const value = hasValue ? Math.round(nutrient.value) : "N/A";
+                const remainingValue = hasValue ? Math.round(nutrient.value) : "N/A";
 
-                // Bar logic
-                const numericValue = hasValue ? value : 0;
-                const barWidth = hasValue
-                    ? Math.min(Math.abs(numericValue), MAX_BAR_WIDTH)
-                    : 0;
+                const percentageStr = nutrient.percentageReached;
+                const consumed = nutrient.actuallyConsumed ? Math.round(nutrient.actuallyConsumed) : 0;
 
-                const barColor =
-                    numericValue < 0 ? "#DD1155" : "#41D3BD"; // red / green
+                const numericConsumed = percentageStr ? parseFloat(percentageStr) : 0;
+                const remainingPercentage = 100 - numericConsumed;
 
-                const iconConfig = NUTRIENT_ICON_CONFIG[nutrient.name];
-                const IconComp = iconConfig?.icon;
+                const barColorPositive = "#38adb5";
+                const barColorNegative = "#F43F5E";
+
+                const macroKey = getMacroKey(nutrient.name);
+                const IconComp = macroIcons[macroKey];
+                const iconClass = macroIconClasses[macroKey];
 
                 return (
                     <CustomBox key={nutrient.name} className="w-full">
-                        {/* Row + label */}
                         <CustomBox className="flex justify-between items-center mx-4">
                             <CustomBox className="flex items-center">
                                 {IconComp && (
-                                    <IconComp
-                                        className={`w-4 h-4 mr-2 ${iconConfig.className}`}
-                                    />
+                                    <IconComp className={`w-5 h-5 mr-2 ${iconClass}`} />
                                 )}
-
-                                <CustomTypography
-                                    variant="small"
-                                    className={isSubNutrient ? "pl-4 italic" : ""}
-                                >
-                                    {nutrient.name} :
+                                <CustomTypography variant="small" weight="bold">
+                                    {nutrient.name}
                                 </CustomTypography>
                             </CustomBox>
 
-                            <CustomTypography
-                                variant="small"
-                                style={{
-                                    color:
-                                        !useBaseRDI && hasValue
-                                            ? barColor
-                                            : undefined,
-                                }}
-                            >
-                                {value}
-                            </CustomTypography>
+                            <CustomBox className="flex flex-col items-end">
+                                <CustomTypography
+                                    variant="xsmallCard"
+                                    weight="bold"
+                                    style={{ color: remainingValue < 0 ? barColorNegative : barColorPositive }}
+                                >
+                                    {remainingValue < 0
+                                        ? `${Math.abs(remainingValue)} over limit`
+                                        : `${remainingValue} left`
+                                    }
+                                </CustomTypography>
+
+                                {percentageStr && (
+                                    <CustomTypography variant="xsmallCard" className="text-gray-500 italic">
+                                        {consumed} consumed ({percentageStr})
+                                    </CustomTypography>
+                                )}
+                            </CustomBox>
                         </CustomBox>
 
-                        {/* Bar visualization */}
                         {!useBaseRDI && hasValue && (
-                            <CustomBox className="relative h-2 mt-1 mx-4">
-                                {/* Zero center line */}
-                                <CustomBox className="absolute left-1/2 top-0 h-full w-px bg-gray-400 opacity-40" />
+                            <CustomBox className="relative h-2 mt-1 mx-4 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                <CustomBox className="absolute left-1/2 top-0 h-full w-px bg-gray-400 z-10 opacity-50" />
 
-                                {/* Positive (green) → right side */}
-                                {numericValue > 0 && (
+                                {remainingValue > 0 && (
                                     <CustomBox
                                         className="absolute left-1/2 top-0 h-full rounded-r"
                                         style={{
-                                            width: barWidth + "px",
-                                            backgroundColor: barColor,
+                                            width: Math.min(remainingPercentage, 100) / 2 + "%",
+                                            backgroundColor: barColorPositive,
+                                            transition: "width 0.3s ease"
                                         }}
                                     />
                                 )}
 
-                                {/* Negative (red) → left side */}
-                                {numericValue < 0 && (
+                                {remainingValue < 0 && (
                                     <CustomBox
                                         className="absolute right-1/2 top-0 h-full rounded-l"
                                         style={{
-                                            width: barWidth + "px",
-                                            backgroundColor: barColor,
+                                            width: Math.min(Math.abs(remainingPercentage), 100) / 2 + "%",
+                                            backgroundColor: barColorNegative,
+                                            transition: "width 0.3s ease"
                                         }}
                                     />
                                 )}
                             </CustomBox>
                         )}
-
                     </CustomBox>
                 );
             })}

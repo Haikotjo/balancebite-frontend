@@ -8,6 +8,8 @@ import RecommendedNutritionDisplay from "../recommendedNutritionDisplay/Recommen
 import MealModalById from "../../../meals/components/mealModalById/MealModalById.jsx";
 import ConsumedMealsToggle from "../consumedMealsToggle/ConsumedMealsToggle.jsx";
 import {getSortedConsumedMeals} from "../../utils/helpers/getSortedConsumedMeals.js";
+// 1. IMPORT DE SPINNER
+import Spinner from "../../../../components/layout/Spinner.jsx";
 
 const buildChartData = (nutrition, date = null) => {
     const nutrients = nutrition?.nutrients ?? [];
@@ -63,33 +65,36 @@ const LastWeekOverview = ({ dailyRdiList, baseChartData }) => {
                 monthly pattern is more important than any single day.
             </CustomTypography>
 
-            <CustomBox className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
-                {sortedDays.map(({ date, data }) => {
-                    const meals = getSortedConsumedMeals(data);
-                    const isOpen = !!openMealsByDate[date];
+            {!dailyRdiList || dailyRdiList.length === 0 ? (
+                <CustomBox className="flex justify-center items-center w-full py-10">
+                    <Spinner />
+                </CustomBox>
+            ) : (
+                <CustomBox className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+                    {sortedDays.map(({ date, data }) => {
+                        const meals = getSortedConsumedMeals(data);
+                        const isOpen = !!openMealsByDate[date];
+                        const daySpecificChartObject = buildChartData(data, date);
 
-                    // Hier maken we het object aan met de datum erbij
-                    const daySpecificChartObject = buildChartData(data, date);
-
-                    return (
-                        <CustomCard key={date} hasBorder>
-                            <RecommendedNutritionDisplay
-                                variant="date"
-                                data={data}
-                                chartData={daySpecificChartObject.data}
-                                baseChartData={baseChartData}
-                            />
-
-                            <ConsumedMealsToggle
-                                meals={meals}
-                                isOpen={isOpen}
-                                onToggle={() => toggleMeals(date)}
-                                onOpenMeal={openMealModal}
-                            />
-                        </CustomCard>
-                    );
-                })}
-            </CustomBox>
+                        return (
+                            <CustomCard key={date} hasBorder>
+                                <RecommendedNutritionDisplay
+                                    variant="date"
+                                    data={data}
+                                    chartData={daySpecificChartObject.data}
+                                    baseChartData={baseChartData}
+                                />
+                                <ConsumedMealsToggle
+                                    meals={meals}
+                                    isOpen={isOpen}
+                                    onToggle={() => toggleMeals(date)}
+                                    onOpenMeal={openMealModal}
+                                />
+                            </CustomCard>
+                        );
+                    })}
+                </CustomBox>
+            )}
         </CustomBox>
     );
 };

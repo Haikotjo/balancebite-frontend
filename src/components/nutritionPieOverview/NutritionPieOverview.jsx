@@ -3,7 +3,7 @@ import { useContext, useEffect } from "react";
 import { RecommendedNutritionContext } from "../../context/RecommendedNutritionContext.jsx";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import Spinner from "../layout/Spinner.jsx";
-import { getSortedNutritionData } from "../../features/dashboard/utils/helpers/nutritionHelpers.js";
+import {buildChartData, getSortedNutritionData} from "../../features/dashboard/utils/helpers/nutritionHelpers.js";
 import CustomTypography from "../layout/CustomTypography.jsx";
 import CustomBox from "../layout/CustomBox.jsx";
 import CustomCard from "../layout/CustomCard.jsx";
@@ -58,23 +58,8 @@ const NutritionPieOverview = ({ useBaseRDI = false, onClose }) => {
         recommendedNutrition
     );
 
-    const buildChartData = (nutrition) => {
-        const nutrients = nutrition?.nutrients ?? [];
-
-        return nutrients
-            .filter((n) =>
-                ["Energy kcal", "Protein", "Carbohydrates", "Total lipid (fat)"].includes(n.name)
-            )
-            .map((n) => ({
-                name: n.name,
-                value: n.value ?? 0,
-            }));
-    };
-
     const chartData = buildChartData(recommendedNutrition);
     const baseChartData = buildChartData(baseNutrition);
-
-
 
 // Show a loading indicator while the nutrition data is being fetched.
     if (loading) {
@@ -89,8 +74,6 @@ const NutritionPieOverview = ({ useBaseRDI = false, onClose }) => {
             </CustomTypography>
         );
     }
-
-
 
     // Show a loading indicator while the nutrition data is being fetched.
     if (loading) {

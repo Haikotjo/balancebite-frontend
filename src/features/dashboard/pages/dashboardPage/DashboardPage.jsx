@@ -1,110 +1,41 @@
-import { useContext, useEffect, useState } from "react";
-import { RecommendedNutritionContext } from "../../../../context/RecommendedNutritionContext.jsx";
-import { AuthContext } from "../../../../context/AuthContext.jsx";
-import { getSortedNutritionData } from "../../utils/helpers/nutritionHelpers.js";
+import { useContext } from "react";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
+import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
+import { buildChartData, getSortedNutritionData } from "../../utils/helpers/nutritionHelpers.js";
+import {useDashboardData} from "../../utils/hooks/useDashboardData.js";
+
 import DietSubMenu from "../../../diets/components/subMenu/DietsSubMenu.jsx";
 import MealsSubMenu from "../../../meals/components/subMenu/MealsSubMenu.jsx";
-import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
-import { format, subDays } from "date-fns";
 import DashboardContent from "../../components/dashboardContent/DashboardContent.jsx";
 import PageWrapper from "../../../../components/layout/PageWrapper.jsx";
 
+
 const DashboardPage = () => {
+    const { userMeals } = useContext(UserMealsContext);
+    const { userDiets } = useContext(UserDietsContext);
+
+    // Everything logic-related is now handled inside this hook
     const {
         recommendedNutrition,
         baseNutrition,
-        setRecommendedNutrition,
         weeklyRdi,
         monthlyRdi,
-        fetchWeeklyRdi,
-        fetchMonthlyRdi,
-    } = useContext(RecommendedNutritionContext);
-    const { userMeals } = useContext(UserMealsContext);
-    const { token } = useContext(AuthContext);
+        dailyRdiList
+    } = useDashboardData();
 
-    const { userDiets } = useContext(UserDietsContext);
-    const [dailyRdiList, setDailyRdiList] = useState([]);
-    const { fetchDailyRdiByDate } = useContext(RecommendedNutritionContext);
-
-    useEffect(() => {
-        if (!token) {
-            setRecommendedNutrition(null);
-        }
-    }, [token]);
-
-    useEffect(() => {
-        if (token) {
-            const userId = JSON.parse(atob(token.split(".")[1])).sub;
-            fetchWeeklyRdi(userId);
-            fetchMonthlyRdi(userId);
-        }
-    }, [token]);
-
-    const { sortedNutrients } = getSortedNutritionData(
-        false,
-        baseNutrition,
-        recommendedNutrition
-    );
-
-// Helper to build chart arrays (includes Energy kcal + macros)
-    const buildChartData = (nutrition) => {
-        const nutrients = nutrition?.nutrients ?? [];
-
-        return nutrients
-            .filter((n) =>
-                ["Energy kcal", "Protein", "Carbohydrates", "Total lipid (fat)"].includes(n.name)
-            )
-            .map((n) => ({
-                name: n.name,
-                value: n.value ?? 0,
-            }));
-    };
-
+    const { sortedNutrients } = getSortedNutritionData(false, baseNutrition, recommendedNutrition);
     const chartData = buildChartData(recommendedNutrition);
     const baseChartData = buildChartData(baseNutrition);
 
-    useEffect(() => {
-        const loadDailyRdi = async () => {
-            const today = new Date();
-            const days = [];
-
-            for (let i = 1; i <= 7; i++) {
-                const date = subDays(today, i);
-                const formattedDate = format(date, "yyyy-MM-dd");
-                const data = await fetchDailyRdiByDate(formattedDate);
-                if (data) {
-                    days.push({ date: formattedDate, data });
-                }
-            }
-            setDailyRdiList(days.reverse());
-        };
-
-        if (token) loadDailyRdi();
-    }, [token]);
-
-    useEffect(() => {
-        dailyRdiList.forEach((day) => {
-            console.group(`DATE: ${day.date}`);
-            console.dir(day.data.consumedMeals, { depth: null });
-            console.groupEnd();
-        });
-    }, [dailyRdiList]);
-
     return (
         <PageWrapper className="flex flex-col items-center">
-            {/* Center content and allow wider dashboard */}
             <CustomBox className="w-full mx-auto flex flex-col items-center gap-6">
-            {/* Submenus */}
                 <CustomBox className="flex flex-col md:flex-row gap-12 justify-center">
-                    <DietSubMenu
-                        isDetailPage
-                    />
+                    <DietSubMenu isDetailPage />
                     <MealsSubMenu isDetailPage />
                 </CustomBox>
 
-                {/* Driekoloms-layout */}
                 <DashboardContent
                     userMeals={userMeals}
                     userDiets={userDiets}
