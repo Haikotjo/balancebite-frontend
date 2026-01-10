@@ -9,9 +9,24 @@ import MealModalById from "../../../meals/components/mealModalById/MealModalById
 import ConsumedMealsToggle from "../consumedMealsToggle/ConsumedMealsToggle.jsx";
 import {getSortedConsumedMeals} from "../../utils/helpers/getSortedConsumedMeals.js";
 
+const buildChartData = (nutrition, date = null) => {
+    const nutrients = nutrition?.nutrients ?? [];
+    const chartValues = nutrients
+        .filter((n) =>
+            ["Energy kcal", "Protein", "Carbohydrates", "Total lipid (fat)"].includes(n.name)
+        )
+        .map((n) => ({
+            name: n.name,
+            value: n.value ?? 0,
+        }));
 
+    return {
+        date: date,
+        data: chartValues
+    };
+};
 
-const LastWeekOverview = ({ dailyRdiList }) => {
+const LastWeekOverview = ({ dailyRdiList, baseChartData }) => {
     const { openModal } = useModal();
     const [openMealsByDate, setOpenMealsByDate] = useState({});
 
@@ -31,7 +46,6 @@ const LastWeekOverview = ({ dailyRdiList }) => {
     const toggleMeals = (date) => {
         setOpenMealsByDate((prev) => ({ ...prev, [date]: !prev[date] }));
     };
-
 
     return (
         <CustomBox className="flex flex-col gap-2 text-center">
@@ -54,9 +68,17 @@ const LastWeekOverview = ({ dailyRdiList }) => {
                     const meals = getSortedConsumedMeals(data);
                     const isOpen = !!openMealsByDate[date];
 
+                    // Hier maken we het object aan met de datum erbij
+                    const daySpecificChartObject = buildChartData(data, date);
+
                     return (
                         <CustomCard key={date} hasBorder>
-                            <RecommendedNutritionDisplay variant="date" data={data} />
+                            <RecommendedNutritionDisplay
+                                variant="date"
+                                data={data}
+                                chartData={daySpecificChartObject.data}
+                                baseChartData={baseChartData}
+                            />
 
                             <ConsumedMealsToggle
                                 meals={meals}
@@ -74,6 +96,7 @@ const LastWeekOverview = ({ dailyRdiList }) => {
 
 LastWeekOverview.propTypes = {
     dailyRdiList: PropTypes.array.isRequired,
+    baseChartData: PropTypes.array,
 };
 
 export default LastWeekOverview;

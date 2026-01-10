@@ -22,6 +22,8 @@ const RecommendedNutritionDisplay = ({
                                          variant = "today",
                                          data = null,
                                          newCustomTitle = null,
+                                         chartData,
+                                         baseChartData
                                      }) => {
     const {
         recommendedNutrition,
@@ -40,6 +42,34 @@ const RecommendedNutritionDisplay = ({
 
     if (loading) {
         return <Spinner className="mx-auto my-4" />;
+    }
+
+// Berekeningen uitvoeren voor de log
+    let nutritionCalculations = null;
+
+    if ((variant === "today" || variant === "date") && chartData && baseChartData) {
+        nutritionCalculations = baseChartData.map((target) => {
+            // In jouw geval is 'current' eigenlijk de 'remaining' waarde uit de chartData
+            const current = chartData.find((c) => c.name === target.name);
+            const remainingValue = current ? current.value : 0;
+
+            // Wat je daadwerkelijk hebt gegeten is het doel minus wat er nog over is
+            const consumedValue = target.value - remainingValue;
+
+            // Bereken percentage van het doel dat al is opgegeten
+            const percentageReached = target.value > 0
+                ? ((consumedValue / target.value) * 100).toFixed(1)
+                : 0;
+
+            return {
+                nutrient: target.name,
+                goal: target.value,
+                leftToEat: remainingValue, // De waarde uit je chartData
+                actuallyConsumed: consumedValue,
+                percentageOfGoalMet: `${percentageReached}%`,
+                status: remainingValue < 0 ? "Goal exceeded" : "Under goal"
+            };
+        });
     }
 
     let useBaseRDI = false;
@@ -69,6 +99,13 @@ const RecommendedNutritionDisplay = ({
 
     const { sortedNutrients, message, createdAt } =
         getSortedNutritionData(useBaseRDI, baseNutrition, source);
+
+    if (variant === "date" || variant === "today") {
+        console.log(`Nutrition Analysis [${variant}] - Date: ${createdAt || 'Today'}:`, {
+            calculations: nutritionCalculations,
+            originalData: { chartData, baseChartData }
+        });
+    }
 
     if (!sortedNutrients) {
         return (
@@ -123,6 +160,8 @@ RecommendedNutritionDisplay.propTypes = {
     ]),
     data: PropTypes.object,
     newCustomTitle: PropTypes.string,
+    chartData: PropTypes.array,
+    baseChartData: PropTypes.array,
 };
 
 export default RecommendedNutritionDisplay;

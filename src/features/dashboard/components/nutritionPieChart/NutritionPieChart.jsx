@@ -14,6 +14,7 @@ import RenderSector from "../renderSector/RenderSector.jsx";
 import { Flame, Dumbbell, ChartColumnIncreasing, Droplet } from "lucide-react";
 import useIsSmallScreen from "../../../../hooks/useIsSmallScreen.js";
 
+
 const NUTRITION_MAP = [
     { id: "Energy kcal", icon: Flame, position: "left-3 top-3" },
     { id: "Protein", icon: Dumbbell, position: "right-3 top-3" },
@@ -117,7 +118,7 @@ const NutritionPieChart = ({ chartData, baseChartData }) => {
                         )}
                     </CustomBox>
 
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="100%" height="100%" >
                         <RadialBarChart
                             data={chartDataSafe}
                             cx="50%" cy="53%"

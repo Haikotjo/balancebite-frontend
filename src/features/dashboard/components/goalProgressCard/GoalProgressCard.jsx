@@ -9,7 +9,7 @@ import MealModalById from "../../../meals/components/mealModalById/MealModalById
 import ConsumedMealsToggle from "../consumedMealsToggle/ConsumedMealsToggle.jsx";
 import {getSortedConsumedMeals} from "../../utils/helpers/getSortedConsumedMeals.js";
 
-const GoalProgressCard = ({ variant, data, description }) => {
+const GoalProgressCard = ({ variant, data, description, chartData, baseChartData }) => {
     const { openModal } = useModal();
     const [showMeals, setShowMeals] = useState(false);
 
@@ -25,7 +25,7 @@ const GoalProgressCard = ({ variant, data, description }) => {
 
     return (
         <CustomCard hasBorder>
-            <RecommendedNutritionDisplay variant={variant} data={data} />
+            <RecommendedNutritionDisplay variant={variant} data={data} chartData={chartData} baseChartData={baseChartData}/>
 
             {showConsumedMeals && (
                 <ConsumedMealsToggle
@@ -57,6 +57,8 @@ GoalProgressCard.propTypes = {
     ]).isRequired,
     data: PropTypes.object,
     description: PropTypes.string,
+    chartData: PropTypes.array,
+    baseChartData: PropTypes.array,
 };
 
 export default GoalProgressCard;

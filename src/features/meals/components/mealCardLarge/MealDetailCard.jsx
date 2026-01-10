@@ -112,14 +112,14 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
 
                             <CustomLink
                                 href={`/meal/${mealToRender.id}`}
-                                ariaLabel="Open new window"
-                                title="Open new window"
+                                ariaLabel="Open meal details in new window"
+                                title="Open meal details in new window"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                rightIcon={<ExternalLink className="w-5 h-5" aria-hidden="true" />}
                                 onClick={(e) => e.stopPropagation()}
                                 className="text-muted-foreground hover:text-primary"
                             >
+                                <ExternalLink className="w-5 h-5" aria-hidden="true" />
                             </CustomLink>
                         </CustomBox>
 

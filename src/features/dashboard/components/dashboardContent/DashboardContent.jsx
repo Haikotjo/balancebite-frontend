@@ -27,6 +27,7 @@ const DashboardContent = ({
 
     const goalCards = buildGoalCards(
         weeklyAverageRdi,
+        weeklyAverageRdi,
         monthlyAverageRdi,
         weeklyRdi,
         monthlyRdi,
@@ -50,7 +51,7 @@ const DashboardContent = ({
                             <CustomTypography variant="h3">
                                 Today’s Nutrition Overview
                             </CustomTypography>
-                            <CustomTypography className="text-sm text-muted mt-1 mb-2">
+                            <CustomTypography className="text-muted mt-1 mb-2">
                                 Showing your remaining intake for today based on your goals
                             </CustomTypography>
                         </CustomBox>
@@ -60,7 +61,7 @@ const DashboardContent = ({
                         </CustomCard>
 
                         {/* Last Week */}
-                        <LastWeekOverview dailyRdiList={dailyRdiList} />
+                        <LastWeekOverview dailyRdiList={dailyRdiList} baseChartData={baseChartData}/>
                     </CustomBox>
 
                     {/* RIGHT COLUMN */}
@@ -69,7 +70,7 @@ const DashboardContent = ({
                             <CustomTypography variant="h3" className="text-center">
                                 Goal & Progress Overview
                             </CustomTypography>
-                            <CustomTypography className="text-sm text-muted mt-1 mb-2">
+                            <CustomTypography  className="text-muted mt-1 mb-2">
                                 Overview of averages and remaining nutrients.
                             </CustomTypography>
                         </CustomBox>
@@ -81,6 +82,8 @@ const DashboardContent = ({
                                     variant={card.variant}
                                     data={card.data}
                                     description={card.description}
+                                    chartData={chartData}
+                                    baseChartData={baseChartData}
                                 />
                             ))}
                         </CustomBox>
@@ -103,7 +106,7 @@ const DashboardContent = ({
                         <CustomTypography variant="h3">
                             Today’s Nutrition Overview
                         </CustomTypography>
-                        <CustomTypography variant="body" className="text-sm text-muted mt-1">
+                        <CustomTypography variant="small" className="text-muted mt-1">
                             Showing your remaining intake for today based on your goals
                         </CustomTypography>
                     </CustomBox>
@@ -115,7 +118,7 @@ const DashboardContent = ({
 
                 {/* Last Week in accordion */}
                 <AccordionItem title="Last Week's Overview">
-                    <LastWeekOverview dailyRdiList={dailyRdiList} />
+                    <LastWeekOverview dailyRdiList={dailyRdiList} baseChartData={baseChartData} />
                 </AccordionItem>
 
                 {/* All progress cards in accordions (with all original text) */}
@@ -125,6 +128,8 @@ const DashboardContent = ({
                             variant={card.variant}
                             data={card.data}
                             description={card.description}
+                            chartData={chartData}
+                            baseChartData={baseChartData}
                         />
                     </AccordionItem>
                 ))}

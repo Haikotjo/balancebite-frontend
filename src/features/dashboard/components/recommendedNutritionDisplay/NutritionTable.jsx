@@ -55,7 +55,7 @@ const NutritionTable = ({ sortedNutrients, useBaseRDI }) => {
                 const IconComp = iconConfig?.icon;
 
                 return (
-                    <CustomBox key={nutrient.id} className="w-full">
+                    <CustomBox key={nutrient.name} className="w-full">
                         {/* Row + label */}
                         <CustomBox className="flex justify-between items-center mx-4">
                             <CustomBox className="flex items-center">

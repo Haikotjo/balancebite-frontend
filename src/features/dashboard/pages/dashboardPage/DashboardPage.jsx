@@ -92,11 +92,6 @@ const DashboardPage = () => {
         });
     }, [dailyRdiList]);
 
-
-
-    console.log("Dashboard baseNutrition:", baseNutrition);
-    console.log("Dashboard recommendedNutrition:", recommendedNutrition);
-
     return (
         <PageWrapper className="flex flex-col items-center">
             {/* Center content and allow wider dashboard */}

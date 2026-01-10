@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useContext, useEffect, useMemo } from "react";
+import { useContext, useEffect } from "react";
 import { RecommendedNutritionContext } from "../../context/RecommendedNutritionContext.jsx";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import Spinner from "../layout/Spinner.jsx";
