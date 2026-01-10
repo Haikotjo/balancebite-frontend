@@ -1,14 +1,20 @@
-import CustomBox from "../../../../components/layout/CustomBox.jsx";
-import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
-import CustomCard from "../../../../components/layout/CustomCard.jsx";
 import PropTypes from "prop-types";
+
+// Layout Components
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import CustomCard from "../../../../components/layout/CustomCard.jsx";
+import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+
+// Feature Components
 import MealDetailCard from "../../../meals/components/mealCardLarge/MealDetailCard.jsx";
-import NutritionPieChart from "../nutritionPieChart/NutritionPieChart.jsx";
-import {buildMonthlyAverageRdi, buildWeeklyAverageRdi} from "../../utils/helpers/rdiHelpers.js";
 import AccordionItem from "../../../diets/components/accordionItem/AccordionItem.jsx";
+import NutritionPieChart from "../nutritionPieChart/NutritionPieChart.jsx";
 import LastWeekOverview from "../lastWeekOverview/LastWeekOverview.jsx";
 import GoalProgressCard from "../goalProgressCard/GoalProgressCard.jsx";
-import {buildGoalCards} from "../../utils/helpers/goalCardsConfig.js";
+
+// Helpers & Config
+import { buildMonthlyAverageRdi, buildWeeklyAverageRdi } from "../../utils/helpers/rdiHelpers.js";
+import { buildGoalCards } from "../../utils/helpers/goalCardsConfig.js";
 
 const DashboardContent = ({
                               userMeals,

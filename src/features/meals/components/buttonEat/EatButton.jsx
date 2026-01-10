@@ -1,11 +1,17 @@
 import PropTypes from "prop-types";
 import { Utensils } from "lucide-react";
-import {useConsumeMeal} from "../../../../hooks/useConsumeMeal.js";
-import {useRequireAuthDialog} from "../../../../hooks/useRequireAuthDialog.js";
+
+// Hooks
+import { useConsumeMeal } from "../../../../hooks/useConsumeMeal.js";
+import { useRequireAuthDialog } from "../../../../hooks/useRequireAuthDialog.js";
+
+// Layout Components
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
-import RequireAuthUI from "../../../../components/layout/RequireAuthUI.jsx";
-import NutritionPieOverview from "../../../../components/nutritionPieOverview/NutritionPieOverview.jsx";
 import CustomModal from "../../../../components/layout/CustomModal.jsx";
+import RequireAuthUI from "../../../../components/layout/RequireAuthUI.jsx";
+
+// Feature Components
+import NutritionPieOverview from "../../../../components/nutritionPieOverview/NutritionPieOverview.jsx";
 
 const EatButton = ({ meal, refetchRecommendedNutrition }) => {
     const {

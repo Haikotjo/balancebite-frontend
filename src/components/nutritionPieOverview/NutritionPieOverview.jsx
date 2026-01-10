@@ -1,33 +1,26 @@
-import PropTypes from "prop-types";
 import { useContext, useEffect } from "react";
+import PropTypes from "prop-types";
+import { X } from "lucide-react";
+
+// Contexts
 import { RecommendedNutritionContext } from "../../context/RecommendedNutritionContext.jsx";
 import { AuthContext } from "../../context/AuthContext.jsx";
-import Spinner from "../layout/Spinner.jsx";
-import {buildChartData, getSortedNutritionData} from "../../features/dashboard/utils/helpers/nutritionHelpers.js";
-import CustomTypography from "../layout/CustomTypography.jsx";
+
+// Layout & UI Components
 import CustomBox from "../layout/CustomBox.jsx";
 import CustomCard from "../layout/CustomCard.jsx";
+import CustomTypography from "../layout/CustomTypography.jsx";
+import CustomButton from "../layout/CustomButton.jsx";
+import Spinner from "../layout/Spinner.jsx";
+
+// Dashboard Components
 import NutritionPieChart from "../../features/dashboard/components/nutritionPieChart/NutritionPieChart.jsx";
 import NutritionTable from "../../features/dashboard/components/recommendedNutritionDisplay/NutritionTable.jsx";
-import {X} from "lucide-react";
-import CustomButton from "../layout/CustomButton.jsx";
 
-/**
- * NutritionPieOverview
- *
- * Responsible for showing a combined overview of:
- * - A pie chart with macro nutrients (Protein, Carbohydrates, Fat)
- * - A detailed nutrition table
- *
- * Data is read from RecommendedNutritionContext and normalized with
- * `getSortedNutritionData`. When the user logs out, the recommended
- * nutrition data is cleared.
- *
- * @param {Object} props
- * @param {boolean} [props.useBaseRDI=false] - When true, use base RDI values instead of today's intake.
- * @returns {JSX.Element}
- * @param {Function} [props.onClose] - Optional close handler for when used inside a modal.
- */
+// Helpers
+import { buildChartData, getSortedNutritionData } from "../../features/dashboard/utils/helpers/nutritionHelpers.js";
+import { calculateNutritionProgress, mergeNutritionProgress } from "../../features/dashboard/utils/helpers/nutritionCalculations.js";
+
 const NutritionPieOverview = ({ useBaseRDI = false, onClose }) => {
     const {
         recommendedNutrition,
@@ -38,49 +31,44 @@ const NutritionPieOverview = ({ useBaseRDI = false, onClose }) => {
 
     const { token } = useContext(AuthContext);
 
-    /**
-     * When the user is no longer authenticated, clear any user-specific
-     * recommended nutrition data to avoid showing stale values.
-     */
     useEffect(() => {
         if (!token) {
             setRecommendedNutrition(null);
         }
     }, [token, setRecommendedNutrition]);
 
-    /**
-     * Normalize the raw nutrition data into a shape that the UI can work with.
-     * This is a regular function call, not a hook.
-     */
+    if (loading) {
+        return (
+            <CustomBox className="flex flex-col items-center justify-center p-12 min-h-[300px]">
+                <Spinner />
+                <CustomTypography variant="small" className="mt-4 text-gray-500 italic">
+                    Updating your nutrition data...
+                </CustomTypography>
+            </CustomBox>
+        );
+    }
+
+    // 1. Prepare base chart data
+    const chartData = buildChartData(recommendedNutrition);
+    const baseChartData = buildChartData(baseNutrition);
+
+    // 2. Calculate progress percentages (This enables the progress bars)
+    const nutritionCalculations = !useBaseRDI
+        ? calculateNutritionProgress(chartData, baseChartData)
+        : null;
+
+    // 3. Fetch the sorted nutrient list
     const { sortedNutrients, message, createdAt } = getSortedNutritionData(
         useBaseRDI,
         baseNutrition,
         recommendedNutrition
     );
 
-    const chartData = buildChartData(recommendedNutrition);
-    const baseChartData = buildChartData(baseNutrition);
+    // 4. Merge the calculated progress into the nutrient list
+    const nutrientsWithProgress = mergeNutritionProgress(sortedNutrients, nutritionCalculations);
 
-// Show a loading indicator while the nutrition data is being fetched.
-    if (loading) {
-        return <Spinner className="mx-auto my-4" />;
-    }
+    if (loading) return <Spinner className="mx-auto my-4" />;
 
-// If there is no data, show the message returned by getSortedNutritionData.
-    if (!sortedNutrients) {
-        return (
-            <CustomTypography variant="h5" className="text-center mt-4">
-                {message}
-            </CustomTypography>
-        );
-    }
-
-    // Show a loading indicator while the nutrition data is being fetched.
-    if (loading) {
-        return <Spinner className="mx-auto my-4" />;
-    }
-
-    // If there is no data, show the message returned by getSortedNutritionData.
     if (!sortedNutrients) {
         return (
             <CustomTypography variant="h5" className="text-center mt-4">
@@ -93,15 +81,10 @@ const NutritionPieOverview = ({ useBaseRDI = false, onClose }) => {
         <CustomCard className="max-w-3xl mx-auto p-4 md:p-6">
             <CustomBox className="flex flex-col gap-4">
                 <CustomBox className="grid grid-cols-3 items-center">
-                    {/* Lege placeholder links zodat titel exact in het midden blijft */}
                     <CustomBox></CustomBox>
-
-                    {/* Gecentreerde titel */}
                     <CustomTypography variant="h2" className="text-center">
                         {useBaseRDI ? "Recommended" : "Remaining Nutrients"}
                     </CustomTypography>
-
-                    {/* Close button helemaal rechts */}
                     {onClose ? (
                         <CustomButton
                             variant="outline"
@@ -113,18 +96,15 @@ const NutritionPieOverview = ({ useBaseRDI = false, onClose }) => {
                             <X size={16} />
                         </CustomButton>
                     ) : (
-                        /* placeholder zodat kolom 3 altijd bestaat */
                         <div></div>
                     )}
                 </CustomBox>
 
-                {/* Pie chart on top, table below */}
                 <CustomBox className="flex flex-col gap-2">
                     <NutritionPieChart chartData={chartData} baseChartData={baseChartData}/>
 
-
                     <NutritionTable
-                        sortedNutrients={sortedNutrients.filter(
+                        sortedNutrients={nutrientsWithProgress.filter(
                             (n) =>
                                 n.name !== "Saturated and Trans fats" &&
                                 n.name !== "Mono- and Polyunsaturated fats"
@@ -133,10 +113,7 @@ const NutritionPieOverview = ({ useBaseRDI = false, onClose }) => {
                     />
                 </CustomBox>
 
-                <CustomTypography
-                    variant="xsmallCard"
-                    className="text-right text-friendlyGray mt-2"
-                >
+                <CustomTypography variant="xsmallCard" className="text-right text-friendlyGray mt-2">
                     {createdAt}
                 </CustomTypography>
             </CustomBox>
@@ -145,7 +122,6 @@ const NutritionPieOverview = ({ useBaseRDI = false, onClose }) => {
 };
 
 NutritionPieOverview.propTypes = {
-    /** When true, use base RDI values instead of today's intake. */
     useBaseRDI: PropTypes.bool,
     onClose: PropTypes.func,
 };

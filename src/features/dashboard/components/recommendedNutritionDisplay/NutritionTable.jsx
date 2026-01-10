@@ -1,8 +1,14 @@
 import PropTypes from "prop-types";
+
+// Layout Components
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
-import {macroIconClasses, macroIcons} from "../../../../utils/helpers/macroIcons.js";
 
+// Feature Components
+import NutritionProgressBar from "../nutritionProgressBar/NutritionProgressBar.jsx";
+
+// Icons & Helpers
+import { macroIconClasses, macroIcons } from "../../../../utils/helpers/macroIcons.js";
 
 const NutritionTable = ({ sortedNutrients, useBaseRDI }) => {
 
@@ -71,31 +77,10 @@ const NutritionTable = ({ sortedNutrients, useBaseRDI }) => {
                         </CustomBox>
 
                         {!useBaseRDI && hasValue && (
-                            <CustomBox className="relative h-2 mt-1 mx-4 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                                <CustomBox className="absolute left-1/2 top-0 h-full w-px bg-gray-400 z-10 opacity-50" />
-
-                                {remainingValue > 0 && (
-                                    <CustomBox
-                                        className="absolute left-1/2 top-0 h-full rounded-r"
-                                        style={{
-                                            width: Math.min(remainingPercentage, 100) / 2 + "%",
-                                            backgroundColor: barColorPositive,
-                                            transition: "width 0.3s ease"
-                                        }}
-                                    />
-                                )}
-
-                                {remainingValue < 0 && (
-                                    <CustomBox
-                                        className="absolute right-1/2 top-0 h-full rounded-l"
-                                        style={{
-                                            width: Math.min(Math.abs(remainingPercentage), 100) / 2 + "%",
-                                            backgroundColor: barColorNegative,
-                                            transition: "width 0.3s ease"
-                                        }}
-                                    />
-                                )}
-                            </CustomBox>
+                            <NutritionProgressBar
+                                remainingValue={remainingValue}
+                                remainingPercentage={remainingPercentage}
+                            />
                         )}
                     </CustomBox>
                 );

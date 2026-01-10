@@ -1,12 +1,20 @@
-import PropTypes from "prop-types";
 import { useContext, useEffect } from "react";
+import PropTypes from "prop-types";
+
+// Contexts
 import { RecommendedNutritionContext } from "../../../../context/RecommendedNutritionContext.jsx";
 import { AuthContext } from "../../../../context/AuthContext.jsx";
-import { getSortedNutritionData } from "../../utils/helpers/nutritionHelpers.js";
+
+// Layout Components
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import Spinner from "../../../../components/layout/Spinner.jsx";
+
+// Feature Components
 import NutritionTable from "./NutritionTable.jsx";
+
+// Helpers & Calculations
+import { getSortedNutritionData } from "../../utils/helpers/nutritionHelpers.js";
 import {
     calculateNutritionProgress,
     getNutritionSourceConfig,

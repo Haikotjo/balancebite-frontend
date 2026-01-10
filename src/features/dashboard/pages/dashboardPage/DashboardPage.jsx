@@ -1,16 +1,23 @@
 import { useContext } from "react";
+
+// Contexts
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
-import { buildChartData, getSortedNutritionData } from "../../utils/helpers/nutritionHelpers.js";
-import {useDashboardData} from "../../utils/hooks/useDashboardData.js";
 
+// Hooks
+import { useDashboardData } from "../../utils/hooks/useDashboardData.js";
+
+// Layout Components
+import PageWrapper from "../../../../components/layout/PageWrapper.jsx";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+
+// Feature Components
+import DashboardContent from "../../components/dashboardContent/DashboardContent.jsx";
 import DietSubMenu from "../../../diets/components/subMenu/DietsSubMenu.jsx";
 import MealsSubMenu from "../../../meals/components/subMenu/MealsSubMenu.jsx";
-import CustomBox from "../../../../components/layout/CustomBox.jsx";
-import DashboardContent from "../../components/dashboardContent/DashboardContent.jsx";
-import PageWrapper from "../../../../components/layout/PageWrapper.jsx";
 
-
+// Helpers
+import { buildChartData, getSortedNutritionData } from "../../utils/helpers/nutritionHelpers.js";
 const DashboardPage = () => {
     const { userMeals } = useContext(UserMealsContext);
     const { userDiets } = useContext(UserDietsContext);
