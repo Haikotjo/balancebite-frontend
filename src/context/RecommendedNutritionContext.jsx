@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useContext } from "react";
+import { createContext, useState, useEffect, useContext, useCallback } from "react";
 import PropTypes from "prop-types";
 import { AuthContext } from "./AuthContext";
 import {
@@ -20,7 +20,10 @@ export const RecommendedNutritionProvider = ({ children }) => {
 
     const { token, user } = useContext(AuthContext);
 
-    const fetchRecommendedNutrition = async () => {
+    /**
+     * Fetch recommended nutrition settings for the user
+     */
+    const fetchRecommendedNutrition = useCallback(async () => {
         try {
             const data = await fetchRecommendedNutritionApi(token);
             if (data) setRecommendedNutrition(data);
@@ -29,18 +32,24 @@ export const RecommendedNutritionProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [token]);
 
-    const fetchBaseNutrition = async () => {
+    /**
+     * Fetch base nutrition goals/limits
+     */
+    const fetchBaseNutrition = useCallback(async () => {
         try {
             const data = await fetchBaseNutritionApi(token);
             if (data) setBaseNutrition(data);
         } catch (error) {
             console.error("Error fetching base nutrition:", error);
         }
-    };
+    }, [token]);
 
-    const fetchDailyRdiByDate = async (date) => {
+    /**
+     * Fetch specific daily RDI data by date string
+     */
+    const fetchDailyRdiByDate = useCallback(async (date) => {
         if (!user?.id) return null;
         try {
             const data = await fetchDailyRdiByDateApi(user.id, date);
@@ -49,9 +58,12 @@ export const RecommendedNutritionProvider = ({ children }) => {
             console.error("Error fetching daily RDI by date:", error);
             return null;
         }
-    };
+    }, [user?.id]);
 
-    const fetchWeeklyRdi = async () => {
+    /**
+     * Fetch aggregated weekly RDI data
+     */
+    const fetchWeeklyRdi = useCallback(async () => {
         if (!user?.id) return;
         try {
             const raw = await fetchWeeklyRdiApi(user.id);
@@ -62,9 +74,12 @@ export const RecommendedNutritionProvider = ({ children }) => {
         } catch (error) {
             console.error("Error fetching weekly RDI:", error);
         }
-    };
+    }, [user?.id]);
 
-    const fetchMonthlyRdi = async () => {
+    /**
+     * Fetch aggregated monthly RDI data
+     */
+    const fetchMonthlyRdi = useCallback(async () => {
         if (!user?.id) return;
         try {
             const raw = await fetchMonthlyRdiApi(user.id);
@@ -75,18 +90,19 @@ export const RecommendedNutritionProvider = ({ children }) => {
         } catch (error) {
             console.error("Error fetching monthly RDI:", error);
         }
-    };
+    }, [user?.id]);
 
+    // Initial data load on login
     useEffect(() => {
         if (token) {
-            fetchRecommendedNutrition();
-            fetchBaseNutrition();
-            fetchWeeklyRdi();
-            fetchMonthlyRdi();
+            void fetchRecommendedNutrition();
+            void fetchBaseNutrition();
+            void fetchWeeklyRdi();
+            void fetchMonthlyRdi();
         } else {
             setLoading(false);
         }
-    }, [token]);
+    }, [token, fetchRecommendedNutrition, fetchBaseNutrition, fetchWeeklyRdi, fetchMonthlyRdi]);
 
     const value = {
         recommendedNutrition,

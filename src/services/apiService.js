@@ -21,7 +21,7 @@ const logError = (error) => {
 
 
 export const addMealToFavoritesApi = async (mealId, token) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_ADD_MEAL_ENDPOINT}/${mealId}`;
+    const endpoint = `${import.meta.env.VITE_ADD_MEAL_ENDPOINT}/${mealId}`;
     try {
         const response = await Interceptor.patch(endpoint, null, {
             headers: { Authorization: `Bearer ${token}` },
@@ -35,7 +35,7 @@ export const addMealToFavoritesApi = async (mealId, token) => {
 };
 
 export const removeMealFromFavoritesApi = async (mealId, token) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_REMOVE_MEAL_ENDPOINT}/${mealId}`;
+    const endpoint = `${import.meta.env.VITE_REMOVE_MEAL_ENDPOINT}/${mealId}`;
     try {
         const response = await Interceptor.delete(endpoint, {
             headers: { Authorization: `Bearer ${token}` },
@@ -57,7 +57,7 @@ export const removeMealFromFavoritesApi = async (mealId, token) => {
 };
 
 export const forceUnlinkMealFromUserApi = async (mealId, token) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_FORCE_UNLINK_MEAL_ENDPOINT}/${mealId}/force`;
+    const endpoint = `${import.meta.env.VITE_FORCE_UNLINK_MEAL_ENDPOINT}/${mealId}/force`;
 
     try {
         const response = await Interceptor.delete(endpoint, {
@@ -145,7 +145,7 @@ export const createMealApi = async (formData) => {
 };
 
 export const cancelMealApi = async (mealId, token) => {
-    const endpoint = `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_CANCEL_MEAL_ENDPOINT}/${mealId}/cancel`;
+    const endpoint = `${import.meta.env.VITE_CANCEL_MEAL_ENDPOINT}/${mealId}/cancel`;
     try {
         const response = await Interceptor.delete(endpoint, {
             headers: { Authorization: `Bearer ${token}` },

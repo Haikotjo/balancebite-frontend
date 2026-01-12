@@ -26,7 +26,22 @@ export const useCreateFoodItem = (reset) => {
             grams: data.grams ? parseFloat(data.grams) : null,
             imageUrl: fileToSend ? null : urlToSend,
             image: null,
-            nutrients: [/* unchanged */],
+            // DIT STUK IS VERANDERD:
+            nutrients: [
+                { nutrientName: "Energy", value: data.calories, unitName: "kcal" },
+                { nutrientName: "Protein", value: data.protein, unitName: "g" },
+                { nutrientName: "Carbohydrates", value: data.carbohydrates, unitName: "g" },
+                { nutrientName: "Total Sugars", value: data.sugars, unitName: "g" },
+                { nutrientName: "Total lipid (fat)", value: data.fat, unitName: "g" },
+                { nutrientName: "Saturated Fat", value: data.saturatedFat, unitName: "g" },
+                { nutrientName: "Unsaturated Fat", value: data.unsaturatedFat, unitName: "g" },
+            ]
+                .filter((n) => n.value !== "" && n.value !== null && n.value !== undefined)
+                .map((n) => ({
+                    nutrientName: n.nutrientName,
+                    unitName: n.unitName,
+                    value: Number(n.value),
+                })),
         };
 
         const fd = new FormData();

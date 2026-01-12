@@ -40,6 +40,7 @@ const CreateFoodItemForm = () => {
             grams: "",
             imageFile: "",
             imageUrl: "",
+
         },
     });
 

@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import clsx from "clsx";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 
 import MealCardActionButtons from "../mealCardActionButtons/MealCardActionButtons.jsx";
 import MealInfoOverlay from "../mealCardInfoOverlay/MealInfoOverlay.jsx";
@@ -14,22 +14,6 @@ import CustomTypography from "../../../../components/layout/CustomTypography.jsx
 import MealCardMacrosCompact from "../mealCardMacrosCompact/MealCardMacrosCompact.jsx";
 
 import { toYoutubeEmbedUrl } from "../../utils/helpers/toYoutubeEmbedUrl.js";
-import { getYoutubeId } from "../../utils/helpers/getYoutubeId.js";
-
-const loadYouTubeIframeAPI = () => {
-    // Load the YouTube IFrame API only once.
-    if (window.YT && window.YT.Player) return Promise.resolve();
-    if (window.__ytApiPromise) return window.__ytApiPromise;
-
-    window.__ytApiPromise = new Promise((resolve) => {
-        const tag = document.createElement("script");
-        tag.src = "https://www.youtube.com/iframe_api";
-        document.body.appendChild(tag);
-        window.onYouTubeIframeAPIReady = () => resolve();
-    });
-
-    return window.__ytApiPromise;
-};
 
 const MealCardImageSection = ({
                                   meal,
@@ -42,64 +26,15 @@ const MealCardImageSection = ({
     const imageSrc = getImageSrc(meal);
     const { openModal } = useContext(ModalContext);
 
-    const videoId = getYoutubeId(meal?.videoUrl);
-
-    // IMPORTANT: jsapi must be enabled to receive ENDED events
-    const embedUrl = toYoutubeEmbedUrl(meal?.videoUrl, { autoplay: true, jsapi: true });
+    // Get the embed URL. We don't need jsapi=true anymore, making it much faster.
+    const embedUrl = toYoutubeEmbedUrl(meal?.videoUrl, { autoplay: true });
 
     const [showVideo, setShowVideo] = useState(Boolean(embedUrl));
-    const iframeRef = useRef(null);
-    const playerRef = useRef(null);
 
+    // Reset video state if the meal changes
     useEffect(() => {
-        // Reset when meal changes / url changes
         setShowVideo(Boolean(embedUrl));
     }, [meal?.id, embedUrl]);
-
-    useEffect(() => {
-        // If no video shown, destroy player (cleanup)
-        if (!showVideo && playerRef.current?.destroy) {
-            playerRef.current.destroy();
-            playerRef.current = null;
-        }
-    }, [showVideo]);
-
-    useEffect(() => {
-        // If no video, nothing to do
-        if (!showVideo || !videoId) return;
-
-        let cancelled = false;
-
-        const initPlayer = async () => {
-            await loadYouTubeIframeAPI();
-            if (cancelled) return;
-
-            // Destroy previous player if any
-            if (playerRef.current?.destroy) {
-                playerRef.current.destroy();
-                playerRef.current = null;
-            }
-
-            // Create a YT player to receive state events (ENDED)
-            playerRef.current = new window.YT.Player(iframeRef.current, {
-                videoId,
-                events: {
-                    onStateChange: (e) => {
-                        // YT.PlayerState.ENDED === 0
-                        if (e?.data === window.YT.PlayerState.ENDED) {
-                            setShowVideo(false); // switch to image
-                        }
-                    },
-                },
-            });
-        };
-
-        initPlayer();
-
-        return () => {
-            cancelled = true;
-        };
-    }, [showVideo, videoId]);
 
     const handleImageClick = () => {
         openModal(<MealModal meal={meal} />, "meal", meal);
@@ -113,14 +48,17 @@ const MealCardImageSection = ({
                 )}
                 onClick={handleImageClick}
             >
+                {/* Using a native iframe instead of the YT Player API.
+                    This prevents the browser from freezing when many cards are present.
+                */}
                 {showVideo && embedUrl ? (
                     <iframe
-                        ref={iframeRef}
                         title="Meal video"
                         src={embedUrl}
-                        className="w-full h-full rounded-md"
+                        className="w-full h-full rounded-md border-none"
                         allow="autoplay; encrypted-media; picture-in-picture"
                         allowFullScreen
+                        loading="lazy"
                     />
                 ) : (
                     <CustomImage

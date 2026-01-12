@@ -7,7 +7,6 @@ import AccordionItem from "../accordionItem/AccordionItem.jsx";
 
 const AverageNutrientSummary = ({ diet, dayCount, showDivider = true, isListCard = false, compact = false}) => {
     // Don't render if any required value is missing
-    console.log("AverageNutrientSummary compact:", compact);
 
     if (
         !diet ||

@@ -31,8 +31,10 @@ const DashboardContent = ({
     const weeklyAverageRdi = buildWeeklyAverageRdi(weeklyRdi);
     const monthlyAverageRdi = buildMonthlyAverageRdi(monthlyRdi);
 
+    console.log("DEBUG - Weekly RDI vanuit Backend:", weeklyRdi);
+    console.log("DEBUG - Monthly RDI vanuit Backend:", monthlyRdi);
+
     const goalCards = buildGoalCards(
-        weeklyAverageRdi,
         weeklyAverageRdi,
         monthlyAverageRdi,
         weeklyRdi,
