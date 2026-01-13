@@ -92,7 +92,7 @@ const InfoMetricTile = ({
 
             {/* Internal Action Button */}
             {isEditable && (
-                <div className="absolute top-2 right-2">
+                <CustomBox className="absolute top-2 right-2">
                     <CustomIconButton
                         icon={isEditing ? <Check /> : <PencilLine />}
                         iconSize={isEditing ? 18 : 14}
@@ -104,7 +104,7 @@ const InfoMetricTile = ({
                             setIsEditingExternally?.(!isEditingExternally);
                         }}
                     />
-                </div>
+                </CustomBox>
             )}
         </CustomBox>
     );

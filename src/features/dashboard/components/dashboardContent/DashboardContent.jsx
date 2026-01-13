@@ -149,6 +149,12 @@ const DashboardContent = ({
                         data={weightData}
                         targetWeight={targetWeight}
                         isLoading={isLoadingWeight}
+                        isEditingWeight={isEditingWeight}
+                        setIsEditingWeight={setIsEditingWeight}
+                        isEditingTarget={isEditingTarget}
+                        setIsEditingTarget={setIsEditingTarget}
+                        onQuickWeightUpdate={onQuickWeightUpdate}
+                        onQuickTargetUpdate={onQuickTargetUpdate}
                     />
                 </CustomBox>
 

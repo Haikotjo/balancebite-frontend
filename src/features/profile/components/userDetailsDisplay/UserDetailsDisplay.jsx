@@ -52,7 +52,7 @@ const UserDetailsDisplay = ({
                         <InfoMetricTile icon={Ruler} label="Height" value={formatValue(data?.height, " cm")} />
 
                         {/* Weight */}
-                        <div className="relative group">
+                        <CustomBox className="relative group">
                             <InfoMetricTile
                                 icon={Scale}
                                 label="Weight"
@@ -62,28 +62,11 @@ const UserDetailsDisplay = ({
                                 setIsEditingExternally={setIsEditingWeight}
                                 onSave={onQuickWeightUpdate}
                             />
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    if (isEditingWeight) {
-                                        setIsEditingWeight(false);
-                                    } else {
-                                        setIsEditingWeight(true);
-                                    }
-                                }}
-                                className="absolute top-2 right-2 p-1 transition-colors z-10"
-                                title={isEditingWeight ? "Save weight" : "Edit weight"}
-                            >
-                                {isEditingWeight ? (
-                                    <Check size={18} className="text-green-600 font-bold" />
-                                ) : (
-                                    <PencilLine size={14} className="text-gray-400 hover:text-primary" />
-                                )}
-                            </button>
-                        </div>
+
+                        </CustomBox>
 
                         {/* Target Weight */}
-                        <div className="relative group">
+                        <CustomBox className="relative group">
                             <InfoMetricTile
                                 icon={Target}
                                 label="Target Weight"
@@ -93,25 +76,7 @@ const UserDetailsDisplay = ({
                                 setIsEditingExternally={setIsEditingTarget}
                                 onSave={onQuickTargetUpdate}
                             />
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    if (isEditingTarget) {
-                                        setIsEditingTarget(false);
-                                    } else {
-                                        setIsEditingTarget(true);
-                                    }
-                                }}
-                                className="absolute top-2 right-2 p-1 transition-colors z-10"
-                                title={isEditingTarget ? "Save target weight" : "Edit target weight"}
-                            >
-                                {isEditingTarget ? (
-                                    <Check size={18} className="text-green-600 font-bold" />
-                                ) : (
-                                    <PencilLine size={14} className="text-gray-400 hover:text-primary" />
-                                )}
-                            </button>
-                        </div>
+                        </CustomBox>
 
                         <InfoMetricTile
                             className="sm:col-span-2"

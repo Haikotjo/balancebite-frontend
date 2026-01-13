@@ -74,8 +74,8 @@ const WeightHistoryChart = ({
                     <AreaChart data={sortedData}>
                         <defs>
                             <linearGradient id="colorWeight" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#38adb5" stopOpacity={0.2}/>
-                                <stop offset="95%" stopColor="#71f175" stopOpacity={0.1}/>
+                                <stop offset="5%" stopColor="#38adb5" stopOpacity={0.3}/>
+                                <stop offset="95%" stopColor="#38adb5" stopOpacity={0.05}/>
                             </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#9ca3af" />
@@ -87,10 +87,20 @@ const WeightHistoryChart = ({
                             tickLine={false}
                         />
                         <YAxis
-                            domain={['dataMin - 5', 'dataMax + 5']}
+                            domain={[
+                                (dataMin) => {
+                                    const min = targetWeight ? Math.min(dataMin, targetWeight) : dataMin;
+                                    return Math.floor(min - 5);
+                                },
+                                (dataMax) => {
+                                    const max = targetWeight ? Math.max(dataMax, targetWeight) : dataMax;
+                                    return Math.ceil(max + 5);
+                                }
+                            ]}
                             tick={{ fontSize: 12, fill: '#9ca3af' }}
                             axisLine={false}
                             tickLine={false}
+                            width={40}
                         />
                         <Tooltip
                             contentStyle={{
@@ -109,9 +119,17 @@ const WeightHistoryChart = ({
                         {targetWeight && (
                             <ReferenceLine
                                 y={targetWeight}
-                                stroke="#71f175"
-                                strokeDasharray="5 5"
-                                label={{ position: 'right', value: `Goal: ${targetWeight}kg`, fill: '#71f175', fontSize: 10 }}
+                                stroke="#F43F5E"
+                                strokeDasharray="7 3"
+                                label={{
+                                    position: 'insideTopRight',
+                                    value: `Goal: ${targetWeight}kg`,
+                                    fill: '#F43F5E',
+                                    fontSize: 10,
+                                    fontWeight: 'bold',
+                                    dy: -20,
+                                    dx: -5
+                                }}
                             />
                         )}
 
@@ -128,27 +146,30 @@ const WeightHistoryChart = ({
                 </ResponsiveContainer>
             </CustomBox>
 
+            {/* 2. De Controls Box: Precies zoals in UserDetailsDisplay */}
             {showControls && (
-                <CustomBox className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8 border-t pt-6 relative z-10">
-                    <InfoMetricTile
-                        icon={Scale}
-                        label="Current Weight"
-                        value={currentWeight}
-                        isEditable={true}
-                        isEditingExternally={isEditingWeight}
-                        setIsEditingExternally={setIsEditingWeight}
-                        onSave={onQuickWeightUpdate}
-                    />
+                <CustomBox className="mt-8 border-t pt-6">
+                    <CustomBox className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <InfoMetricTile
+                            icon={Scale}
+                            label="Current Weight"
+                            value={currentWeight}
+                            isEditable={true}
+                            isEditingExternally={isEditingWeight}
+                            setIsEditingExternally={setIsEditingWeight}
+                            onSave={onQuickWeightUpdate}
+                        />
 
-                    <InfoMetricTile
-                        icon={Target}
-                        label="Target Weight"
-                        value={targetWeight}
-                        isEditable={true}
-                        isEditingExternally={isEditingTarget}
-                        setIsEditingExternally={setIsEditingTarget}
-                        onSave={onQuickTargetUpdate}
-                    />
+                        <InfoMetricTile
+                            icon={Target}
+                            label="Target Weight"
+                            value={targetWeight}
+                            isEditable={true}
+                            isEditingExternally={isEditingTarget}
+                            setIsEditingExternally={setIsEditingTarget}
+                            onSave={onQuickTargetUpdate}
+                        />
+                    </CustomBox>
                 </CustomBox>
             )}
         </CustomCard>
