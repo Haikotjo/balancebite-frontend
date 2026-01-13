@@ -10,6 +10,7 @@ import ConsumedMealsToggle from "../consumedMealsToggle/ConsumedMealsToggle.jsx"
 import {getSortedConsumedMeals} from "../../utils/helpers/getSortedConsumedMeals.js";
 // 1. IMPORT DE SPINNER
 import Spinner from "../../../../components/layout/Spinner.jsx";
+import SectionHeader from "../../../profile/components/sectionHeaderOverview/SectionHeaderOverview.jsx";
 
 const buildChartData = (nutrition, date = null) => {
     const nutrients = nutrition?.nutrients ?? [];
@@ -51,26 +52,25 @@ const LastWeekOverview = ({ dailyRdiList, baseChartData }) => {
 
     return (
         <CustomBox className="flex flex-col gap-2 text-center">
-            <CustomTypography variant="h3" className="mt-4">
-                Last Week&#39;s Overview
-            </CustomTypography>
-
-            <CustomTypography variant="xsmallCard" className="mx-4 mb-2" italic>
-                Daily values show how much you deviated from your recommended intake.{" "}
-                <Inline color="#38adb5" weight="700">Green positive values</Inline>{" "}
-                mean you ate less than recommended (remaining intake),{" "}
-                <Inline color="#F43F5E" weight="700">red negative values</Inline>{" "}
-                mean you ate more than recommended. The closer the value is to zero,
-                the more balanced your intake was for that nutrient. Your weekly and
-                monthly pattern is more important than any single day.
-            </CustomTypography>
+            <SectionHeader
+                title="Last Week's Overview"
+                subtitle="Nutritional Patterns"
+                infoText={
+                    <CustomTypography variant="xsmallCard" inheritColor>
+                        Daily values show deviation from RDI.
+                        <Inline color="#38adb5" weight="bold"> Green</Inline> means remaining,
+                        <Inline color="#F43F5E" weight="bold"> red</Inline> means over-intake.
+                        Zero is perfect balance. Patterns are more important than single days.
+                    </CustomTypography>
+                }
+            />
 
             {!dailyRdiList || dailyRdiList.length === 0 ? (
                 <CustomBox className="flex justify-center items-center w-full py-10">
                     <Spinner />
                 </CustomBox>
             ) : (
-                <CustomBox className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+                <CustomBox className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start mt-2">
                     {sortedDays.map(({ date, data }) => {
                         const meals = getSortedConsumedMeals(data);
                         const isOpen = !!openMealsByDate[date];

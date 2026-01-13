@@ -79,12 +79,23 @@ const DashboardContent = ({
 
                     {/* Goals */}
                     <CustomBox className="flex flex-col gap-4">
-                        <CustomBox className="text-center">
-                            <CustomTypography variant="h3">Goal Overview</CustomTypography>
-                            <CustomTypography className="text-muted text-sm">Remaining nutrients based on averages</CustomTypography>
+                        <CustomBox className="relative flex items-center justify-center my-4">
+                            {/* line */}
+                            <CustomBox className="absolute inset-0 flex items-center" aria-hidden="true">
+                                <CustomBox className="w-full border-t border-borderDark/50 dark:border-borderLight/20"></CustomBox>
+                            </CustomBox>
+
+                            <CustomBox className="relative bg-lightBackground dark:bg-darkBackground px-4 text-center">
+                                <CustomTypography variant="h3" className="font-bold tracking-tight ">
+                                    Goal Overview
+                                </CustomTypography>
+                                <CustomTypography className="text-friendlyGray text-xs uppercase tracking-widest mt-1">
+                                    Remaining nutrients based on averages
+                                </CustomTypography>
+                            </CustomBox>
                         </CustomBox>
 
-                        <CustomBox className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <CustomBox className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
                             {goalCards.map((card) => (
                                 <GoalProgressCard
                                     key={card.key}
@@ -114,15 +125,6 @@ const DashboardContent = ({
             <CustomBox className="flex lg:hidden flex-col">
 
                 <CustomBox className="flex flex-col gap-2 mb-4">
-                    <CustomBox className="text-center">
-                        <CustomTypography variant="h3">
-                            Today’s Nutrition Overview
-                        </CustomTypography>
-                        <CustomTypography variant="small" className="text-muted mt-1">
-                            Showing your remaining intake for today based on your goals
-                        </CustomTypography>
-                    </CustomBox>
-
                     <CustomCard hasBorder>
                         <NutritionPieChart chartData={chartData} baseChartData={baseChartData}/>
                     </CustomCard>

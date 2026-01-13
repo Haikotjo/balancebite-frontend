@@ -47,7 +47,7 @@ const InfoMetricTile = ({
     };
 
     return (
-        <CustomBox className={`relative flex items-center gap-3 p-3 rounded-lg border border-borderDark dark:border-borderLight shadow-sm transition-all ${isEditing ? "ring-2 ring-primary border-transparent" : ""} ${className}`}>
+        <CustomBox className={`relative flex items-center gap-3 p-3 rounded-lg bg-lightBackground dark:bg-darkBackground border border-borderDark dark:border-borderLight shadow-sm transition-all ${isEditing ? "ring-2 ring-primary border-transparent" : ""} ${className}`}>
 
             <CustomIconButton
                 icon={<Icon />}
