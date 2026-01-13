@@ -10,8 +10,9 @@ export const buildUserDetailsData = (data) => {
         gender: data.gender || null,
         activityLevel: data.activityLevel || null,
         goal: data.goal || null,
-        height: data.height ? Number(data.height) : null, // Convert height to number or null
-        weight: data.weight ? Number(data.weight) : null, // Convert weight to number or null
-        age: data.age ? Number(data.age) : null,          // Convert age to number or null
+        height: data.height ? Number(data.height) : null,
+        weight: data.weight ? Number(data.weight) : null,
+        targetWeight: data.targetWeight ? Number(data.targetWeight) : null,
+        age: data.age ? Number(data.age) : null,
     };
 };

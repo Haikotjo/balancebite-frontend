@@ -2,10 +2,11 @@
 import PropTypes from "prop-types";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import useIsSmallScreen from "../../../../hooks/useIsSmallScreen.js";
 
 const StatCard = ({ item, style, icon: Icon, isActive, onMouseEnter, onMouseLeave, onClick }) => {
     if (!item) return null;
-
+    const isSmall = useIsSmallScreen();
     const pct = Math.round(item.value);
     const cur = item.currentValue ?? 0;
     const base = item.baseValue ?? 0;
@@ -14,6 +15,18 @@ const StatCard = ({ item, style, icon: Icon, isActive, onMouseEnter, onMouseLeav
         ? { borderColor: item.fill, borderWidth: '2px' }
         : {};
 
+    const formatName = (name) => {
+        if (!isSmall) return name;
+
+        const nameMap = {
+            "Total lipid (fat)": "Total Fats",
+            "Carbohydrates": "Carbs",
+            "Energy kcal": "Energy",
+            "Protein": "Protein"
+        };
+        return nameMap[name] || name;
+    };
+
     return (
         <CustomBox
             style={{ ...style, ...activeBorderStyle }}
@@ -21,8 +34,8 @@ const StatCard = ({ item, style, icon: Icon, isActive, onMouseEnter, onMouseLeav
             onMouseLeave={onMouseLeave}
             onClick={onClick}
             className={`
-                min-w-[150px]
-                p-2
+               w-fit
+                p-3
                 flex flex-col gap-1
                 backdrop-blur-md
                 rounded-lg
@@ -46,7 +59,7 @@ const StatCard = ({ item, style, icon: Icon, isActive, onMouseEnter, onMouseLeav
                 ) : null}
 
                 <CustomTypography variant={isActive ? "medium" : "small"} className="truncate" bold>
-                    {item.name} :
+                    {formatName(item.name)} :
                 </CustomTypography>
             </CustomBox>
 

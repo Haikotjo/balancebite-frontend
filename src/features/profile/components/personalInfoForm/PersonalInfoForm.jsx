@@ -1,9 +1,10 @@
 import { useContext, useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { personalInfoSchema } from "../../../../utils/valadition/personalInfoSchema.js";
 import { AuthContext } from "../../../../context/AuthContext.jsx";
-import useUpdateUserInfo from "../utils/hooks/useUpdateUserInfo.js";
+import useUpdateUserInfo from "../../utils/hooks/useUpdateUserInfo.js";
 
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
@@ -13,11 +14,12 @@ import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomCard from "../../../../components/layout/CustomCard.jsx";
 import { fetchUserProfile } from "../../../../services/apiService.js";
 import Spinner from "../../../../components/layout/Spinner.jsx";
+import {ShieldCheck} from "lucide-react";
 
-const PersonalInfoForm = () => {
+const PersonalInfoForm = ({ onCancel, onSuccess }) => {
     const { token } = useContext(AuthContext);
-    const [isEditable, setIsEditable] = useState(false);
     const [initialValues, setInitialValues] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const {
         updateUserInfo,
@@ -38,6 +40,7 @@ const PersonalInfoForm = () => {
         mode: "onBlur",
     });
 
+    // Fetch account details on component mount
     useEffect(() => {
         const fetchInitialValues = async () => {
             try {
@@ -53,20 +56,27 @@ const PersonalInfoForm = () => {
             }
         };
 
-        if (token) {
-            fetchInitialValues();
-        }
+        if (token) fetchInitialValues();
     }, [token, reset]);
 
-    const handleEdit = () => setIsEditable(true);
-
-    const handleCancel = () => {
-        reset(initialValues);
-        setIsEditable(false);
-    };
-
+    /**
+     * Handles personal information update.
+     * Disables UI during submission and triggers success callback on completion.
+     */
     const onSubmit = async (data) => {
-        await updateUserInfo(data, initialValues, setInitialValues, reset, setIsEditable);
+        setIsSubmitting(true);
+        try {
+            // Update user info via custom hook
+            await updateUserInfo(data, initialValues, setInitialValues, reset, () => {});
+
+            // Allow user to see success feedback before closing the form
+            setTimeout(() => {
+                onSuccess();
+            }, 1000);
+        } catch (error) {
+            console.error("Personal info update failed:", error);
+            setIsSubmitting(false);
+        }
     };
 
     if (!initialValues) {
@@ -84,8 +94,9 @@ const PersonalInfoForm = () => {
                 onSubmit={handleSubmit(onSubmit)}
                 className="w-full p-4 sm:p-6 flex flex-col gap-4"
             >
-                <CustomTypography as="h2" variant="h1" className="text-left">
-                    Personal Information
+                <CustomTypography variant="h2" className="flex items-center gap-2">
+                    <ShieldCheck size={24} className="text-primary" />
+                    Account Details
                 </CustomTypography>
 
                 {(updateError || updateSuccess) && (
@@ -94,6 +105,8 @@ const PersonalInfoForm = () => {
                         onClose={() => {
                             setUpdateError("");
                             setUpdateSuccess("");
+                            // Re-enable form interactions if an error occurs
+                            if (updateError) setIsSubmitting(false);
                         }}
                         message={updateError || updateSuccess}
                         type={updateError ? "error" : "success"}
@@ -106,8 +119,8 @@ const PersonalInfoForm = () => {
                     {...register("username")}
                     error={!!errors.username}
                     helperText={errors.username?.message}
-                    disabled={!isEditable}
                     variant="outlined"
+                    disabled={isSubmitting}
                 />
 
                 <CustomTextField
@@ -117,38 +130,38 @@ const PersonalInfoForm = () => {
                     {...register("email")}
                     error={!!errors.email}
                     helperText={errors.email?.message}
-                    disabled={!isEditable}
                     variant="outlined"
+                    disabled={isSubmitting}
                 />
 
-                {isEditable ? (
-                    <CustomBox className="flex gap-2">
-                        <CustomButton
-                            type="button"
-                            onClick={handleCancel}
-                            variant="outline"
-                            color="neutral"
-                        >
-                            Cancel
-                        </CustomButton>
-                        <CustomButton type="submit" variant="solid" color="primary">
-                            Save
-                        </CustomButton>
-                    </CustomBox>
-                ) : (
+                <CustomBox className="flex gap-2">
                     <CustomButton
                         type="button"
-                        onClick={handleEdit}
+                        onClick={onCancel}
+                        variant="outline"
+                        color="neutral"
+                        disabled={isSubmitting}
+                    >
+                        Cancel
+                    </CustomButton>
+                    <CustomButton
+                        type="submit"
                         variant="solid"
                         color="primary"
-                        className="self-start"
+                        disabled={isSubmitting}
                     >
-                        Edit
+                        {isSubmitting ? "Saving..." : "Save"}
                     </CustomButton>
-                )}
+                </CustomBox>
             </CustomBox>
         </CustomCard>
     );
+};
+
+// Prop validation
+PersonalInfoForm.propTypes = {
+    onCancel: PropTypes.func.isRequired,
+    onSuccess: PropTypes.func.isRequired,
 };
 
 export default PersonalInfoForm;

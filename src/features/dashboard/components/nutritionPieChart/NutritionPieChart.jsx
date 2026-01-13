@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { RadialBarChart, RadialBar, ResponsiveContainer } from "recharts";
 import PropTypes from "prop-types";
+import { Utensils, Target } from "lucide-react";
 
 // Layout Components
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
@@ -74,14 +75,33 @@ const NutritionPieChart = ({ chartData, baseChartData }) => {
     if (items.length === 0) return null;
 
     return (
-        <CustomCard hasBorder={true} className="w-full p-3 min-w-0">
+        <CustomCard hasBorder={true} className="w-full p-6 shadow-sm min-w-0">
+
+            <CustomBox className="flex justify-between items-center mb-6 border-b pb-4">
+                <CustomTypography variant="h2" className="flex items-center gap-2">
+                    <Utensils size={24} className="text-primary" />
+                    Daily Nutrition
+                </CustomTypography>
+
+                <CustomBox className="flex items-center gap-2 px-2 py-1 rounded border border-borderPrimary">
+                    <Target size={16} className="text-primary" />
+                    <CustomTypography
+                        variant="small"
+                        className="font-medium "
+                    >
+                        Today&#39;s Targets
+                    </CustomTypography>
+                </CustomBox>
+            </CustomBox>
+
             <CustomBox className="relative w-full min-0" onClick={handleGlobalReset}>
 
-                {/* Top/Bottom corner StatCards */}
                 {NUTRITION_MAP.map(({ id, position, macroKey }) => {
                     const Icon = macroIcons[macroKey];
+                    const adjustedPosition = position.replace('top-3', 'top-0');
+
                     return (
-                        <CustomBox key={id} className={`absolute ${position} z-20 transition-all duration-600`}>
+                        <CustomBox key={id} className={`absolute ${adjustedPosition} z-20 transition-all duration-600`}>
                             <StatCard
                                 item={byName[id]}
                                 icon={Icon}
@@ -98,7 +118,7 @@ const NutritionPieChart = ({ chartData, baseChartData }) => {
                 })}
 
                 <CustomBox className="w-full h-[400px] sm:h-[320px] md:h-[360px] lg:h-[420px] relative">
-                    {/* Central Icon and Percentage Display */}
+
                     <CustomBox className="absolute top-[53%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center z-0 pointer-events-none">
                         {activeName && ActiveIcon && (
                             <CustomBox className="flex flex-col items-center animate-in fade-in zoom-in duration-500">
@@ -126,7 +146,6 @@ const NutritionPieChart = ({ chartData, baseChartData }) => {
                         )}
                     </CustomBox>
 
-                    {/* The actual Radial Chart */}
                     <ResponsiveContainer width="100%" height="100%" >
                         <RadialBarChart
                             data={chartDataSafe}
@@ -159,7 +178,7 @@ const NutritionPieChart = ({ chartData, baseChartData }) => {
                 </CustomBox>
 
                 {goalsReached && (
-                    <CustomTypography variant="small" className="text-center text-error mt-2">
+                    <CustomTypography variant="small" className="text-center text-error mt-2 italic block">
                         Nutrition Goals reached – be mindful of extra intake.
                     </CustomTypography>
                 )}

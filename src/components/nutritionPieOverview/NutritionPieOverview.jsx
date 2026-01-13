@@ -8,7 +8,6 @@ import { AuthContext } from "../../context/AuthContext.jsx";
 
 // Layout & UI Components
 import CustomBox from "../layout/CustomBox.jsx";
-import CustomCard from "../layout/CustomCard.jsx";
 import CustomTypography from "../layout/CustomTypography.jsx";
 import CustomButton from "../layout/CustomButton.jsx";
 import Spinner from "../layout/Spinner.jsx";
@@ -58,7 +57,7 @@ const NutritionPieOverview = ({ useBaseRDI = false, onClose }) => {
         : null;
 
     // 3. Fetch the sorted nutrient list
-    const { sortedNutrients, message, createdAt } = getSortedNutritionData(
+    const { sortedNutrients, message } = getSortedNutritionData(
         useBaseRDI,
         baseNutrition,
         recommendedNutrition
@@ -78,31 +77,27 @@ const NutritionPieOverview = ({ useBaseRDI = false, onClose }) => {
     }
 
     return (
-        <CustomCard className="max-w-3xl mx-auto p-4 md:p-6">
-            <CustomBox className="flex flex-col gap-4">
-                <CustomBox className="grid grid-cols-3 items-center">
-                    <CustomBox></CustomBox>
-                    <CustomTypography variant="h2" className="text-center">
-                        {useBaseRDI ? "Recommended" : "Remaining Nutrients"}
-                    </CustomTypography>
-                    {onClose ? (
-                        <CustomButton
-                            variant="outline"
-                            color="error"
-                            onClick={onClose}
-                            className="justify-self-end p-1 rounded-full w-7 h-7 flex items-center justify-center"
-                            aria-label="Close"
-                        >
-                            <X size={16} />
-                        </CustomButton>
-                    ) : (
-                        <div></div>
-                    )}
-                </CustomBox>
+        <CustomBox className="relative flex flex-col bg-lightBackground dark:bg-darkBackground rounded-xl max-h-[90vh] overflow-hidden">
 
+            {onClose && (
+                <CustomBox className="sticky top-0 z-50 w-full pointer-events-none">
+                    <CustomButton
+                        variant="outline"
+                        color="error"
+                        onClick={onClose}
+                        className="absolute top-2 right-2 p-1 rounded-full w-8 h-8 flex items-center justify-center bg-white/80 dark:bg-black/50 backdrop-blur-sm shadow-md pointer-events-auto hover:scale-110 transition-transform z-50"
+                        aria-label="Close"
+                    >
+                        <X size={18} />
+                    </CustomButton>
+                </CustomBox>
+            )}
+
+            <CustomBox className="flex flex-col gap-4 overflow-y-auto">
                 <CustomBox className="flex flex-col gap-2">
                     <NutritionPieChart chartData={chartData} baseChartData={baseChartData}/>
 
+                    <CustomBox className="p-4">
                     <NutritionTable
                         sortedNutrients={nutrientsWithProgress.filter(
                             (n) =>
@@ -112,12 +107,9 @@ const NutritionPieOverview = ({ useBaseRDI = false, onClose }) => {
                         useBaseRDI={useBaseRDI}
                     />
                 </CustomBox>
-
-                <CustomTypography variant="xsmallCard" className="text-right text-friendlyGray mt-2">
-                    {createdAt}
-                </CustomTypography>
+                </CustomBox>
             </CustomBox>
-        </CustomCard>
+        </CustomBox>
     );
 };
 

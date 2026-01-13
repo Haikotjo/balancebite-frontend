@@ -38,6 +38,13 @@ export const userDetailsSchema = yup.object().shape({
         .required("Weight is required.")
         .min(20, "Weight must be at least 20 kg.")
         .max(300, "Weight must not exceed 300 kg."),
+    // VOEG DIT STUKJE TOE:
+    targetWeight: yup
+        .number()
+        .typeError("Target weight must be a number.")
+        .required("Target weight is required.")
+        .min(20, "Target weight must be at least 20 kg.")
+        .max(300, "Target weight must not exceed 300 kg."),
     age: yup
         .number()
         .typeError("Age must be a number.")

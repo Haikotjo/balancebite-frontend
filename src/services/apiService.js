@@ -217,6 +217,34 @@ export const updateUserDetails = async (data) => {
     }
 };
 
+export const updateTargetWeightOnly = async (targetWeightData) => {
+    const endpoint = import.meta.env.VITE_UPDATE_TARGET_WEIGHT_ENDPOINT;
+    try {
+        // We gebruiken PATCH omdat we een deel van de user resource wijzigen
+        const response = await Interceptor.patch(endpoint, targetWeightData, {
+            headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+        });
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
+
+export const updateWeightOnly = async (weightData) => {
+    const endpoint = import.meta.env.VITE_UPDATE_WEIGHT_ENDPOINT;
+    try {
+        const response = await Interceptor.patch(endpoint, weightData, {
+            headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+        });
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
 
 // RDI services
 export const fetchRecommendedNutritionApi = async (token) => {

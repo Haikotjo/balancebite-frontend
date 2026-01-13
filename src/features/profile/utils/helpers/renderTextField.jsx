@@ -1,6 +1,6 @@
-import CustomBox from "../../../../../components/layout/CustomBox.jsx";
-import CustomTextField from "../../../../../components/layout/CustomTextField.jsx";
-import CustomSelect from "../../../../../components/layout/CustomSelect.jsx";
+import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import CustomTextField from "../../../../components/layout/CustomTextField.jsx";
+import CustomSelect from "../../../../components/layout/CustomSelect.jsx";
 
 /**
  * Renders a single form field, either a text input or a select dropdown.

@@ -15,6 +15,7 @@ import GoalProgressCard from "../goalProgressCard/GoalProgressCard.jsx";
 // Helpers & Config
 import { buildMonthlyAverageRdi, buildWeeklyAverageRdi } from "../../utils/helpers/rdiHelpers.js";
 import { buildGoalCards } from "../../utils/helpers/goalCardsConfig.js";
+import WeightHistoryChart from "../../../profile/components/weightHistoryChart/WeightHistoryChart.jsx";
 
 const DashboardContent = ({
                               userMeals,
@@ -25,14 +26,20 @@ const DashboardContent = ({
                               monthlyRdi,
                               dailyRdiList,
                               baseNutrition,
-                              recommendedNutrition
+                              recommendedNutrition,
+                              weightData,
+                              targetWeight,
+                              isLoadingWeight,
+                              isEditingWeight,
+                              setIsEditingWeight,
+                              isEditingTarget,
+                              setIsEditingTarget,
+                              onQuickWeightUpdate,
+                              onQuickTargetUpdate
                           }) => {
 
     const weeklyAverageRdi = buildWeeklyAverageRdi(weeklyRdi);
     const monthlyAverageRdi = buildMonthlyAverageRdi(monthlyRdi);
-
-    console.log("DEBUG - Weekly RDI vanuit Backend:", weeklyRdi);
-    console.log("DEBUG - Monthly RDI vanuit Backend:", monthlyRdi);
 
     const goalCards = buildGoalCards(
         weeklyAverageRdi,
@@ -40,50 +47,44 @@ const DashboardContent = ({
         weeklyRdi,
         monthlyRdi,
         baseNutrition,
-        recommendedNutrition
+        recommendedNutrition,
     );
 
     return (
         <CustomBox className="flex flex-col xl:flex-row gap-2 w-full mt-4">
 
-            {/* -------------------------------------------------------- */}
-            {/* DESKTOP / LAPTOP LAYOUT */}
-            {/* -------------------------------------------------------- */}
+            <CustomBox className="hidden lg:flex flex-col gap-6 basis-[80%] min-w-0">
 
-            <CustomBox className="hidden lg:flex flex-col gap-2 basis-[80%] min-w-0">
-                <CustomBox className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <CustomBox className="flex flex-col gap-4">
 
-                    {/* LEFT COLUMN */}
-                    <CustomBox className="flex flex-col gap-2">
-                        <CustomBox className="text-center">
-                            <CustomTypography variant="h3">
-                                Today’s Nutrition Overview
-                            </CustomTypography>
-                            <CustomTypography className="text-muted mt-1 mb-2">
-                                Showing your remaining intake for today based on your goals
-                            </CustomTypography>
-                        </CustomBox>
-
-                        <CustomCard hasBorder>
-                            <NutritionPieChart chartData={chartData} baseChartData={baseChartData}/>
-                        </CustomCard>
-
-                        {/* Last Week */}
-                        <LastWeekOverview dailyRdiList={dailyRdiList} baseChartData={baseChartData}/>
+                    <CustomBox className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <NutritionPieChart chartData={chartData} baseChartData={baseChartData}/>
+                        <WeightHistoryChart
+                            data={weightData}
+                            targetWeight={targetWeight}
+                            isLoading={isLoadingWeight}
+                            isEditingWeight={isEditingWeight}
+                            setIsEditingWeight={setIsEditingWeight}
+                            isEditingTarget={isEditingTarget}
+                            setIsEditingTarget={setIsEditingTarget}
+                            onQuickWeightUpdate={onQuickWeightUpdate}
+                            onQuickTargetUpdate={onQuickTargetUpdate}
+                        />
                     </CustomBox>
 
-                    {/* RIGHT COLUMN */}
-                    <CustomBox className="flex flex-col gap-2 ">
+                </CustomBox>
+
+
+                <CustomBox className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+
+                    {/* Goals */}
+                    <CustomBox className="flex flex-col gap-4">
                         <CustomBox className="text-center">
-                            <CustomTypography variant="h3" className="text-center">
-                                Goal & Progress Overview
-                            </CustomTypography>
-                            <CustomTypography  className="text-muted mt-1 mb-2">
-                                Overview of averages and remaining nutrients.
-                            </CustomTypography>
+                            <CustomTypography variant="h3">Goal Overview</CustomTypography>
+                            <CustomTypography className="text-muted text-sm">Remaining nutrients based on averages</CustomTypography>
                         </CustomBox>
 
-                        <CustomBox className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+                        <CustomBox className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                             {goalCards.map((card) => (
                                 <GoalProgressCard
                                     key={card.key}
@@ -97,6 +98,10 @@ const DashboardContent = ({
                         </CustomBox>
                     </CustomBox>
 
+                    <CustomBox className="flex flex-col gap-4">
+                        <LastWeekOverview dailyRdiList={dailyRdiList} baseChartData={baseChartData}/>
+                    </CustomBox>
+
                 </CustomBox>
             </CustomBox>
 
@@ -108,7 +113,6 @@ const DashboardContent = ({
 
             <CustomBox className="flex lg:hidden flex-col">
 
-                {/* Today stays normal */}
                 <CustomBox className="flex flex-col gap-2 mb-4">
                     <CustomBox className="text-center">
                         <CustomTypography variant="h3">
@@ -124,12 +128,10 @@ const DashboardContent = ({
                     </CustomCard>
                 </CustomBox>
 
-                {/* Last Week in accordion */}
                 <AccordionItem title="Last Week's Overview">
                     <LastWeekOverview dailyRdiList={dailyRdiList} baseChartData={baseChartData} />
                 </AccordionItem>
 
-                {/* All progress cards in accordions (with all original text) */}
                 {goalCards.map((card) => (
                     <AccordionItem key={card.key} title={card.accordionTitle}>
                         <GoalProgressCard
@@ -142,15 +144,20 @@ const DashboardContent = ({
                     </AccordionItem>
                 ))}
 
+                <CustomBox className="mt-4">
+                    <WeightHistoryChart
+                        data={weightData}
+                        targetWeight={targetWeight}
+                        isLoading={isLoadingWeight}
+                    />
+                </CustomBox>
+
             </CustomBox>
 
 
 
             {/* SIDEBAR (desktop only) */}
             <CustomBox className="hidden lg:flex flex-col gap-4 basis-[20%] max-w-[20%] min-w-[320px] overflow-y-auto px-2">
-                <CustomTypography variant="h4" className="mb-4 font-semibold">
-                    My Meals
-                </CustomTypography>
 
                 {userMeals
                     ?.filter(meal => String(meal.id) !== String(currentMealId))
@@ -175,6 +182,18 @@ DashboardContent.propTypes = {
     weeklyRdi: PropTypes.object,
     monthlyRdi: PropTypes.object,
     dailyRdiList: PropTypes.array,
+    weightData: PropTypes.arrayOf(PropTypes.shape({
+        date: PropTypes.string,
+        weight: PropTypes.number
+    })),
+    targetWeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    isLoadingWeight: PropTypes.bool,
+    isEditingWeight: PropTypes.bool,
+    setIsEditingWeight: PropTypes.func,
+    isEditingTarget: PropTypes.bool,
+    setIsEditingTarget: PropTypes.func,
+    onQuickWeightUpdate: PropTypes.func,
+    onQuickTargetUpdate: PropTypes.func
 };
 
 export default DashboardContent;

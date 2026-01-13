@@ -8,5 +8,6 @@ export const defaultProfileValues = {
     goal: "",
     height: "",
     weight: "",
+    targetWeight: "",
     age: "",
 };

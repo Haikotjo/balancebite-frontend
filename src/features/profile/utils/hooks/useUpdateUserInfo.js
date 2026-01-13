@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
-import { AuthContext } from "../../../../../context/AuthContext.jsx";
-import { updateUserInfoApi } from "../../../../../services/apiService.js";
+import { AuthContext } from "../../../../context/AuthContext.jsx";
+import { updateUserInfoApi } from "../../../../services/apiService.js";
 
 /**
  * Hook to update user information and manage success/error state.

@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { renderTextField } from "../utils/helpers/renderTextField.jsx";
+import { renderTextField } from "../../utils/helpers/renderTextField.jsx";
 import { genderOptions, activityLevelOptions, goalOptions } from "../../../../constants/dropdownOptions.js";
 
 /**
@@ -18,6 +18,7 @@ const UserDetailsFields = ({ watchedFields, register, setValue, errors, isEditab
         <>
             {renderTextField("Height (cm)", "height", watchedFields, register, errors, isEditable, setValue, "number")}
             {renderTextField("Weight (kg)", "weight", watchedFields, register, errors, isEditable, setValue, "number")}
+            {renderTextField("Target Weight (kg)", "targetWeight", watchedFields, register, errors, isEditable, setValue, "number")}
             {renderTextField("Age", "age", watchedFields, register, errors, isEditable, setValue, "number")}
             {renderTextField("Activity Level", "activityLevel", watchedFields, register, errors, isEditable, setValue, "text", true, activityLevelOptions)}
             {renderTextField("Goal", "goal", watchedFields, register, errors, isEditable, setValue, "text", true, goalOptions)}

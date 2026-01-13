@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {fetchUserProfile} from "../../../../../services/apiService.js";
+import {fetchUserProfile} from "../../../../services/apiService.js";
 
 
 const useFetchUserDetails = (token) => {
