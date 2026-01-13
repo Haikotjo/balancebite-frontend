@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Scale, Ruler, VenusAndMars, Activity, Calendar, PencilLine, Target, Check } from "lucide-react";
+import { Scale, Ruler, VenusAndMars, Activity, Calendar, PencilLine, Target } from "lucide-react";
 import CustomCard from "../../../../components/layout/CustomCard.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";

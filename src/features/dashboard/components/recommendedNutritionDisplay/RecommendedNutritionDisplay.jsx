@@ -20,14 +20,15 @@ import {
     getNutritionSourceConfig,
     mergeNutritionProgress
 } from "../../utils/helpers/nutritionCalculations.js";
+import MetricHeader from "../../../profile/components/metricHeader/MetricHeader.jsx";
 
 const titleMap = {
     today: "Today's remaining nutrients",
     base: "Base Nutrition",
     date: "Day overview",
-    week: "This week's remaining nutrients",
+    week: "Nutrients remaining this Week",
+    month: "Nutrients remaining this Month",
     weekAverage: "Daily average this week",
-    month: "This month's remaining nutrients",
     monthAverage: "Daily average this month",
 };
 
@@ -82,16 +83,11 @@ const RecommendedNutritionDisplay = ({
     return (
         <CustomBox className="flex flex-col gap-2">
 
-            <CustomBox className="w-full px-4 py-2 bg-darkBackground dark:bg-lightBackground rounded-md mb-4">
-                <CustomTypography
-                    variant="paragraph"
-                    className="text-center text-white dark:text-lightText"
-                    inheritColor
-                    weight="bold"
-                >
-                    {customTitle}
-                </CustomTypography>
-            </CustomBox>
+            <MetricHeader
+                title={customTitle}
+                subtitle="Nutrition Overview"
+                variant={variant}
+            />
 
             <NutritionTable
                 sortedNutrients={nutrientsWithProgress.filter(

@@ -1,10 +1,11 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { personalInfoSchema } from "../../../../utils/valadition/personalInfoSchema.js";
 import { AuthContext } from "../../../../context/AuthContext.jsx";
 import useUpdateUserInfo from "../../utils/hooks/useUpdateUserInfo.js";
+import useFetchProfile from "../../utils/hooks/useFetchProfile.js";
 
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
@@ -12,14 +13,27 @@ import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import CustomTextField from "../../../../components/layout/CustomTextField.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomCard from "../../../../components/layout/CustomCard.jsx";
-import { fetchUserProfile } from "../../../../services/apiService.js";
 import Spinner from "../../../../components/layout/Spinner.jsx";
-import {ShieldCheck} from "lucide-react";
+import { ShieldCheck, Save, X, Loader2 } from "lucide-react";
 
 const PersonalInfoForm = ({ onCancel, onSuccess }) => {
     const { token } = useContext(AuthContext);
-    const [initialValues, setInitialValues] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm({
+        resolver: yupResolver(personalInfoSchema),
+        mode: "onBlur",
+    });
+
+
+    const { initialValues, setInitialValues, isLoading } = useFetchProfile(token, reset);
+
 
     const {
         updateUserInfo,
@@ -29,47 +43,14 @@ const PersonalInfoForm = ({ onCancel, onSuccess }) => {
         setUpdateSuccess,
     } = useUpdateUserInfo();
 
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState: { errors },
-    } = useForm({
-        resolver: yupResolver(personalInfoSchema),
-        defaultValues: initialValues || {},
-        mode: "onBlur",
-    });
-
-    // Fetch account details on component mount
-    useEffect(() => {
-        const fetchInitialValues = async () => {
-            try {
-                const result = await fetchUserProfile(token);
-                const values = {
-                    username: result.userName,
-                    email: result.email,
-                };
-                setInitialValues(values);
-                reset(values);
-            } catch (err) {
-                console.error("Failed to fetch user details:", err);
-            }
-        };
-
-        if (token) fetchInitialValues();
-    }, [token, reset]);
-
     /**
      * Handles personal information update.
-     * Disables UI during submission and triggers success callback on completion.
      */
     const onSubmit = async (data) => {
         setIsSubmitting(true);
         try {
-            // Update user info via custom hook
             await updateUserInfo(data, initialValues, setInitialValues, reset, () => {});
 
-            // Allow user to see success feedback before closing the form
             setTimeout(() => {
                 onSuccess();
             }, 1000);
@@ -79,9 +60,9 @@ const PersonalInfoForm = ({ onCancel, onSuccess }) => {
         }
     };
 
-    if (!initialValues) {
+    if (isLoading) {
         return (
-            <CustomBox className="flex justify-center items-center p-4">
+            <CustomBox className="flex justify-center items-center p-8">
                 <Spinner />
             </CustomBox>
         );
@@ -105,7 +86,6 @@ const PersonalInfoForm = ({ onCancel, onSuccess }) => {
                         onClose={() => {
                             setUpdateError("");
                             setUpdateSuccess("");
-                            // Re-enable form interactions if an error occurs
                             if (updateError) setIsSubmitting(false);
                         }}
                         message={updateError || updateSuccess}
@@ -115,7 +95,6 @@ const PersonalInfoForm = ({ onCancel, onSuccess }) => {
 
                 <CustomTextField
                     label="Username"
-                    name="username"
                     {...register("username")}
                     error={!!errors.username}
                     helperText={errors.username?.message}
@@ -125,7 +104,6 @@ const PersonalInfoForm = ({ onCancel, onSuccess }) => {
 
                 <CustomTextField
                     label="Email"
-                    name="email"
                     type="email"
                     {...register("email")}
                     error={!!errors.email}
@@ -134,23 +112,37 @@ const PersonalInfoForm = ({ onCancel, onSuccess }) => {
                     disabled={isSubmitting}
                 />
 
-                <CustomBox className="flex gap-2">
+                <CustomBox className="flex gap-3 mt-6 justify-end border-t pt-4">
                     <CustomButton
                         type="button"
                         onClick={onCancel}
                         variant="outline"
-                        color="neutral"
+                        color="error"
                         disabled={isSubmitting}
+                        className="flex items-center gap-2 transition-colors"
                     >
+                        <X size={18} />
                         Cancel
                     </CustomButton>
+
                     <CustomButton
                         type="submit"
                         variant="solid"
                         color="primary"
                         disabled={isSubmitting}
+                        className="flex items-center gap-2 min-w-[120px] justify-center shadow-md active:scale-95 transition-transform"
                     >
-                        {isSubmitting ? "Saving..." : "Save"}
+                        {isSubmitting ? (
+                            <>
+                                <Loader2 size={18} className="animate-spin" />
+                                Saving...
+                            </>
+                        ) : (
+                            <>
+                                <Save size={18} />
+                                Save Changes
+                            </>
+                        )}
                     </CustomButton>
                 </CustomBox>
             </CustomBox>
@@ -158,7 +150,6 @@ const PersonalInfoForm = ({ onCancel, onSuccess }) => {
     );
 };
 
-// Prop validation
 PersonalInfoForm.propTypes = {
     onCancel: PropTypes.func.isRequired,
     onSuccess: PropTypes.func.isRequired,

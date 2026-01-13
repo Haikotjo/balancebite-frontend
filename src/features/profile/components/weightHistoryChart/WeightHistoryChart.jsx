@@ -146,7 +146,6 @@ const WeightHistoryChart = ({
                 </ResponsiveContainer>
             </CustomBox>
 
-            {/* 2. De Controls Box: Precies zoals in UserDetailsDisplay */}
             {showControls && (
                 <CustomBox className="mt-8 border-t pt-6">
                     <CustomBox className="grid grid-cols-1 sm:grid-cols-2 gap-4">
