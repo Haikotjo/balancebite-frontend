@@ -3,17 +3,14 @@ import { RadialBarChart, RadialBar, ResponsiveContainer } from "recharts";
 import PropTypes from "prop-types";
 import { Utensils, Target } from "lucide-react";
 
-// Layout Components
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomCard from "../../../../components/layout/CustomCard.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 
-// Helpers & Hooks
 import { buildPercentRadialData } from "../../utils/helpers/nutritionPieChartHelpers.js";
 import { macroIcons } from "../../../../utils/helpers/macroIcons.js";
 import useIsSmallScreen from "../../../../hooks/useIsSmallScreen.js";
 
-// Chart Components
 import StatCard from "../statCard/StatCard.jsx";
 import RenderSector from "../renderSector/RenderSector.jsx";
 
@@ -30,11 +27,10 @@ const NutritionPieChart = ({ chartData, baseChartData }) => {
     const dynamicInnerRadius = isSmall ? "45%" : "35%";
     const dynamicBarSize = isSmall ? 8 : 12;
 
-    const [activeName, setActiveName] = useState(null);
+    const [activeName, setActiveName] = useState("Energy kcal");
     const [isClicked, setIsClicked] = useState(false);
 
-    // Prepare radial data
-    const { radialData, goalsReached } = useMemo(() => {
+    const { radialData } = useMemo(() => {
         return buildPercentRadialData({ chartData, baseChartData });
     }, [chartData, baseChartData]);
 
@@ -52,7 +48,6 @@ const NutritionPieChart = ({ chartData, baseChartData }) => {
             Object.fromEntries(items.map((i) => [i.name, i])),
         [items]);
 
-    // Get the icon for the center of the chart based on the hovered/clicked item
     const ActiveIcon = useMemo(() => {
         if (!activeName) return null;
         const config = NUTRITION_MAP.find(n => n.id === activeName);
@@ -62,13 +57,17 @@ const NutritionPieChart = ({ chartData, baseChartData }) => {
     const handleToggle = useCallback((name) => {
         setActiveName((prev) => {
             const isSame = prev === name;
-            setIsClicked(isSame ? (clicked) => !clicked : true);
-            return isSame && isClicked ? null : name;
+            if (isSame && isClicked) {
+                setIsClicked(false);
+                return "Energy kcal";
+            }
+            setIsClicked(true);
+            return name;
         });
     }, [isClicked]);
 
     const handleGlobalReset = useCallback(() => {
-        setActiveName(null);
+        setActiveName("Energy kcal");
         setIsClicked(false);
     }, []);
 
@@ -76,7 +75,6 @@ const NutritionPieChart = ({ chartData, baseChartData }) => {
 
     return (
         <CustomCard hasBorder={true} className="w-full p-6 shadow-sm min-w-0">
-
             <CustomBox className="flex justify-between items-center mb-6 border-b pb-4">
                 <CustomTypography variant="h2" className="flex items-center gap-2">
                     <Utensils size={24} className="text-primary" />
@@ -85,17 +83,13 @@ const NutritionPieChart = ({ chartData, baseChartData }) => {
 
                 <CustomBox className="flex items-center gap-2 px-2 py-1 rounded border border-borderPrimary">
                     <Target size={16} className="text-primary" />
-                    <CustomTypography
-                        variant="small"
-                        className="font-medium "
-                    >
+                    <CustomTypography variant="small" className="font-medium ">
                         Today&#39;s Targets
                     </CustomTypography>
                 </CustomBox>
             </CustomBox>
 
             <CustomBox className="relative w-full min-0" onClick={handleGlobalReset}>
-
                 {NUTRITION_MAP.map(({ id, position, macroKey }) => {
                     const Icon = macroIcons[macroKey];
                     const adjustedPosition = position.replace('top-3', 'top-0');
@@ -107,7 +101,7 @@ const NutritionPieChart = ({ chartData, baseChartData }) => {
                                 icon={Icon}
                                 isActive={activeName === id}
                                 onMouseEnter={() => { if (!isClicked) setActiveName(id); }}
-                                onMouseLeave={() => { if (!isClicked) setActiveName(null); }}
+                                onMouseLeave={() => { if (!isClicked) setActiveName("Protein"); }}
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     handleToggle(id);
@@ -118,9 +112,8 @@ const NutritionPieChart = ({ chartData, baseChartData }) => {
                 })}
 
                 <CustomBox className="w-full h-[400px] sm:h-[320px] md:h-[360px] lg:h-[420px] relative">
-
                     <CustomBox className="absolute top-[53%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center z-0 pointer-events-none">
-                        {activeName && ActiveIcon && (
+                        {activeName && ActiveIcon && byName[activeName] && (
                             <CustomBox className="flex flex-col items-center animate-in fade-in zoom-in duration-500">
                                 <ActiveIcon
                                     size={Math.round(byName[activeName].value) === 0 ? 60 : 40}
@@ -154,7 +147,7 @@ const NutritionPieChart = ({ chartData, baseChartData }) => {
                             outerRadius={dynamicOuterRadius}
                             startAngle={90}
                             endAngle={-270}
-                            onMouseLeave={() => { if (!isClicked) setActiveName(null); }}
+                            onMouseLeave={() => { if (!isClicked) setActiveName("Protein"); }}
                         >
                             <RadialBar
                                 dataKey="value"
@@ -176,12 +169,6 @@ const NutritionPieChart = ({ chartData, baseChartData }) => {
                         </RadialBarChart>
                     </ResponsiveContainer>
                 </CustomBox>
-
-                {goalsReached && (
-                    <CustomTypography variant="small" className="text-center text-error mt-2 italic block">
-                        Nutrition Goals reached – be mindful of extra intake.
-                    </CustomTypography>
-                )}
             </CustomBox>
         </CustomCard>
     );

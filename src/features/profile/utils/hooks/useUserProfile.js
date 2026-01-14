@@ -14,8 +14,6 @@ const useUserProfile = (token) => {
         try {
             const result = await fetchUserProfile(token);
 
-            // We loggen hier meteen de weightHistory zoals je wilde!
-            console.log("--- Gewichtshistorie Log ---", result.weightHistory);
 
             setUserData(result);
             setError(null);

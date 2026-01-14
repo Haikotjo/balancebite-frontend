@@ -30,6 +30,10 @@ const GoalProgressCard = ({ variant, data, description, chartData, baseChartData
         openModal(<MealModalById mealId={mealId} />, "meal", { id: mealId });
     };
 
+    if (variant === "today" || variant === "base") {
+        console.log("Variant is:", variant, "Data:", data);
+    }
+
     return (
         <CustomCard hasBorder>
             <RecommendedNutritionDisplay variant={variant} data={data} chartData={chartData} baseChartData={baseChartData}/>

@@ -21,7 +21,7 @@ const MetricHeader = ({ title, subtitle, variant, icon: CustomIcon }) => {
     return (
         <CustomBox className="relative mb-4 border-b border-borderDark dark:border-borderLight rounded-xl">
 
-            <CustomBox className="flex items-center gap-4 p-3 bg-lightBackground dark:bg-darkBackground rounded-xl">
+            <CustomBox className="flex items-center gap-4 p-3 bg-primary/15 dark:bg-darkBackground rounded-xl">
                 <CustomBox className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary shrink-0">
                     {getIcon()}
                 </CustomBox>
