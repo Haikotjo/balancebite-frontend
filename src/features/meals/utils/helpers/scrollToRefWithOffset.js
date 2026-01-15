@@ -30,7 +30,7 @@ const getScrollParent = (node) => {
  * @param {React.RefObject} ref
  * @param {number} offset - Pixels above the target (e.g. for sticky headers)
  */
-export const scrollToRefWithOffset = (ref, offset = 80) => {
+export const scrollToRefWithOffset = (ref, offset = 100) => {
     const target = ref?.current;
     if (!target) return;
 

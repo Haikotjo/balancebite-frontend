@@ -4,25 +4,30 @@
 import PropTypes from "prop-types";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import { toYoutubeEmbedUrl } from "../../utils/helpers/toYoutubeEmbedUrl.js";
-import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import MetricHeader from "../../../profile/components/metricHeader/MetricHeader.jsx";
+import {PlayCircle, Video} from "lucide-react";
+import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
 
 const MealCardMediaSection = ({ meal, prepVideoRef }) => {
     const hasAnyVideo = Boolean(meal?.preparationVideoUrl || meal?.videoUrl);
     if (!hasAnyVideo) return null;
 
     return (
-        <CustomBox className="max-w-6xl w-full px-4 mt-12">
+        <CustomBox className="w-full">
             <CustomBox
                 ref={meal?.preparationVideoUrl ? prepVideoRef : null}
-                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                className="grid grid-cols-1 gap-8 w-full"
             >
                 {meal?.preparationVideoUrl && (
-                    <CustomBox className="flex flex-col gap-2">
-                        <CustomTypography variant="xsmallCard" bold>
-                            Preparation video
-                        </CustomTypography>
-
-                        <CustomBox className="w-full aspect-video rounded-xl overflow-hidden border border-border">
+                    <CustomBox className="flex flex-col">
+                        <MetricHeader
+                            title="Preparation video"
+                            subtitle="Step by step"
+                            icon={Video}
+                            variant="meal"
+                        />
+                        <CustomDivider className="mb-4"></CustomDivider>
+                        <CustomBox className="w-full aspect-video rounded-2xl overflow-hidden bg-black border border-black/10 dark:border-white/10 shadow-xl">
                             <iframe
                                 title="Preparation video"
                                 src={toYoutubeEmbedUrl(meal.preparationVideoUrl)}
@@ -35,12 +40,15 @@ const MealCardMediaSection = ({ meal, prepVideoRef }) => {
                 )}
 
                 {meal?.videoUrl && (
-                    <CustomBox className="flex flex-col gap-2">
-                        <CustomTypography variant="xsmallCard" bold>
-                            Meal video
-                        </CustomTypography>
-
-                        <CustomBox className="w-full aspect-video rounded-xl overflow-hidden border border-border">
+                    <CustomBox className="flex flex-col">
+                        <MetricHeader
+                            title="Meal video"
+                            subtitle="Showcase"
+                            icon={PlayCircle}
+                            variant="meal"
+                        />
+                        <CustomDivider className="mb-4"></CustomDivider>
+                        <CustomBox className="w-full aspect-video rounded-2xl overflow-hidden bg-black border border-black/10 dark:border-white/10 shadow-xl">
                             <iframe
                                 title="Meal video"
                                 src={toYoutubeEmbedUrl(meal.videoUrl)}

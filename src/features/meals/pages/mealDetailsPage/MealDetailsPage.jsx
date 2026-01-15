@@ -7,6 +7,7 @@ import CustomTypography from "../../../../components/layout/CustomTypography.jsx
 import MealsSubMenu from "../../components/subMenu/MealsSubMenu.jsx";
 import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
 import PageWrapper from "../../../../components/layout/PageWrapper.jsx";
+import MealCardNew from "../../components/mealCardNew/mealCardNew.jsx";
 
 const MealDetailsPage = () => {
     const { mealId } = useParams();

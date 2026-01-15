@@ -13,7 +13,7 @@ import CustomTypography from "../../../../components/layout/CustomTypography.jsx
  */
 const MealCardMacrosSection = ({ macros }) => {
     return (
-        <CustomBox className="grid grid-cols-2 gap-4 my-4">
+        <CustomBox className="grid grid-cols-2 gap-4 mt-4">
             {Object.entries(macros).map(([key, macro]) => {
                 const Icon = macroIcons[key];
                 const iconClass = macroIconClasses[key];

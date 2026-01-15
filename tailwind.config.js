@@ -62,6 +62,8 @@ export default {
 
         promote: '#facc15',
 
+        price: '#f97316',
+
 
         // 🎨 User-configurable colors (via CSS variables)
         userPrimary: "var(--user-primary)",

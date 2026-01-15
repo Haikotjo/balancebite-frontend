@@ -2,7 +2,10 @@ import PropTypes from "prop-types";
 import { Calendar, Target, ClipboardList } from "lucide-react";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+
+
 const MetricHeader = ({ title, subtitle, variant, icon: CustomIcon }) => {
+    const isMeal = variant === "meal";
 
     const getIcon = () => {
         if (CustomIcon) return <CustomIcon size={20} />;
@@ -19,9 +22,17 @@ const MetricHeader = ({ title, subtitle, variant, icon: CustomIcon }) => {
     };
 
     return (
-        <CustomBox className="relative mb-4 border-b border-borderDark dark:border-borderLight rounded-xl">
+        <CustomBox
+            className={`relative mb-4 rounded-xl ${
+                isMeal ? "" : "border-b border-borderDark dark:border-borderLight"
+            }`}
+        >
 
-            <CustomBox className="flex items-center gap-4 p-3 bg-primary/15 dark:bg-darkBackground rounded-xl">
+            <CustomBox
+                className={`flex items-center gap-4 p-3 rounded-xl ${
+                    isMeal ? "bg-transparent" : "bg-primary/15 dark:bg-darkBackground"
+                }`}
+            >
                 <CustomBox className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary shrink-0">
                     {getIcon()}
                 </CustomBox>

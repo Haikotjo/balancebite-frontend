@@ -93,7 +93,7 @@ const MealImageCarousel = ({
                             />
                         </CustomBox>
 
-                        <CustomBox className="absolute bottom-8 lg:bottom-24 left-1/2 -translate-x-1/2 rounded-full px-2 py-1 bg-black/45 text-white text-xs z-20">
+                        <CustomBox className="absolute bottom-24 left-1/2 -translate-x-1/2 rounded-full px-2 py-1 bg-black/60 text-white text-xs z-20">
                             {safeIndex + 1}/{items.length}
                         </CustomBox>
                     </>
