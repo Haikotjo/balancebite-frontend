@@ -181,7 +181,7 @@ const MealCard = ({
 
                         {/* ACCORDION TABS - Alleen in List View */}
                         {isListView && (
-                            <CustomBox className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-6 mt-2">
+                            <CustomBox className="grid grid-cols-2 gap-2 mb-6 mt-2">
                                 <CustomBox
                                     onClick={() => toggleSection('nutrients')}
                                     className={`transition-all rounded-xl border ${activeSection === 'nutrients' ? 'bg-primary/10 border-primary shadow-sm' : 'border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-white/[0.02]'}`}
