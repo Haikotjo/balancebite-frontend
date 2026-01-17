@@ -52,7 +52,6 @@ const HamburgerMenu = forwardRef(({
         setTimeout(() => setShow(false), 200);
     };
 
-    // 🔥 DIT is wat DesktopMenu nodig heeft
     useImperativeHandle(ref, () => ({
         toggle() {
             show ? closeMenu() : openMenu();

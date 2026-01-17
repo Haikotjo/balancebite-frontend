@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import MealDetailCard from "../mealCardLarge/MealDetailCard.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
+import MealCard from "../mealCard/MealCard.jsx";
 
 /**
  * MealList — presentational-ish list that still syncs filters/sort with context,
@@ -74,7 +75,7 @@ function MealList({ filters, sortBy, selectedMeal, pinnedMeals = [] }) {
         >
             {combinedMeals.map(meal => (
                 <CustomBox key={meal.id} className="mb-4 break-inside-avoid">
-                    <MealDetailCard
+                    <MealCard
                         meal={meal}
                         viewMode="list"
                         isPinned={pinnedMeals.some(pm => String(pm.id) === String(meal.id))}

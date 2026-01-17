@@ -112,19 +112,11 @@ const MealModal = ({ meal, isPinned = false, mode = "view", onCancel, onConfirm 
                             className="fixed z-[2147483002] pointer-events-none"
                             style={{ left: floatingStyle.left, width: floatingStyle.width, top: floatingStyle.top }}
                         >
-                            <CustomBox className="
-                                                    bg-cardLight/95 dark:bg-cardDark/95
-                                                    backdrop-blur
-                                                    border-b border-borderDark/30 dark:border-borderLight/30
-                                                    shadow-md
-                                                    pointer-events-auto
-                                                    rounded-b-xl
-                                                  "
-                            >
-                                <CustomBox className="p-2">
+
+                                <CustomBox className="p-2 pointer-events-auto">
                                     <MealCardActionButtons isFloating meal={meal} viewMode="modal" />
                                 </CustomBox>
-                            </CustomBox>
+
                         </CustomBox>
                     )}
 

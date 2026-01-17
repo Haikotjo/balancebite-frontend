@@ -46,7 +46,7 @@ const MetricHeader = ({ title, subtitle, variant, icon: CustomIcon }) => {
                     </CustomTypography>
                     <CustomTypography
                         variant="bold"
-                        className="font-bold leading-tight"
+                        className="leading-tight"
                     >
                         {title}
                     </CustomTypography>

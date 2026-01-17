@@ -17,7 +17,7 @@ const MealCardExpandableDescription = ({ description, viewMode, forceExpanded = 
                 italic
                 className={[
                     "text-lightText dark:text-darkText",
-                    "transition-all duration-300",
+                    "transition-all duration-300   italic break-words whitespace-pre-wrap break-all",
                     isCollapsed ? "line-clamp-4" : "block",
                 ].join(" ")}
             >
@@ -31,14 +31,13 @@ const MealCardExpandableDescription = ({ description, viewMode, forceExpanded = 
                         pointer-events-none
                         absolute
                         left-0 right-0 bottom-0
-                        h-10
+                        h-16
                         bg-gradient-to-t
                         from-cardLight dark:from-cardDark
                         to-transparent
                     "
                 />
             )}
-
         </CustomBox>
     );
 };

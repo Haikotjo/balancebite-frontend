@@ -47,7 +47,7 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
             {/* Main action button */}
             <CustomIconButton
                 onClick={handleClick}
-                bgColor="bg-primary/90"
+                bgColor="bg-primary"
                 icon={<Utensils size={20} color="white" />}
             />
 
