@@ -13,6 +13,7 @@ import {getAllStickyItems} from "../../services/apiService.js";
 import fetchStickyItemDetails from "../../utils/helpers/fetchStickyItemDetails.js";
 import {UserMealsContext} from "../../context/UserMealsContext.jsx";
 import PageWrapper from "../../components/layout/PageWrapper.jsx";
+import MealCard from "../../features/meals/components/mealCard/MealCard.jsx";
 
 function HomePage() {
     const navigate = useNavigate();
@@ -109,7 +110,7 @@ function HomePage() {
                         if (item.type === "MEAL") {
                             return (
                                 <CustomBox className="min-w-[325px] max-w-[325px]">
-                                    <MealDetailCard
+                                    <MealCard
                                         meal={item.reference}
                                         viewMode="list"
                                         hideAfterTitle
@@ -156,7 +157,7 @@ function HomePage() {
                     onTitleClick={() => navigate("/meals", { state: { filtersFromRedirect: {} } })}
                     renderItem={(meal) => (
                         <CustomBox className="min-w-[325px] max-w-[325px]">
-                            <MealDetailCard meal={meal} viewMode="list" hideAfterTitle />
+                            <MealCard meal={meal} viewMode="list" hideAfterTitle />
                         </CustomBox>
                     )}
                 />

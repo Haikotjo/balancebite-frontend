@@ -9,15 +9,16 @@ import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx
 
 const MealCardImageThumbnails = ({
                                      images = [],
-                                     videoThumbnailUrl = null, // NEW (optioneel)
+                                     videoThumbnailUrl = null,
                                      activeIndex = 0,
                                      onChangeIndex,
                                      disableActions = false,
                                      className = "",
                                  }) => {
+    // 1. Zorg dat de volgorde hier EXACT gelijk is aan je Carousel (Images eerst, Video laatst)
     const items = [
-        ...(videoThumbnailUrl ? [{ type: "video", url: videoThumbnailUrl }] : []),
         ...images.map((url) => ({ type: "image", url })),
+        ...(videoThumbnailUrl ? [{ type: "video", url: videoThumbnailUrl }] : []),
     ];
 
     if (items.length <= 1) return null;
@@ -25,7 +26,7 @@ const MealCardImageThumbnails = ({
     return (
         <CustomBox
             className={[
-                "flex sm:px-20 justify-between overflow-x-auto m-2 mt-4",
+                "flex justify-center gap-3 overflow-x-hidden m-2 mt-4",
                 disableActions ? "pointer-events-none opacity-60" : "",
                 className,
             ].join(" ")}
@@ -51,7 +52,8 @@ const MealCardImageThumbnails = ({
                         sizeClassName="w-16 h-12"
                         disableScale
                         useMotion={false}
-                        className={isActive ? "ring-2 ring-primary" : "ring-1 ring-border"}
+                        // 3. Ring styling iets subtieler voor een strakker resultaat
+                        className={isActive ? "ring-2 ring-primary border-none" : "ring-1 ring-black/10 dark:ring-white/10"}
                     />
                 );
             })}

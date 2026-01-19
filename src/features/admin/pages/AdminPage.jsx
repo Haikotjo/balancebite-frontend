@@ -37,7 +37,7 @@ import UpdateFoodItemPicker from "../../fooditem/components/updateFoodItemPicker
  * Uses only custom layout components for easy migration to React Native.
  */
 const AdminPage = () => {
-    const [activeOption, setActiveOption] = useState("Food Item");
+    const [activeOption, setActiveOption] = useState("Ingredient");
     const [foodItemAction, setFoodItemAction] = useState("Create");
     const [userAction, setUserAction] = useState("Promote");
     const [mealAction, setMealAction] = useState("Create");
@@ -45,7 +45,7 @@ const AdminPage = () => {
 
     // Main top-level options for admin sections
     const options = [
-        { label: "Food Item", icon: <PlusSquare className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
+        { label: "Ingredient", icon: <PlusSquare className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
         { label: "Meals", icon: <Utensils className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
         { label: "Users", icon: <Settings className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
         { label: "Diets", icon: <CookingPot  className="w-[24px] h-[24px] sm:w-[34px] sm:h-[34px]" /> },
@@ -56,7 +56,7 @@ const AdminPage = () => {
      * Dynamically render the section content based on the selected top-level option.
      */
     const renderActiveComponent = () => {
-        if (activeOption === "Food Item") {
+        if (activeOption === "Ingredient") {
             return (
                 <CustomBox>
                     <CustomSelect
@@ -65,11 +65,11 @@ const AdminPage = () => {
                         value={foodItemAction}
                         onChange={(e) => setFoodItemAction(e.target.value)}
                         options={[
-                            { value: "Create", label: "Create Food Item" },
-                            { value: "Delete", label: "Delete Food Item" },
-                            { value: "Fetch",  label: "Fetch Food Item(s)" },
-                            { value: "Promote", label: "Promote Food Item" },
-                            { value: "Update", label: "Update Food Item" },
+                            { value: "Create", label: "Create Ingredient" },
+                            { value: "Delete", label: "Delete Ingredient" },
+                            { value: "Fetch",  label: "Fetch Food Ingredient(s)" },
+                            { value: "Promote", label: "Promote Ingredient" },
+                            { value: "Update", label: "Update Ingredient" },
                         ]}
                         className="py-2 sm:py-3"
                     />

@@ -5,12 +5,12 @@ import {useContext, useMemo, useRef, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import {
     ChartBar,
-    ScrollText,
     Tags,
     BookOpen,
     Flashlight,
     Boxes,
-    MessageSquareWarning
+    MessageSquareWarning,
+    ShoppingBasket
 } from "lucide-react";
 
 import MealCardIngredients from "../mealCardIngredients/MealCardIngredients.jsx";
@@ -18,7 +18,6 @@ import MealCardMacrosSection from "../mealCardMacrosSection/MeaCardlMacrosSectio
 import MealCardMealTags from "../mealCardMealTags/MealCardMealTags.jsx";
 import MealCardImageSectionFull from "../mealCardImageSectionFull/MealCardImageSectionFull.jsx";
 import MealCardMediaSection from "../MealCardMediaSection/MealCardMediaSection.jsx";
-import MealCardJumpLink from "../mealCardJumpLink/MealCardJumpLink.jsx";
 import MealCardJumpLinks from "../mealCardJumpLinks/MealCardJumpLinks.jsx";
 import MealCardSection from "../mealCardSection/MealCardSection.jsx";
 import MealShareForm from "../mealshareform/MealShareForm.jsx";
@@ -37,6 +36,7 @@ import { AuthContext } from "../../../../context/AuthContext.jsx";
 import MealCardExpandableDescription from "../mealCardExpandableDescription/ExpandableDescription.jsx";
 import {useModal} from "../../../../context/useModal.js";
 import MealModal from "../mealModal/MealModal.jsx";
+import MealCardTabButton from "../mealCardTabButton/MealCardTabButton.jsx";
 
 const useAuth = () => useContext(AuthContext);
 
@@ -103,13 +103,16 @@ const MealCard = ({
                     isPinned ? "border-yellow-500" : "border-border"
                 }`}
             >
-                <MealCardImageSectionFull
-                    meal={meal}
-                    viewMode={viewMode}
-                    onClose={onClose}
-                    disableActions={disableActions}
-                    actionsAnchorRef={actionsAnchorRef}
-                />
+                <CustomBox className="mb-4">
+                    <MealCardImageSectionFull
+                        meal={meal}
+                        viewMode={viewMode}
+                        onClose={onClose}
+                        disableActions={disableActions}
+                        actionsAnchorRef={actionsAnchorRef}
+                        onNameClick={isListView ? () => openModal(<MealModal meal={meal} mode="view" />) : undefined}
+                    />
+                </CustomBox>
 
                 <CustomBox className={`${isListView ? "px-2" : "px-6"} flex flex-col justify-between leading-normal w-full`}>
                     <CustomBox className="mb-4">
@@ -181,44 +184,53 @@ const MealCard = ({
 
                         {/* ACCORDION TABS - Alleen in List View */}
                         {isListView && (
-                            <CustomBox className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-6 mt-2">
-                                <CustomBox
+                            <CustomBox className="grid grid-cols-2 gap-2 mb-6 mt-2">
+                                <MealCardTabButton
+                                    title="Nutrients"
+                                    subtitle="macros"
+                                    icon={ChartBar}
+                                    isActive={activeSection === 'nutrients'}
                                     onClick={() => toggleSection('nutrients')}
-                                    className={`transition-all rounded-xl border ${activeSection === 'nutrients' ? 'bg-primary/10 border-primary shadow-sm' : 'border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-white/[0.02]'}`}
-                                >
-                                    <MetricHeader title="Nutrients" subtitle="macros" icon={ChartBar} variant="meal" className="cursor-pointer p-1.5" />
-                                </CustomBox>
+                                />
+
                                 {hasIngredients && (
-                                    <CustomBox
+                                    <MealCardTabButton
+                                        title="Pantry"
+                                        subtitle="ingredients"
+                                        icon={ShoppingBasket}
+                                        isActive={activeSection === 'ingredients'}
                                         onClick={() => toggleSection('ingredients')}
-                                        className={`transition-all rounded-xl border ${activeSection === 'ingredients' ? 'bg-primary/10 border-primary shadow-sm' : 'border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-white/[0.02]'}`}
-                                    >
-                                        <MetricHeader title="Items" subtitle="list" icon={ScrollText} variant="meal" className="cursor-pointer p-1.5" />
-                                    </CustomBox>
+                                    />
                                 )}
+
                                 {hasPreparation && (
-                                    <CustomBox
+                                    <MealCardTabButton
+                                        title="Steps"
+                                        subtitle="prep"
+                                        icon={Flashlight}
+                                        isActive={activeSection === 'prep'}
                                         onClick={() => toggleSection('prep')}
-                                        className={`transition-all rounded-xl border ${activeSection === 'prep' ? 'bg-primary/10 border-primary shadow-sm' : 'border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-white/[0.02]'}`}
-                                    >
-                                        <MetricHeader title="Steps" subtitle="prep" icon={Flashlight} variant="meal" className="cursor-pointer p-1.5" />
-                                    </CustomBox>
+                                    />
                                 )}
+
                                 {hasTags && (
-                                    <CustomBox
+                                    <MealCardTabButton
+                                        title="Tags"
+                                        subtitle="filter"
+                                        icon={Tags}
+                                        isActive={activeSection === 'tags'}
                                         onClick={() => toggleSection('tags')}
-                                        className={`transition-all rounded-xl border ${activeSection === 'tags' ? 'bg-primary/10 border-primary shadow-sm' : 'border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-white/[0.02]'}`}
-                                    >
-                                        <MetricHeader title="Tags" subtitle="filter" icon={Tags} variant="meal" className="cursor-pointer p-1.5" />
-                                    </CustomBox>
+                                    />
                                 )}
+
                                 {hasAnyVideo && (
-                                    <CustomBox
+                                    <MealCardTabButton
+                                        title="Video"
+                                        subtitle="media"
+                                        icon={Boxes}
+                                        isActive={activeSection === 'media'}
                                         onClick={() => toggleSection('media')}
-                                        className={`transition-all rounded-xl border ${activeSection === 'media' ? 'bg-primary/10 border-primary shadow-sm' : 'border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-white/[0.02]'}`}
-                                    >
-                                        <MetricHeader title="Video" subtitle="media" icon={Boxes} variant="meal" className="cursor-pointer p-1.5" />
-                                    </CustomBox>
+                                    />
                                 )}
                             </CustomBox>
                         )}
@@ -226,7 +238,6 @@ const MealCard = ({
                         {/* DYNAMISCHE CONTENT SECTIES */}
                         <CustomBox className="flex flex-col gap-4">
 
-                            {/* TAGS (Alleen voor List view of Mobile page view onder de beschrijving) */}
                             {( (isListView && activeSection === 'tags') || (!isListView && hasTags) ) && (
                                 <CustomBox className={`${!isListView ? "md:hidden" : "w-full"}`}>
                                     <MealCardSection title="Tags" icon={Tags}>
@@ -251,7 +262,7 @@ const MealCard = ({
                                     )}
 
                                     {(!isListView || activeSection === 'ingredients') && hasIngredients && (
-                                        <MealCardSection title="Ingredients" icon={ScrollText}>
+                                        <MealCardSection title="Ingredients" icon={ShoppingBasket}>
                                             <MealCardIngredients ingredients={meal.mealIngredients}/>
                                         </MealCardSection>
                                     )}

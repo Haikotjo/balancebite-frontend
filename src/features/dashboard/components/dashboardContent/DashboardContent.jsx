@@ -16,6 +16,8 @@ import GoalProgressCard from "../goalProgressCard/GoalProgressCard.jsx";
 import { buildMonthlyAverageRdi, buildWeeklyAverageRdi } from "../../utils/helpers/rdiHelpers.js";
 import { buildGoalCards } from "../../utils/helpers/goalCardsConfig.js";
 import WeightHistoryChart from "../../../profile/components/weightHistoryChart/WeightHistoryChart.jsx";
+import { Link } from "react-router-dom";
+import CustomLink from "../../../../components/layout/CustomLink.jsx";
 
 const DashboardContent = ({
                               userMeals,
@@ -40,6 +42,7 @@ const DashboardContent = ({
 
     const weeklyAverageRdi = buildWeeklyAverageRdi(weeklyRdi);
     const monthlyAverageRdi = buildMonthlyAverageRdi(monthlyRdi);
+    const hasBaseMetrics = baseChartData && baseChartData.some(item => item.value > 0);
 
     const goalCards = buildGoalCards(
         weeklyAverageRdi,
@@ -58,7 +61,25 @@ const DashboardContent = ({
                 <CustomBox className="flex flex-col gap-4">
 
                     <CustomBox className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <NutritionPieChart chartData={chartData} baseChartData={baseChartData}/>
+                        <CustomBox className="flex flex-col gap-2">
+                            {!hasBaseMetrics && (
+                                <CustomBox className="bg-primary/10 border border-error/20 p-4 rounded-2xl mb-4 text-center backdrop-blur-sm">
+                                    <CustomTypography variant="small" className=" block mb-2">
+                                        Want to see your personalized targets?
+                                    </CustomTypography>
+
+                                    <CustomLink
+                                        to="/profile"
+                                        className="text-xs uppercase font-bold tracking-widest no-underline hover:text-primary/70 transition-colors"
+                                    >
+                                        Update body metrics →
+                                    </CustomLink>
+                                </CustomBox>
+                            )}
+                            <NutritionPieChart chartData={chartData} baseChartData={baseChartData}/>
+
+
+                        </CustomBox>
                         <WeightHistoryChart
                             data={weightData}
                             targetWeight={targetWeight}

@@ -71,7 +71,7 @@ const CreateFoodItemForm = () => {
             onSubmit={handleSubmit(onSubmit)}
         >
             <CustomTypography as="h4" className="text-2xl font-bold text-left mt-6">
-                Create Food Item
+                Create Ingredient
             </CustomTypography>
 
             {renderDialogs()}

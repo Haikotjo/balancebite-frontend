@@ -8,6 +8,9 @@ import MealCardActionButtons from "../mealCardActionButtons/MealCardActionButton
 import MealCardImageThumbnails from "../mealCardImageThumbnails/MealCardImageThumbnails.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import { Timer } from "lucide-react";
+import MealCardMacrosCompact from "../mealCardMacrosCompact/MealCardMacrosCompact.jsx";
+import {calculateMacrosPer100g} from "../../utils/helpers/calculateMacrosPer100g.js";
+import {buildMacrosObject} from "../../utils/helpers/buildMacrosObject.js";
 
 const getYoutubeId = (url) => {
     if (!url) return null;
@@ -36,6 +39,7 @@ const MealCardImageSectionFull = ({
                                       onClose,
                                       disableActions = false,
                                       actionsAnchorRef,
+                                      onNameClick,
                                   }) => {
     const images = useMemo(() => {
         const arr = Array.isArray(meal?.images) ? meal.images : [];
@@ -62,12 +66,12 @@ const MealCardImageSectionFull = ({
 
     const items = useMemo(() => {
         const list = [];
-        if (hasVideo) list.push({ type: "video", url: meal.videoUrl });
         images.forEach((u) => list.push({ type: "image", url: u }));
+        if (hasVideo) list.push({ type: "video", url: meal.videoUrl });
         return list;
     }, [hasVideo, meal?.videoUrl, images]);
 
-    const initialIndex = hasVideo ? 0 : primaryIndex;
+    const initialIndex = primaryIndex;
     const [activeIndex, setActiveIndex] = useState(initialIndex);
 
     useEffect(() => {
@@ -76,6 +80,9 @@ const MealCardImageSectionFull = ({
 
     const videoId = getYoutubeId(meal?.videoUrl);
     const videoThumbUrl = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null;
+
+    const calculatedMacros = calculateMacrosPer100g(meal);
+    const macros = buildMacrosObject(meal, calculatedMacros);
 
     return (
         <>
@@ -90,6 +97,23 @@ const MealCardImageSectionFull = ({
                 />
 
                 <CustomBox className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent pointer-events-none z-30"/>
+
+                <CustomBox
+                    className="absolute top-28 right-10 z-[20] pointer-events-auto"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <CustomBox className="inline-flex flex-col items-stretch gap-2">
+                        <MealCardMacrosCompact
+                            macros={macros}
+                            vertical
+                            iconSize={18}
+                            textClassName="text-white"
+                            className="w-full text-white"
+                            rowClassName="flex flex-col gap-2 items-stretch w-full"
+                            itemClassName="w-full bg-black/55 backdrop-blur-sm rounded-md px-2 py-1 border border-white/20"
+                        />
+                    </CustomBox>
+                </CustomBox>
 
                 <CustomBox className="absolute bottom-10 left-6 right-6 pointer-events-none z-40">
                     <CustomBox className="flex flex-col gap-2 mb-2">
@@ -125,7 +149,10 @@ const MealCardImageSectionFull = ({
 
                     <CustomTypography
                         variant="h1"
-                        className="font-black text-white tracking-tighter leading-none drop-shadow-md"
+                        className={`font-black text-white tracking-tighter leading-none drop-shadow-md ${
+                            onNameClick ? "cursor-pointer pointer-events-auto hover:!text-secondary transition-colors" : ""
+                        }`}
+                        onClick={onNameClick}
                     >
                         {meal?.name}
                     </CustomTypography>
@@ -139,7 +166,7 @@ const MealCardImageSectionFull = ({
                 </CustomBox>
 
                 <CustomBox
-                    className="absolute top-0 left-0 w-full flex items-center justify-between px-2 py-1 z-[100] pointer-events-auto cursor-default"
+                    className="absolute top-0 left-0 w-full flex items-center justify-between px-2 py-1 z-[30] pointer-events-auto cursor-default"
                     onClick={(e) => e.stopPropagation()}
                 >
                     <CustomBox className="flex items-center justify-between w-full z-10">
@@ -167,6 +194,7 @@ const MealCardImageSectionFull = ({
             <MealCardImageThumbnails
                 images={images}
                 videoThumbnailUrl={videoThumbUrl}
+                hasVideo={hasVideo}
                 activeIndex={activeIndex}
                 onChangeIndex={setActiveIndex}
                 disableActions={disableActions}

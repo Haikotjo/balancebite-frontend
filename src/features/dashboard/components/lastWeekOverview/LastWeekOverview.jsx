@@ -8,7 +8,6 @@ import RecommendedNutritionDisplay from "../recommendedNutritionDisplay/Recommen
 import MealModalById from "../../../meals/components/mealModalById/MealModalById.jsx";
 import ConsumedMealsToggle from "../consumedMealsToggle/ConsumedMealsToggle.jsx";
 import {getSortedConsumedMeals} from "../../utils/helpers/getSortedConsumedMeals.js";
-// 1. IMPORT DE SPINNER
 import Spinner from "../../../../components/layout/Spinner.jsx";
 import SectionHeader from "../../../profile/components/sectionHeaderOverview/SectionHeaderOverview.jsx";
 
@@ -50,6 +49,10 @@ const LastWeekOverview = ({ dailyRdiList, baseChartData }) => {
         setOpenMealsByDate((prev) => ({ ...prev, [date]: !prev[date] }));
     };
 
+    // Bepaal de status: laden vs leeg
+    const isLoading = dailyRdiList === null || dailyRdiList === undefined;
+    const isEmpty = Array.isArray(dailyRdiList) && dailyRdiList.length === 0;
+
     return (
         <CustomBox className="flex flex-col gap-2 text-center">
             <SectionHeader
@@ -65,9 +68,16 @@ const LastWeekOverview = ({ dailyRdiList, baseChartData }) => {
                 }
             />
 
-            {!dailyRdiList || dailyRdiList.length === 0 ? (
+            {isLoading ? (
                 <CustomBox className="flex justify-center items-center w-full py-10">
                     <Spinner />
+                </CustomBox>
+            ) : isEmpty ? (
+                <CustomBox className="bg-black/[0.02] dark:bg-white/[0.02] border border-dashed border-borderDark/20 dark:border-borderLight/20 rounded-2xl p-10 mt-2 text-center">
+                    <CustomTypography variant="small" className="text-friendlyGray italic">
+                        No nutritional data found for the past week.
+                        Start logging your meals to see your patterns here!
+                    </CustomTypography>
                 </CustomBox>
             ) : (
                 <CustomBox className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start mt-2">
@@ -100,7 +110,7 @@ const LastWeekOverview = ({ dailyRdiList, baseChartData }) => {
 };
 
 LastWeekOverview.propTypes = {
-    dailyRdiList: PropTypes.array.isRequired,
+    dailyRdiList: PropTypes.array,
     baseChartData: PropTypes.array,
 };
 
