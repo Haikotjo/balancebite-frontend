@@ -5,7 +5,7 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomImage from "../../../../components/layout/CustomImage.jsx";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { toYoutubeEmbedUrl } from "../../utils/helpers/toYoutubeEmbedUrl.js"; // pas pad aan
+import { toYoutubeEmbedUrl } from "../../utils/helpers/toYoutubeEmbedUrl.js";
 
 const placeholderImages = import.meta.glob("/src/assets/images/placeholder/*.webp", { eager: true });
 const placeholders = Object.values(placeholderImages).map((img) => img.default);
@@ -17,13 +17,14 @@ const MealImageCarousel = ({
                                activeIndex,
                                onChangeIndex,
                                disableActions = false,
+                               viewMode = "page",
                            }) => {
     const safeIndex = items.length > 0
         ? Math.min(Math.max(activeIndex ?? 0, 0), items.length - 1)
         : 0;
 
     const item = items[safeIndex];
-    const hasNav = items.length > 1;
+    const hasNav = items.length > 1 && viewMode !== "list";
 
     const prev = () => {
         if (disableActions || items.length < 2) return;
@@ -62,7 +63,7 @@ const MealImageCarousel = ({
                         <CustomImage
                             src={imageSrc}
                             alt={alt}
-                            className="relative z-10 w-full h-full object-contain"
+                            className="relative z-10 w-full h-full object-cover"
                         />
                     </>
                 )}
