@@ -25,9 +25,20 @@ const registerSchema = yup.object().shape({
         .required("Please confirm your password."),
     roles: yup
         .array()
-        .of(yup.string().oneOf(["USER", "ADMIN", "CHEF"], "Invalid role."))
+        .of(yup.string().oneOf(
+            ["USER", "ADMIN", "CHEF", "SUPERMARKET", "RESTAURANT", "DIETITIAN"],
+            "Invalid role."
+        ))
         .min(1, "At least one role is required.")
         .required("Roles are required."),
+    foodSource: yup
+        .string()
+        .nullable()
+        .when("roles", {
+            is: (roles) => roles && roles.includes("SUPERMARKET"),
+            then: (schema) => schema.required("Food source is required for supermarkets."),
+            otherwise: (schema) => schema.nullable(),
+        }),
 });
 
 export default registerSchema;

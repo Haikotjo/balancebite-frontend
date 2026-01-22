@@ -122,7 +122,7 @@ const AdminPage = () => {
 
                     {userAction === "Promote" && <PromoteUserForm />}
                     {userAction === "Delete" && <DeleteUserForm />}
-                    {userAction === "Create" && <RegisterForm showRoles isAdminContext />}
+                    {userAction === "Create" && <RegisterForm showRoles={true} isAdminContext={true} />}
                 </CustomBox>
             );
         }
