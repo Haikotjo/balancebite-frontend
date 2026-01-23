@@ -8,6 +8,7 @@ import {
     LogOut,
     Info,
     Apple,
+    PlusSquare,
 } from "lucide-react";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import clsx from "clsx";
@@ -96,6 +97,17 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                         onClick={() => navigate("/ingredients")}
                         icon={<Apple className="w-6 h-6" />}
                     />
+
+                    {/* Conditional: Create Ingredient for Supermarket/Admin users */}
+                    {user && (user.roles.includes("SUPERMARKET") || user.roles.includes("ROLE_ADMIN")) && (
+                        <NavItem
+                            label="add new"
+                            active={isActive("/create-ingredient")}
+                            onClick={() => navigate("/create-ingredient")}
+                            icon={<PlusSquare className="w-4 h-4" />}
+                            className="pl-10 opacity-90"
+                        />
+                    )}
 
                     {/* About */}
                     <NavItem

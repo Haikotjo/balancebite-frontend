@@ -25,6 +25,8 @@ import DashboardPage from "../features/dashboard/pages/dashboardPage/DashboardPa
 import IngredientsPage from "../features/fooditem/page/IngredientsPage.jsx";
 import RequireAdminOrDietitian from "./RequireAdminOrDietitian.jsx";
 import DietitianPage from "../features/dietitian/pages/DietitianPage.jsx";
+import CreateFoodItemPage from "../features/fooditem/page/CreateFoodItemPage.jsx";
+import RequireAdminOrSupermarket from "./RequireAdminOrSupermarket.jsx";
 
 function AppRoutes() {
     return (
@@ -57,6 +59,14 @@ function AppRoutes() {
                 <Route path="/meal/:mealId" element={<MealDetailsPage />} />
                 <Route path="/diet/:dietId" element={<DietDetailsPage />} />
                 <Route path="/ingredients" element={<IngredientsPage />} />
+                <Route
+                    path="/create-ingredient"
+                    element={
+                        <RequireAdminOrSupermarket>
+                            <CreateFoodItemPage />
+                        </RequireAdminOrSupermarket>
+                    }
+                />
             </Routes>
         </>
     );
