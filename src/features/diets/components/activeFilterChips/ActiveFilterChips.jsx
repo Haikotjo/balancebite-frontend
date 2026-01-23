@@ -93,6 +93,18 @@ const ActiveFilterChips = ({
                     />
                 )}
 
+                {filters.foodSource && (
+                    <DietsFilterChip
+                        label={`Store: ${filters.foodSource}`}
+                        colorClass="chip-blue"
+                        onRemove={() => setFilters(prev => {
+                            const updated = { ...prev };
+                            delete updated.foodSource;
+                            return updated;
+                        })}
+                    />
+                )}
+
             </CustomBox>
         )
     );

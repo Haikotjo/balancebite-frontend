@@ -17,6 +17,9 @@ import AccordionItem from "../../../diets/components/accordionItem/AccordionItem
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import Spinner from "../../../../components/layout/Spinner.jsx";
 import PageWrapper from "../../../../components/layout/PageWrapper.jsx";
+import {useCreateFoodItem} from "../../../../hooks/useCreateFoodItem.js";
+import CustomFloatingSelect from "../../../../components/layout/CustomFloatingSelect.jsx";
+import CustomFloatingSelectNew from "../../../../components/layout/CustomFloatingSelectNew.jsx";
 
 function MealPage() {
     const location = useLocation();
@@ -37,6 +40,7 @@ function MealPage() {
     const [sortBy, setSortBy] = useState(null);
     const [selectedMeal, setSelectedMeal] = useState(null);
     const [pinnedMeals, setPinnedMeals] = useState([]);
+    const { foodSourceOptions } = useCreateFoodItem()
 
     const filtersActive = Object.keys(filters).length > 0 || sortBy;
 
@@ -117,6 +121,25 @@ function MealPage() {
         <FilterSidebar filters={filters} onFilter={handleFiltersChange}/>
             <MealsSubMenu onSelect={setActiveOption}/>
             <NutrientSortOptionsHorizontal onSort={handleSort}/>
+            <CustomFloatingSelectNew
+                label="Filter by store"
+                className="max-w-[250px]"
+                variant="outlined"
+                options={foodSourceOptions}
+                value={foodSourceOptions.find(opt => opt.value === filters.foodSource) || null}
+                onChange={(val) => {
+                    setFilters((prev) => {
+                        const newFilters = { ...prev };
+                        if (val?.value) {
+                            newFilters.foodSource = val.value;
+                        } else {
+                            delete newFilters.foodSource;
+                        }
+                        return newFilters;
+                    });
+                }}
+                placeholder="All Stores"
+            />
 
             <CustomBox className="block md:hidden w-full">
                 <AccordionItem title="Nutrient range filter">
