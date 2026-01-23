@@ -13,7 +13,7 @@ import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx
  * Same behavior, cleaner layout.
  */
 const CreateMealMealIngredients = ({ value, onChange }) => {
-    const { options } = useFoodItems();
+    const { options, handleSearch } = useFoodItems();
 
     const lastItem = value[value.length - 1];
     const disableAdd = !lastItem || lastItem.foodItemId === "";
@@ -86,7 +86,10 @@ const CreateMealMealIngredients = ({ value, onChange }) => {
                                 <CustomFloatingSelect
                                     label="Ingredient *"
                                     variant="outlined"
+                                    // Belangrijk: we zorgen dat we de opties voor deze specifieke rij tonen
                                     options={getAvailableOptions(index)}
+                                    // VOEG DIT TOE: trigger de zoekfunctie uit de hook
+                                    onInputChange={(inputValue) => handleSearch(inputValue, index)}
                                     value={
                                         ingredientOptions.find((opt) => opt.value === ingredient.foodItemId) || null
                                     }

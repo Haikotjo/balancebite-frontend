@@ -15,14 +15,12 @@ import FoodItemImageUploader from "../../../fooditem/components/foodItemImageUpl
 import { Apple } from "lucide-react";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../../../../context/AuthContext.jsx";
-// Import van de hook voor de volledige userdata
 import useUserProfile from "../../../profile/utils/hooks/useUserProfile.js";
 
 const CreateFoodItemForm = () => {
     const { token, user: authUser } = useContext(AuthContext);
     const isSupermarket = authUser?.roles?.includes("SUPERMARKET");
 
-    // Haal de volledige user data op (nodig voor de foodSource)
     const { userData, isLoading: isUserLoading } = useUserProfile(token);
 
     const {
@@ -66,7 +64,6 @@ const CreateFoodItemForm = () => {
         foodCategoryOptions,
     } = useCreateFoodItem(reset);
 
-    // EFFECT: De foodSource vullen zodra de userData geladen is (Logica uit 2)
     useEffect(() => {
         if (isSupermarket && userData?.foodSource) {
             const matchingOption = foodSourceOptions.find(
@@ -81,7 +78,6 @@ const CreateFoodItemForm = () => {
         }
     }, [userData, isSupermarket, foodSourceOptions, setValue]);
 
-    // Helper voor de weergave in de select
     const currentVal = watch("foodSource");
     const selectedSourceOption = foodSourceOptions.find(opt => opt.value === currentVal)
         || (currentVal ? { label: currentVal, value: currentVal } : null);

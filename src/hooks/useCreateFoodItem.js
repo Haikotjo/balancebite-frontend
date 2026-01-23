@@ -26,7 +26,6 @@ export const useCreateFoodItem = (reset) => {
             grams: data.grams ? parseFloat(data.grams) : null,
             imageUrl: fileToSend ? null : urlToSend,
             image: null,
-            // DIT STUK IS VERANDERD:
             nutrients: [
                 { nutrientName: "Energy", value: data.calories, unitName: "kcal" },
                 { nutrientName: "Protein", value: data.protein, unitName: "g" },

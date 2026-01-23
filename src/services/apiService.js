@@ -527,6 +527,17 @@ export const getFoodItemById = async (id) => {
     }
 };
 
+export const fetchFoodItemsBySource = async (source) => {
+    const endpoint = `${import.meta.env.VITE_FOODITEMS_BY_SOURCE_ENDPOINT}?source=${source}`;
+    try {
+        const response = await Interceptor.get(endpoint);
+        return response.data;
+    } catch (error) {
+        logError(error);
+        throw error;
+    }
+};
+
 // Admin services
 export const getAllUsersApi = async (token) => {
     const endpoint = import.meta.env.VITE_GET_ALL_USERS_ENDPOINT;

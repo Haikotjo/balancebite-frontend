@@ -1,40 +1,54 @@
-import { useState, useEffect } from "react";
-import { getAllFoodItemNames, searchFoodItemsByName } from "../services/apiService.js";
+import { useState, useEffect, useContext, useCallback } from "react";
+import {
+    getAllFoodItemNames,
+    searchFoodItemsByName,
+    fetchFoodItemsBySource
+} from "../services/apiService.js";
+import { AuthContext } from "../context/AuthContext.jsx";
+import useUserProfile from "../features/profile/utils/hooks/useUserProfile.js";
 
 /**
  * Custom hook to manage food item retrieval and search functionality.
- * This hook fetches food item names and allows searching by name.
- *
- * @returns {Object} Contains options (food items), noResults state, handleSearch and refetch function.
+ * Automatically restricts items to the user's foodSource if they are a supermarket user.
  */
 const useFoodItems = () => {
     const [options, setOptions] = useState([]);
     const [noResults, setNoResults] = useState([]);
 
+    const { token } = useContext(AuthContext);
+    const { userData, isLoading: isUserLoading } = useUserProfile(token);
+
+    const userFoodSource = userData?.foodSource;
+
     /**
-     * Fetches all food item names (ID and name only).
-     * Optimized for search functionality where full item details are not needed.
+     * Fetches food items.
+     * Checks for userData and foodSource before deciding which API to call.
      */
-    const fetchAllFoodItems = async () => {
+    const fetchAllFoodItems = useCallback(async () => {
+
+        if (isUserLoading) return;
+
         try {
-            const data = await getAllFoodItemNames();
+            let data;
+            if (userFoodSource) {
+                console.log(`[useFoodItems] Restricted mode: Fetching for ${userFoodSource}`);
+                data = await fetchFoodItemsBySource(userFoodSource);
+            } else {
+                console.log("[useFoodItems] Global mode: Fetching all items");
+                data = await getAllFoodItemNames();
+            }
+
             setOptions(data);
             return data;
         } catch (error) {
-            console.error("Error fetching food item names:", error);
+            console.error("[useFoodItems] Error fetching food item names:", error);
             return [];
         }
-    };
+    }, [userFoodSource, isUserLoading]);
 
-    /**
-     * Handles searching for food items based on user input.
-     * - If the query length is greater than 1, it fetches filtered results.
-     * - Otherwise, it loads the full list of food items.
-     *
-     * @param {string} query - User input for search.
-     * @param {number} index - Index to track search instances.
-     */
     const handleSearch = async (query, index) => {
+        if (userFoodSource) return;
+
         if (query.length > 1) {
             try {
                 const data = await searchFoodItemsByName(query);
@@ -45,34 +59,24 @@ const useFoodItems = () => {
                 setOptions(newOptions);
                 setNoResults(newNoResults);
             } catch (error) {
-                console.error("Error searching food items:", error);
+                console.error("[useFoodItems] Search error:", error);
             }
         } else {
-            const allItems = await fetchAllFoodItems();
-            const newOptions = [...options];
-            const newNoResults = [...noResults];
-            newOptions[index] = allItems;
-            newNoResults[index] = false;
-            setOptions(newOptions);
-            setNoResults(newNoResults);
+            await fetchAllFoodItems();
         }
     };
 
-    /**
-     * Fetches all food item names when the component using this hook is mounted.
-     */
     useEffect(() => {
-        (async () => {
-            try {
-                await fetchAllFoodItems();
-            } catch (error) {
-                console.error("Error fetching food items:", error);
-            }
-        })();
-    }, []);
+        fetchAllFoodItems();
+    }, [fetchAllFoodItems]);
 
-    // Make fetchAllFoodItems available as refetch
-    return { options, noResults, handleSearch, refetch: fetchAllFoodItems };
+    return {
+        options,
+        noResults,
+        handleSearch,
+        refetch: fetchAllFoodItems,
+        isUserLoading
+    };
 };
 
 export default useFoodItems;
