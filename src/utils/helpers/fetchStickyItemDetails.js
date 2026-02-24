@@ -13,14 +13,15 @@ const fetchStickyItemDetails = async (items) => {
     for (const item of items) {
         try {
             if (item.type === "MEAL") {
-                const res = await Interceptor.get(`meals/${item.referenceId}`);
+                const res = await Interceptor.get(`/meals/${item.referenceId}`);
                 meals.push(res.data);
             } else if (item.type === "DIET_PLAN") {
                 const res = await Interceptor.get(`/public/diet-plans/${item.referenceId}`);
                 diets.push(res.data);
             }
         } catch (err) {
-            console.error(`❌ Failed to fetch ${item.type} with ID ${item.referenceId}`, err);
+            // Skip broken references (404 etc.)
+            console.warn(`Skipping sticky ${item.type} ${item.referenceId}:`, err?.response?.status);
         }
     }
 

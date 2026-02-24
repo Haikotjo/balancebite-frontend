@@ -1,20 +1,11 @@
 import { useState, useContext } from "react";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import useFavoritesMeals from "./useFavoritesMeals.jsx";
-import {AuthContext} from "../../../../context/AuthContext.jsx";
+import { AuthContext } from "../../../../context/AuthContext.jsx";
 
 /**
  * Custom hook to toggle a meal as favorite or remove it from favorites.
- * Handles authentication check, and delegates favorite logic to `useFavorites`.
- *
- * @param {Object} meal - The meal object to toggle.
- * @param {Function} [onAuthRequired] - Optional callback when user is not authenticated.
- * @param onError
- * @param onSuccess
- * @returns {Object} Contains:
- *  - toggleFavorite: Function to call when toggling.
- *  - alreadyFavorited: Boolean indicating if the meal is currently favorited.
- *  - isProcessing: Boolean indicating if the toggle is in progress.
+ * Handles authentication check, and delegates favorite logic to `useFavoritesMeals`.
  */
 export const useToggleMealFavorite = (meal, onAuthRequired, onError, onSuccess) => {
     const { userMeals } = useContext(UserMealsContext);
@@ -22,36 +13,55 @@ export const useToggleMealFavorite = (meal, onAuthRequired, onError, onSuccess) 
     const { addMealToFavorites, removeMealFromFavorites } = useFavoritesMeals();
     const [isProcessing, setIsProcessing] = useState(false);
 
-    const alreadyFavorited = userMeals.some(userMeal => userMeal.id === meal.id);
+    const isSaved = userMeals.some((m) => String(m.id) === String(meal?.id));
+    const isAllMealsCopy = meal?.isTemplate === false && meal?.originalMealId != null;
+
+    const alreadyFavorited = isAllMealsCopy || isSaved;
+    const shouldRemove = isSaved || isAllMealsCopy;
 
     const toggleFavorite = async () => {
-        if (!user) {
-            onAuthRequired?.();
-            return;
-        }
+        if (!user) return onAuthRequired?.();
+
+        console.log("🔥 [useToggleMealFavorite] DECISION", {
+            mealId: meal?.id,
+            mealOriginalMealId: meal?.originalMealId,
+            mealIsTemplate: meal?.isTemplate,
+            userMealsCount: userMeals?.length ?? 0,
+            isSaved,
+            isAllMealsCopy,
+            alreadyFavorited,
+            action: shouldRemove ? "REMOVE" : "ADD",
+        });
 
         setIsProcessing(true);
         try {
-            if (alreadyFavorited) {
+            if (shouldRemove) {
+                console.log("🔥 [useToggleMealFavorite] CALL removeMealFromFavorites", {
+                    mealId: meal?.id,
+                });
                 await removeMealFromFavorites(meal);
-                onSuccess?.(`${meal.name} added to favorites`, meal);
             } else {
+                console.log("🔥 [useToggleMealFavorite] CALL addMealToFavorites", {
+                    mealId: meal?.id,
+                });
                 await addMealToFavorites(meal);
-                onSuccess?.(`${meal.name} added to favorites`);
             }
-        } catch (e) {
-            console.error("Favorite toggle failed:", e);
-            console.log("⚠️ Full error object:", e.response?.data);
 
-            console.log("⚠️ Full error response:", e.response?.data);
-            const backendMessage = e?.response?.data?.error || "Could not toggle favorite. Try again later.";
+            onSuccess?.();
+        } catch (e) {
+            const backendMessage =
+                e?.response?.data?.error || "Could not toggle favorite. Try again later.";
             const diets = e?.response?.data?.diets || [];
-            console.log("⚠️ diets:", diets);
+
+            console.error("🔥 [useToggleMealFavorite] ERROR", {
+                mealId: meal?.id,
+                backendMessage,
+                diets,
+                error: e,
+            });
 
             onError?.({ message: backendMessage, diets });
-
-        }
-        finally {
+        } finally {
             setIsProcessing(false);
         }
     };

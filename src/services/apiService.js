@@ -97,17 +97,20 @@ export const fetchMeals = async (path) => {
 
 export const fetchUserMeals = async (token) => {
     const endpoint = import.meta.env.VITE_USER_MEALS_ENDPOINT;
-    try {
-        const response = await Interceptor.get(endpoint, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
-        // logResponse(response);
-        return response.data;
-    } catch (error) {
-        logError(error);
-        throw error;
-    }
+
+    console.log("[fetchUserMeals] endpoint:", endpoint);
+    console.log("[fetchUserMeals] token exists:", !!token);
+
+    const response = await Interceptor.get(endpoint, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
+    console.log("[fetchUserMeals] status:", response.status);
+    console.log("[fetchUserMeals] data:", response.data);
+
+    return response.data;
 };
+
 
 export const fetchMealById = async (mealId) => {
     const endpoint = `${import.meta.env.VITE_MEAL_BY_ID_ENDPOINT}/${mealId}`;

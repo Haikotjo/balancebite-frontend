@@ -1,170 +1,140 @@
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 import PropTypes from "prop-types";
 import { AuthContext } from "./AuthContext";
-import {fetchMealById, fetchMeals, fetchUserMeals} from "../services/apiService";
-import { useRef } from "react";
-
+import { fetchMealById, fetchMeals, fetchUserMeals } from "../services/apiService";
 
 export const UserMealsContext = createContext();
 
 export const UserMealsProvider = ({ children }) => {
     const [meals, setMeals] = useState([]);
-    const [userMeals, setUserMeals] = useState([]);
-    const [loadingUserMeals, setLoadingUserMeals] = useState(false);
-    const [loadingMeals, setLoadingMeals] = useState(true);
+    const [userMeals, setUserMeals] = useState([]); // Voor de "My Meals" zijlijst
+    const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const { user } = useContext(AuthContext);
     const [error, setError] = useState(null);
     const [filters, setFilters] = useState({});
     const [sortBy, setSortBy] = useState(null);
     const [activeOption, setActiveOption] = useState("All Meals");
-    const userMealsRef = useRef(userMeals);
     const [itemsPerPage] = useState(12);
-
-    useEffect(() => {
-        userMealsRef.current = userMeals;
-    }, [userMeals]);
-
-    const getMealById = useCallback(async (mealId) => {
-        const fromContext = [...userMealsRef.current, ...meals].find(
-            (m) => String(m.id) === String(mealId)
-        );
-
-        if (fromContext) {
-            console.log("✅ Meal found in context:", fromContext);
-            return fromContext;
-        }
-
-        try {
-            const fetchedMeal = await fetchMealById(mealId);
-
-            return fetchedMeal;
-        } catch (err) {
-            console.error("❌ Could not fetch meal by ID:", err.message);
-            return null;
-        }
-    }, [meals]);
-
-
-    const applyUserCopies = useCallback((publicMeals, userCopies) => {
-        return publicMeals.map(meal => {
-            const copy = userCopies.find(
-                (m) => String(m.originalMealId) === String(meal.id)
-            );
-            return copy || meal;
-        });
-    }, []);
+    const { user, token } = useContext(AuthContext);
 
     const fetchUserMealsData = useCallback(async () => {
-        setLoadingUserMeals(true);
+        console.log("[fetchUserMealsData] called", { hasUser: !!user, hasToken: !!token });
+
+        if (!token) return;
+
         try {
-            const token = localStorage.getItem("accessToken");
-            if (token) {
-                const userMealsData = await fetchUserMeals(token);
-                const validData = Array.isArray(userMealsData.content) ? userMealsData.content : [];
-                setUserMeals(validData);
-                userMealsRef.current = validData;
-            }
-        } catch (error) {
-            console.error("⚠️ Failed to fetch user meals:", error.message);
+            const data = await fetchUserMeals(token);
+
+            console.log("[fetchUserMealsData] raw response:", data);
+            console.log("[fetchUserMealsData] keys:", Object.keys(data || {}));
+
+            const list = Array.isArray(data?.content)
+                ? data.content
+                : Array.isArray(data)
+                    ? data
+                    : [];
+
+            console.log("[fetchUserMealsData] resolved length:", list.length);
+
+            setUserMeals(list);
+        } catch (e) {
+            console.error("[fetchUserMealsData] failed:", e?.response?.status, e?.response?.data, e);
             setUserMeals([]);
-            userMealsRef.current = [];
-        } finally {
-            setLoadingUserMeals(false);
         }
-    }, []);
+
+    }, [user, token]);
 
 
     useEffect(() => {
-        const run = async () => {
-            let baseUrl =
-                activeOption === "My Meals"
+        if (user && token) fetchUserMealsData();
+    }, [user, token, fetchUserMealsData]);
+
+
+    // De hoofdfunctie die de lijst ophaalt
+    useEffect(() => {
+        const loadMeals = async () => {
+            setLoading(true);
+            try {
+                let baseUrl = activeOption === "My Meals"
                     ? `/users/meals?page=${page - 1}&size=${itemsPerPage}`
                     : activeOption === "Created Meals"
                         ? `/users/created-meals?page=${page - 1}&size=${itemsPerPage}`
                         : `/meals?page=${page - 1}&size=${itemsPerPage}`;
 
-            Object.entries(filters).forEach(([key, value]) => {
-                baseUrl += `&${key}=${encodeURIComponent(value)}`;
-            });
-
-            if (sortBy?.sortKey && sortBy?.sortOrder) {
-                baseUrl += `&sortBy=${sortBy.sortKey}&sortOrder=${sortBy.sortOrder}`;
-            }
-
-            console.log("📡 Fetching from:", baseUrl);
-
-            const token = localStorage.getItem("accessToken");
-            let userCopies = [];
-
-            if (user && token) {
-                try {
-                    const userMealsData = await fetchUserMeals(token);
-                    userCopies = Array.isArray(userMealsData.content) ? userMealsData.content : [];
-                    setUserMeals(userCopies);
-                } catch (err) {
-                    setError(err.message);
-                    setUserMeals([]);
-                    userCopies = [];
-                }
-            }
-
-            try {
-                const mealsData = await fetchMeals(baseUrl);
-                const publicMeals = mealsData.content || [];
-
-                const finalMeals = user && userCopies.length > 0
-                    ? applyUserCopies(publicMeals, userCopies)
-                    : publicMeals;
-
-                if (sortBy?.sortKey === "saveCount") {
-                    finalMeals.sort((a, b) => {
-                        const aIsCopy = !!a.originalMealId;
-                        const bIsCopy = !!b.originalMealId;
-
-                        if (aIsCopy && !bIsCopy) return 1;
-                        if (!aIsCopy && bIsCopy) return -1;
-
-                        const aVal = a.saveCount ?? 0;
-                        const bVal = b.saveCount ?? 0;
-                        return sortBy.sortOrder === "asc" ? aVal - bVal : bVal - aVal;
-                    });
+                // Filters plakken
+                Object.entries(filters).forEach(([key, value]) => {
+                    baseUrl += `&${key}=${encodeURIComponent(value)}`;
+                });
+                if (sortBy?.sortKey && sortBy?.sortOrder) {
+                    baseUrl += `&sortBy=${sortBy.sortKey}&sortOrder=${sortBy.sortOrder}`;
                 }
 
-                setMeals(finalMeals);
-                setTotalPages(mealsData.totalPages || 1);
+                // De backend vervangt nu automatisch originelen door jouw kopieën!
+                const data = await fetchMeals(baseUrl);
+                const receivedMeals = data.content || [];
+
+                // --- LOGGING START ---
+                console.log(`🍟 Totaal aantal meals geladen voor [${activeOption}]:`, receivedMeals.length);
+
+                const copies = receivedMeals.filter(m => m.isTemplate === false);
+                if (copies.length > 0) {
+                    console.log(`✅ GEVONDEN: ${copies.length} maaltijden zijn JOUW kopieën!`);
+                    console.table(copies.map(m => ({
+                        id: m.id,
+                        name: m.name,
+                        originalId: m.originalMealId,
+                        isTemplate: m.isTemplate,
+                        isPrivate: m.isPrivate
+                    })));
+                } else {
+                    console.log("ℹ️ Geen kopieën gevonden (allemaal standaard templates).");
+                }
+                // --- LOGGING EIND ---
+
+                setMeals(receivedMeals);
+                setTotalPages(data.totalPages || 1);
                 setError(null);
             } catch (err) {
+                console.error("❌ Fout bij laden meals:", err.message);
                 setError(err.message);
             } finally {
-                setLoadingMeals(false);
+                setLoading(false);
             }
         };
 
-        run().catch(console.error);
+        loadMeals();
     }, [activeOption, filters, sortBy, page, user]);
 
+    // Simpele helper om een meal te vinden in de huidige state
+    const getMealById = useCallback(async (mealId) => {
+        const found = meals.find(m => String(m.id) === String(mealId));
+        if (found) return found;
 
+        try {
+            return await fetchMealById(mealId);
+        } catch (err) {
+            return null;
+        }
+    }, [meals]);
 
-    const replaceMealInMeals = (originalMealId, newMeal) => {
-        setMeals((prevMeals) =>
-            prevMeals.map((meal) =>
-                String(meal.id) === String(originalMealId) ? newMeal : meal
-            )
-        );
-    };
-
-    const removeMealFromUserMeals = (mealId) => {
-        setUserMeals((prev) => prev.filter((meal) => meal.id !== mealId));
-    };
-
-    const addMealToUserMeals = (meal) => {
-        setUserMeals((prevUserMeals) => [...prevUserMeals, meal]);
+    const replaceMealInMeals = (originalId, newMeal) => {
+        setMeals(prev => prev.map(m => String(m.id) === String(originalId) ? newMeal : m));
     };
 
     const removeMealFromMeals = (mealId) => {
-        setMeals((prevMeals) => prevMeals.filter((meal) => meal.id !== mealId));
+        setMeals(prev => prev.filter(m => m.id !== mealId));
+    };
+
+    const addMealToUserMeals = (meal) => {
+        setUserMeals((prev) => {
+            const exists = prev.some((m) => String(m.id) === String(meal.id));
+            return exists ? prev : [meal, ...prev];
+        });
+    };
+
+    const removeMealFromUserMeals = (mealId) => {
+        setUserMeals((prev) => prev.filter((m) => String(m.id) !== String(mealId)));
     };
 
     return (
@@ -172,9 +142,10 @@ export const UserMealsProvider = ({ children }) => {
             value={{
                 meals,
                 userMeals,
-                applyUserCopies,
+                addMealToUserMeals,
+                removeMealFromUserMeals,
                 getMealById,
-                loading: loadingMeals || loadingUserMeals,
+                loading,
                 error,
                 activeOption,
                 setActiveOption,
@@ -183,8 +154,6 @@ export const UserMealsProvider = ({ children }) => {
                 sortBy,
                 setSortBy,
                 fetchUserMealsData,
-                removeMealFromUserMeals,
-                addMealToUserMeals,
                 removeMealFromMeals,
                 replaceMealInMeals,
                 setMeals,

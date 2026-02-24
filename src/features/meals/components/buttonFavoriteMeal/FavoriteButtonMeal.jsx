@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { Heart, AlertTriangle } from "lucide-react";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useToggleMealFavorite } from "../../utils/hooks/useToggleMealFavorite.js";
 import { useRequireAuthDialog } from "../../../../hooks/useRequireAuthDialog.js";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
@@ -15,12 +15,15 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import { useDialog } from "../../../../context/NotificationContext.jsx";
-import {UserDietsContext} from "../../../../context/UserDietContext.jsx";
+import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
 
 const ButtonFavorite = ({ meal, onClose }) => {
     const navigate = useNavigate();
     const { showDialog } = useDialog();
-    const { removeMealFromUserMeals } = useContext(UserMealsContext);
+
+    // NOTE: also grab userMeals for debug checks
+    const { removeMealFromUserMeals, userMeals } = useContext(UserMealsContext);
+
     const { token } = useContext(AuthContext);
     const { closeModal } = useContext(ModalContext);
     const { replaceDietInDiets, getDietById } = useContext(UserDietsContext);
@@ -39,13 +42,54 @@ const ButtonFavorite = ({ meal, onClose }) => {
     const [errorMessage, setErrorMessage] = useState("");
     const [errorDiets, setErrorDiets] = useState([]);
 
+    // --- DEBUG HELPERS ---
+    const normalizeId = (v) => (v == null ? null : String(v));
+
+    // Debug: does this meal exist in userMeals by id OR by originalMealId linkage?
+    const debugMatch = useMemo(() => {
+        const mealId = normalizeId(meal?.id);
+        const mealOrig = normalizeId(meal?.originalMealId);
+
+        const byId = (userMeals ?? []).find((m) => normalizeId(m.id) === mealId) || null;
+
+        // User has a saved copy where copy.originalMealId === meal.id
+        const copyOfMeal =
+            (userMeals ?? []).find((m) => normalizeId(m.originalMealId) === mealId) || null;
+
+        // If current meal is a copy, maybe the original is in userMeals by id
+        const originalOfCopy =
+            mealOrig != null
+                ? (userMeals ?? []).find((m) => normalizeId(m.id) === mealOrig) || null
+                : null;
+
+        return {
+            mealId,
+            mealOriginalMealId: mealOrig,
+            mealIsTemplate: meal?.isTemplate ?? null,
+            userMealsCount: userMeals?.length ?? 0,
+            matchById: byId ? { id: byId.id, originalMealId: byId.originalMealId ?? null, name: byId.name ?? null } : null,
+            matchCopyOfMeal: copyOfMeal
+                ? { id: copyOfMeal.id, originalMealId: copyOfMeal.originalMealId ?? null, name: copyOfMeal.name ?? null }
+                : null,
+            matchOriginalOfCopy: originalOfCopy
+                ? { id: originalOfCopy.id, originalMealId: originalOfCopy.originalMealId ?? null, name: originalOfCopy.name ?? null }
+                : null,
+            userMealIdsSample: (userMeals ?? []).slice(0, 25).map((m) => ({
+                id: m.id,
+                originalMealId: m.originalMealId ?? null,
+                isTemplate: m.isTemplate ?? null,
+                name: m.name ?? null,
+            })),
+        };
+    }, [meal, userMeals]);
+
     const handleForceUnlink = async () => {
         try {
             await forceUnlinkMealFromUserApi(meal.id, token);
             removeMealFromUserMeals(meal.id);
             setErrorDialogOpen(false);
 
-            // Update de betrokken diets
+            // Update related diets
             for (const diet of errorDiets) {
                 try {
                     const updatedDiet = await getDietById(diet.id);
@@ -53,7 +97,7 @@ const ButtonFavorite = ({ meal, onClose }) => {
                         replaceDietInDiets(diet.id, updatedDiet);
                     }
                 } catch (e) {
-                    console.warn(`⚠️ Kon diet ${diet.id} niet updaten`, e);
+                    console.warn(`⚠️ Could not update diet ${diet.id}`, e);
                 }
             }
 
@@ -66,7 +110,6 @@ const ButtonFavorite = ({ meal, onClose }) => {
             console.error("Force unlink failed", e);
         }
     };
-
 
     const { toggleFavorite, alreadyFavorited } = useToggleMealFavorite(
         meal,
@@ -89,10 +132,24 @@ const ButtonFavorite = ({ meal, onClose }) => {
         }
     );
 
+    // DEBUG: log every time inputs/state change
+    useEffect(() => {
+        console.log("❤️ [ButtonFavoriteDebug] RENDER", {
+            ...debugMatch,
+            alreadyFavorited,
+        });
+    }, [debugMatch, alreadyFavorited]);
+
     return (
         <>
             <CustomIconButton
-                onClick={toggleFavorite}
+                onClick={() => {
+                    console.log("❤️ [ButtonFavoriteDebug] CLICK", {
+                        ...debugMatch,
+                        alreadyFavoritedBeforeClick: alreadyFavorited,
+                    });
+                    toggleFavorite();
+                }}
                 bgColor="bg-error/80"
                 icon={
                     <Heart

@@ -61,14 +61,16 @@ function HomePage() {
                 const { meals, diets } = await fetchStickyItemDetails(rawStickyItems);
 
                 // Voeg reference toe aan elk item
-                const enriched = rawStickyItems.map((item) => {
-                    const reference =
-                        item.type === "MEAL"
-                            ? meals.find((m) => m.id === item.referenceId)
-                            : diets.find((d) => d.id === item.referenceId);
+                const enriched = rawStickyItems
+                    .map((item) => {
+                        const reference =
+                            item.type === "MEAL"
+                                ? meals.find((m) => m.id === item.referenceId)
+                                : diets.find((d) => d.id === item.referenceId);
 
-                    return { ...item, reference };
-                });
+                        return { ...item, reference };
+                    })
+                    .filter((item) => item.reference);
 
                 setStickyItems(enriched);
             } catch (err) {
@@ -107,18 +109,16 @@ function HomePage() {
                     items={stickyItems}
                     onTitleClick={() => navigate("/pinned")}
                     renderItem={(item) => {
+                        if (!item.reference) return null; // English comment: Skip broken pinned references
+
                         if (item.type === "MEAL") {
                             return (
                                 <CustomBox className="min-w-[325px] max-w-[325px]">
-                                    <MealCard
-                                        meal={item.reference}
-                                        viewMode="list"
-                                        hideAfterTitle
-                                        isPinned
-                                    />
+                                    <MealCard meal={item.reference} viewMode="list" hideAfterTitle isPinned />
                                 </CustomBox>
                             );
                         }
+
                         if (item.type === "DIET_PLAN") {
                             return (
                                 <CustomBox className="w-full max-w-[280px]">
@@ -126,6 +126,7 @@ function HomePage() {
                                 </CustomBox>
                             );
                         }
+
                         return null;
                     }}
                 />

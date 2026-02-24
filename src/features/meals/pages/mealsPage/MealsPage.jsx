@@ -18,7 +18,6 @@ import CustomTypography from "../../../../components/layout/CustomTypography.jsx
 import Spinner from "../../../../components/layout/Spinner.jsx";
 import PageWrapper from "../../../../components/layout/PageWrapper.jsx";
 import {useCreateFoodItem} from "../../../../hooks/useCreateFoodItem.js";
-import CustomFloatingSelect from "../../../../components/layout/CustomFloatingSelect.jsx";
 import CustomFloatingSelectNew from "../../../../components/layout/CustomFloatingSelectNew.jsx";
 
 function MealPage() {
