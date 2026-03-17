@@ -7,7 +7,7 @@ import MealInfoOverlay from "../mealCardInfoOverlay/MealInfoOverlay.jsx";
 import MealCardActionButtons from "../mealCardActionButtons/MealCardActionButtons.jsx";
 import MealCardImageThumbnails from "../mealCardImageThumbnails/MealCardImageThumbnails.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
-import { Timer } from "lucide-react";
+import { Timer, Users } from "lucide-react";
 import MealCardMacrosCompact from "../mealCardMacrosCompact/MealCardMacrosCompact.jsx";
 import {calculateMacrosPer100g} from "../../utils/helpers/calculateMacrosPer100g.js";
 import {buildMacrosObject} from "../../utils/helpers/buildMacrosObject.js";
@@ -129,8 +129,9 @@ const MealCardImageSectionFull = ({
 
                 <CustomBox className="absolute bottom-10 left-6 right-6 pointer-events-none z-40">
                     <CustomBox className="flex flex-col gap-2 mb-2">
+
                         {meal?.preparationTime && (
-                            <CustomBox className="ml-6">
+                            <CustomBox className="ml-2">
                                 <CustomTypography
                                     as="span"
                                     variant="xsmallCard"
@@ -145,7 +146,7 @@ const MealCardImageSectionFull = ({
                         )}
 
                         {meal?.mealPrice && (
-                            <CustomBox className="mb-2 ml-2">
+                            <CustomBox className=" ml-6">
                                 <CustomTypography
                                     as="span"
                                     variant="small"
@@ -154,6 +155,21 @@ const MealCardImageSectionFull = ({
                                     className="inline-flex justify-center rounded-full px-3 py-1 bg-price/50 text-white border border-white tracking-[0.1em]"
                                 >
                                     € {meal.mealPrice.toFixed(2)}
+                                </CustomTypography>
+                            </CustomBox>
+                        )}
+
+                        {meal?.servings > 1 && (
+                            <CustomBox className="ml-10">
+                                <CustomTypography
+                                    as="span"
+                                    variant="xsmallCard"
+                                    italic
+                                    bold
+                                    className="inline-flex items-center justify-center gap-2 rounded-full px-3 py-1 bg-secondary/70  text-white border border-white tracking-[0.2em]"
+                                >
+                                    <Users size={14} className="text-white" />
+                                    {meal.servings} servings
                                 </CustomTypography>
                             </CustomBox>
                         )}

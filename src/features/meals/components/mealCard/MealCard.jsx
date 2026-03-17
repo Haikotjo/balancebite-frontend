@@ -256,7 +256,12 @@ const MealCard = ({
                             {(!isListView || activeSection === 'nutrients' || activeSection === 'ingredients') && (
                                 <CustomBox className={`${!isListView ? "grid grid-cols-1 md:grid-cols-2 gap-8 my-12" : "flex flex-col gap-4"}`}>
                                     {(!isListView || activeSection === 'nutrients') && (
-                                        <MealCardSection ref={nutrientsRef} title="Nutrients" subtitle="Macros" icon={ChartBar}>
+                                        <MealCardSection
+                                            ref={nutrientsRef}
+                                            title="Nutrients"
+                                            subtitle={meal?.servings > 1 ? "Macros (per serving)" : "Macros"}
+                                            icon={ChartBar}
+                                        >
                                             <MealCardMacrosSection macros={macros}/>
                                         </MealCardSection>
                                     )}
