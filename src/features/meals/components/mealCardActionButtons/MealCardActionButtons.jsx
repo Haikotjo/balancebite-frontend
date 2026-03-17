@@ -66,7 +66,7 @@ const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page", onClose
                         </CustomBox>
                     )}
                     <SocialShareMenu
-                        url={`${window.location.origin}/meals/${meal.id}`}
+                        url={`${window.location.origin}/meal/${meal.id}`}
                         title={`Bekijk dit lekkere recept: ${meal.name}`}
                         sharedClasses={sharedClasses}
                         iconSize={iconSize}
