@@ -99,7 +99,7 @@ const MealCardImageSectionFull = ({
                 >
                     <CustomBox
                         ref={actionsAnchorRef}
-                        className={`pointer-events-auto ${disableActions ? "pointer-events-none opacity-60" : ""}`}
+                        className={`relative z-50 pointer-events-auto ${disableActions ? "pointer-events-none opacity-60" : ""}`}
                         onClick={(e) => e.stopPropagation()}
                     >
                         <MealCardActionButtons
@@ -111,7 +111,7 @@ const MealCardImageSectionFull = ({
                     </CustomBox>
 
                     <CustomBox
-                        className="mt-3 pointer-events-auto"
+                        className="relative z-40 mt-3 pointer-events-auto"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Macro's in 2x2 grid */}
@@ -127,7 +127,7 @@ const MealCardImageSectionFull = ({
                     </CustomBox>
                 </CustomBox>
 
-                <CustomBox className="absolute bottom-10 left-6 right-6 pointer-events-none z-40">
+                <CustomBox className="absolute bottom-10 left-6 right-6 pointer-events-none z-30">
                     <CustomBox className="flex flex-col gap-2 mb-2">
 
                         {meal?.preparationTime && (
