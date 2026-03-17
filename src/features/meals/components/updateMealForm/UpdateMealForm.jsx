@@ -17,6 +17,7 @@ import CustomTextField from "../../../../components/layout/CustomTextField.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import {mealSchema} from "../../../../utils/valadition/validationSchemas.js";
+import CustomFloatingNumberInput from "../../../../components/layout/CustomFloatingNumberInput.jsx";
 
 export default function UpdateMealForm() {
     const { mealId } = useParams();
@@ -116,6 +117,27 @@ export default function UpdateMealForm() {
                 error={!!errors.name}
                 helperText={errors.name?.message}
             />
+
+            <CustomBox className="mb-4">
+                <Controller
+                    name="servings"
+                    control={control}
+                    render={({ field }) => (
+                        <CustomFloatingNumberInput
+                            label="Number of people / servings / portions"
+                            variant="outlined"
+                            value={field.value ?? ""}
+                            onChange={field.onChange}
+                            onBlur={field.onBlur}
+                            error={!!errors.servings}
+                            helperText={errors.servings?.message}
+                            min={1}
+                            max={99}
+                            suffix=""
+                        />
+                    )}
+                />
+            </CustomBox>
 
             <Controller
                 name="mealIngredients"

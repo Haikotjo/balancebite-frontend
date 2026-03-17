@@ -29,6 +29,7 @@ import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import { mealSchema } from "../../../../utils/valadition/validationSchemas.js";
 import { Soup } from "lucide-react";
 import MealModal from "../mealModal/MealModal.jsx";
+import CustomFloatingNumberInput from "../../../../components/layout/CustomFloatingNumberInput.jsx";
 
 const CreateMealForm = () => {
     const [cameraError] = useState(null);
@@ -58,6 +59,7 @@ const CreateMealForm = () => {
             sourceUrl:"",
             preparationVideoUrl: "",
             mealPreparation: "",
+            servings: null,
         },
     });
 
@@ -130,6 +132,27 @@ const CreateMealForm = () => {
                 error={!!errors.name}
                 helperText={errors.name?.message}
             />
+
+            <CustomBox className="mb-4">
+                <Controller
+                    name="servings"
+                    control={control}
+                    render={({ field }) => (
+                        <CustomFloatingNumberInput
+                            label="Number of people / servings / portions"
+                            variant="outlined"
+                            value={field.value ?? ""}
+                            onChange={field.onChange}
+                            onBlur={field.onBlur}
+                            error={!!errors.servings}
+                            helperText={errors.servings?.message}
+                            min={1}
+                            max={99}
+                            suffix=""
+                        />
+                    )}
+                />
+            </CustomBox>
 
             {/* Ingredients */}
             <Controller

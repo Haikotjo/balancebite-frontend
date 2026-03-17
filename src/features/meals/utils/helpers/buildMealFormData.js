@@ -6,6 +6,7 @@ export const buildMealFormData = async (data) => {
     const mealInputDTO = {
         name: data.name,
         mealDescription: data.mealDescription,
+        servings: data.servings ?? null,
         mealIngredients: data.mealIngredients.map((ingredient) => ({
             foodItemId: parseInt(ingredient.foodItemId, 10),
             quantity: parseFloat(ingredient.quantity),

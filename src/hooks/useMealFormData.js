@@ -38,6 +38,7 @@ export const useMealFormData = (mealId, reset) => {
                     cuisines: data.cuisines ?? [],
                     diets: data.diets ?? [],
                     preparationTime: data.preparationTime || "",
+                    servings: data.servings ?? null,
 
                     images,
                     primaryIndex,

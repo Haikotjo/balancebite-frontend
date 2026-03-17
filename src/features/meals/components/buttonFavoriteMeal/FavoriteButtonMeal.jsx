@@ -132,13 +132,13 @@ const ButtonFavorite = ({ meal, onClose }) => {
         }
     );
 
-    // DEBUG: log every time inputs/state change
-    useEffect(() => {
-        console.log("❤️ [ButtonFavoriteDebug] RENDER", {
-            ...debugMatch,
-            alreadyFavorited,
-        });
-    }, [debugMatch, alreadyFavorited]);
+    // // DEBUG: log every time inputs/state change
+    // useEffect(() => {
+    //     console.log("❤️ [ButtonFavoriteDebug] RENDER", {
+    //         ...debugMatch,
+    //         alreadyFavorited,
+    //     });
+    // }, [debugMatch, alreadyFavorited]);
 
     return (
         <>

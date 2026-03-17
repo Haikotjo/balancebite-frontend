@@ -62,6 +62,14 @@ export const mealSchema  = yup.object().shape({
     keepImageIds: yup.array().of(yup.number()).nullable().optional(),
     replaceOrderIndexes: yup.array().of(yup.number()).nullable().optional(),
     imageFiles: yup.array().nullable().optional(),
+
+    servings: yup
+        .number()
+        .nullable()
+        .transform((value, originalValue) => originalValue === "" ? null : value)
+        .typeError("Servings must be a number.")
+        .min(1, "Servings must be at least 1.")
+        .max(99, "Servings must not exceed 99."),
 });
 
 export const foodItemSchema = yup.object().shape({
