@@ -29,7 +29,7 @@ const useFoodItems = () => {
         console.log("USER FOOD SOURCE:", userFoodSource);
         console.log("SOURCE RAW:", JSON.stringify(userFoodSource));
 
-        if (isUserLoading) return;
+        if (isUserLoading || !userFoodSource) return;
 
         try {
             let data;
@@ -70,10 +70,10 @@ const useFoodItems = () => {
     };
 
     useEffect(() => {
-        if (isUserLoading) return;
+        if (isUserLoading || !userFoodSource) return;
 
         fetchAllFoodItems();
-    }, [isUserLoading, fetchAllFoodItems]);
+    }, [isUserLoading, userFoodSource]);
 
     return {
         options,
