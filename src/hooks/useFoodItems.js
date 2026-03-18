@@ -27,6 +27,7 @@ const useFoodItems = () => {
     const fetchAllFoodItems = useCallback(async () => {
 
         console.log("USER FOOD SOURCE:", userFoodSource);
+        console.log("SOURCE RAW:", JSON.stringify(userFoodSource));
 
         if (isUserLoading) return;
 
