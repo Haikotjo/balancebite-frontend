@@ -26,6 +26,8 @@ const useFoodItems = () => {
      */
     const fetchAllFoodItems = useCallback(async () => {
 
+        console.log("USER FOOD SOURCE:", userFoodSource);
+
         if (isUserLoading) return;
 
         try {
@@ -67,8 +69,10 @@ const useFoodItems = () => {
     };
 
     useEffect(() => {
+        if (isUserLoading) return;
+
         fetchAllFoodItems();
-    }, [fetchAllFoodItems]);
+    }, [isUserLoading, fetchAllFoodItems]);
 
     return {
         options,

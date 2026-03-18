@@ -121,8 +121,8 @@ function MealPage() {
             <MealsSubMenu onSelect={setActiveOption}/>
             <NutrientSortOptionsHorizontal onSort={handleSort}/>
             <CustomFloatingSelectNew
-                label="Filter by store"
-                className="max-w-[250px]"
+                label="Store"
+                className="max-w-[250px] mb-4"
                 variant="outlined"
                 options={foodSourceOptions}
                 value={foodSourceOptions.find(opt => opt.value === filters.foodSource) || null}
@@ -212,13 +212,23 @@ function MealPage() {
                         : "No public meals available yet."}
                 </CustomTypography>
             ) : (
-                <MealList
-                    sortBy={sortBy}
-                    filters={filters}
-                    selectedMeal={selectedMeal}
-                    onFiltersChange={handleFiltersChange}
-                    pinnedMeals={pinnedMeals}
-                />
+                <>
+                    <CustomTypography
+                        variant="small"
+                        italic
+                        className="text-gray-400 mb-2 ml-2"
+                    >
+                        * Macros are shown per serving
+                    </CustomTypography>
+
+                    <MealList
+                        sortBy={sortBy}
+                        filters={filters}
+                        selectedMeal={selectedMeal}
+                        onFiltersChange={handleFiltersChange}
+                        pinnedMeals={pinnedMeals}
+                    />
+                </>
             )}
 
 
