@@ -28,6 +28,7 @@ const useFoodItems = () => {
 
         console.log("USER FOOD SOURCE:", userFoodSource);
         console.log("SOURCE RAW:", JSON.stringify(userFoodSource));
+        console.log("USER DATA:", userData);
 
         if (isUserLoading || !userFoodSource) return;
 
