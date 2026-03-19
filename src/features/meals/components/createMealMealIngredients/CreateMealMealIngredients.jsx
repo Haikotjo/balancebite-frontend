@@ -7,13 +7,14 @@ import CustomFloatingNumberInput from "../../../../components/layout/CustomFloat
 import ButtonRemoveFoodItem from "../../../admin/components/buttonRemoveFooditem/ButtonRemoveFoodItem.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
+import Spinner from "../../../../components/layout/Spinner.jsx";
 
 /**
  * CreateMealMealIngredients
  * Same behavior, cleaner layout.
  */
 const CreateMealMealIngredients = ({ value, onChange }) => {
-    const { options, handleSearch } = useFoodItems();
+    const { options, handleSearch, isLoading } = useFoodItems();
 
     const lastItem = value[value.length - 1];
     const disableAdd = !lastItem || lastItem.foodItemId === "";
@@ -56,6 +57,18 @@ const CreateMealMealIngredients = ({ value, onChange }) => {
         value.length === 0 || value.every((item) => item.foodItemId === "")
             ? "Add at least one ingredient"
             : "Click to add more ingredients";
+
+    if (isLoading) {
+        return (
+            <CustomBox className="py-6 flex flex-col items-center gap-2">
+                <CustomTypography variant="h5">
+                    Loading ingredients
+                </CustomTypography>
+
+                <Spinner />
+            </CustomBox>
+        );
+    }
 
     return (
         <CustomBox className="max-w-[680px] w-full mx-auto">

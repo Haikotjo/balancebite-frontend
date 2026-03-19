@@ -20,25 +20,22 @@ const useFoodItems = () => {
 
     const userFoodSource = userData?.foodSource;
 
+    const [isLoading, setIsLoading] = useState(true);
+
     /**
      * Fetches food items.
      * Checks for userData and foodSource before deciding which API to call.
      */
     const fetchAllFoodItems = useCallback(async () => {
+        if (isUserLoading) return;
 
-        console.log("USER FOOD SOURCE:", userFoodSource);
-        console.log("SOURCE RAW:", JSON.stringify(userFoodSource));
-        console.log("USER DATA:", userData);
-
-        if (isUserLoading || !userFoodSource) return;
-
+        setIsLoading(true);
         try {
             let data;
+
             if (userFoodSource) {
-                console.log(`[useFoodItems] Restricted mode: Fetching for ${userFoodSource}`);
                 data = await fetchFoodItemsBySource(userFoodSource);
             } else {
-                console.log("[useFoodItems] Global mode: Fetching all items");
                 data = await getAllFoodItemNames();
             }
 
@@ -47,6 +44,8 @@ const useFoodItems = () => {
         } catch (error) {
             console.error("[useFoodItems] Error fetching food item names:", error);
             return [];
+        } finally {
+            setIsLoading(false);
         }
     }, [userFoodSource, isUserLoading]);
 
@@ -71,7 +70,7 @@ const useFoodItems = () => {
     };
 
     useEffect(() => {
-        if (isUserLoading || !userFoodSource) return;
+        if (isUserLoading) return;
 
         fetchAllFoodItems();
     }, [isUserLoading, userFoodSource]);
@@ -81,7 +80,8 @@ const useFoodItems = () => {
         noResults,
         handleSearch,
         refetch: fetchAllFoodItems,
-        isUserLoading
+        isUserLoading,
+        isLoading
     };
 };
 
