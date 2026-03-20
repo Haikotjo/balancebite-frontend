@@ -1,9 +1,11 @@
-import {createContext, useContext, useState, useEffect, useCallback, useRef} from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { AuthContext } from "./AuthContext";
 import {
     getAllPublicDietPlans,
-    getAllUserDietPlans, getPublicDietPlanByIdApi, getUserDietPlanByIdApi
+    getAllUserDietPlans,
+    getPublicDietPlanByIdApi,
+    getUserDietPlanByIdApi,
 } from "../services/apiService";
 
 export const UserDietsContext = createContext();
@@ -25,19 +27,6 @@ export const UserDietsProvider = ({ children }) => {
     const [creatorIdFilter, setCreatorIdFilter] = useState(null);
     const [itemsPerPage] = useState(6);
 
-
-    const userDietsRef = useRef(userDiets);
-    useEffect(() => {
-        userDietsRef.current = userDiets;
-    }, [userDiets]);
-
-    const applyUserCopies = useCallback((publicDiets, userCopies) => {
-        return publicDiets.map(diet => {
-            const copy = userCopies.find(d => String(d.originalDietId) === String(diet.id));
-            return copy || diet;
-        });
-    }, []);
-
     const fetchDietsData = useCallback(async (userCreatedDiets = [], overrideParams = null) => {
         setLoadingDiets(true);
         try {
@@ -47,7 +36,7 @@ export const UserDietsProvider = ({ children }) => {
                 "avgProtein", "avgCarbs", "avgFat", "avgCalories",
                 "totalProtein", "totalCarbs", "totalFat", "totalCalories",
                 "createdAt", "name",
-                "saveCount", "weeklySaveCount", "monthlySaveCount"
+                "saveCount", "weeklySaveCount", "monthlySaveCount",
             ];
 
             const safeSortKey = validSortKeys.includes(sortKey) ? sortKey : "createdAt";
@@ -59,12 +48,12 @@ export const UserDietsProvider = ({ children }) => {
                 ...filters,
                 ...(filters.requiredDiets ? { requiredDiets: filters.requiredDiets } : {}),
                 ...(filters.excludedDiets ? { excludedDiets: filters.excludedDiets } : {}),
-                ...(creatorIdFilter ? { createdByUserId: creatorIdFilter } : {})
+                ...(creatorIdFilter ? { createdByUserId: creatorIdFilter } : {}),
             };
 
             const params = overrideParams || {
                 ...baseParams,
-                sortBy: safeSortKey // <-- force hier de juiste key
+                sortBy: safeSortKey,
             };
 
             let data;
@@ -78,17 +67,12 @@ export const UserDietsProvider = ({ children }) => {
             } else {
                 data = await getAllPublicDietPlans(params);
                 const content = data.content || [];
-                let originals = content.filter(diet =>
-                    !userCreatedDiets.find(copy => String(copy.originalDietId) === String(diet.id))
+                const originals = content.filter(
+                    (diet) => !userCreatedDiets.find((copy) => String(copy.originalDietId) === String(diet.id))
                 );
 
-                let replacements = content
-                    .map(diet => {
-                        const copy = userCreatedDiets.find(
-                            (d) => String(d.originalDietId) === String(diet.id)
-                        );
-                        return copy || null;
-                    })
+                const replacements = content
+                    .map((diet) => userCreatedDiets.find((d) => String(d.originalDietId) === String(diet.id)) || null)
                     .filter(Boolean);
 
                 if (["saveCount", "weeklySaveCount", "monthlySaveCount"].includes(safeSortKey)) {
@@ -99,8 +83,7 @@ export const UserDietsProvider = ({ children }) => {
                     });
                 }
 
-
-                let replaced = [...originals, ...replacements].sort((a, b) => {
+                const replaced = [...originals, ...replacements].sort((a, b) => {
                     const aVal = a[safeSortKey] ?? 0;
                     const bVal = b[safeSortKey] ?? 0;
                     return sortOrder === "asc" ? aVal - bVal : bVal - aVal;
@@ -116,30 +99,29 @@ export const UserDietsProvider = ({ children }) => {
         } finally {
             setLoadingDiets(false);
         }
-    }, [activeOption, filters, page, sortKey, sortOrder, creatorIdFilter, applyUserCopies]);
-
-
+    }, [activeOption, filters, page, sortKey, sortOrder, creatorIdFilter, itemsPerPage]);
 
     const fetchUserDietsData = useCallback(async () => {
         const token = localStorage.getItem("accessToken");
-        if (!token) return;
+        if (!token) return [];
+
         setLoadingUserDiets(true);
         try {
-            const token = localStorage.getItem("accessToken");
-            if (token) {
-                const saved = await getAllUserDietPlans(token, { mode: "saved", page: 0, size: 1000 });
-                const created = await getAllUserDietPlans(token, { mode: "created", page: 0, size: 1000 });
+            const saved = await getAllUserDietPlans(token, { mode: "saved", page: 0, size: 1000 });
+            const created = await getAllUserDietPlans(token, { mode: "created", page: 0, size: 1000 });
 
-                const savedList = saved.content || [];
-                const createdList = created.content || [];
+            const savedList = saved.content || [];
+            const createdList = created.content || [];
+            const combined = [...createdList, ...savedList];
 
-                setFavoriteDiets(savedList);
-                setUserDiets([...createdList, ...savedList]);
-            }
+            setFavoriteDiets(savedList);
+            setUserDiets(combined);
+            return combined;
         } catch (err) {
             console.error("⚠️ Failed to fetch user diets:", err.message);
             setFavoriteDiets([]);
             setUserDiets([]);
+            return [];
         } finally {
             setLoadingUserDiets(false);
         }
@@ -164,7 +146,7 @@ export const UserDietsProvider = ({ children }) => {
             sortBy: sortKey,
             sortOrder,
             ...filters,
-            ...(creatorIdFilter ? { createdByUserId: creatorIdFilter } : {})
+            ...(creatorIdFilter ? { createdByUserId: creatorIdFilter } : {}),
         };
 
         const run = async () => {
@@ -173,15 +155,13 @@ export const UserDietsProvider = ({ children }) => {
                 return;
             }
 
-            // Ingelogd
-            if (activeOption === "Created Diets" || activeOption === "My Diets") {
+            if (activeOption === "Created Diets" || activeOption === "My Diets" || creatorIdFilter) {
                 await fetchDietsData([], currentParams);
-            } else if (creatorIdFilter) {
-                await fetchDietsData([], currentParams);
-            } else {
-                await fetchUserDietsData();
-                await fetchDietsData(userDietsRef.current, currentParams);
+                return;
             }
+
+            const mergedUserDiets = await fetchUserDietsData();
+            await fetchDietsData(mergedUserDiets, currentParams);
         };
 
         run().catch(console.error);
@@ -194,66 +174,46 @@ export const UserDietsProvider = ({ children }) => {
         filters,
         creatorIdFilter,
         fetchDietsData,
-        fetchUserDietsData
+        fetchUserDietsData,
+        itemsPerPage,
     ]);
 
-
-
-    useEffect(() => {
-        if (!user) return;
-
-        const run = async () => {
-            await fetchUserDietsData();
-        };
-
-        run().catch(console.error);
-    }, [user, fetchUserDietsData]);
-
     const replaceDietInDiets = (originalDietId, newDiet) => {
-        setDiets(prev => [
-            ...prev.filter(d =>
-                String(d.id) !== String(originalDietId) &&
-                String(d.id) !== String(newDiet.id)
-            ),
-            newDiet
+        setDiets((prev) => [
+            ...prev.filter((d) => String(d.id) !== String(originalDietId) && String(d.id) !== String(newDiet.id)),
+            newDiet,
         ]);
 
-        setUserDiets(prev => [
-            ...prev.filter(d =>
-                String(d.id) !== String(originalDietId) &&
-                String(d.id) !== String(newDiet.id)
-            ),
-            newDiet
+        setUserDiets((prev) => [
+            ...prev.filter((d) => String(d.id) !== String(originalDietId) && String(d.id) !== String(newDiet.id)),
+            newDiet,
         ]);
 
-        setFavoriteDiets(prev => [
-            ...prev.filter(d =>
-                String(d.id) !== String(originalDietId) &&
-                String(d.id) !== String(newDiet.id)
-            ),
-            newDiet
+        setFavoriteDiets((prev) => [
+            ...prev.filter((d) => String(d.id) !== String(originalDietId) && String(d.id) !== String(newDiet.id)),
+            newDiet,
         ]);
     };
 
     const removeDietFromUserDiets = (dietId) => {
-        setUserDiets(prev => prev.filter(diet => String(diet.id) !== String(dietId)));
-        setDiets(prev => prev.filter(diet => String(diet.id) !== String(dietId)));
+        setUserDiets((prev) => prev.filter((diet) => String(diet.id) !== String(dietId)));
+        setDiets((prev) => prev.filter((diet) => String(diet.id) !== String(dietId)));
     };
 
     const addDietToUserDiets = (diet) => {
-        setUserDiets(prev => [...prev, diet]);
+        setUserDiets((prev) => [...prev, diet]);
     };
 
     const addDietToFavoritesInContext = (diet) => {
-        setFavoriteDiets(prev => [...prev, diet]);
+        setFavoriteDiets((prev) => [...prev, diet]);
     };
 
     const removeDietFromFavoritesInContext = (dietId) => {
-        setFavoriteDiets(prev => prev.filter(d => String(d.id) !== String(dietId)));
+        setFavoriteDiets((prev) => prev.filter((d) => String(d.id) !== String(dietId)));
     };
 
     const removeDietFromDiets = (dietId) => {
-        setDiets(prev => prev.filter(diet => String(diet.id) !== String(dietId)));
+        setDiets((prev) => prev.filter((diet) => String(diet.id) !== String(dietId)));
     };
 
     return (

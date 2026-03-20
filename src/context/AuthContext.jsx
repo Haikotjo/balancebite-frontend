@@ -2,7 +2,7 @@
 import { createContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { jwtDecode } from "jwt-decode";
-import { loginApi, logoutApi } from "../services/authService.js";
+import { loginApi, logoutApi, refreshAccessTokenApi } from "../services/authService.js";
 import Spinner from "../components/layout/Spinner.jsx";
 import CustomBox from "../components/layout/CustomBox.jsx";
 
@@ -14,36 +14,57 @@ export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const applyAccessToken = (nextAccessToken) => {
+        const userData = jwtDecode(nextAccessToken);
+
+        if (!userData.sub || !userData.roles) {
+            throw new Error("Invalid token payload.");
+        }
+
+        const roles = Array.isArray(userData.roles)
+            ? userData.roles
+            : [userData.roles];
+
+        localStorage.setItem("accessToken", nextAccessToken);
+        setUser({ id: userData.sub, roles, type: userData.type });
+        setRole(roles);
+        setToken(nextAccessToken);
+    };
+
     useEffect(() => {
         const initializeAuth = async () => {
             const storedToken = localStorage.getItem("accessToken");
+            const storedRefreshToken = localStorage.getItem("refreshToken");
 
             try {
                 if (storedToken) {
                     const userData = jwtDecode(storedToken);
 
-                    // Check of token verlopen is (optioneel)
                     if (userData.exp && Date.now() >= userData.exp * 1000) {
-                        throw new Error("Access token is expired.");
+                        if (!storedRefreshToken) {
+                            throw new Error("Access token expired and no refresh token is available.");
+                        }
+                        const { accessToken: refreshedAccessToken } = await refreshAccessTokenApi(storedRefreshToken);
+                        applyAccessToken(refreshedAccessToken);
+                        return;
                     }
 
-                    // Check op geldige structuur
-                    if (!userData.sub || !userData.roles) {
-                        throw new Error("Invalid token payload.");
-                    }
+                    applyAccessToken(storedToken);
+                    return;
+                }
 
-                    // Normaliseer rollen indien nodig
-                    const roles = Array.isArray(userData.roles)
-                        ? userData.roles
-                        : [userData.roles];
-
-                    setUser({ id: userData.sub, roles, type: userData.type });
-                    setRole(roles);
-                    setToken(storedToken);
+                if (storedRefreshToken) {
+                    const { accessToken: refreshedAccessToken } = await refreshAccessTokenApi(storedRefreshToken);
+                    applyAccessToken(refreshedAccessToken);
                 }
             } catch (error) {
                 console.error("Error during authentication initialization:", error.message);
-                await logout();
+
+                localStorage.removeItem("accessToken");
+                localStorage.removeItem("refreshToken");
+                setUser(null);
+                setRole(null);
+                setToken(null);
             } finally {
                 setLoading(false);
             }
@@ -55,18 +76,9 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, password) => {
         try {
             const { accessToken, refreshToken } = await loginApi(email, password);
-            localStorage.setItem("accessToken", accessToken);
             localStorage.setItem("refreshToken", refreshToken);
 
-            const userData = jwtDecode(accessToken);
-
-            const roles = Array.isArray(userData.roles)
-                ? userData.roles
-                : [userData.roles];
-
-            setUser({ id: userData.sub, roles, type: userData.type });
-            setRole(roles);
-            setToken(accessToken);
+            applyAccessToken(accessToken);
         } catch (err) {
             const msg = err.response?.data?.error || err.message || "Login failed";
             console.error("Login failed:", msg);
@@ -93,13 +105,7 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
     };
 
-    if (loading) {
-        return (
-            <CustomBox className="flex items-center justify-center h-screen">
-                <Spinner />
-            </CustomBox>
-        );
-    }
+    if (loading) return null;
 
     return (
         <AuthContext.Provider value={{ user, role, token, login, logout }}>

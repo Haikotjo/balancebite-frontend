@@ -83,3 +83,32 @@ export const registerUserApi = async (data) => {
         throw new Error(msg);
     }
 };
+
+export const refreshAccessTokenApi = async (refreshToken) => {
+    const endpoint = import.meta.env.VITE_AUTH_REFRESH_ENDPOINT || "/auth/refresh";
+    try {
+        const response = await Interceptor.post(
+            endpoint,
+            { refreshToken },
+            {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true,
+            }
+        );
+        return response.data;
+    } catch (error) {
+        logError(error);
+        let msg = "Unable to refresh session.";
+        if (error.response) {
+            const data = error.response.data;
+            if (typeof data === "string") {
+                msg = data;
+            } else if (data.message) {
+                msg = data.message;
+            } else if (data.error) {
+                msg = data.error;
+            }
+        }
+        throw new Error(msg);
+    }
+};

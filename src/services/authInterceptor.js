@@ -94,6 +94,8 @@ Interceptor.interceptors.response.use(
                 originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
                 return Interceptor(originalRequest);
             } catch (refreshError) {
+                localStorage.removeItem("accessToken");
+                localStorage.removeItem("refreshToken");
                 processQueue(refreshError, null);
                 return Promise.reject(refreshError);
             } finally {

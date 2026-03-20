@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { AuthContext } from "./AuthContext";
 import { fetchMealById, fetchMeals, fetchUserMeals } from "../services/apiService";
@@ -19,15 +19,11 @@ export const UserMealsProvider = ({ children }) => {
     const { user, token } = useContext(AuthContext);
 
     const fetchUserMealsData = useCallback(async () => {
-        console.log("[fetchUserMealsData] called", { hasUser: !!user, hasToken: !!token });
 
         if (!token) return;
 
         try {
             const data = await fetchUserMeals(token);
-
-            console.log("[fetchUserMealsData] raw response:", data);
-            console.log("[fetchUserMealsData] keys:", Object.keys(data || {}));
 
             const list = Array.isArray(data?.content)
                 ? data.content
@@ -35,21 +31,16 @@ export const UserMealsProvider = ({ children }) => {
                     ? data
                     : [];
 
-            console.log("[fetchUserMealsData] resolved length:", list.length);
-
             setUserMeals(list);
-        } catch (e) {
-            console.error("[fetchUserMealsData] failed:", e?.response?.status, e?.response?.data, e);
+        } catch {
             setUserMeals([]);
         }
 
-    }, [user, token]);
-
+    }, [token]);
 
     useEffect(() => {
         if (user && token) fetchUserMealsData();
     }, [user, token, fetchUserMealsData]);
-
 
     // De hoofdfunctie die de lijst ophaalt
     useEffect(() => {
@@ -62,7 +53,6 @@ export const UserMealsProvider = ({ children }) => {
                         ? `/users/created-meals?page=${page - 1}&size=${itemsPerPage}`
                         : `/meals?page=${page - 1}&size=${itemsPerPage}`;
 
-                // Filters plakken
                 Object.entries(filters).forEach(([key, value]) => {
                     baseUrl += `&${key}=${encodeURIComponent(value)}`;
                 });
@@ -73,24 +63,6 @@ export const UserMealsProvider = ({ children }) => {
                 // De backend vervangt nu automatisch originelen door jouw kopieën!
                 const data = await fetchMeals(baseUrl);
                 const receivedMeals = data.content || [];
-
-                // --- LOGGING START ---
-                console.log(`🍟 Totaal aantal meals geladen voor [${activeOption}]:`, receivedMeals.length);
-
-                const copies = receivedMeals.filter(m => m.isTemplate === false);
-                if (copies.length > 0) {
-                    console.log(`✅ GEVONDEN: ${copies.length} maaltijden zijn JOUW kopieën!`);
-                    console.table(copies.map(m => ({
-                        id: m.id,
-                        name: m.name,
-                        originalId: m.originalMealId,
-                        isTemplate: m.isTemplate,
-                        isPrivate: m.isPrivate
-                    })));
-                } else {
-                    console.log("ℹ️ Geen kopieën gevonden (allemaal standaard templates).");
-                }
-                // --- LOGGING EIND ---
 
                 setMeals(receivedMeals);
                 setTotalPages(data.totalPages || 1);
@@ -106,14 +78,13 @@ export const UserMealsProvider = ({ children }) => {
         loadMeals();
     }, [activeOption, filters, sortBy, page, user]);
 
-    // Simpele helper om een meal te vinden in de huidige state
     const getMealById = useCallback(async (mealId) => {
         const found = meals.find(m => String(m.id) === String(mealId));
         if (found) return found;
 
         try {
             return await fetchMealById(mealId);
-        } catch (err) {
+        } catch {
             return null;
         }
     }, [meals]);
