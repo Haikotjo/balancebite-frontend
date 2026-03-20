@@ -5,6 +5,7 @@ import axios from "axios";
 export const Interceptor = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
     withCredentials: true,
+    timeout: 15000,
     headers: {
         "Content-Type": "application/json",
     },
@@ -139,13 +140,6 @@ Interceptor.interceptors.request.use(
                 data: config.data,
                 headers: config.headers,
             });
-        }
-
-        if (config.data instanceof FormData) {
-            delete config.headers["Content-Type"];
-            if (import.meta.env.DEV) {
-                console.log("[DEBUG] FormData detected. Content-Type removed.");
-            }
         }
 
         return config;
