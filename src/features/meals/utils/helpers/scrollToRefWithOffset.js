@@ -1,51 +1,34 @@
 // src/utils/helpers/scrollToRefWithOffset.js
 // Purpose: Smoothly scroll to a ref with an optional offset, supporting custom scroll containers.
 
-/**
- * Find the nearest scrollable parent (overflow-y: auto|scroll).
- */
-const getScrollParent = (node) => {
-    let el = node?.parentElement;
-
-    while (el) {
-        const style = window.getComputedStyle(el);
-        const overflowY = style.overflowY;
-
-        if (
-            (overflowY === "auto" || overflowY === "scroll") &&
-            el.scrollHeight > el.clientHeight
-        ) {
-            return el;
-        }
-
-        el = el.parentElement;
-    }
-
-    return document.scrollingElement || document.documentElement;
-};
-
-/**
- * Scroll smoothly to a ref with a vertical offset.
- *
- * @param {React.RefObject} ref
- * @param {number} offset - Pixels above the target (e.g. for sticky headers)
- */
 export const scrollToRefWithOffset = (ref, offset = 100) => {
-    const target = ref?.current;
-    if (!target) return;
+    if (!ref?.current) return;
 
-    const scroller = getScrollParent(target);
+    requestAnimationFrame(() => {
+        setTimeout(() => {
+            const element = ref.current;
 
-    const targetTop = target.getBoundingClientRect().top;
-    const scrollerTop =
-        typeof scroller.getBoundingClientRect === "function"
-            ? scroller.getBoundingClientRect().top
-            : 0;
+            const scrollContainer = element.closest("[data-scroll-container]");
 
-    const current = targetTop - scrollerTop;
+            if (scrollContainer) {
+                const containerTop = scrollContainer.getBoundingClientRect().top;
+                const elementTop = element.getBoundingClientRect().top;
 
-    scroller.scrollTo({
-        top: scroller.scrollTop + current - offset,
-        behavior: "smooth",
+                scrollContainer.scrollTo({
+                    top: scrollContainer.scrollTop + (elementTop - containerTop) - offset,
+                    behavior: "smooth",
+                });
+            } else {
+                const y =
+                    element.getBoundingClientRect().top +
+                    window.pageYOffset -
+                    offset;
+
+                window.scrollTo({
+                    top: y,
+                    behavior: "smooth",
+                });
+            }
+        }, 120);
     });
 };

@@ -81,7 +81,11 @@ const MealModal = ({ meal, isPinned = false, mode = "view", onCancel, onConfirm 
                 aria-label={isPreview ? "Meal preview (actions limited)" : "Meal view"}
             >
 
-                <CustomBox ref={contentRef} className="h-full max-h-full lg:max-h-[85vh] overflow-y-auto relative">
+                <CustomBox
+                    ref={contentRef}
+                    data-scroll-container
+                    className="h-full max-h-full lg:max-h-[85vh] overflow-y-auto relative"
+                >
                     {isPreview && (
                         <>
                             <CustomBox className="sticky top-0 z-[2147483002] p-3 sm:p-4 bg-lightBackground/90 dark:bg-darkBackground/90 backdrop-blur">

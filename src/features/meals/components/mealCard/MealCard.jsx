@@ -123,7 +123,7 @@ const MealCard = ({
                                     meal={meal}
                                     onJumpToPreparation={() => scrollToRefWithOffset(prepTextRef)}
                                     onJumpToPreparationVideo={() => scrollToRefWithOffset(prepVideoRef)}
-                                    onJumpToIngredients={() => scrollToRefWithOffset(ingredientsShortRef)}
+                                    onJumpToIngredients={() => scrollToRefWithOffset(ingredientsRef)}
                                     onJumpToNutrients={() => scrollToRefWithOffset(nutrientsRef)}
                                     onJumpToTags={() => scrollToRefWithOffset(tagsRef)}
                                 />
@@ -153,7 +153,7 @@ const MealCard = ({
                                         >
                                             <MealCardExpandableDescription
                                                 description={meal.mealDescription}
-                                                viewMode={viewMode}
+                                                viewMode={viewMode === "modal" ? "page" : viewMode}
                                                 forceExpanded={isExpanded}
                                             />
                                         </CustomBox>
