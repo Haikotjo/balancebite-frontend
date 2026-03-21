@@ -58,7 +58,7 @@ const StatCard = ({ item, style, icon: Icon, isActive, onMouseEnter, onMouseLeav
                     />
                 ) : null}
 
-                <CustomTypography variant={isActive ? "medium" : "small"} className="truncate" bold>
+                <CustomTypography variant={isActive ? "h4" : "small"} className="truncate" bold>
                     {formatName(item.name)} :
                 </CustomTypography>
             </CustomBox>
