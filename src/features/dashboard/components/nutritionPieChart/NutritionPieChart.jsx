@@ -13,6 +13,7 @@ import useIsSmallScreen from "../../../../hooks/useIsSmallScreen.js";
 
 import StatCard from "../statCard/StatCard.jsx";
 import RenderSector from "../renderSector/RenderSector.jsx";
+import Spinner from "../../../../components/layout/Spinner.jsx";
 
 const NUTRITION_MAP = [
     { id: "Energy kcal", position: "left-3 top-3", macroKey: "Calories" },
@@ -71,7 +72,13 @@ const NutritionPieChart = ({ chartData, baseChartData }) => {
         setIsClicked(false);
     }, []);
 
-    if (items.length === 0) return null;
+    if (items.length === 0) {
+        return (
+            <CustomCard hasBorder className="w-full p-6 h-[400px] flex items-center justify-center">
+                <Spinner />
+            </CustomCard>
+        );
+    }
 
     return (
         <CustomCard hasBorder={true} className="w-full p-6 shadow-sm min-w-0">
