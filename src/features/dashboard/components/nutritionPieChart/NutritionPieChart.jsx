@@ -129,7 +129,7 @@ const NutritionPieChart = ({ chartData, baseChartData }) => {
                                     `}
                                 />
                                 <CustomTypography
-                                    variant={Math.round(byName[activeName].value) === 0 ? "h1" : "large"}
+                                    variant={Math.round(byName[activeName].value) === 0 ? "h1" : "h4"}
                                     bold
                                     className="tabular-nums transition-all duration-300"
                                 >
