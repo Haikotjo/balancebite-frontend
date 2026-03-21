@@ -35,7 +35,7 @@ const DashboardPage = () => {
     const [isEditingTarget, setIsEditingTarget] = useState(false);
 
     // Initialize update handlers with refetch capability
-    const { handleWeightUpdate, handleTargetUpdate } = useWeightUpdates(refetch);
+    const { handleWeightUpdate, handleTargetUpdate } = useWeightUpdates(refetch );
 
     const {
         recommendedNutrition,

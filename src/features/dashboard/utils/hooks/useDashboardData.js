@@ -16,7 +16,7 @@ export const useDashboardData = () => {
     } = useContext(RecommendedNutritionContext);
 
     const { token } = useContext(AuthContext);
-    const [dailyRdiList, setDailyRdiList] = useState([]);
+    const [dailyRdiList, setDailyRdiList] = useState(null);
 
     /**
      * Effect: Fetch general RDI data (weekly/monthly) when token changes.

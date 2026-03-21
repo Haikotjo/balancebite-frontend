@@ -13,7 +13,7 @@ const SectionHeader = ({ title, subtitle, infoText }) => {
 
             <CustomBox className="relative bg-lightBackground dark:bg-darkBackground px-6 text-center flex flex-col items-center">
                 <CustomBox className="flex items-center gap-2">
-                    <CustomTypography variant="h3" className="font-bold tracking-tight ">
+                    <CustomTypography as="h3" variant="h3" className="font-bold tracking-tight">
                         {title}
                     </CustomTypography>
 
@@ -32,7 +32,10 @@ const SectionHeader = ({ title, subtitle, infoText }) => {
                 </CustomBox>
 
                 {subtitle && (
-                    <CustomTypography className="text-friendlyGray text-xs uppercase tracking-widest mt-1">
+                    <CustomTypography
+                        as="span"
+                        className="text-friendlyGray text-xs uppercase tracking-widest mt-1"
+                    >
                         {subtitle}
                     </CustomTypography>
                 )}

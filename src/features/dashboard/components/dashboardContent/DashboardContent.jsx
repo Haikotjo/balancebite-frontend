@@ -107,10 +107,15 @@ const DashboardContent = ({
                             </CustomBox>
 
                             <CustomBox className="relative bg-lightBackground dark:bg-darkBackground px-4 text-center">
-                                <CustomTypography variant="h3" className="font-bold tracking-tight ">
+                                <CustomTypography as="h3" variant="h3">
                                     Goal Overview
                                 </CustomTypography>
-                                <CustomTypography className="text-friendlyGray text-xs uppercase tracking-widest mt-1">
+
+                                <CustomTypography
+                                    as="span"
+                                    variant="small"
+                                    className="text-friendlyGray text-xs uppercase tracking-widest mt-1"
+                                >
                                     Remaining nutrients based on averages
                                 </CustomTypography>
                             </CustomBox>

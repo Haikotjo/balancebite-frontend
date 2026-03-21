@@ -59,7 +59,7 @@ const LastWeekOverview = ({ dailyRdiList, baseChartData }) => {
                 title="Last Week's Overview"
                 subtitle="Nutritional Patterns"
                 infoText={
-                    <CustomTypography variant="xsmallCard" inheritColor>
+                    <CustomTypography variant="xsmallCard" as="span" inheritColor>
                         Daily values show deviation from RDI.
                         <Inline color="#38adb5" weight="bold"> Green</Inline> means remaining,
                         <Inline color="#F43F5E" weight="bold"> red</Inline> means over-intake.
