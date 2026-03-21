@@ -31,7 +31,7 @@ const UserDetailsDisplay = ({
                 {!isLoading && (
                     <CustomButton
                         onClick={onEdit}
-                        variant="ghost"
+                        variant="default"
                         className="text-primary p-2 rounded-full"
                         aria-label="Edit all metrics"
                     >

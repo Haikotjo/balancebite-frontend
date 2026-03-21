@@ -7,7 +7,12 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import Spinner from "../../../../components/layout/Spinner.jsx";
 import InfoMetricTile from "../infoMetricTile/InfoMetricTile.jsx";
 
-const PersonalInfoDisplay = ({ username, email, onEdit, isLoading }) => {
+const PersonalInfoDisplay = ({
+                                 username = "Not provided",
+                                 email = "Not provided",
+                                 onEdit,
+                                 isLoading = false
+                             }) => {
     return (
         <CustomCard hasBorder className="p-6 flex flex-col gap-6 shadow-sm min-h-[250px]">
             <CustomBox className="flex justify-between items-center border-b pb-4">
@@ -18,7 +23,7 @@ const PersonalInfoDisplay = ({ username, email, onEdit, isLoading }) => {
                 {!isLoading && (
                     <CustomButton
                         onClick={onEdit}
-                        variant="ghost"
+                        variant="default"
                         className="text-primary p-2 rounded-full"
                         aria-label="Edit account details"
                     >
@@ -48,12 +53,6 @@ PersonalInfoDisplay.propTypes = {
     email: PropTypes.string,
     onEdit: PropTypes.func.isRequired,
     isLoading: PropTypes.bool,
-};
-
-PersonalInfoDisplay.defaultProps = {
-    username: "Not provided",
-    email: "Not provided",
-    isLoading: false,
 };
 
 export default PersonalInfoDisplay;
