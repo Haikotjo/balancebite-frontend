@@ -8,7 +8,7 @@ const MealCardSection = forwardRef(
     ({ title, subtitle, icon, children, className = "", onClick, onHeaderClick, ...props }, ref) => {
         return (
             <CustomBox
-                ref={ref} // 🔴 BELANGRIJK
+                ref={ref}
                 className={`w-full p-4 rounded-2xl bg-cardAccentLight dark:bg-darkBackground border border-black/10 dark:border-white/10 shadow-xl transition-all ${
                     onClick ? "cursor-pointer hover:bg-black/5 dark:hover:bg-white/5" : ""
                 } ${className}`}
@@ -40,6 +40,8 @@ const MealCardSection = forwardRef(
     }
 );
 
+MealCardSection.displayName = "MealCardSection";
+
 MealCardSection.propTypes = {
     title: PropTypes.node.isRequired,
     subtitle: PropTypes.string,
@@ -47,6 +49,7 @@ MealCardSection.propTypes = {
     children: PropTypes.node,
     className: PropTypes.string,
     onClick: PropTypes.func,
+    onHeaderClick: PropTypes.func,
 };
 
 export default MealCardSection;
