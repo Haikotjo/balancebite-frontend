@@ -11,7 +11,7 @@ import useUserProfile from "../features/profile/utils/hooks/useUserProfile.js";
  * Custom hook to manage food item retrieval and search functionality.
  * Automatically restricts items to the user's foodSource if they are a supermarket user.
  */
-const useFoodItems = () => {
+const useFoodItems = (selectedFoodSource) => {
     const [options, setOptions] = useState([]);
     const [noResults, setNoResults] = useState([]);
 
@@ -21,6 +21,8 @@ const useFoodItems = () => {
     const userFoodSource = userData?.foodSource;
 
     const [isLoading, setIsLoading] = useState(true);
+
+    const effectiveFoodSource = selectedFoodSource || userFoodSource;
 
     /**
      * Fetches food items.
@@ -33,8 +35,8 @@ const useFoodItems = () => {
         try {
             let data;
 
-            if (userFoodSource) {
-                data = await fetchFoodItemsBySource(userFoodSource);
+            if (effectiveFoodSource) {
+                data = await fetchFoodItemsBySource(effectiveFoodSource);
             } else {
                 data = await getAllFoodItemNames();
             }
@@ -47,10 +49,10 @@ const useFoodItems = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [userFoodSource, isUserLoading]);
+    }, [effectiveFoodSource, isUserLoading]);
 
     const handleSearch = async (query, index) => {
-        if (userFoodSource) return;
+        if (effectiveFoodSource) return;
 
         if (query.length > 1) {
             try {
@@ -73,7 +75,7 @@ const useFoodItems = () => {
         if (isUserLoading) return;
 
         fetchAllFoodItems();
-    }, [isUserLoading, userFoodSource]);
+    }, [effectiveFoodSource, isUserLoading]);
 
     return {
         options,

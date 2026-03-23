@@ -8,7 +8,7 @@
 
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 
 import MealImageUploader from "./mealImageUploader/MealImageUploader.jsx";
@@ -18,7 +18,7 @@ import CreateMealDropdowns from "../createMealDropdowns/MealDropdowns.jsx";
 import { useCreateMeal } from "../../../../hooks/useCreateMeal.js";
 import { useModal } from "../../../../context/useModal.js";
 
-import { cancelMealApi } from "../../../../services/apiService.js";
+import {cancelMealApi, getMappedFoodSources} from "../../../../services/apiService.js";
 
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
@@ -30,9 +30,19 @@ import { mealSchema } from "../../../../utils/valadition/validationSchemas.js";
 import { Soup } from "lucide-react";
 import MealModal from "../mealModal/MealModal.jsx";
 import CustomFloatingNumberInput from "../../../../components/layout/CustomFloatingNumberInput.jsx";
+import CustomFloatingSelect from "../../../../components/layout/CustomFloatingSelect.jsx";
+
+import useUserProfile from "../../../profile/utils/hooks/useUserProfile.js";
+import { useContext } from "react";
+import { AuthContext } from "../../../../context/AuthContext.jsx";
 
 const CreateMealForm = () => {
     const [cameraError] = useState(null);
+
+    const { token } = useContext(AuthContext);
+    const { userData } = useUserProfile(token);
+
+    const hasFoodSource = !!userData?.foodSource;
 
     // Form setup
     const {
@@ -75,6 +85,12 @@ const CreateMealForm = () => {
     const { openModal } = useModal();
     const navigate = useNavigate();
 
+    const [foodSourceOptions, setFoodSourceOptions] = useState([]);
+
+    useEffect(() => {
+        getMappedFoodSources().then(setFoodSourceOptions);
+    }, []);
+
     // Submit -> create -> open preview modal
     const submitAndPreview = async (values) => {
         // onSubmit returns created MealDTO when preview=true
@@ -82,6 +98,7 @@ const CreateMealForm = () => {
         if (!createdMeal?.id) return;
 
         const token = localStorage.getItem("accessToken");
+
 
         openModal(
             <MealModal
@@ -154,26 +171,52 @@ const CreateMealForm = () => {
                 />
             </CustomBox>
 
-            {/* Ingredients */}
-            <Controller
-                name="mealIngredients"
-                control={control}
-                defaultValue={[{ foodItemId: "", quantity: 0 }]}
-                render={({ field: { onChange, value } }) => (
-                    <>
-                        <CreateMealMealIngredients value={value} onChange={onChange} errors={errors.mealIngredients} />
-                        {errors.mealIngredients?.message && (
-                            <CustomTypography
-                                as="p"
-                                variant="small"
-                                className="text-error mt-1"
-                            >
-                                {errors.mealIngredients.message}
-                            </CustomTypography>
+            {!hasFoodSource && (
+                <CustomBox className="mb-4">
+                    <Controller
+                        name="foodSource"
+                        control={control}
+                        render={({ field }) => (
+                            <CustomFloatingSelect
+                                label="Select store to load ingredients"
+                                variant="outlined"
+                                options={foodSourceOptions}
+                                value={foodSourceOptions.find(opt => opt.value === field.value) || null}
+                                onChange={(selected) => field.onChange(selected?.value)}
+                                helperText="Ingredients will be filtered based on the selected store"
+                                className="!text-gray-500"
+                            />
                         )}
-                    </>
-                )}
-            />
+                    />
+                </CustomBox>
+            )}
+
+            <CustomBox className="mb-2">
+                <Controller
+                    name="mealIngredients"
+                    control={control}
+                    defaultValue={[{ foodItemId: "", quantity: 0 }]}
+                    render={({ field: { onChange, value } }) => (
+                        <>
+                            <CreateMealMealIngredients
+                                value={value}
+                                onChange={onChange}
+                                errors={errors.mealIngredients}
+                                selectedFoodSource={watch("foodSource")}
+                            />
+                            {errors.mealIngredients?.message && (
+                                <CustomTypography
+                                    as="p"
+                                    variant="small"
+                                    className="text-error mt-1"
+                                >
+                                    {errors.mealIngredients.message}
+                                </CustomTypography>
+                            )}
+                        </>
+                    )}
+                />
+            </CustomBox>
 
             {/* Image uploader */}
             <MealImageUploader

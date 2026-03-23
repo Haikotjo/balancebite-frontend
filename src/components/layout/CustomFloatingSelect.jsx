@@ -190,8 +190,8 @@ const CustomFloatingSelect = ({
             {helperText && (
                 <CustomTypography
                     id={`${label}-helper`}
-                    variant="small"
-                    color="text-error"
+                    variant="xsmallCard"
+                    color={error ? "text-error" : "text-gray-500"}
                     className="text-xs mt-1"
                 >
                     {helperText}

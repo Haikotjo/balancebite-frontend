@@ -13,22 +13,45 @@ import Spinner from "../../../../components/layout/Spinner.jsx";
  * CreateMealMealIngredients
  * Same behavior, cleaner layout.
  */
-const CreateMealMealIngredients = ({ value, onChange }) => {
-    const { options, handleSearch, isLoading } = useFoodItems();
+const CreateMealMealIngredients = ({ value, onChange, selectedFoodSource }) => {
+    const { options, handleSearch, isLoading } = useFoodItems(selectedFoodSource);
 
     const lastItem = value[value.length - 1];
     const disableAdd = !lastItem || lastItem.foodItemId === "";
 
     // Convert food item options to react-select compatible format
-    const ingredientOptions = options.map((item) => ({
+    const baseOptions = options.map((item) => ({
         value: item.id.toString(),
         label: item.name,
     }));
 
+    const selectedOptions = value
+        .filter((v) => v.foodItemId)
+        .map((v) => {
+            const found = baseOptions.find((opt) => opt.value === v.foodItemId.toString());
+            return found || {
+                value: v.foodItemId.toString(),
+                label: v.foodItemName || `Selected (${v.foodItemId})`
+            };
+        });
+
+    const ingredientOptions = [
+        ...baseOptions,
+        ...selectedOptions.filter(
+            (sel) => !baseOptions.some((opt) => opt.value === sel.value)
+        ),
+    ];
+
     // Handle ingredient selection from dropdown
     const handleIngredientChange = (index, selectedOption) => {
         const newIngredients = [...value];
-        newIngredients[index].foodItemId = selectedOption ? selectedOption.value : "";
+
+        newIngredients[index] = {
+            ...newIngredients[index],
+            foodItemId: selectedOption ? selectedOption.value : "",
+            foodItemName: selectedOption ? selectedOption.label : "",
+        };
+
         onChange(newIngredients);
     };
 
@@ -93,15 +116,15 @@ const CreateMealMealIngredients = ({ value, onChange }) => {
                         </CustomBox>
 
                         {/* Main inputs */}
-                        <CustomBox className="flex-1 flex gap-2 items-start">
+                        <CustomBox className="flex-1 flex flex-col sm:flex-row gap-2 items-start">
                             {/* Ingredient select */}
-                            <CustomBox className="flex-[3] sm:flex-[2] min-w-0">
+                            <CustomBox className="flex-[3] w-full sm:flex-[2] min-w-0">
                                 <CustomFloatingSelect
                                     label="Ingredient *"
                                     variant="outlined"
-                                    // Belangrijk: we zorgen dat we de opties voor deze specifieke rij tonen
+
                                     options={getAvailableOptions(index)}
-                                    // VOEG DIT TOE: trigger de zoekfunctie uit de hook
+
                                     onInputChange={(inputValue) => handleSearch(inputValue, index)}
                                     value={
                                         ingredientOptions.find((opt) => opt.value === ingredient.foodItemId) || null
@@ -111,7 +134,7 @@ const CreateMealMealIngredients = ({ value, onChange }) => {
                             </CustomBox>
 
                             {/* Quantity */}
-                            <CustomBox className="w-[110px] sm:w-[140px]">
+                            <CustomBox className="w-full sm:w-[140px]">
                                 <CustomFloatingNumberInput
                                     label="Quantity"
                                     variant="outlined"
@@ -172,6 +195,7 @@ CreateMealMealIngredients.propTypes = {
         })
     ).isRequired,
     onChange: PropTypes.func.isRequired,
+    selectedFoodSource: PropTypes.string, // <-- DEZE TOEVOEGEN
     errors: PropTypes.arrayOf(
         PropTypes.shape({
             foodItemId: PropTypes.shape({ message: PropTypes.string }),
