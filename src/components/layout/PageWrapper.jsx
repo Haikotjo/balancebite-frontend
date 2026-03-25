@@ -20,16 +20,17 @@ import CustomBox from "./CustomBox.jsx";
  * - className: optional extra Tailwind classes.
  * - narrow: when true, constrains content width and centers it.
  */
-export default function PageWrapper({ children, className = "", narrow = false }) {
+export default function PageWrapper({ children, className = "", narrow = false, isHome = false }) {
     return (
         <CustomBox
             className={clsx(
+                "min-h-screen",
                 // Base page paddings (top + horizontal)
-                "min-h-screen pt-6 sm:pt-10 px-4",
+                !isHome && "pt-6 sm:pt-10 px-4",
 
                 // Mobile: reserve space for bottom bar (72px) + safe area.
                 // Desktop (md+): remove bottom padding because sidebar is left, not bottom.
-                "pb-[calc(72px+env(safe-area-inset-bottom))] md:pb-20",
+                !isHome && "pb-[calc(72px+env(safe-area-inset-bottom))] md:pb-20",
 
                 // Desktop: leave space for fixed left sidebar (72px)
                 "md:ml-20 lg:ml-44",
@@ -40,8 +41,9 @@ export default function PageWrapper({ children, className = "", narrow = false }
         >
             {/* Inner container centers and caps width */}
             <CustomBox className={clsx(
-                "w-full max-w-[1750px] mx-auto", // cap to 1800px and center
-                narrow && "max-w-screen-lg"     // optional narrower layout
+                "w-full",
+                !isHome && "max-w-[1750px] mx-auto",
+                narrow && !isHome && "max-w-screen-lg"
             )}>
                 {children}
             </CustomBox>

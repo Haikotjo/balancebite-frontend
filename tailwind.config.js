@@ -24,7 +24,7 @@ export default {
 
         lightBackground: "#F9FAFB",
         lightBackgroundAccent: "#F3F4F6",
-        darkBackground: "#111827",
+        darkBackground: "#050816",
         darkBackgroundAccentDarker: "#0B1220",
         darkBackgroundAccentLighter: "#1F2937",
 

@@ -11,8 +11,8 @@ const useLogin = () => {
             await login(email, password);
             await onSuccess();
 
-            if (window.location.pathname !== "/meals") {
-                navigate("/meals", { replace: true });
+            if (window.location.pathname !== "/") {
+                navigate("/", { replace: true });
             }
         } catch (err) {
             const msg = err.response?.data?.error || "Login failed. Please try again.";

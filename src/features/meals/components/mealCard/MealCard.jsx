@@ -99,7 +99,7 @@ const MealCard = ({
     return (
         <CustomBox ref={cardRef} className="w-full flex flex-col items-center">
             <CustomBox
-                className={`w-full bg-cardLight dark:bg-cardDark rounded-xl shadow-md overflow-hidden border ${
+                className={`w-full bg-cardLight dark:bg-cardDark rounded-2xl shadow-md overflow-hidden border ${
                     isPinned ? "border-yellow-500" : "border-border"
                 }`}
             >
