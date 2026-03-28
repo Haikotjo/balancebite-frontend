@@ -153,7 +153,7 @@ export default function HomePage() {
                                             <FeaturedMealCard
                                                 key={meal.id}
                                                 meal={meal}
-                                                onClick={() => navigate(`/meals/${meal.id}`)}
+                                                onClick={() => navigate(`/meal/${meal.id}`)}
                                             />
                                         ))}
                                     </div>
