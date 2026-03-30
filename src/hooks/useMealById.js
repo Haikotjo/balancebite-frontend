@@ -19,16 +19,21 @@ const useMealById = (mealId) => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        const controller = new AbortController();
+
         const fetchMeal = async () => {
             try {
                 const data = await fetchMealById(mealId);
-                setMeal(data);
-                setError(null);
+                if (!controller.signal.aborted) {
+                    setMeal(data);
+                    setError(null);
+                }
             } catch (err) {
+                if (controller.signal.aborted) return;
                 console.error("Failed to fetch meal details", err);
                 setError("Could not load meal data.");
             } finally {
-                setLoading(false);
+                if (!controller.signal.aborted) setLoading(false);
             }
         };
 
@@ -36,6 +41,8 @@ const useMealById = (mealId) => {
             setLoading(true);
             fetchMeal();
         }
+
+        return () => controller.abort();
     }, [mealId]);
 
     return { meal, loading, error };

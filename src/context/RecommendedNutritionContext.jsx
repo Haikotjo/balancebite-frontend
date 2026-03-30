@@ -25,26 +25,28 @@ export const RecommendedNutritionProvider = ({ children }) => {
      */
     const fetchRecommendedNutrition = useCallback(async () => {
         try {
-            const data = await fetchRecommendedNutritionApi(token);
+            const currentToken = localStorage.getItem("accessToken");
+            const data = await fetchRecommendedNutritionApi(currentToken);
             if (data) setRecommendedNutrition(data);
         } catch (error) {
             console.error("Error fetching recommended nutrition:", error);
         } finally {
             setLoading(false);
         }
-    }, [token]);
+    }, []);
 
     /**
      * Fetch base nutrition goals/limits
      */
     const fetchBaseNutrition = useCallback(async () => {
         try {
-            const data = await fetchBaseNutritionApi(token);
+            const currentToken = localStorage.getItem("accessToken");
+            const data = await fetchBaseNutritionApi(currentToken);
             if (data) setBaseNutrition(data);
         } catch (error) {
             console.error("Error fetching base nutrition:", error);
         }
-    }, [token]);
+    }, []);
 
     /**
      * Fetch specific daily RDI data by date string
@@ -94,7 +96,7 @@ export const RecommendedNutritionProvider = ({ children }) => {
 
     // Initial data load on login
     useEffect(() => {
-        if (token) {
+        if (user?.id) {
             void fetchRecommendedNutrition();
             void fetchBaseNutrition();
             void fetchWeeklyRdi();
@@ -102,7 +104,7 @@ export const RecommendedNutritionProvider = ({ children }) => {
         } else {
             setLoading(false);
         }
-    }, [token, fetchRecommendedNutrition, fetchBaseNutrition, fetchWeeklyRdi, fetchMonthlyRdi]);
+    }, [user?.id, fetchRecommendedNutrition, fetchBaseNutrition, fetchWeeklyRdi, fetchMonthlyRdi]);
 
     const value = {
         recommendedNutrition,

@@ -14,6 +14,8 @@ export default function useHomeData({ applyUserCopies, userMeals, fetchDietsData
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        const controller = new AbortController();
+
         const fetchMealsByQuery = async (query) => {
             const token = localStorage.getItem("accessToken");
             const headers = token ? { Authorization: `Bearer ${token}` } : {};
@@ -54,6 +56,7 @@ export default function useHomeData({ applyUserCopies, userMeals, fetchDietsData
                     })
                     .filter((item) => item.reference);
 
+                if (controller.signal.aborted) return;
                 setStickyItems(enrichedStickyItems);
                 setVegetarianMeals(vegetarianResponse.slice(0, 12));
                 setHighProteinMeals(highProteinResponse.slice(0, 12));
@@ -68,6 +71,8 @@ export default function useHomeData({ applyUserCopies, userMeals, fetchDietsData
         };
 
         loadHomePageData();
+
+        return () => controller.abort();
     }, [applyUserCopies, fetchDietsData, userMeals]);
 
     return {

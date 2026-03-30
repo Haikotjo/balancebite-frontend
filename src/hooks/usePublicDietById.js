@@ -7,17 +7,23 @@ const usePublicDietById = (dietId) => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        const controller = new AbortController();
+
         const fetch = async () => {
             try {
-                const data = await getPublicDietPlanByIdApi (dietId);
-                setDiet(data);
+                const data = await getPublicDietPlanByIdApi(dietId);
+                if (!controller.signal.aborted) setDiet(data);
             } catch (err) {
+                if (controller.signal.aborted) return;
                 setError(err.message || "Failed to fetch diet.");
             } finally {
-                setLoading(false);
+                if (!controller.signal.aborted) setLoading(false);
             }
         };
+
         fetch();
+
+        return () => controller.abort();
     }, [dietId]);
 
     return { diet, loading, error };

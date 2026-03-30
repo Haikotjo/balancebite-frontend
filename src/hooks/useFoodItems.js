@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useCallback } from "react";
+import { useState, useEffect, useContext, useCallback, useRef } from "react";
 import {
     getAllFoodItemNames,
     searchFoodItemsByName,
@@ -21,6 +21,7 @@ const useFoodItems = (selectedFoodSource) => {
     const userFoodSource = userData?.foodSource;
 
     const [isLoading, setIsLoading] = useState(true);
+    const debounceRef = useRef(null);
 
     const effectiveFoodSource = selectedFoodSource || userFoodSource;
 
@@ -51,23 +52,27 @@ const useFoodItems = (selectedFoodSource) => {
         }
     }, [effectiveFoodSource, isUserLoading]);
 
-    const handleSearch = async (query, index) => {
+    const handleSearch = (query, index) => {
         if (effectiveFoodSource) return;
 
+        clearTimeout(debounceRef.current);
+
         if (query.length > 1) {
-            try {
-                const data = await searchFoodItemsByName(query);
-                const newOptions = [...options];
-                const newNoResults = [...noResults];
-                newNoResults[index] = data.length === 0;
-                newOptions[index] = data;
-                setOptions(newOptions);
-                setNoResults(newNoResults);
-            } catch (error) {
-                console.error("[useFoodItems] Search error:", error);
-            }
+            debounceRef.current = setTimeout(async () => {
+                try {
+                    const data = await searchFoodItemsByName(query);
+                    const newOptions = [...options];
+                    const newNoResults = [...noResults];
+                    newNoResults[index] = data.length === 0;
+                    newOptions[index] = data;
+                    setOptions(newOptions);
+                    setNoResults(newNoResults);
+                } catch (error) {
+                    console.error("[useFoodItems] Search error:", error);
+                }
+            }, 500);
         } else {
-            await fetchAllFoodItems();
+            fetchAllFoodItems();
         }
     };
 

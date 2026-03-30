@@ -41,34 +41,37 @@ export const useDashboardData = () => {
      * Updates the dailyRdiList state once all requests are processed.
      */
     useEffect(() => {
+        const controller = new AbortController();
+
         const loadDailyRdi = async () => {
             const today = new Date();
-            const days = [];
 
-            for (let i = 1; i <= 7; i++) {
-                const date = subDays(today, i);
+            const promises = Array.from({ length: 7 }, (_, i) => {
+                const date = subDays(today, i + 1);
                 const formattedDate = format(date, "yyyy-MM-dd");
 
-                try {
-                    const data = await fetchDailyRdiByDate(formattedDate);
-                    if (data) {
-                        days.push({ date: formattedDate, data });
-                    }
-                } catch {
-                    // Fail silently for 404s to allow the loop to continue for other dates
-                    console.warn(`No data found for ${formattedDate}`);
-                }
-            }
+                return fetchDailyRdiByDate(formattedDate)
+                    .then(data => data ? { date: formattedDate, data } : null)
+                    .catch(() => {
+                        // Fail silently for 404s to allow other dates to resolve
+                        console.warn(`No data found for ${formattedDate}`);
+                        return null;
+                    });
+            });
 
-            setDailyRdiList(days.reverse());
+            const results = await Promise.all(promises);
+            if (!controller.signal.aborted) {
+                setDailyRdiList(results.filter(Boolean).reverse());
+            }
         };
 
         if (token) {
-            // Void operator or calling then() handles the floating promise warning
             void loadDailyRdi();
         } else {
             setDailyRdiList([]);
         }
+
+        return () => controller.abort();
     }, [token, fetchDailyRdiByDate]);
 
     return {

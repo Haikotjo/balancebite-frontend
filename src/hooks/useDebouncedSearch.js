@@ -17,19 +17,26 @@ const useDebouncedSearch = (onSearch, delay = 500) => {
             return;
         }
 
+        const controller = new AbortController();
+
         const handler = setTimeout(async () => {
             setLoading(true);
             try {
                 const results = await onSearch(searchQuery);
-                setOptions(results || []);
+                if (!controller.signal.aborted) setOptions(results || []);
             } catch (error) {
-                console.error("Error fetching search results:", error);
-                setOptions([]);
+                if (!controller.signal.aborted) {
+                    console.error("Error fetching search results:", error);
+                    setOptions([]);
+                }
             }
-            setLoading(false);
+            if (!controller.signal.aborted) setLoading(false);
         }, delay);
 
-        return () => clearTimeout(handler);
+        return () => {
+            clearTimeout(handler);
+            controller.abort();
+        };
     }, [searchQuery, onSearch, delay]);
 
     return [options, loading, searchQuery, setSearchQuery];

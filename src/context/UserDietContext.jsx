@@ -27,7 +27,7 @@ export const UserDietsProvider = ({ children }) => {
     const [creatorIdFilter, setCreatorIdFilter] = useState(null);
     const [itemsPerPage] = useState(6);
 
-    const fetchDietsData = useCallback(async (userCreatedDiets = [], overrideParams = null) => {
+    const fetchDietsData = useCallback(async (overrideParams = null) => {
         setLoadingDiets(true);
         try {
             const token = localStorage.getItem("accessToken");
@@ -63,33 +63,23 @@ export const UserDietsProvider = ({ children }) => {
                 setDiets(data.content || []);
             } else if (activeOption === "My Diets") {
                 data = await getAllUserDietPlans(token, { ...params, mode: "saved" });
+                console.log("[My Diets] Loaded diets:", (data.content || []).map(d => ({
+                    id: d.id,
+                    name: d.name,
+                    isTemplate: d.isTemplate,
+                    originalDietId: d.originalDietId,
+                })));
                 setDiets(data.content || []);
             } else {
                 data = await getAllPublicDietPlans(params);
                 const content = data.content || [];
-                const originals = content.filter(
-                    (diet) => !userCreatedDiets.find((copy) => String(copy.originalDietId) === String(diet.id))
-                );
-
-                const replacements = content
-                    .map((diet) => userCreatedDiets.find((d) => String(d.originalDietId) === String(diet.id)) || null)
-                    .filter(Boolean);
-
-                if (["saveCount", "weeklySaveCount", "monthlySaveCount"].includes(safeSortKey)) {
-                    originals.sort((a, b) => {
-                        const aVal = a[safeSortKey] ?? 0;
-                        const bVal = b[safeSortKey] ?? 0;
-                        return sortOrder === "asc" ? aVal - bVal : bVal - aVal;
-                    });
-                }
-
-                const replaced = [...originals, ...replacements].sort((a, b) => {
-                    const aVal = a[safeSortKey] ?? 0;
-                    const bVal = b[safeSortKey] ?? 0;
-                    return sortOrder === "asc" ? aVal - bVal : bVal - aVal;
-                });
-
-                setDiets(replaced);
+                console.log("[Diets] Loaded diets:", content.map(d => ({
+                    id: d.id,
+                    name: d.name,
+                    isTemplate: d.isTemplate,
+                    originalDietId: d.originalDietId,
+                })));
+                setDiets(content);
             }
 
             setTotalPages(data.totalPages || 1);
@@ -151,17 +141,16 @@ export const UserDietsProvider = ({ children }) => {
 
         const run = async () => {
             if (!user) {
-                await fetchDietsData([], currentParams);
+                await fetchDietsData(currentParams);
                 return;
             }
 
             if (activeOption === "Created Diets" || activeOption === "My Diets" || creatorIdFilter) {
-                await fetchDietsData([], currentParams);
+                await fetchDietsData(currentParams);
                 return;
             }
 
-            const mergedUserDiets = await fetchUserDietsData();
-            await fetchDietsData(mergedUserDiets, currentParams);
+            await fetchDietsData(currentParams);
         };
 
         run().catch(console.error);
@@ -177,6 +166,10 @@ export const UserDietsProvider = ({ children }) => {
         fetchUserDietsData,
         itemsPerPage,
     ]);
+
+    useEffect(() => {
+        if (user) fetchUserDietsData();
+    }, [user, fetchUserDietsData]);
 
     const replaceDietInDiets = (originalDietId, newDiet) => {
         setDiets((prev) => [
