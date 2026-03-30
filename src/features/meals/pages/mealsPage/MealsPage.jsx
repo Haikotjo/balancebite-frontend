@@ -20,7 +20,7 @@ import PageWrapper from "../../../../components/layout/PageWrapper.jsx";
 import {useCreateFoodItem} from "../../../../hooks/useCreateFoodItem.js";
 import CustomFloatingSelectNew from "../../../../components/layout/CustomFloatingSelectNew.jsx";
 
-function MealPage() {
+function MealsPage() {
     const location = useLocation();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
@@ -242,4 +242,4 @@ function MealPage() {
     );
 }
 
-export default MealPage;
+export default MealsPage;
