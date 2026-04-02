@@ -18,7 +18,7 @@ import MealCard from "../mealCard/MealCard.jsx";
  * - pinnedMeals: array of meals to appear at the top (de-duplicated)
  */
 function MealList({ filters, sortBy, selectedMeal, pinnedMeals = [] }) {
-    const { meals, setFilters, setSortBy } = useContext(UserMealsContext);
+    const { meals, setFilters } = useContext(UserMealsContext);
     const location = useLocation();
 
     // Shallow compare helper to prevent redundant context updates
@@ -34,17 +34,13 @@ function MealList({ filters, sortBy, selectedMeal, pinnedMeals = [] }) {
         return true;
     };
 
-    // Sync filters/sort with context, but only when they actually change.
+    // Sync filters with context only when they actually change.
+    // sortBy is intentionally excluded — MealsPage now owns sortBy directly in context.
     useEffect(() => {
         const stateFilters = location.state?.filtersFromRedirect;
         const nextFilters = stateFilters ?? filters;
-
-        // Guarded setFilters
         setFilters(prev => (shallowEqual(prev || {}, nextFilters || {}) ? prev : nextFilters));
-
-        // Guarded setSortBy
-        setSortBy(prev => (shallowEqual(prev || {}, sortBy || {}) ? prev : sortBy));
-    }, [filters, sortBy, setFilters, setSortBy, location.state]); // intentionally include location.state
+    }, [filters, setFilters, location.state]);
 
     // Compute filtered list only when inputs change
     const filteredMeals = useMemo(() => {

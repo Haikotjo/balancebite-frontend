@@ -149,7 +149,7 @@ const CustomMultiSelect = ({
                         ref={dropdownRef}
                         // FIX 2: clicks inside dropdown must not bubble to the document outside-listener
                         onPointerDown={(e) => e.stopPropagation()}
-                        className="mt-1 max-h-60 overflow-auto rounded bg-lightBackground dark:bg-darkBackground shadow-lg border border-gray-400 dark:border-gray-300"
+                        className="mt-1 max-h-60 overflow-auto rounded bg-page shadow-lg border border-gray-400 dark:border-gray-300"
                         style={dropdownStyle}
                         role="listbox"
                     >

@@ -13,17 +13,17 @@ export default function SectionHeader({
         <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
                 {eyebrow && (
-                    <span className="mb-3 inline-flex rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200">
+                    <span className="mb-3 inline-flex rounded-full border border-emerald-300 bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-200">
                         {eyebrow}
                     </span>
                 )}
 
-                <h2 className="text-2xl font-semibold tracking-tight text-white md:text-3xl">
+                <h2 className="text-2xl font-semibold tracking-tight text-content md:text-3xl">
                     {title}
                 </h2>
 
                 {text && (
-                    <p className="mt-3 max-w-2xl text-sm leading-6 text-white/65 md:text-base">
+                    <p className="mt-3 max-w-2xl text-sm leading-6 text-content/65 md:text-base">
                         {text}
                     </p>
                 )}
@@ -33,7 +33,7 @@ export default function SectionHeader({
                 <button
                     type="button"
                     onClick={onAction}
-                    className="inline-flex items-center gap-2 self-start rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white/80 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+                    className="inline-flex items-center gap-2 self-start rounded-full border border-content/10 bg-content/5 px-4 py-2 text-sm font-medium text-content/80 transition hover:border-content/20 hover:bg-content/10 hover:text-content"
                 >
                     {actionLabel}
                     <ArrowRight className="h-4 w-4" />

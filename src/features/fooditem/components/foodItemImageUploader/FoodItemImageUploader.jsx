@@ -65,7 +65,7 @@ const FoodItemImageUploader = ({ errors, valueUrl = "", onChange }) => {
 
             {/* Preview */}
             {(previewUrl || effectiveUrl) && (
-                <CustomBox className="relative rounded-xl border-2 border-borderDark dark:border-borderLight overflow-hidden">
+                <CustomBox className="relative rounded-xl border-2 border-border overflow-hidden">
                     <img
                         src={previewUrl || effectiveUrl}
                         alt="Food item"
@@ -84,7 +84,7 @@ const FoodItemImageUploader = ({ errors, valueUrl = "", onChange }) => {
             )}
 
             {/* URL */}
-            <CustomBox className="rounded-xl border border-borderDark dark:border-borderLight p-3">
+            <CustomBox className="rounded-xl border border-border p-3">
                 <CustomBox className="flex items-center gap-2 mb-2">
                     <Link2 size={18} className="text-primary" />
                     <CustomTypography variant="bold">Paste image URL</CustomTypography>
@@ -117,7 +117,7 @@ const FoodItemImageUploader = ({ errors, valueUrl = "", onChange }) => {
             </CustomBox>
 
             {/* Upload */}
-            <CustomBox className="rounded-xl border border-borderDark dark:border-borderLight p-3">
+            <CustomBox className="rounded-xl border border-border p-3">
                 <CustomBox className="flex items-center gap-2 mb-2">
                     <Upload size={18} className="text-primary" />
                     <CustomTypography variant="bold">Upload file</CustomTypography>

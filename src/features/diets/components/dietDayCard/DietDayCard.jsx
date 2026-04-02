@@ -14,7 +14,7 @@ import PromotionInfo from "../../../../components/promotioninfo/PromotionInfo.js
 const DietDayCard = ({ day }) => {
 
     return (
-        <CustomBox className="mb-4 p-4 rounded-xl border border-border bg-muted dark:bg-mutedDark">
+        <CustomBox className="mb-4 p-4 rounded-xl border border-border bg-surface-sunken">
             <CustomTypography variant="h2" bold className="mb-2">
                 {day.dayLabel}
             </CustomTypography>

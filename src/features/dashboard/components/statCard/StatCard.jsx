@@ -44,8 +44,8 @@ const StatCard = ({ item, style, icon: Icon, isActive, onMouseEnter, onMouseLeav
                 cursor-pointer
                 select-none
                 ${isActive
-                ? "scale-105 sm:scale-110 z-50 shadow-xl bg-lightBackground/60 dark:bg-darkBackground/60"
-                : "scale-100 z-10 bg-lightBackground/10 dark:bg-darkBackground/10 border-borderDark dark:border-borderLight"
+                ? "scale-105 sm:scale-110 z-50 shadow-xl bg-page/60"
+                : "scale-100 z-10 bg-page/10 border-border"
             }
             `}
         >

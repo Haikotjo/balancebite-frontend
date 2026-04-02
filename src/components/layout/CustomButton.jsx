@@ -95,7 +95,7 @@ const CustomButton = React.forwardRef(function CustomButton(
         neutral: {
             solid: "bg-foreground text-white hover:bg-foreground/80",
             outline:
-                "border border-divider text-lightText dark:text-darkText hover:bg-accent/40",
+                "border border-divider text-content hover:bg-accent/40",
         },
     };
 

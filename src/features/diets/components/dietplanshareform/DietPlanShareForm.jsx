@@ -60,7 +60,7 @@ const DietPlanShareForm = ({ dietPlanId }) => {
             {!showForm ? (
                 <CustomButton
                     onClick={() => setShowForm(true)}
-                    className="bg-primary hover:bg-primary-dark text-white py-2 mt-2 w-full"
+                    className="bg-primary hover:bg-primary-emphasis text-white py-2 mt-2 w-full"
                 >
                     Share
                 </CustomButton>
@@ -76,14 +76,14 @@ const DietPlanShareForm = ({ dietPlanId }) => {
                     />
                     <CustomBox className="flex gap-2 mt-2">
                         <CustomButton
-                            className="bg-primary hover:bg-primary-dark text-white py-2 mt-2 self-stretch"
+                            className="bg-primary hover:bg-primary-emphasis text-white py-2 mt-2 self-stretch"
                             onClick={handleShare}
                             disabled={isLoading}
                         >
                             {isLoading ? "Share..." : "Send"}
                         </CustomButton>
                         <CustomButton
-                            className="bg-error hover:bg-error-dark text-white py-2 mt-2 self-stretch"
+                            className="bg-error hover:bg-error-emphasis text-white py-2 mt-2 self-stretch"
                             onClick={() => {
                                 setShowForm(false);
                                 setEmail("");

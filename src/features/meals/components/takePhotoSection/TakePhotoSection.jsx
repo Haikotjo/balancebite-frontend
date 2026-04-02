@@ -10,7 +10,7 @@ import Camera from "../camera/Camera.jsx";
  * Pure presentational component.
  */
 const TakePhotoSection = ({ onCapture }) => (
-    <CustomBox className="rounded-xl border border-borderDark dark:border-borderLight p-3">
+    <CustomBox className="rounded-xl border border-border p-3">
         <CustomBox className="flex items-center gap-2 mb-2">
             <CameraIcon size={18} className="text-primary" />
             <CustomTypography variant="bold">Take photo</CustomTypography>

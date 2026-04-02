@@ -73,7 +73,7 @@ const MealModal = ({ meal, isPinned = false, mode = "view", onCancel, onConfirm 
                           relative z-[2147483001]
                           w-full h-full rounded-none
                           lg:w-[90%] lg:h-auto lg:max-w-4xl lg:rounded-xl
-                          shadow-lg bg-lightBackground dark:bg-darkBackground
+                          shadow-lg bg-page
                           "
                 onClick={(e) => e.stopPropagation()}
                 role="dialog"
@@ -88,7 +88,7 @@ const MealModal = ({ meal, isPinned = false, mode = "view", onCancel, onConfirm 
                 >
                     {isPreview && (
                         <>
-                            <CustomBox className="sticky top-0 z-[2147483002] p-3 sm:p-4 bg-lightBackground/90 dark:bg-darkBackground/90 backdrop-blur">
+                            <CustomBox className="sticky top-0 z-[2147483002] p-3 sm:p-4 bg-page/90 backdrop-blur">
                                 <CustomTypography as="div" variant="h1" font="sans" weight="bold" className="opacity-80 text-center w-full">
                                     Meal Preview
                                 </CustomTypography>

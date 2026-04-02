@@ -24,13 +24,13 @@ const MetricHeader = ({ title, subtitle, variant, icon: CustomIcon }) => {
     return (
         <CustomBox
             className={`relative mb-4 rounded-xl ${
-                isMeal ? "" : "border-b border-borderDark dark:border-borderLight"
+                isMeal ? "" : "border-b border-border"
             }`}
         >
 
             <CustomBox
                 className={`flex items-center gap-4 p-3 rounded-xl ${
-                    isMeal ? "bg-transparent" : "bg-primary/15 dark:bg-darkBackground"
+                    isMeal ? "bg-transparent" : "bg-primary/15"
                 }`}
             >
                 <CustomBox className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary shrink-0">
@@ -40,7 +40,7 @@ const MetricHeader = ({ title, subtitle, variant, icon: CustomIcon }) => {
                 <CustomBox className="flex flex-col min-w-0">
                     <CustomTypography
                         variant="bold"
-                        className="text-friendlyGray uppercase tracking-wider text-[10px]"
+                        className="text-content-muted uppercase tracking-wider text-[10px]"
                     >
                         {subtitle || "Overview"}
                     </CustomTypography>

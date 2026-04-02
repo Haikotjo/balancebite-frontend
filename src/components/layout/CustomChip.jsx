@@ -67,10 +67,10 @@ const CustomChip = ({
                     spacingClass,
 
                     // background stays ALWAYS the same
-                    "bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText",
+                    "bg-page text-content",
 
                     // default border
-                    "border-borderDark dark:border-borderLight",
+                    "border-border",
 
                     // ONLY border changes when selected
                     selected && selectedBorderClass

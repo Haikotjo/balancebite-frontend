@@ -36,7 +36,7 @@ const MealCardMealTags = ({
     const colorClasses = {
         primary: "border-primary hover:bg-primary/10 ",
         secondary: "border-secondary hover:bg-secondary/10 ",
-        success: "border-success hover:bg-success/10 dark:hover:bg-success-dark/20 ",
+        success: "border-success hover:bg-success/10 dark:hover:bg-success-emphasis/20 ",
     };
 
     return (
@@ -59,7 +59,7 @@ const MealCardMealTags = ({
                     <CustomTypography
                         variant="small"
                         inheritColor
-                        className="text-lightText dark:text-darkText"
+                        className="text-content"
                     >
                         {formatEnum(tag.value)}
                     </CustomTypography>

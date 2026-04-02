@@ -36,7 +36,7 @@ const CustomDrawer = ({ open, onClose, width = 'w-[300px]', children, contentCla
     return (
         <CustomBox
             className={clsx(
-                'fixed top-0 right-0 h-full bg-lightBackground dark:bg-darkBackground z-50 transform transition-transform duration-1000 ease-in-out',
+                'fixed top-0 right-0 h-full bg-page z-50 transform transition-transform duration-1000 ease-in-out',
                 width,
                 open ? 'translate-x-0' : 'translate-x-full'
             )}

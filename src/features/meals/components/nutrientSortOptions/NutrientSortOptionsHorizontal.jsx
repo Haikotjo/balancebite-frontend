@@ -33,8 +33,8 @@ const NutrientSortOptionsHorizontal = ({ onSort }) => {
     const getSortIcon = (key) => {
         const base = iconBase;
 
-        const unselectedClass = `${base} text-lightText dark:text-darkText`;
-        const selectedClass   = `${base} text-lightText dark:text-darkText`;
+        const unselectedClass = `${base} text-content`;
+        const selectedClass   = `${base} text-content`;
 
         const cls = key ? selectedClass : unselectedClass;
 

@@ -144,9 +144,9 @@ const HamburgerMenu = forwardRef(({
                                             ${active ? "bg-gray-100 dark:bg-gray-700" : ""}
                                             hover:bg-gray-100 dark:hover:bg-gray-700`}
                                     >
-                                        <Icon className={`w-4 h-4 ${active ? "text-primary" : "text-lightText dark:text-darkText"}`} />
+                                        <Icon className={`w-4 h-4 ${active ? "text-primary" : "text-content"}`} />
                                         <CustomTypography
-                                            className={`${active ? "text-primary dark:text-primary" : "text-lightText dark:text-darkText"}`}
+                                            className={`${active ? "text-primary dark:text-primary" : "text-content"}`}
                                         >
                                             {label}
                                         </CustomTypography>

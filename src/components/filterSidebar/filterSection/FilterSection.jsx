@@ -1,66 +1,36 @@
 import PropTypes from "prop-types";
 import { formatEnum } from "../../../utils/helpers/formatEnum.js";
-import CustomBox from "../../layout/CustomBox.jsx";
-import CustomTypography from "../../layout/CustomTypography.jsx";
-import CustomDivider from "../../layout/CustomDivider.jsx";
-import CustomCardChip from "../../layout/customCardChip.jsx";
 import clsx from "clsx";
 
-/**
- * FilterSection component - Renders a section of filter options with selectable chips.
- *
- * @component
- * @param {Object} props - Component props
- * @param {string} props.title - The title of the filter section
- * @param {string[]} props.items - The list of filter options
- * @param {Object} props.selectedFilters - The currently selected filters
- * @param {string} props.category - The filter category (e.g., "mealTypes", "diets", "cuisines")
- * @param {Function} props.onFilterClick - Callback function to handle filter selection
- */
 const FilterSection = ({ title, items, selectedFilters, category, onFilterClick }) => {
-
-    // If there are no items, do not render the section
     if (!items.length) return null;
 
     return (
-        <CustomBox>
-            <CustomTypography
-                as="h3"
-                variant="h4"
-                className="mt-4"
-            >
+        <div className="mb-6">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-content-muted">
                 {title}
-            </CustomTypography>
-
-
-            {/* Divider with dynamic color based on theme mode */}
-            <CustomDivider className="my-2 mb-[15px] bg-borderDark dark:bg-borderLight" />
-
-            {/* Render filter options as selectable Chips */}
-            <CustomBox className="flex flex-wrap gap-1.5 mb-1">
-            {items.map(item => {
+            </p>
+            <div className="flex flex-wrap gap-2">
+                {items.map((item) => {
                     const isSelected = selectedFilters[category] === item;
                     return (
-                        <CustomCardChip
+                        <button
                             key={item}
+                            type="button"
                             onClick={() => onFilterClick(category, item)}
                             className={clsx(
-                                "border px-2 py-[4px] text-[0.7rem] sm:text-[0.8rem] md:text-[0.9rem] transition-transform duration-200",
-                                isSelected && "scale-[1.1]",
+                                "rounded-full px-3 py-1 text-sm transition-all duration-150",
                                 isSelected
-                                    ? "border-primary border-2"
-                                    : "border-borderDark dark:border-borderLight"
+                                    ? "border-2 border-primary bg-primary/10 font-semibold text-primary scale-[1.05]"
+                                    : "border border-border-strong bg-surface-sunken text-content-muted hover:border-primary/40 hover:text-content"
                             )}
-
-                            textClassName="px-[4px] sm:px-[8px]"
                         >
                             {formatEnum(item)}
-                        </CustomCardChip>
-
+                        </button>
                     );
                 })}
-            </CustomBox>
-        </CustomBox>
+            </div>
+        </div>
     );
 };
 

@@ -1,8 +1,12 @@
 import PropTypes from "prop-types";
 import { Flame, Dumbbell, Wallet } from "lucide-react";
 import {getMealImage} from "../../utils/helpers/imageHelpers.js";
-import {chipBaseClass} from "../../utils/constants/homeStyles.js";
+import HomeChip from "../homeChip/HomeChip.jsx";
 import {formatPrice} from "../../../meals/utils/helpers/formatPrice.js";
+
+function formatLabel(str) {
+    return str.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()).replace(/\B\w/g, (c) => c.toLowerCase());
+}
 
 // Compact meal card for horizontal lists
 export default function CompactMealCard({ meal, onClick }) {
@@ -10,7 +14,7 @@ export default function CompactMealCard({ meal, onClick }) {
         <button
             type="button"
             onClick={onClick}
-            className="group min-w-[280px] overflow-hidden rounded-[26px] border border-white/10 bg-white/[0.06] text-left shadow-xl backdrop-blur transition duration-300 hover:-translate-y-1"
+            className="group min-w-[280px] overflow-hidden rounded-[26px] border border-content/10 bg-surface text-left shadow-xl backdrop-blur transition duration-300 hover:-translate-y-1"
         >
             <div className="relative h-44 overflow-hidden">
                 <img
@@ -22,16 +26,12 @@ export default function CompactMealCard({ meal, onClick }) {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"/>
 
                 <div className="absolute bottom-3 left-3 flex flex-wrap gap-2">
-                    {meal?.diets?.length > 0 && (
-                        <span className={chipBaseClass}>{meal.diets[0]}</span>
-                    )}
-                    {meal?.cuisines?.length > 0 && (
-                        <span className={chipBaseClass}>{meal.cuisines[0]}</span>
-                    )}
+                    {meal?.diets?.length > 0 && <HomeChip className="!border-white !text-white">{formatLabel(meal.diets[0])}</HomeChip>}
+                    {meal?.cuisines?.length > 0 && <HomeChip className="!border-white !text-white">{formatLabel(meal.cuisines[0])}</HomeChip>}
                 </div>
             </div>
 
-            <div className="mt-4 px-2 grid grid-cols-3 gap-2 text-xs">
+            <div className="my-2 px-4 grid grid-cols-3 gap-2 text-xs">
 
                 <StatItem icon={Flame} value={meal?.totalCalories} color="text-error" />
 
@@ -59,9 +59,9 @@ function StatItem({ icon: Icon, value, color, formatter }) {
             : "-";
 
     return (
-        <div className="flex flex-col items-center justify-center gap-1 rounded-2xl border border-white/10 bg-black/20 px-2 py-3 text-white/80">
-            <Icon className={`h-4 w-4 ${color}`} />
-            <p className="font-semibold text-white">{displayValue}</p>
+        <div className="flex flex-col items-center justify-center gap-1 rounded-2xl border border-border bg-surface-sunken px-2 py-2 text-content/80">
+            <Icon className={`h-5 w-5 ${color}`} />
+            <p className="font-semibold text-content">{displayValue}</p>
         </div>
     );
 }

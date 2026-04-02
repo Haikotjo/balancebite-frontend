@@ -88,7 +88,7 @@ const NutritionPieChart = ({ chartData, baseChartData }) => {
                     Daily Nutrition
                 </CustomTypography>
 
-                <CustomBox className="flex items-center gap-2 px-2 py-1 rounded border border-borderPrimary">
+                <CustomBox className="flex items-center gap-2 px-2 py-1 rounded border border-primary">
                     <Target size={16} className="text-primary" />
                     <CustomTypography variant="small" className="font-medium ">
                         Today&#39;s Targets

@@ -77,7 +77,7 @@ const NutritionPieOverview = ({ useBaseRDI = false, onClose }) => {
     }
 
     return (
-        <CustomBox className="relative flex flex-col bg-lightBackground dark:bg-darkBackground rounded-xl max-h-[90vh] overflow-hidden">
+        <CustomBox className="relative flex flex-col bg-page rounded-xl max-h-[90vh] overflow-hidden">
 
             {onClose && (
                 <CustomBox className="sticky top-0 z-50 w-full pointer-events-none">

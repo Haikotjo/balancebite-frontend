@@ -1,112 +1,128 @@
 import PropTypes from "prop-types";
-import CustomBox from "../../../../components/layout/CustomBox.jsx";
-import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import { Filter } from "lucide-react";
 import DietsFilterChip from "../dietsFilterChip/DietsFilterChip.jsx";
 import NutrientRangeChips from "../nutrientRangeChips/NutrientRangeChips.jsx";
+import { formatEnum } from "../../../../utils/helpers/formatEnum.js";
 
 const ActiveFilterChips = ({
-                               filters,
-                               setFilters,
-                               creatorIdFilter,
-                               setCreatorIdFilter,
-                               creatorName,
-                               sortKey,
-                               setSortKey,
-                               sortOrder,
-                               setSortOrder,
-                           }) => {
-    const showClearAll =
-        Object.keys(filters).length > 0 ||
-        creatorIdFilter ||
-        sortKey !== null;
+    filters,
+    setFilters,
+    creatorIdFilter,
+    setCreatorIdFilter,
+    creatorName,
+    sortKey,
+    setSortKey,
+    sortOrder,
+    setSortOrder,
+}) => {
+    const hasFilters =
+        Object.keys(filters).length > 0 || !!creatorIdFilter || sortKey !== null;
 
+    if (!hasFilters) return null;
+
+    const handleClearAll = () => {
+        setFilters({});
+        setCreatorIdFilter(null);
+        setSortKey(null);
+    };
 
     return (
-        showClearAll && (
-            <CustomBox className="mb-4 gap-2 flex flex-wrap items-center">
-                <CustomTypography variant="paragraph" bold className="mr-1 block sm:hidden">
-                    Filters:
-                </CustomTypography>
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+            <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-content-muted">
+                <Filter className="h-3.5 w-3.5" />
+                Filters
+            </span>
 
-                <CustomTypography variant="paragraph" bold className="mr-2 hidden sm:block">
-                    Active filters:
-                </CustomTypography>
+            <div className="h-4 w-px bg-border" />
 
+            {/* Clear all */}
+            <DietsFilterChip
+                label="Clear all"
+                variant="danger"
+                onRemove={handleClearAll}
+            />
+
+            {/* Sort */}
+            {sortKey && (
                 <DietsFilterChip
-                    label="Clear all"
-                    colorClass="chip-red"
-                    onRemove={() => {
-                        setFilters({});
-                        setCreatorIdFilter(null);
-                        setSortKey(null);
-                        setSortOrder("asc");
-                    }}
+                    label={`Sort: ${formatEnum(sortKey)} (${sortOrder})`}
+                    variant="amber"
+                    onRemove={() => setSortKey(null)}
                 />
+            )}
 
-                {sortKey && (
+            {/* Creator */}
+            {creatorIdFilter && creatorName && (
+                <DietsFilterChip
+                    label={`By: ${creatorName}`}
+                    variant="emerald"
+                    onRemove={() => setCreatorIdFilter(null)}
+                />
+            )}
 
-                    <DietsFilterChip
-                        label={`Sort: ${sortKey} (${sortOrder})`}
-                        colorClass="chip-yellow"
-                        onRemove={() => {
-                            setSortKey(null);
-                            setSortOrder("asc");
-                        }}
-                    />
-                )}
+            {/* Sidebar filters */}
+            {filters.mealTypes && (
+                <DietsFilterChip
+                    label={`Type: ${formatEnum(filters.mealTypes)}`}
+                    variant="teal"
+                    onRemove={() => setFilters(prev => { const u = { ...prev }; delete u.mealTypes; return u; })}
+                />
+            )}
 
-                {creatorIdFilter && creatorName && (
-                    <DietsFilterChip
-                        label={creatorName}
-                        colorClass="chip-emerald"
-                        onRemove={() => setCreatorIdFilter(null)}
-                    />
-                )}
+            {filters.diets && (
+                <DietsFilterChip
+                    label={`Diet: ${formatEnum(filters.diets)}`}
+                    variant="teal"
+                    onRemove={() => setFilters(prev => { const u = { ...prev }; delete u.diets; return u; })}
+                />
+            )}
 
-                <NutrientRangeChips filters={filters} setFilters={setFilters} />
+            {filters.cuisines && (
+                <DietsFilterChip
+                    label={`Cuisine: ${formatEnum(filters.cuisines)}`}
+                    variant="teal"
+                    onRemove={() => setFilters(prev => { const u = { ...prev }; delete u.cuisines; return u; })}
+                />
+            )}
 
-                {filters.requiredDiets?.length > 0 && (
-                    <DietsFilterChip
-                        label={`Includes: ${filters.requiredDiets.join(", ")}`}
-                        colorClass="chip-blue"
-                        onRemove={() => setFilters(prev => ({ ...prev, requiredDiets: undefined }))}
-                    />
-                )}
+            {/* Nutrient ranges */}
+            <NutrientRangeChips filters={filters} setFilters={setFilters} />
 
-                {filters.excludedDiets?.length > 0 && (
-                    <DietsFilterChip
-                        label={`Excludes: ${filters.excludedDiets.join(", ")}`}
-                        colorClass="chip-orange"
-                        onRemove={() => setFilters(prev => ({ ...prev, excludedDiets: undefined }))}
-                    />
-                )}
+            {/* Diet includes/excludes */}
+            {filters.requiredDiets?.length > 0 && (
+                <DietsFilterChip
+                    label={`Includes: ${filters.requiredDiets.join(", ")}`}
+                    variant="blue"
+                    onRemove={() => setFilters(prev => ({ ...prev, requiredDiets: undefined }))}
+                />
+            )}
 
-                {filters.name && (
-                    <DietsFilterChip
-                        label={`Search: ${filters.name}`}
-                        colorClass="chip-purple"
-                        onRemove={() => setFilters(prev => {
-                            const updated = { ...prev };
-                            delete updated.name;
-                            return updated;
-                        })}
-                    />
-                )}
+            {filters.excludedDiets?.length > 0 && (
+                <DietsFilterChip
+                    label={`Excludes: ${filters.excludedDiets.join(", ")}`}
+                    variant="amber"
+                    onRemove={() => setFilters(prev => ({ ...prev, excludedDiets: undefined }))}
+                />
+            )}
 
-                {filters.foodSource && (
-                    <DietsFilterChip
-                        label={`Store: ${filters.foodSource}`}
-                        colorClass="chip-blue"
-                        onRemove={() => setFilters(prev => {
-                            const updated = { ...prev };
-                            delete updated.foodSource;
-                            return updated;
-                        })}
-                    />
-                )}
+            {/* Search */}
+            {filters.name && (
+                <DietsFilterChip
+                    label={`Search: ${filters.name}`}
+                    variant="blue"
+                    onRemove={() => setFilters(prev => { const u = { ...prev }; delete u.name; return u; })}
+                />
+            )}
 
-            </CustomBox>
-        )
+            {/* Store */}
+            {filters.foodSource && (
+                <DietsFilterChip
+                    label={`Store: ${filters.foodSource}`}
+                    variant="blue"
+                    onRemove={() => setFilters(prev => { const u = { ...prev }; delete u.foodSource; return u; })}
+                />
+            )}
+        </div>
     );
 };
 

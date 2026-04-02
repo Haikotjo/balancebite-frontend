@@ -36,8 +36,8 @@ export default function useHomeData({ applyUserCopies, userMeals, fetchDietsData
                     allMealsResponse,
                     rawStickyItems,
                 ] = await Promise.all([
-                    fetchMealsByQuery("page=0&size=12&diets=VEGETARIAN"),
-                    fetchMealsByQuery("page=0&size=12&diets=HIGH_PROTEIN"),
+                    fetchMealsByQuery("page=0&size=12&diets=VEGETARIAN&includeUserCopies=false"),
+                    fetchMealsByQuery("page=0&size=12&diets=HIGH_PROTEIN&includeUserCopies=false"),
                     fetchMealsByQuery("page=0&size=18&includeUserCopies=false"),
                     getAllStickyItems(),
                 ]);

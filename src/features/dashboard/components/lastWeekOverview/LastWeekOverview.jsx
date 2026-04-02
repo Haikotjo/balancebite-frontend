@@ -73,8 +73,8 @@ const LastWeekOverview = ({ dailyRdiList, baseChartData }) => {
                     <Spinner />
                 </CustomBox>
             ) : isEmpty ? (
-                <CustomBox className="bg-black/[0.02] dark:bg-white/[0.02] border border-dashed border-borderDark/20 dark:border-borderLight/20 rounded-2xl p-10 mt-2 text-center">
-                    <CustomTypography variant="small" className="text-friendlyGray italic">
+                <CustomBox className="bg-black/[0.02] dark:bg-white/[0.02] border border-dashed border-border/20 rounded-2xl p-10 mt-2 text-center">
+                    <CustomTypography variant="small" className="text-content-muted italic">
                         No nutritional data found for the past week.
                         Start logging your meals to see your patterns here!
                     </CustomTypography>

@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
+import { Pin } from "lucide-react";
 import {getDietImage, getMealImage} from "../../utils/helpers/imageHelpers.js";
-import {chipBaseClass} from "../../utils/constants/homeStyles.js";
-import {getStickyTypeLabel} from "../../utils/helpers/stickyHelpers.js";
+import HomeChip from "../homeChip/HomeChip.jsx";
 
 
 // Card for pinned / promoted items (meal or diet)
@@ -13,7 +13,7 @@ export default function StickySpotlightCard({ item, onClick }) {
         <button
             type="button"
             onClick={onClick}
-            className="group overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.06] text-left shadow-xl backdrop-blur transition duration-300 hover:-translate-y-1"
+            className="group overflow-hidden rounded-[28px] border border-content/10 bg-surface text-left shadow-xl backdrop-blur transition duration-300 hover:-translate-y-1"
         >
             <div className="relative h-48 overflow-hidden">
                 <img
@@ -29,20 +29,18 @@ export default function StickySpotlightCard({ item, onClick }) {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"/>
 
                 <div className="absolute left-4 top-4">
-                    <span className={chipBaseClass}>
-                        {item?.promoted
-                            ? "Sponsored"
-                            : getStickyTypeLabel(item?.type)}
-                    </span>
+                    <HomeChip icon={Pin} iconClassName="text-amber-400" className="!border-white !text-white">
+                        Featured
+                    </HomeChip>
                 </div>
             </div>
 
             <div className="p-5">
-                <h3 className="line-clamp-1 text-lg font-semibold text-white">
+                <h3 className="line-clamp-1 text-lg font-semibold text-content">
                     {reference?.name || reference?.title || "Pinned item"}
                 </h3>
 
-                <p className="mt-2 text-sm leading-6 text-white/65 line-clamp-2">
+                <p className="mt-2 text-sm leading-6 text-content/65 line-clamp-2">
                     {isMeal
                         ? reference?.mealDescription ||
                         "Quick access to one of your saved meals."

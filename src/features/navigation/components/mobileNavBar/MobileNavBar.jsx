@@ -49,7 +49,7 @@ const MobileNavBar = ({
             {/*<CustomBox className="relative">*/}
             {/*    <CustomButton*/}
             {/*        onClick={() => setShowMobileMenu((prev) => !prev)}*/}
-            {/*        className="absolute -top-8 left-1/2 -translate-x-1/2 rounded-t-xl rounded-b-none px-4 pt-1 pb-2 bg-appBarColor text-white"*/}
+            {/*        className="absolute -top-8 left-1/2 -translate-x-1/2 rounded-t-xl rounded-b-none px-4 pt-1 pb-2 bg-app-bar text-white"*/}
             {/*    >*/}
             {/*        <Menu size={26} />*/}
             {/*    </CustomButton>*/}
@@ -57,7 +57,7 @@ const MobileNavBar = ({
 
             {/* Menu-balk */}
             {/*{showMobileMenu && (*/}
-            <CustomBox className="bg-appBarColor px-2 py-1">
+            <CustomBox className="bg-app-bar px-2 py-1">
                 <CustomBox className="flex items-center w-full justify-between">
                     {/* Left: Home */}
                     <CustomBox className={clsx("rounded-md", isHomeActive && "bg-white/25")}>

@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { Sparkles, Flame, Dumbbell, ChartColumnIncreasing, Droplet } from "lucide-react";
-import {chipBaseClass} from "../../utils/constants/homeStyles.js";
+import HomeChip from "../homeChip/HomeChip.jsx";
 import {getMealImage} from "../../utils/helpers/imageHelpers.js";
 
 // Large featured meal card with macro overview
@@ -9,7 +9,7 @@ export default function FeaturedMealCard({ meal, onClick }) {
         <button
             type="button"
             onClick={onClick}
-            className="group relative min-w-[320px] overflow-hidden rounded-[28px] border border-white/10 bg-zinc-900 text-left shadow-2xl"
+            className="group relative min-w-[320px] overflow-hidden rounded-[28px] border border-content/10 bg-surface text-left shadow-2xl"
         >
             <div className="absolute inset-0">
                 <img
@@ -18,19 +18,14 @@ export default function FeaturedMealCard({ meal, onClick }) {
                     className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                 />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/50 to-transparent" />
             </div>
 
             <div className="relative flex h-[420px] flex-col justify-between p-5">
                 <div className="flex items-start justify-between gap-3">
-                    <span className={chipBaseClass}>
-                        <Sparkles className="h-3.5 w-3.5" />
-                        Featured meal
-                    </span>
-
-                    {meal?.publicVisible && (
-                        <span className={chipBaseClass}>Public</span>
-                    )}
+                    <HomeChip icon={Sparkles} iconClassName="text-amber-400" className="!border-white !text-white">Trending meal</HomeChip>
+                    {meal?.publicVisible && <HomeChip>Public</HomeChip>}
                 </div>
 
                 <h3 className="text-xl font-semibold text-white line-clamp-2 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">

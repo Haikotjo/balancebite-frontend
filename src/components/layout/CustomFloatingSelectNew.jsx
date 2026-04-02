@@ -59,7 +59,7 @@ const CustomFloatingSelectNew = ({
                     as="label"
                     className={`absolute left-3 transition-all duration-200 pointer-events-none z-10
                         ${(isFocused || inputValue)
-                        ? "-top-2.5 text-xs font-bold text-primary bg-white dark:bg-darkBackground px-2"
+                        ? "-top-2.5 text-xs font-bold text-primary bg-white px-2"
                         : "top-3.5 text-sm text-gray-500"}`}
                 >
                     {label}

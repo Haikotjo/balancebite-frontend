@@ -103,8 +103,8 @@ const CreateMealMealIngredients = ({ value, onChange, selectedFoodSource }) => {
                         className="
                             flex items-start gap-2
                             rounded-xl
-                            border border-borderDark/30 dark:border-borderLight/20
-                            bg-lightBackground/60 dark:bg-darkBackground/40
+                            border border-border/30 dark:border-border/20
+                            bg-page/60 dark:bg-page/40
                             px-2 py-2
                         "
                     >

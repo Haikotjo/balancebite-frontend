@@ -172,7 +172,7 @@ const ShoppingCartPage = () => {
                                     <CustomCard
                                         key={index}
                                         className={`relative p-4 duration-200
-                                        bg-cardLight dark:bg-cardDark
+                                        bg-surface
                                         ${isChecked
                                             ? "ring-2 ring-primary/50 dark:ring-primary/60 bg-primary/20 dark:bg-primary/10"
                                             : "ring-0"

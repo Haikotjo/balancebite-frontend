@@ -57,7 +57,7 @@ const WeightHistoryChart = ({
                 </CustomTypography>
 
                 {sortedData.length > 1 && (
-                    <CustomBox className="flex items-center gap-2 px-2 py-1 rounded border border-borderPrimary">
+                    <CustomBox className="flex items-center gap-2 px-2 py-1 rounded border border-primary">
                         <ChartColumn size={16} className="text-primary" />
                         <CustomTypography
                             variant="small"

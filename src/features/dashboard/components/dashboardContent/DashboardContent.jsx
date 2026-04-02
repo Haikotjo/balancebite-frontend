@@ -103,10 +103,10 @@ const DashboardContent = ({
                         <CustomBox className="relative flex items-center justify-center my-4">
                             {/* line */}
                             <CustomBox className="absolute inset-0 flex items-center" aria-hidden="true">
-                                <CustomBox className="w-full border-t border-borderDark/50 dark:border-borderLight/20"></CustomBox>
+                                <CustomBox className="w-full border-t border-border/50 dark:border-border/20"></CustomBox>
                             </CustomBox>
 
-                            <CustomBox className="relative bg-lightBackground dark:bg-darkBackground px-4 text-center">
+                            <CustomBox className="relative bg-page px-4 text-center">
                                 <CustomTypography as="h3" variant="h3">
                                     Goal Overview
                                 </CustomTypography>
@@ -114,7 +114,7 @@ const DashboardContent = ({
                                 <CustomTypography
                                     as="span"
                                     variant="small"
-                                    className="text-friendlyGray text-xs uppercase tracking-widest mt-1"
+                                    className="text-content-muted text-xs uppercase tracking-widest mt-1"
                                 >
                                     Remaining nutrients based on averages
                                 </CustomTypography>

@@ -1,131 +1,138 @@
-/* src/styles/globals.css */
 @import "./chips.css";
 
-/* Zorg ervoor dat Tailwind de juiste basisstijlen toepast */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ===================== */
-/* 🌗 Globale Custom Properties */
-/* ===================== */
+/* ============================================================
+   DESIGN TOKENS — CSS Custom Properties
+   ============================================================
 
-/*!* Globale kleuren via CSS-variabelen *!*/
-/*:root {*/
-/*    --color-primary: #46B1C9;*/
-/*    --bg-light: #ffffff; !* Lichte achtergrondkleur *!*/
-/*    --bg-dark: #191e23; !* Donkere achtergrondkleur *!*/
-/*    --text-light: #ff0000; !* Lichtgrijze tekstkleur *!*/
-/*    --text-dark: #ffffff; !* Witte tekstkleur *!*/
-/*    --card-bg: #ffffff;*/
-/*}*/
+   All semantic color tokens are defined here as RGB channel values
+   (without rgb() wrapper) so Tailwind can compose them with opacity
+   modifiers: bg-page/50, text-content/80, etc.
 
-/*.dark {*/
-/*    --bg-light: #121212; !* Donkere achtergrondkleur in dark mode *!*/
-/*    --text-light: #ff0000; !* Witte tekstkleur in dark mode *!*/
-/*    --color-primary: #46B1C9;*/
-/*    --card-bg: #1f2937;*/
-/*}*/
+   The .dark class (toggled on <html> by ThemeModeProvider) switches
+   every structural token automatically. Brand/status colors stay the
+   same in both modes — only override them inside .dark if needed.
+   ============================================================ */
+
+:root {
+  /* ── Page & Surface ─────────────────────────────────────── */
+  --color-page:           249 250 251;   /* #F9FAFB  — body / page background   */
+  --color-surface:        255 255 255;   /* #FFFFFF  — card / panel              */
+  --color-surface-raised: 249 250 251;   /* #F9FAFB  — elevated card / header    */
+  --color-surface-sunken: 243 244 246;   /* #F3F4F6  — input / recessed area     */
+
+  /* ── Content (Text) ─────────────────────────────────────── */
+  --color-content:          17  24  39;  /* #111827  — primary body text         */
+  --color-content-muted:   143 143 143;  /* #8F8F8F  — placeholder / secondary   */
+  --color-content-inverted: 249 250 251; /* #F9FAFB  — text on dark backgrounds  */
+
+  /* ── Borders ─────────────────────────────────────────────── */
+  --color-border:        216 216 216;    /* #D8D8D8  — default border            */
+  --color-border-strong:  17  24  39;   /* #111827  — emphasized border          */
+
+  /* ── Brand / Primary (teal) ─────────────────────────────── */
+  --color-primary:          56 173 181; /* #38ADB5  — brand color               */
+  --color-primary-subtle:   95 195 201; /* #5FC3C9  — lighter brand             */
+  --color-primary-emphasis: 41 128 115; /* #298073  — darker brand / green      */
+
+  /* ── Secondary Accent (salmon) ──────────────────────────── */
+  --color-secondary:          237 182 163; /* #EDB6A3 */
+  --color-secondary-emphasis: 209 152 130; /* #D19882 */
+
+  /* ── Error / Danger (red) ───────────────────────────────── */
+  --color-error:          244  63  94; /* #F43F5E */
+  --color-error-emphasis: 156  13  61; /* #9C0D3D */
+
+  /* ── Success (green) ────────────────────────────────────── */
+  --color-success:          113 241 117; /* #71F175 */
+  --color-success-emphasis:  75 207  83; /* #4BCF53 */
+
+  /* ── Special Purpose ────────────────────────────────────── */
+  --color-promote: 250 204  21; /* #FACC15 — promotion badge / yellow   */
+  --color-price:   249 115  22; /* #F97316 — price display / orange     */
+  --color-app-bar: 244  63  94; /* #F43F5E — app bar accent             */
+}
+
+/* Dark mode — only structural tokens change */
+.dark {
+  --color-page:           5   8  22;   /* #050816 — deep navy page background */
+  --color-surface:       25  35  57;   /* #192339 — card / panel              */
+  --color-surface-raised: 31  41  55;  /* #1F2937 — elevated card             */
+  --color-surface-sunken: 11  18  32;  /* #0B1220 — recessed / input area     */
+
+  --color-content:          249 250 251; /* #F9FAFB — primary text (inverted)  */
+  --color-content-inverted:  17  24  39; /* #111827 — text on light surfaces   */
+
+  --color-border:        17  24  39;   /* #111827 — default border (darker)   */
+  --color-border-strong: 216 216 216;  /* #D8D8D8 — emphasized border (light) */
+}
 
 
-/*!* ===================== *!*/
-/*!* Tailwind Utility-klassen voor kleuren *!*/
-/*!* ===================== *!*/
-/*.bg-lightBackground {*/
-/*    @apply bg-[var(--bg-light)];*/
-/*}*/
-/*.dark .bg-darkBackground {*/
-/*    @apply bg-[var(--bg-dark)];*/
-/*}*/
-
-/*.text-lightText {*/
-/*    @apply text-[var(--text-light)];*/
-/*}*/
-/*.dark .text-darkText {*/
-/*    @apply text-[var(--text-dark)];*/
-/*}*/
-
-/* ===================== */
-/* Custom noUi component */
-/* ===================== */
+/* ============================================================
+   noUiSlider — custom range slider styles
+   Uses content/surface tokens for automatic dark mode support.
+   ============================================================ */
 
 .noUi-tooltip {
-    font-size: 0.7rem !important;
-    padding: 4px 6px !important;
-    line-height: 1 !important;
-    border-radius: 8px !important;
-    background: #111827 !important;
-    color: white !important;
-    font-family: "Quicksand", sans-serif !important;
-    font-weight: 600 !important;
+  font-size: 0.7rem !important;
+  padding: 4px 6px !important;
+  line-height: 1 !important;
+  border-radius: 8px !important;
+  background: rgb(var(--color-content)) !important;
+  color: rgb(var(--color-content-inverted)) !important;
+  font-family: "Quicksand", sans-serif !important;
+  font-weight: 600 !important;
 }
-
-.dark .noUi-tooltip {
-    background: #F9FAFB !important; /* dark mode kleur */
-    color: #111827 !important;
-}
-
 
 .noUi-horizontal {
-    height: 12px !important;
-    border-radius: 12px !important;
+  height: 12px !important;
+  border-radius: 12px !important;
 }
 
 .noUi-horizontal .noUi-handle-lower .noUi-tooltip {
-    top: auto !important;
-    bottom: -30px !important;
+  top: auto !important;
+  bottom: -30px !important;
 }
 
 .noUi-handle {
-    box-sizing: border-box !important; /* keep total size 18x18 */
-    width: 20px !important;
-    height: 20px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    border-radius: 50% !important;
-    background: #111827 !important;
-    border: 1px solid #F9FAFB !important; /* <-- white border */
-    box-shadow: none !important;
-    outline: none !important;
+  box-sizing: border-box !important;
+  width: 20px !important;
+  height: 20px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  border-radius: 50% !important;
+  background: rgb(var(--color-content)) !important;
+  border: 1px solid rgb(var(--color-content-inverted)) !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
-
-.dark .noUi-handle {
-    background: #F9FAFB !important;
-    border: 1px solid #111827 !important;
-}
-
-.noUi-connects, .noUi-connect {
-    background: #111827 !important;
-}
-
-.dark .noUi-connects, .dark .noUi-connect {
-    background: #F9FAFB !important;
-}
-
-.noUi-handle:before, .noUi-handle:after {
-    display: none !important;
-}
-
 
 .noUi-handle {
-    transform: translate(-8px, -30%) !important;
+  transform: translate(-8px, -30%) !important;
+}
+
+.noUi-connects,
+.noUi-connect {
+  background: rgb(var(--color-content)) !important;
+}
+
+.noUi-handle:before,
+.noUi-handle:after {
+  display: none !important;
 }
 
 
+/* ============================================================
+   Webkit autofill — prevent browser override of input bg color
+   ============================================================ */
 
 input:-webkit-autofill,
 textarea:-webkit-autofill,
 select:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0px 1000px #F9FAFB inset; /* achtergrondkleur light mode */
-    -webkit-text-fill-color: #5e6a7c; /* tekstkleur light mode */
-    transition: background-color 5000s ease-in-out 0s;
+  -webkit-box-shadow: 0 0 0px 1000px rgb(var(--color-surface-sunken)) inset;
+  -webkit-text-fill-color: rgb(var(--color-content-muted));
+  transition: background-color 5000s ease-in-out 0s;
 }
-
-.dark input:-webkit-autofill,
-.dark textarea:-webkit-autofill,
-.dark select:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0px 1000px #111827 inset; /* achtergrondkleur dark mode */
-    -webkit-text-fill-color: #F9FAFB; /* tekstkleur dark mode */
-}
-
-

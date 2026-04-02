@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from "react";
 import PropTypes from "prop-types";
 import { AuthContext } from "./AuthContext";
 import { fetchMealById, fetchMeals, fetchUserMeals } from "../services/apiService";
@@ -15,7 +15,7 @@ export const UserMealsProvider = ({ children }) => {
     const [filters, setFilters] = useState({});
     const [sortBy, setSortBy] = useState(null);
     const [activeOption, setActiveOption] = useState("All Meals");
-    const [itemsPerPage] = useState(12);
+    const itemsPerPage = 12;
     const { user, token } = useContext(AuthContext);
 
     const fetchUserMealsData = useCallback(async () => {
@@ -44,6 +44,8 @@ export const UserMealsProvider = ({ children }) => {
 
     // De hoofdfunctie die de lijst ophaalt
     useEffect(() => {
+        let cancelled = false;
+
         const loadMeals = async () => {
             setLoading(true);
             try {
@@ -62,20 +64,23 @@ export const UserMealsProvider = ({ children }) => {
 
                 // De backend vervangt nu automatisch originelen door jouw kopieën!
                 const data = await fetchMeals(baseUrl);
+                if (cancelled) return;
                 const receivedMeals = data.content || [];
 
-                setMeals(receivedMeals);
+                setMeals(prev => page === 1 ? receivedMeals : [...prev, ...receivedMeals]);
                 setTotalPages(data.totalPages || 1);
                 setError(null);
             } catch (err) {
+                if (cancelled) return;
                 console.error("❌ Fout bij laden meals:", err.message);
                 setError(err.message);
             } finally {
-                setLoading(false);
+                if (!cancelled) setLoading(false);
             }
         };
 
-        loadMeals();
+        const timer = setTimeout(() => { loadMeals(); }, 1000);
+        return () => { cancelled = true; clearTimeout(timer); };
     }, [activeOption, filters, sortBy, page, user]);
 
     const getMealById = useCallback(async (mealId) => {
@@ -89,50 +94,50 @@ export const UserMealsProvider = ({ children }) => {
         }
     }, [meals]);
 
-    const replaceMealInMeals = (originalId, newMeal) => {
+    const replaceMealInMeals = useCallback((originalId, newMeal) => {
         setMeals(prev => prev.map(m => String(m.id) === String(originalId) ? newMeal : m));
-    };
+    }, []);
 
-    const removeMealFromMeals = (mealId) => {
+    const removeMealFromMeals = useCallback((mealId) => {
         setMeals(prev => prev.filter(m => m.id !== mealId));
-    };
+    }, []);
 
-    const addMealToUserMeals = (meal) => {
+    const addMealToUserMeals = useCallback((meal) => {
         setUserMeals((prev) => {
             const exists = prev.some((m) => String(m.id) === String(meal.id));
             return exists ? prev : [meal, ...prev];
         });
-    };
+    }, []);
 
-    const removeMealFromUserMeals = (mealId) => {
+    const removeMealFromUserMeals = useCallback((mealId) => {
         setUserMeals((prev) => prev.filter((m) => String(m.id) !== String(mealId)));
-    };
+    }, []);
+
+    const contextValue = useMemo(() => ({
+        meals,
+        userMeals,
+        addMealToUserMeals,
+        removeMealFromUserMeals,
+        getMealById,
+        loading,
+        error,
+        activeOption,
+        setActiveOption,
+        filters,
+        setFilters,
+        sortBy,
+        setSortBy,
+        fetchUserMealsData,
+        removeMealFromMeals,
+        replaceMealInMeals,
+        setMeals,
+        page,
+        setPage,
+        totalPages,
+    }), [meals, userMeals, addMealToUserMeals, removeMealFromUserMeals, getMealById, loading, error, activeOption, filters, sortBy, fetchUserMealsData, removeMealFromMeals, replaceMealInMeals, page, totalPages]);
 
     return (
-        <UserMealsContext.Provider
-            value={{
-                meals,
-                userMeals,
-                addMealToUserMeals,
-                removeMealFromUserMeals,
-                getMealById,
-                loading,
-                error,
-                activeOption,
-                setActiveOption,
-                filters,
-                setFilters,
-                sortBy,
-                setSortBy,
-                fetchUserMealsData,
-                removeMealFromMeals,
-                replaceMealInMeals,
-                setMeals,
-                page,
-                setPage,
-                totalPages,
-            }}
-        >
+        <UserMealsContext.Provider value={contextValue}>
             {children}
         </UserMealsContext.Provider>
     );

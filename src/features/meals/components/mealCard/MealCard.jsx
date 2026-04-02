@@ -99,7 +99,7 @@ const MealCard = ({
     return (
         <CustomBox ref={cardRef} className="w-full flex flex-col items-center">
             <CustomBox
-                className={`w-full bg-cardLight dark:bg-cardDark rounded-2xl shadow-md overflow-hidden border ${
+                className={`w-full bg-surface rounded-2xl shadow-md overflow-hidden border ${
                     isPinned ? "border-yellow-500" : "border-border"
                 }`}
             >
@@ -285,7 +285,7 @@ const MealCard = ({
                                         </MealCardSection>
                                     )}
                                     {(!isListView || activeSection === 'media') && hasAnyVideo && (
-                                        <CustomBox className="w-full p-4 rounded-2xl bg-cardAccentLight dark:bg-darkBackground border border-black/10 shadow-xl">
+                                        <CustomBox className="w-full p-4 rounded-2xl bg-surface-raised border border-black/10 shadow-xl">
                                             <MealCardMediaSection meal={meal} prepVideoRef={prepVideoRef}/>
                                         </CustomBox>
                                     )}
@@ -307,7 +307,7 @@ const MealCard = ({
                             </CustomBox>
                         )}
                         {ingredientFoodItems.length > 0 && (
-                            <CustomBox ref={ingredientsRef} className="w-full p-4 md:px-8 rounded-2xl bg-cardAccentLight dark:bg-darkBackground border border-black/10 shadow-xl mb-6">
+                            <CustomBox ref={ingredientsRef} className="w-full p-4 md:px-8 rounded-2xl bg-surface-raised border border-black/10 shadow-xl mb-6">
                                 <MetricHeader title="Ingredients" subtitle="overview" icon={Boxes} variant="meal" />
                                 <CustomDivider className="mb-8" />
                                 <CustomBox className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">

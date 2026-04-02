@@ -9,7 +9,7 @@ const MealCardSection = forwardRef(
         return (
             <CustomBox
                 ref={ref}
-                className={`w-full p-4 rounded-2xl bg-cardAccentLight dark:bg-darkBackground border border-black/10 dark:border-white/10 shadow-xl transition-all ${
+                className={`w-full p-4 rounded-2xl bg-surface-raised border border-black/10 dark:border-white/10 shadow-xl transition-all ${
                     onClick ? "cursor-pointer hover:bg-black/5 dark:hover:bg-white/5" : ""
                 } ${className}`}
                 onClick={onClick}

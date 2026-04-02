@@ -47,7 +47,7 @@ const InfoMetricTile = ({
     };
 
     return (
-        <CustomBox className={`relative flex items-center gap-3 p-3 rounded-lg bg-lightBackground dark:bg-darkBackground border border-borderDark dark:border-borderLight shadow-sm transition-all ${isEditing ? "ring-2 ring-primary border-transparent" : ""} ${className}`}>
+        <CustomBox className={`relative flex items-center gap-3 p-3 rounded-lg bg-page border border-border shadow-sm transition-all ${isEditing ? "ring-2 ring-primary border-transparent" : ""} ${className}`}>
 
             <CustomIconButton
                 icon={<Icon />}
@@ -61,7 +61,7 @@ const InfoMetricTile = ({
             />
 
             <CustomBox className="flex flex-col min-w-0 w-full pr-8">
-                <CustomTypography variant="bold" className="text-friendlyGray uppercase tracking-wider text-[10px] truncate">
+                <CustomTypography variant="bold" className="text-content-muted uppercase tracking-wider text-[10px] truncate">
                     {label}
                 </CustomTypography>
 

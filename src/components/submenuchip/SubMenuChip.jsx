@@ -1,83 +1,42 @@
 import PropTypes from "prop-types";
-import CustomBox from "../layout/CustomBox.jsx";
-import CustomTypography from "../layout/CustomTypography.jsx";
 import clsx from "clsx";
 
-/**
- * SubMenuChip: A larger version of CustomChip, made specifically for use in SubMenuGeneric.
- * Doubled size, slightly larger icon, same interface.
- *
- * @component
- * @param {object} props
- * @param {React.ReactElement} props.icon - Icon element to render.
- * @param {string} [props.label] - Optional label to show above or below.
- * @param {boolean} [props.selected=false] - Visual selection state.
- * @param {function} props.onClick - Click handler.
- * @param {string} [props.labelPosition="bottom"] - "top" or "bottom".
- * @param {string} [props.className] - Optional class override.
- */
-const SubMenuChip = ({
-                         icon,
-                         label,
-                         selected = false,
-                         onClick,
-                         labelPosition = "bottom",
-                         className = ""
-                     }) => {
-    const iconSize = 36;
-    const chipSize = iconSize + 20;
-    const chipStyle = {
-        width: `${chipSize}px`,
-        height: `${chipSize}px`
-    };
-
-    return (
-        <CustomBox
-            onClick={onClick}
+const SubMenuChip = ({ icon: Icon, label, selected = false, onClick }) => (
+    <button
+        type="button"
+        onClick={onClick}
+        className={clsx(
+            "flex items-center justify-center gap-1 sm:gap-2 rounded-2xl px-3 py-2 sm:px-4 sm:py-2.5 transition-all duration-200 select-none",
+            "flex-col sm:flex-row",
+            selected
+                ? "bg-surface text-primary shadow-sm border border-border"
+                : "text-content-muted hover:text-content hover:bg-surface/60"
+        )}
+    >
+        <Icon
             className={clsx(
-                "flex items-center cursor-pointer select-none",
-                labelPosition === "top" ? "flex-col" : "flex-col-reverse",
-                className
+                "shrink-0 transition-colors duration-200 h-5 w-5",
+                selected ? "text-primary" : "text-content-muted"
             )}
-        >
-            {label && (
-                <CustomTypography
-                    as="span"
-                    font="sans"
-                    variant="paragraph"
-                    weight="bold"
-                    className={clsx(
-                        "text-center",
-                        labelPosition === "top" ? "mb-2" : "mt-2"
-                    )}
-                >
-                    {label}
-                </CustomTypography>
-            )}
-
-            <CustomBox
-                style={chipStyle}
+        />
+        {label && (
+            <span
                 className={clsx(
-                    "rounded-full flex items-center justify-center transition-all duration-200",
-                    "border-2 border-borderDark dark:border-borderLight",
-                    "text-lightText dark:text-darkText",
-                    selected && "scale-[1.1] border-[3px] border-primary dark:border-primary text-primary dark:text-primary"
-
+                    "text-xs sm:text-sm font-medium transition-all duration-200",
+                    selected ? "block" : "hidden sm:inline"
                 )}
             >
-            {icon}
-            </CustomBox>
-        </CustomBox>
-    );
-};
+                {label}
+            </span>
+        )}
+    </button>
+);
 
 SubMenuChip.propTypes = {
-    icon: PropTypes.element.isRequired,
+    icon: PropTypes.elementType.isRequired,
     label: PropTypes.string,
     selected: PropTypes.bool,
     onClick: PropTypes.func.isRequired,
-    labelPosition: PropTypes.oneOf(["top", "bottom"]),
-    className: PropTypes.string,
 };
 
 export default SubMenuChip;

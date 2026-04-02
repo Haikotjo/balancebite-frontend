@@ -2,7 +2,34 @@ import typography from "@tailwindcss/typography";
 import forms from "@tailwindcss/forms";
 import scrollbarHide from "tailwind-scrollbar-hide";
 
-/** @type {import('tailwindcss').Config} */
+/**
+ * @type {import('tailwindcss').Config}
+ *
+ * Professional token-based design system.
+ *
+ * All semantic tokens are backed by CSS variables defined in global.css.
+ * Dark mode switches automatically — no "dark:" modifier needed for
+ * structural colors (page, surface, content, border).
+ *
+ * Usage examples:
+ *   bg-page               → page/body background (light or dark)
+ *   bg-surface            → card / panel background
+ *   bg-surface-raised     → elevated card / accordion header
+ *   bg-surface-sunken     → input field / recessed area
+ *   text-content          → primary body text
+ *   text-content-muted    → placeholder / secondary text
+ *   border-border         → default border
+ *   border-border-strong  → emphasized border (inverts in dark mode)
+ *   bg-primary            → brand teal
+ *   bg-primary-subtle     → lighter brand teal
+ *   bg-primary-emphasis   → darker brand / green
+ *   bg-error              → error red
+ *   bg-error-emphasis     → deeper error red
+ *   bg-success            → success green
+ *   bg-promote            → promotion yellow
+ *   bg-price              → price orange
+ *   bg-app-bar            → app bar color
+ */
 export default {
   darkMode: "class",
   content: [
@@ -12,69 +39,70 @@ export default {
   theme: {
     extend: {
       colors: {
-        lightText: "#111827",
-        darkText: "#F9FAFB",
-        // lightText: "#aa0411",
-        // darkText: "#007df6",
-        userText: "#111827",
-        userTextDark: "#F9FAFB",
+        // ── Page & Surface ────────────────────────────────────────────────
+        // Dark mode handled automatically via CSS variables — no dark: needed.
+        page: "rgb(var(--color-page) / <alpha-value>)",
 
-        // navActive: "#46B1C9",
-        // navInactive: "#ffffff",
+        surface: {
+          DEFAULT: "rgb(var(--color-surface) / <alpha-value>)",
+          raised:  "rgb(var(--color-surface-raised) / <alpha-value>)",
+          sunken:  "rgb(var(--color-surface-sunken) / <alpha-value>)",
+        },
 
-        lightBackground: "#F9FAFB",
-        lightBackgroundAccent: "#F3F4F6",
-        darkBackground: "#050816",
-        darkBackgroundAccentDarker: "#0B1220",
-        darkBackgroundAccentLighter: "#1F2937",
+        // ── Content (Text) ────────────────────────────────────────────────
+        content: {
+          DEFAULT:  "rgb(var(--color-content) / <alpha-value>)",
+          muted:    "rgb(var(--color-content-muted) / <alpha-value>)",
+          inverted: "rgb(var(--color-content-inverted) / <alpha-value>)",
+        },
 
-        borderLight: "#d8d8d8",
-        borderDark: "#111827",
+        // ── Borders ───────────────────────────────────────────────────────
+        border: {
+          DEFAULT: "rgb(var(--color-border) / <alpha-value>)",
+          strong:  "rgb(var(--color-border-strong) / <alpha-value>)",
+        },
 
-        primary: "#38adb5",
-        "primary-light": "#5fc3c9",
-        "primary-dark": "#298073",
+        // ── Brand / Primary ───────────────────────────────────────────────
+        primary: {
+          DEFAULT:  "rgb(var(--color-primary) / <alpha-value>)",
+          subtle:   "rgb(var(--color-primary-subtle) / <alpha-value>)",
+          emphasis: "rgb(var(--color-primary-emphasis) / <alpha-value>)",
+        },
 
-        borderPrimary: "#41D3BD",
-        "border-primary": "#298073",
+        // ── Secondary Accent ──────────────────────────────────────────────
+        secondary: {
+          DEFAULT:  "rgb(var(--color-secondary) / <alpha-value>)",
+          emphasis: "rgb(var(--color-secondary-emphasis) / <alpha-value>)",
+        },
 
-        secondary: "#EDB6A3",
-        "secondary-dark": "#D19882",
+        // ── Semantic Status ───────────────────────────────────────────────
+        error: {
+          DEFAULT:  "rgb(var(--color-error) / <alpha-value>)",
+          emphasis: "rgb(var(--color-error-emphasis) / <alpha-value>)",
+        },
 
-        error: "#F43F5E",
-        "error-dark": "#9c0d3d",
+        success: {
+          DEFAULT:  "rgb(var(--color-success) / <alpha-value>)",
+          emphasis: "rgb(var(--color-success-emphasis) / <alpha-value>)",
+        },
 
-        borderError: "#DD1155",
-        "border-error": "#9c0d3d",
+        // ── Special Purpose ───────────────────────────────────────────────
+        promote:   "rgb(var(--color-promote) / <alpha-value>)",
+        price:     "rgb(var(--color-price) / <alpha-value>)",
+        "app-bar": "rgb(var(--color-app-bar) / <alpha-value>)",
 
-        success: "#71f175",
-        "success-dark": "#4BCF53",
-
-        cardLight: "#FFFFFF",
-        cardDark: "#192339",
-        cardAccentLight: "#F9FAFB",
-        cardAccentDark: "#191e23",
-
-        friendlyGray: "#8f8f8f",
-        softIvory: "#F0EAE2",
-
-        appBarColor: "#F43F5E",
-
-        promote: '#facc15',
-
-        price: '#f97316',
-
-
-        // 🎨 User-configurable colors (via CSS variables)
-        userPrimary: "var(--user-primary)",
-        userSecondary: "var(--user-secondary)",
-        userBackground: "var(--user-background)",
+        // ── User-configurable (set via JS at runtime) ─────────────────────
+        "user-primary":    "var(--user-primary)",
+        "user-secondary":  "var(--user-secondary)",
+        "user-background": "var(--user-background)",
       },
+
       fontFamily: {
-        sans: ["Nunito", "sans-serif"],
+        sans:    ["Nunito", "sans-serif"],
         display: ["Roboto", "sans-serif"],
-        body: ["Quicksand", "sans-serif"],
+        body:    ["Quicksand", "sans-serif"],
       },
+
       spacing: {
         18: "4.5rem",
       },

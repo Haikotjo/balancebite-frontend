@@ -62,7 +62,7 @@ const DietModal = ({ diet, isPinned = false }) => {
           relative z-[2147483001]
           w-full h-full rounded-none
           lg:w-[90%] lg:h-auto lg:max-w-4xl lg:rounded-xl
-          shadow-lg bg-lightBackground dark:bg-darkBackground
+          shadow-lg bg-page
         "
                 onClick={(e) => e.stopPropagation()}
                 role="dialog"
@@ -77,9 +77,9 @@ const DietModal = ({ diet, isPinned = false }) => {
                             style={{ left: floatingStyle.left, width: floatingStyle.width, top: floatingStyle.top }}
                         >
                             <CustomBox className="
-                                                    bg-cardLight/95 dark:bg-cardDark/95
+                                                    bg-surface/95
                                                     backdrop-blur
-                                                    border-b border-borderDark/30 dark:border-borderLight/30
+                                                    border-b border-border/30
                                                     shadow-md
                                                     pointer-events-auto
                                                     rounded-b-xl

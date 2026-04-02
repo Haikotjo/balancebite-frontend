@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { CalendarDays, ChefHat, Flame } from "lucide-react";
 import {getDietImage} from "../../utils/helpers/imageHelpers.js";
-import {chipBaseClass} from "../../utils/constants/homeStyles.js";
+import HomeChip from "../homeChip/HomeChip.jsx";
 
 // Highlight card for diet plans
 export default function DietHighlightCard({ diet, index, onClick }) {
@@ -14,7 +14,7 @@ export default function DietHighlightCard({ diet, index, onClick }) {
         <button
             type="button"
             onClick={onClick}
-            className="group relative min-w-[320px] overflow-hidden rounded-[28px] border border-white/10 text-left shadow-2xl"
+            className="group relative min-w-[320px] overflow-hidden rounded-[28px] border border-content/10 text-left shadow-2xl"
         >
             <div className="absolute inset-0">
                 <img
@@ -27,14 +27,8 @@ export default function DietHighlightCard({ diet, index, onClick }) {
 
             <div className="relative flex h-[340px] flex-col justify-between p-5">
                 <div className="flex items-center justify-between">
-                    <span className={chipBaseClass}>
-                        <CalendarDays className="h-3.5 w-3.5" />
-                        Diet plan
-                    </span>
-
-                    {diet?.publicVisible && (
-                        <span className={chipBaseClass}>Public</span>
-                    )}
+                    <HomeChip icon={CalendarDays}>Diet plan</HomeChip>
+                    {diet?.publicVisible && <HomeChip>Public</HomeChip>}
                 </div>
 
                 <div>

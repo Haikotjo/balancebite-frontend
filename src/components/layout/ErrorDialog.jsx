@@ -22,7 +22,7 @@ const ErrorDialog = React.forwardRef(
             <CustomBox as="div" className="fixed inset-0 flex items-center justify-center px-4">
                 <DialogPanel
                     as={CustomBox}
-                    className="bg-cardLight dark:bg-cardAccentDark rounded px-4 py-3 shadow-lg w-full max-w-md"
+                    className="bg-surface-raised rounded px-4 py-3 shadow-lg w-full max-w-md"
                 >
                     {/* header */}
                     <CustomBox className="flex items-center gap-2 mb-4">
@@ -31,13 +31,13 @@ const ErrorDialog = React.forwardRef(
                         ) : (
                             <CircleAlert size={24} className="text-error shrink-0" />
                         )}
-                        <DialogTitle as="h2" className="text-lg font-semibold text-lightText dark:text-darkText">
+                        <DialogTitle as="h2" className="text-lg font-semibold text-content">
                             {type === "success" ? "Success" : "Action Required"}
                         </DialogTitle>
                     </CustomBox>
 
                     {/* message */}
-                    <CustomBox className="text-sm mb-4 text-lightText dark:text-darkText">
+                    <CustomBox className="text-sm mb-4 text-content">
                         {message}
                         {children}
                     </CustomBox>

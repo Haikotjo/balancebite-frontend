@@ -4,9 +4,9 @@ import DietsFilterChip from "../dietsFilterChip/DietsFilterChip.jsx";
 const macros = ["Protein", "Carbs", "Fat", "Calories"];
 
 const nutrientKeys = {
-    Protein: ["minProtein", "maxProtein"],
-    Carbs: ["minCarbs", "maxCarbs"],
-    Fat: ["minFat", "maxFat"],
+    Protein:  ["minProtein",  "maxProtein"],
+    Carbs:    ["minCarbs",    "maxCarbs"],
+    Fat:      ["minFat",      "maxFat"],
     Calories: ["minCalories", "maxCalories"],
 };
 
@@ -28,7 +28,7 @@ const NutrientRangeChips = ({ filters, setFilters }) => {
 
                 let label = macro + ": ";
                 if (min !== undefined && max !== undefined) {
-                    label += `${min} - ${max}`;
+                    label += `${min} – ${max}`;
                 } else if (min !== undefined) {
                     label += `≥ ${min}`;
                 } else {
@@ -39,7 +39,7 @@ const NutrientRangeChips = ({ filters, setFilters }) => {
                     <DietsFilterChip
                         key={macro}
                         label={label}
-                        colorClass="chip-purple"
+                        variant="purple"
                         onRemove={() => handleRemove([minKey, maxKey])}
                     />
                 );

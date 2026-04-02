@@ -28,14 +28,14 @@ const CustomCard = ({
 
     // Manual border toggle
     else if (hasBorder) {
-        borderClasses = "border border-borderDark dark:border-borderLight";
+        borderClasses = "border border-border";
     }
 
     return (
         <CustomBox
             className={`
                 flex flex-col w-full rounded-xl overflow-hidden 
-                shadow-lg bg-cardLight dark:bg-cardDark
+                shadow-lg bg-surface
                 ${borderClasses}
                 ${className}
             `}

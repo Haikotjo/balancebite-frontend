@@ -10,7 +10,7 @@ import CustomButton from "../../../../components/layout/CustomButton.jsx";
  * Pure presentational component.
  */
 const UploadImageSection = ({ onUpload }) => (
-    <CustomBox className="rounded-xl border border-borderDark dark:border-borderLight p-3">
+    <CustomBox className="rounded-xl border border-border p-3">
         <CustomBox className="flex items-center gap-2 mb-2">
             <Upload size={18} className="text-primary" />
             <CustomTypography variant="bold">Upload file</CustomTypography>

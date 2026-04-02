@@ -24,8 +24,8 @@ const MealCardNutritionToggle = ({ macros, show, onToggle, viewMode }) => {
             className={clsx(
                 "my-4 rounded-md p-3 transition-all duration-300",
                 !isAlwaysOpen && "cursor-pointer",
-                "bg-lightBackground dark:bg-darkBackground",
-                "shadow-md border border-borderLight dark:border-borderDark"
+                "bg-page",
+                "shadow-md border border-border"
             )}
         >
             {isAlwaysOpen || show ? (

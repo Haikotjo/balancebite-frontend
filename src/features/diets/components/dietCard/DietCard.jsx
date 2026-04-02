@@ -35,7 +35,7 @@ const DietCard = ({ diet, viewMode = "card", isPinned = false, cardRef, actionsA
     return (
         <CustomBox
             ref={cardRef}
-            className={`w-full rounded-xl shadow-md bg-cardLight dark:bg-cardDark overflow-hidden ${
+            className={`w-full rounded-xl shadow-md bg-surface overflow-hidden ${
                 isPinned ? "border-2 border-yellow-500" : ""
             }`}
         >
@@ -86,7 +86,7 @@ const DietCard = ({ diet, viewMode = "card", isPinned = false, cardRef, actionsA
                     }}
                     className="bg-transparent hover:text-primary p-0 flex items-center gap-2"
                 >
-                    <UserPen size={16} color="currentColor" className="text-lightText dark:text-darkText" />
+                    <UserPen size={16} color="currentColor" className="text-content" />
                     <CustomTypography variant="paragraphCard" className="italic">
                         {diet.createdBy.userName}
                     </CustomTypography>

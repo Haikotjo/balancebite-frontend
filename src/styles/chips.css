@@ -27,3 +27,8 @@
 .chip-red {
     @apply text-red-600 dark:text-red-300 border-red-600 dark:border-red-300 stroke-red-600 dark:stroke-red-300;
 }
+
+/* Teal chip */
+.chip-teal {
+    @apply text-teal-600 dark:text-teal-300 border-teal-600 dark:border-teal-300 stroke-teal-600 dark:stroke-teal-300;
+}

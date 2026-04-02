@@ -187,7 +187,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin, showRoles = false, isAdminCont
 
                     <CustomButton
                         type="submit"
-                        className="bg-primary hover:bg-primary-light text-white py-2 mt-2 self-stretch"
+                        className="bg-primary hover:bg-primary-subtle text-white py-2 mt-2 self-stretch"
                         disabled={selectedRole === "SUPERMARKET" && !selectedFoodSource}
                     >
                         <CustomTypography variant="paragraph" weight="bold" as="span" inheritColor

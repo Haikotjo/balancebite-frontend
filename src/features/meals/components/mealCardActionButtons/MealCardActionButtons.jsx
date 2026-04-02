@@ -30,7 +30,7 @@ const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page", onClose
 
     return (
         <CustomBox className="flex flex-col w-fit">
-            <CustomBox className="flex flex-row items-center p-1.5 rounded-2xl bg-black/5 backdrop-blur-xl border border-borderLight">
+            <CustomBox className="flex flex-row items-center p-1.5 rounded-2xl bg-black/5 backdrop-blur-xl border border-border">
                 <CustomBox className="flex flex-row items-center gap-4 mx-2">
                     {(!meal.isRestricted || isOwner) && (
                         <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>

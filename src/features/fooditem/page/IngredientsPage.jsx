@@ -226,7 +226,7 @@ const IngredientsPage = () => {
                         min="0"
                         value={newPrice}
                         onChange={(e) => setNewPrice(e.target.value)}
-                        className="border border-borderLight dark:border-borderDark rounded-md p-2 w-full"
+                        className="border border-border rounded-md p-2 w-full"
                         placeholder="Nieuwe prijs in € (bijv. 2.49)"
                     />
 

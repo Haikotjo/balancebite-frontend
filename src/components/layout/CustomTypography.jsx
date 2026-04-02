@@ -88,7 +88,7 @@ const CustomTypography = ({
         bold && !weight && VARIANT_STYLES.bold,
         // Explicit weight overrides any weight coming from variant/bold
         weight && WEIGHT_STYLES[weight],
-        !inheritColor && (color ?? "text-lightText dark:text-darkText"),
+        !inheritColor && (color ?? "text-content"),
         className
     );
 

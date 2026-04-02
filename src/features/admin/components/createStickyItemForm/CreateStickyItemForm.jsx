@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import { getAccessToken } from "../../../../utils/helpers/getAccessToken.js";
 import {
     createStickyItemApi, fetchMeals,
-    getAllPublicDietPlans
+    getAllAdminDietPlansApi
 } from "../../../../services/apiService.js";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomSelect from "../../../../components/layout/CustomSelect.jsx";
@@ -45,16 +45,20 @@ const CreateStickyItemForm = () => {
         const fetchOptions = async () => {
             if (!token) return;
             try {
-                const data =
-                    type === "MEAL"
-                        ? (await fetchMeals("/meals?page=0&size=9999")).content
-                        : (await getAllPublicDietPlans({ isTemplate: true })).content;
+                let data;
+                if (type === "MEAL") {
+                    data = (await fetchMeals("/meals?page=0&size=9999")).content;
+                } else {
+                    const raw = await getAllAdminDietPlansApi(token);
+                    const list = Array.isArray(raw) ? raw : raw.content || [];
+                    data = list.filter(d => d.template);
+                }
 
                 console.log("🔍 Retrieved options:", data);
                 setOptions(
                     data.map(item => ({
                         value: item.id,
-                        label: `${item.name} (ID: ${item.id}) – ${item.createdBy?.userName || "Unknown"}`
+                        label: `${item.name} (ID: ${item.id}) – ${item.creatorName || item.createdBy?.userName || "Unknown"}`
                     }))
                 );
             } catch (err) {

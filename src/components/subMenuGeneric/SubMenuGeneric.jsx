@@ -1,15 +1,11 @@
 import PropTypes from "prop-types";
-import CustomBox from "../layout/CustomBox.jsx";
 import { useNavigate } from "react-router-dom";
 import SubMenuChip from "../submenuchip/SubMenuChip.jsx";
 
-/**
- * Generic SubMenu component for both Meals and Diets.
- */
 function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "", isDetailPage = false, onSelect }) {
     const navigate = useNavigate();
 
-    const handleChipClick = (label) => {
+    const handleClick = (label) => {
         if (isDetailPage) {
             if (onSelect) {
                 onSelect(label);
@@ -22,27 +18,19 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
     };
 
     return (
-        <CustomBox className="flex justify-center items-center gap-4">
-            {options.map(({ label, icon: Icon }) => {
-                const selected = label === activeOption;
-
-                return (
+        <div className="mb-4 flex justify-center">
+            <div className="inline-flex items-stretch rounded-2xl border border-border bg-surface-sunken shadow-inner">
+                {options.map(({ label, icon }) => (
                     <SubMenuChip
                         key={label}
-                        icon={
-                            <Icon
-                                className=" w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-lightText dark:text-darkText"
-                            />
-                        }
+                        icon={icon}
                         label={label}
-                        selected={selected}
-                        onClick={() => handleChipClick(label)}
-                        labelPosition="bottom"
+                        selected={label === activeOption}
+                        onClick={() => handleClick(label)}
                     />
-
-                );
-            })}
-        </CustomBox>
+                ))}
+            </div>
+        </div>
     );
 }
 

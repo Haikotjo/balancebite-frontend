@@ -1,29 +1,26 @@
-import { useContext, useEffect, useState } from "react";
-import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState, useCallback, useMemo } from "react";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
-import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import SearchBar from "../../../../components/searchBar/SearchBar.jsx";
-import {getAllMealNames, getStickyItems, searchUsersApi} from "../../../../services/apiService.js";
+import { getAllMealNames, searchUsersApi } from "../../../../services/apiService.js";
 import FilterSidebar from "../../../../components/filterSidebar/FilterSidebar.jsx";
-import NutrientSortOptionsHorizontal from "../../components/nutrientSortOptions/NutrientSortOptionsHorizontal.jsx";
+import SortSidebar from "../../components/sortSidebar/SortSidebar.jsx";
+import SidebarTriggerGroup from "../../../../components/sidebarTriggerGroup/SidebarTriggerGroup.jsx";
+import SidebarButton from "../../../../components/sidebarTriggerGroup/SidebarButton.jsx";
 import MealList from "../../components/mealList/MealList.jsx";
-import CustomPagination from "../../../../components/customPagination/CustomPagination.jsx";
 import ScrollToTopButton from "../../../../components/scrollToTopButton/ScrollToTopButton.jsx";
 import MealsSubMenu from "../../components/subMenu/MealsSubMenu.jsx";
-import fetchStickyItemDetails from "../../../../utils/helpers/fetchStickyItemDetails.js";
-import MealFilterContent from "../../components/mealfiltercontent/MealFilterContent.jsx";
 import ActiveFilterChips from "../../../diets/components/activeFilterChips/ActiveFilterChips.jsx";
-import AccordionItem from "../../../diets/components/accordionItem/AccordionItem.jsx";
-import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
+import NutrientRangeSidebar from "../../components/nutrientRangeSidebar/NutrientRangeSidebar.jsx";
+import StoreSidebar from "../../components/storeSidebar/StoreSidebar.jsx";
+import { SlidersHorizontal, Gauge, Store, ArrowDownUp } from "lucide-react";
+import usePinnedMeals from "../../hooks/usePinnedMeals.js";
+import useInfiniteScroll from "../../hooks/useInfiniteScroll.js";
+import useMealsUrlSync from "../../hooks/useMealsUrlSync.js";
+import countNutrientFilters from "../../utils/countNutrientFilters.js";
 import Spinner from "../../../../components/layout/Spinner.jsx";
 import PageWrapper from "../../../../components/layout/PageWrapper.jsx";
-import {useCreateFoodItem} from "../../../../hooks/useCreateFoodItem.js";
-import CustomFloatingSelectNew from "../../../../components/layout/CustomFloatingSelectNew.jsx";
 
 function MealsPage() {
-    const location = useLocation();
-    const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
     const {
         filters,
         setFilters,
@@ -34,210 +31,164 @@ function MealsPage() {
         setActiveOption,
         meals,
         loading,
-        error
+        error,
+        setSortBy: setContextSortBy,
     } = useContext(UserMealsContext);
+
     const [sortBy, setSortBy] = useState(null);
-    const [selectedMeal, setSelectedMeal] = useState(null);
-    const [pinnedMeals, setPinnedMeals] = useState([]);
-    const { foodSourceOptions } = useCreateFoodItem()
 
-    const filtersActive = Object.keys(filters).length > 0 || sortBy;
+    const [filterSidebarOpen, setFilterSidebarOpen] = useState(false);
+    const [sortSidebarOpen, setSortSidebarOpen] = useState(false);
+    const [nutrientSidebarOpen, setNutrientSidebarOpen] = useState(false);
+    const [storeSidebarOpen, setStoreSidebarOpen] = useState(false);
 
-    const handleCombinedSearch = async (query) => {
-        const [meals, users] = await Promise.all([
+    const pinnedMeals = usePinnedMeals(activeOption, filters, sortBy);
+
+    const filtersActive = useMemo(() => Object.keys(filters).length > 0 || !!sortBy, [filters, sortBy]);
+    const sidebarFilterCount = useMemo(
+        () => Object.keys(filters).filter((k) => ["mealTypes", "diets", "cuisines"].includes(k)).length,
+        [filters]
+    );
+    const nutrientFilterCount = useMemo(() => countNutrientFilters(filters), [filters]);
+
+    const handleSort = useCallback((sortKey, sortOrder) => {
+        const newSort = sortKey ? { sortKey, sortOrder } : null;
+        setSortBy(newSort);
+        setContextSortBy(newSort);
+    }, [setContextSortBy]);
+
+    const handleCombinedSearch = useCallback(async (query) => {
+        const [mealResults, users] = await Promise.all([
             getAllMealNames(query),
-            searchUsersApi(query)
+            searchUsersApi(query),
         ]);
+        return [
+            ...mealResults.map(m => ({ type: "meal", ...m })),
+            ...users.map(u => ({ type: "user", id: u.id, name: u.userName })),
+        ];
+    }, []);
 
-        const mealOptions = meals.map(m => ({ type: "meal", ...m }));
-        const userOptions = users.map(u => ({ type: "user", id: u.id, name: u.userName }));
+    useMealsUrlSync({ setFilters, setPage, setActiveOption, setFilterSidebarOpen, setSortSidebarOpen });
 
-        return [...mealOptions, ...userOptions];
-    };
-
-
-    // Apply and clear filters from homepage redirect
-    useEffect(() => {
-        if (location.state?.filtersFromRedirect) {
-            setFilters(location.state.filtersFromRedirect);
-            setPage(1);
-            navigate(location.pathname, { replace: true, state: {} });
-        }
-    }, [location.state, navigate, setFilters, setPage, location.pathname]);
-
-    const handleSort = (sortKey, sortOrder) => {
-        setSortBy({ sortKey, sortOrder });
-    };
-
-    const handleFiltersChange = (newFilters) => {
-        setFilters(newFilters);
-    };
-
-    // Support URL query filters
-    useEffect(() => {
-        const urlFilters = {};
-        ["mealTypes", "diets", "cuisines"].forEach((param) => {
-            const value = searchParams.get(param);
-            if (value) urlFilters[param] = value;
-        });
-        if (Object.keys(urlFilters).length) {
-            setFilters(urlFilters);
-        }
-    }, [searchParams, setFilters]);
-
-    // Reset page on filter or sort change
+    // Reset to page 1 when filters or sort change so infinite scroll starts fresh
     useEffect(() => {
         setPage(1);
     }, [filters, sortBy, setPage]);
 
-    // Active option from URL
-    useEffect(() => {
-        const option = searchParams.get("option");
-        if (option) setActiveOption(option.replace("-", " "));
-    }, [searchParams, setActiveOption]);
-
-    // Load pinned meals
-    useEffect(() => {
-        const load = async () => {
-            try {
-                const sticky = await getStickyItems();
-                const { meals } = await fetchStickyItemDetails(sticky);
-                setPinnedMeals(meals.length ? [meals[0]] : []);
-            } catch {
-                setPinnedMeals([]);
-            }
-        };
-        if (activeOption === "All Meals" && !Object.keys(filters).length && !sortBy) {
-            load().catch(console.error);
-        } else {
-            setPinnedMeals([]);
-        }
-    }, [activeOption, filters, sortBy]);
-
+    const sentinelRef = useInfiniteScroll({
+        loading,
+        page,
+        totalPages,
+        onLoadMore: () => setPage(p => p + 1),
+    });
 
     return (
         <PageWrapper className="flex flex-col items-center">
-        <FilterSidebar filters={filters} onFilter={handleFiltersChange}/>
-            <MealsSubMenu onSelect={setActiveOption}/>
-            <NutrientSortOptionsHorizontal onSort={handleSort}/>
-            <CustomFloatingSelectNew
-                label="Store"
-                className="max-w-[250px] mb-4"
-                variant="outlined"
-                options={foodSourceOptions}
-                value={foodSourceOptions.find(opt => opt.value === filters.foodSource) || null}
-                onChange={(val) => {
-                    setFilters((prev) => {
-                        const newFilters = { ...prev };
-                        if (val?.value) {
-                            newFilters.foodSource = val.value;
-                        } else {
-                            delete newFilters.foodSource;
-                        }
-                        return newFilters;
-                    });
-                }}
-                placeholder="All Stores"
+            <FilterSidebar
+                open={filterSidebarOpen}
+                onToggle={() => setFilterSidebarOpen((p) => !p)}
+                filters={filters}
+                onFilter={setFilters}
+            />
+            <SortSidebar
+                open={sortSidebarOpen}
+                onToggle={() => setSortSidebarOpen((p) => !p)}
+                onSort={handleSort}
+                sortBy={sortBy}
+            />
+            <NutrientRangeSidebar
+                open={nutrientSidebarOpen}
+                onToggle={() => setNutrientSidebarOpen((p) => !p)}
+                filters={filters}
+                setFilters={setFilters}
+            />
+            <StoreSidebar
+                open={storeSidebarOpen}
+                onToggle={() => setStoreSidebarOpen((p) => !p)}
+                filters={filters}
+                setFilters={setFilters}
+            />
+            <SidebarTriggerGroup
+                filterOpen={filterSidebarOpen}
+                onFilterToggle={() => setFilterSidebarOpen((p) => !p)}
+                filterCount={sidebarFilterCount}
+                nutrientOpen={nutrientSidebarOpen}
+                onNutrientToggle={() => setNutrientSidebarOpen((p) => !p)}
+                nutrientCount={nutrientFilterCount}
+                storeOpen={storeSidebarOpen}
+                onStoreToggle={() => setStoreSidebarOpen((p) => !p)}
+                storeActive={!!filters.foodSource}
+                sortOpen={sortSidebarOpen}
+                onSortToggle={() => setSortSidebarOpen((p) => !p)}
+                sortActive={!!sortBy}
             />
 
-            <CustomBox className="block md:hidden w-full">
-                <AccordionItem title="Nutrient range filter">
-                    <MealFilterContent filters={filters} setFilters={setFilters}/>
-                </AccordionItem>
-            </CustomBox>
+            <MealsSubMenu onSelect={setActiveOption} />
 
-            <CustomBox className="hidden md:block w-full">
-                <MealFilterContent filters={filters} setFilters={setFilters}/>
-            </CustomBox>
+            <div className="hidden md:flex flex-wrap justify-center gap-2 mb-4">
+                <SidebarButton icon={SlidersHorizontal} label="Filters" badge={sidebarFilterCount} onClick={() => setFilterSidebarOpen(true)} />
+                <SidebarButton icon={Gauge} label="Nutrients" badge={nutrientFilterCount} onClick={() => setNutrientSidebarOpen(true)} />
+                <SidebarButton icon={Store} label="Store" badge={filters.foodSource ? 1 : 0} onClick={() => setStoreSidebarOpen(true)} />
+                <SidebarButton icon={ArrowDownUp} label="Sort" badge={sortBy ? 1 : 0} onClick={() => setSortSidebarOpen(true)} />
+            </div>
 
+            <SearchBar
+                onSearch={handleCombinedSearch}
+                onQuerySubmit={(val) => {
+                    if (typeof val === "string") {
+                        setFilters({ name: val });
+                    } else if (typeof val === "object" && val.creatorId) {
+                        setFilters({ creatorId: val.creatorId, creatorUserName: val.creatorUserName });
+                    }
+                }}
+                placeholder="Search for a meal or user..."
+            />
 
-                <SearchBar
-                    onSearch={handleCombinedSearch}
-                    onQuerySubmit={(val) => {
-                        setSelectedMeal(null);
-                        if (typeof val === "string") {
-                            setFilters({ name: val });
-                        } else if (typeof val === "object" && val.creatorId) {
-                            setFilters({ creatorId: val.creatorId, creatorUserName: val.creatorUserName });
-                        }
-                    }}
-                    placeholder="Search for a meal or user..."
-                />
-
-
-            {(Object.keys(filters).length > 0 || sortBy) && (
+            {filtersActive && (
                 <ActiveFilterChips
                     filters={filters}
                     setFilters={setFilters}
                     creatorIdFilter={filters.creatorId?.toString() ?? null}
                     setCreatorIdFilter={(val) =>
                         setFilters((prev) => {
-                            const newFilters = {...prev};
-                            if (val) {
-                                newFilters.creatorId = val;
-                            } else {
-                                delete newFilters.creatorId;
-                            }
-                            return newFilters;
+                            const updated = { ...prev };
+                            if (val) updated.creatorId = val;
+                            else delete updated.creatorId;
+                            return updated;
                         })
                     }
                     creatorName={filters.creatorUserName ?? null}
                     sortKey={sortBy?.sortKey ?? null}
-                    setSortKey={(key) => setSortBy((prev) => ({...prev, sortKey: key}))}
-                    sortOrder={sortBy?.sortOrder ?? null}
-                    setSortOrder={(order) => setSortBy((prev) => ({...prev, sortOrder: order}))}
+                    setSortKey={(key) => handleSort(key, sortBy?.sortOrder ?? "asc")}
+                    sortOrder={sortBy?.sortOrder ?? "asc"}
+                    setSortOrder={(order) => handleSort(sortBy?.sortKey ?? null, order)}
                 />
-
             )}
 
-            {loading ? (
+            {loading && page === 1 ? (
                 <Spinner className="mx-auto my-10" />
             ) : error ? (
-                <CustomTypography
-                    variant="paragraph"
-                    color="text-red-600"
-                    className="text-center mt-10"
-                >
-                    Error: {error}
-                </CustomTypography>
+                <p className="text-center mt-10 text-sm text-error">Error: {error}</p>
             ) : meals.length === 0 ? (
-                <CustomTypography
-                    variant="paragraph"
-                    italic
-                    color="text-gray-500"
-                    className="text-center mt-10"
-                >
-                    {filtersActive
-                        ? "No meals found matching your filters."
-                        : "No public meals available yet."}
-                </CustomTypography>
+                <p className="text-center mt-10 text-sm italic text-content-muted">
+                    {filtersActive ? "No meals found matching your filters." : "No public meals available yet."}
+                </p>
             ) : (
                 <>
-                    <CustomTypography
-                        variant="small"
-                        italic
-                        className="text-gray-400 mb-2 ml-2"
-                    >
-                        * Macros are shown per serving
-                    </CustomTypography>
-
+                    <p className="text-xs italic text-content-muted ml-2">* Macros are shown per serving</p>
                     <MealList
                         sortBy={sortBy}
                         filters={filters}
-                        selectedMeal={selectedMeal}
-                        onFiltersChange={handleFiltersChange}
+                        selectedMeal={null}
+                        onFiltersChange={setFilters}
                         pinnedMeals={pinnedMeals}
                     />
                 </>
             )}
 
-
-            {totalPages > 1 && (
-                <CustomBox className="mt-2 mb-20 sm:mb-8">
-                    <CustomPagination currentPage={page} totalPages={totalPages} onPageChange={setPage}/>
-                </CustomBox>
-            )}
-            <ScrollToTopButton/>
+            <div ref={sentinelRef} className="h-10" />
+            {loading && page > 1 && <Spinner className="mx-auto my-6" />}
+            <ScrollToTopButton />
         </PageWrapper>
     );
 }

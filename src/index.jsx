@@ -19,7 +19,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                         <ThemeModeProvider>
                             <DialogProvider>
                                 <ModalProvider>
-                                    <div className="min-h-screen bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText">
+                                    <div className="min-h-screen bg-page text-content">
                                         <App />
                                     </div>
                                 </ModalProvider>

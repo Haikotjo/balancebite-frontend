@@ -6,7 +6,7 @@ export default function HeroFeatureCard({ image, title, label, onClick }) {
         <button
             type="button"
             onClick={onClick}
-            className="overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.06] shadow-2xl backdrop-blur-xl text-left group"
+            className="overflow-hidden rounded-[32px] border border-content/10 bg-surface shadow-2xl backdrop-blur-xl text-left group"
         >
             <div className="relative h-[220px] md:h-[240px]">
                 <img

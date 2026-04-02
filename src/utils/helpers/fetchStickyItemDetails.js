@@ -10,21 +10,26 @@ const fetchStickyItemDetails = async (items) => {
     const meals = [];
     const diets = [];
 
+    console.log("[fetchStickyItemDetails] raw items:", items);
+
     for (const item of items) {
         try {
             if (item.type === "MEAL") {
                 const res = await Interceptor.get(`/meals/${item.referenceId}`);
+                console.log("[fetchStickyItemDetails] meal fetched:", res.data);
                 meals.push(res.data);
             } else if (item.type === "DIET_PLAN") {
+                console.log("[fetchStickyItemDetails] fetching diet plan id:", item.referenceId);
                 const res = await Interceptor.get(`/public/diet-plans/${item.referenceId}`);
+                console.log("[fetchStickyItemDetails] diet fetched:", res.data);
                 diets.push(res.data);
             }
         } catch (err) {
-            // Skip broken references (404 etc.)
-            console.warn(`Skipping sticky ${item.type} ${item.referenceId}:`, err?.response?.status);
+            console.warn(`[fetchStickyItemDetails] Skipping sticky ${item.type} ${item.referenceId}:`, err?.response?.status, err?.response?.data);
         }
     }
 
+    console.log("[fetchStickyItemDetails] result → meals:", meals, "diets:", diets);
     return { meals, diets };
 };
 

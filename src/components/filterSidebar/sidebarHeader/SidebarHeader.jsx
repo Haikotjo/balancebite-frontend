@@ -1,43 +1,31 @@
-// src/components/sidebar/SidebarHeader.jsx
 import PropTypes from "prop-types";
-import { X } from "lucide-react";
-import CustomTypography from "../../layout/CustomTypography.jsx";
-import CustomIconButton from "../../layout/CustomIconButton.jsx";
-import CustomBox from "../../layout/CustomBox.jsx";
+import { X, SlidersHorizontal } from "lucide-react";
 
-/**
- * SidebarHeader component – Renders a header for a sidebar with a title on the left
- * and a close icon button on the right.
- *
- * @component
- * @param {Object} props - Component props.
- * @param {Function} props.onClose - Callback triggered when the close button is clicked.
- * @param {string} props.title - The title text shown in the sidebar header.
- */
-const SidebarHeader = ({ onClose, title }) => (
-    <CustomBox className="flex justify-between items-center">
-        <CustomTypography
-            as="h2"
-            variant="h2"
-            className="font-bold"
-        >
-            {title}
-        </CustomTypography>
-
-        <CustomIconButton
-            icon={<X />}
+const SidebarHeader = ({ onClose, activeCount }) => (
+    <div className="flex items-center justify-between pb-4 mb-4 border-b border-border">
+        <div className="flex items-center gap-2">
+            <SlidersHorizontal className="h-5 w-5 text-primary" />
+            <h2 className="text-lg font-bold text-content">Filters</h2>
+            {activeCount > 0 && (
+                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-bold text-white">
+                    {activeCount}
+                </span>
+            )}
+        </div>
+        <button
+            type="button"
             onClick={onClose}
-            sizeClassName="w-8 h-8 "
-            iconSize={18}
-            bgColor="bg-transparent border border-error"
-            className="text-error mr-2 mt-2"
-        />
-    </CustomBox>
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-content-muted transition-colors hover:border-error/60 hover:text-error"
+            aria-label="Close filters"
+        >
+            <X className="h-4 w-4" />
+        </button>
+    </div>
 );
 
 SidebarHeader.propTypes = {
     onClose: PropTypes.func.isRequired,
-    title: PropTypes.string.isRequired,
+    activeCount: PropTypes.number,
 };
 
 export default SidebarHeader;

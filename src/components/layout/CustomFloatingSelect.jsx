@@ -167,7 +167,7 @@ const CustomFloatingSelect = ({
 
             {/* Dropdown list */}
             {showDropdown && filteredOptions.length > 0 && !disabled && (
-                <CustomBox className="absolute left-0 w-full z-30 mt-1 max-h-60 overflow-y-auto border border-gray-400 dark:border-gray-600 rounded shadow bg-lightBackground dark:bg-darkBackground">
+                <CustomBox className="absolute left-0 w-full z-30 mt-1 max-h-60 overflow-y-auto border border-gray-400 dark:border-gray-600 rounded shadow bg-page">
                     {filteredOptions.map((option) => (
                         <CustomBox
                             key={option.value}

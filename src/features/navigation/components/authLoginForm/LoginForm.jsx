@@ -89,7 +89,7 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
 
                     <CustomButton
                         type="submit"
-                        className="bg-primary hover:bg-primary-light text-white mt-2 self-stretch"
+                        className="bg-primary hover:bg-primary-subtle text-white mt-2 self-stretch"
                     >
                         <CustomTypography
                             variant="paragraph"

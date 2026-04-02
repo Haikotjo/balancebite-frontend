@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import CustomBox from "./CustomBox.jsx";
+import BackgroundGlow from "./BackgroundGlow.jsx";
 
 /**
  * PageWrapper
@@ -24,7 +25,7 @@ export default function PageWrapper({ children, className = "", narrow = false, 
     return (
         <CustomBox
             className={clsx(
-                "min-h-screen",
+                "relative isolate min-h-screen",
                 // Base page paddings (top + horizontal)
                 !isHome && "pt-6 sm:pt-10 px-4",
 
@@ -39,6 +40,8 @@ export default function PageWrapper({ children, className = "", narrow = false, 
                 className
             )}
         >
+            <BackgroundGlow />
+
             {/* Inner container centers and caps width */}
             <CustomBox className={clsx(
                 "w-full",

@@ -16,7 +16,7 @@ const MealCardExpandableDescription = ({ description, viewMode, forceExpanded = 
                 variant="paragraphCard"
                 italic
                 className={[
-                    "text-lightText dark:text-darkText",
+                    "text-content",
                     "transition-all duration-300 italic break-words whitespace-pre-wrap",
                     isCollapsed ? "line-clamp-4" : "block",
                 ].join(" ")}

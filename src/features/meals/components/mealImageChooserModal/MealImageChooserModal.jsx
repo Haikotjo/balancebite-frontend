@@ -35,7 +35,7 @@ const MealImageChooserModal = ({
             isOpen={isOpen}
             onClose={onClose}
             zIndex="z-[2147483000]"
-            contentClassName="w-[92%] max-w-lg rounded-2xl border-2 border-borderDark dark:border-borderLight bg-lightBackground dark:bg-darkBackground shadow-lg p-4 flex flex-col gap-4"
+            contentClassName="w-[92%] max-w-lg rounded-2xl border-2 border-border bg-page shadow-lg p-4 flex flex-col gap-4"
             historyKey="meal_image_chooser"
         >
             <CustomBox className="flex items-center justify-between">

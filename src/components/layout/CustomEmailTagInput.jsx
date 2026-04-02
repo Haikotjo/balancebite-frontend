@@ -36,7 +36,7 @@ const CustomEmailTagInput = ({
             <label className="block text-xs text-primary mb-1">{label}</label>
 
             <div
-                className={`flex flex-wrap gap-2 border rounded p-2 bg-lightBackground dark:bg-darkBackground ${
+                className={`flex flex-wrap gap-2 border rounded p-2 bg-page ${
                     error ? "border-error" : "border-primary"
                 }`}
             >

@@ -201,7 +201,7 @@ const CreateMealFormCard = () => {
         <CustomBox
             as="form"
             onSubmit={handleSubmit(onSubmit)}
-            className="hidden md:flex max-w-4xl w-full mx-auto bg-cardLight dark:bg-cardDark rounded-xl shadow-md overflow-hidden border border-border"
+            className="hidden md:flex max-w-4xl w-full mx-auto bg-surface rounded-xl shadow-md overflow-hidden border border-border"
         >
             {/* Left: image + uploader panel */}
             <CustomBox className="lg:w-[50%] w-[48%] min-h-[360px] relative">
@@ -224,7 +224,7 @@ const CreateMealFormCard = () => {
 
                 {/* Controls panel */}
                 <CustomBox className="absolute top-3 right-3 z-20 pointer-events-auto">
-                    <CustomBox className="min-w-[280px] rounded-xl bg-cardLight/90 dark:bg-cardDark/90 shadow-lg p-3">
+                    <CustomBox className="min-w-[280px] rounded-xl bg-surface/90 shadow-lg p-3">
                         <MealImageUploader
                             imageUrl={urlValue}
                             onImageChange={(image, type) => {

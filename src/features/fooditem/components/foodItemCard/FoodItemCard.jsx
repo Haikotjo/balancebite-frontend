@@ -119,11 +119,11 @@ const FoodItemCard = ({
                         src={imageUrl}
                         alt={name}
                         loading="lazy"
-                        className="w-14 h-14 object-cover rounded-md flex-shrink-0 border border-borderLight dark:border-borderDark"
+                        className="w-14 h-14 object-cover rounded-md flex-shrink-0 border border-border"
                     />
                 ) : (
                     <CustomBox
-                        className="w-14 h-14 rounded-md flex-shrink-0 border border-borderLight dark:border-borderDark bg-muted flex items-center justify-center dark:text-white"
+                        className="w-14 h-14 rounded-md flex-shrink-0 border border-border bg-muted flex items-center justify-center dark:text-white"
                         aria-label="No image available"
                         role="img"
                     >
@@ -180,7 +180,7 @@ const FoodItemCard = ({
                         icon={<Pencil />}
                         size={22}
                         bgColor="bg-transparent"
-                        className="text-lightText dark:text-darkText"
+                        className="text-content"
                         onClick={(e) => { e.stopPropagation(); setIsEditOpen(true); }}
                     />
                 )}
@@ -189,7 +189,7 @@ const FoodItemCard = ({
             {/* Meta */}
             <CustomBox className="grid grid-cols-2 gap-2">
                 {/* Price box */}
-                <CustomBox className="rounded-lg border border-borderLight dark:border-borderDark p-1.5">
+                <CustomBox className="rounded-lg border border-border p-1.5">
                     <CustomBox className="flex justify-between mb-1">
                         <CustomTypography variant="xsmallCard" className="text-muted-foreground">
                             Price:
@@ -210,7 +210,7 @@ const FoodItemCard = ({
                 </CustomBox>
 
                 {/* Pack + Portion box */}
-                <CustomBox className="rounded-lg border border-borderLight dark:border-borderDark p-1.5">
+                <CustomBox className="rounded-lg border border-border p-1.5">
                     <CustomBox className="flex justify-between mb-1">
                         <CustomTypography variant="xsmallCard" className="text-muted-foreground">
                             Product size:
@@ -301,7 +301,7 @@ const FoodItemCard = ({
                 {/*    <button*/}
                 {/*        type="button"*/}
                 {/*        onClick={onClick}*/}
-                {/*        className="px-2 py-1 rounded-md border border-borderLight dark:border-borderDark hover:bg-muted"*/}
+                {/*        className="px-2 py-1 rounded-md border border-border hover:bg-muted"*/}
                 {/*    >*/}
                 {/*        <CustomTypography as="span" variant="xsmallCard">*/}
                 {/*            Select*/}

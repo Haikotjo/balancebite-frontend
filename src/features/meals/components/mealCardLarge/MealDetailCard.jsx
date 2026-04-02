@@ -159,7 +159,7 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
                                             <img
                                                 src={src}
                                                 alt="Ingredient"
-                                                className="h-16 w-16 rounded-md object-cover border border-borderLight dark:border-borderDark"
+                                                className="h-16 w-16 rounded-md object-cover border border-border"
                                                 loading="lazy"
                                                 draggable={false}
                                             />
