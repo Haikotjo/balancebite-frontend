@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
 import ScrollToTopButton from "../../../../components/scrollToTopButton/ScrollToTopButton.jsx";
@@ -42,21 +42,22 @@ const DietsPage = () => {
     const [pinnedDiets, setPinnedDiets] = useState([]);
     const filtersActive = Object.keys(filters).length > 0 || creatorIdFilter;
 
+    const [allDietNames, setAllDietNames] = useState([]);
+    useEffect(() => {
+        getAllPublicDietPlanNames().then(results =>
+            setAllDietNames(results.map(d => ({ type: "diet", id: d.id, name: d.name })))
+        ).catch(() => {});
+    }, []);
 
-    const handleCombinedSearch = async (query) => {
-        const [diets, users] = await Promise.all([
-            getAllPublicDietPlanNames(),
-            searchUsersApi(query),
-        ]);
-
-        const dietOptions = diets
-            .filter(d => d.name.toLowerCase().includes(query.toLowerCase()))
-            .map(d => ({ type: "diet", id: d.id, name: d.name }));
-
-        const userOptions = users.map(u => ({ type: "user", id: u.id, name: u.userName }));
-
-        return [...dietOptions, ...userOptions];
-    };
+    const handleCombinedSearch = useCallback(async (query) => {
+        const lower = query.toLowerCase();
+        const dietResults = allDietNames.filter(d => d.name?.toLowerCase().includes(lower));
+        const users = await searchUsersApi(query);
+        return [
+            ...dietResults,
+            ...users.map(u => ({ type: "user", id: u.id, name: u.userName })),
+        ];
+    }, [allDietNames]);
 
 
     useEffect(() => {

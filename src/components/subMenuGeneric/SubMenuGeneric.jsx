@@ -20,13 +20,15 @@ function SubMenuGeneric({ options, activeOption, setActiveOption, basePath = "",
     return (
         <div className="mb-4 flex justify-center">
             <div className="inline-flex items-stretch rounded-2xl border border-border bg-surface-sunken shadow-inner">
-                {options.map(({ label, icon }) => (
+                {options.map(({ label, icon }, i) => (
                     <SubMenuChip
                         key={label}
                         icon={icon}
                         label={label}
                         selected={label === activeOption}
                         onClick={() => handleClick(label)}
+                        isFirst={i === 0}
+                        isLast={i === options.length - 1}
                     />
                 ))}
             </div>

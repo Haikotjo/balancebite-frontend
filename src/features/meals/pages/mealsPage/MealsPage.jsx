@@ -57,16 +57,22 @@ function MealsPage() {
         setContextSortBy(newSort);
     }, [setContextSortBy]);
 
+    const [allMealNames, setAllMealNames] = useState([]);
+    useEffect(() => {
+        getAllMealNames().then(results =>
+            setAllMealNames(results.map(m => ({ type: "meal", ...m })))
+        ).catch(() => {});
+    }, []);
+
     const handleCombinedSearch = useCallback(async (query) => {
-        const [mealResults, users] = await Promise.all([
-            getAllMealNames(query),
-            searchUsersApi(query),
-        ]);
+        const lower = query.toLowerCase();
+        const mealResults = allMealNames.filter(m => m.name?.toLowerCase().includes(lower));
+        const users = await searchUsersApi(query);
         return [
-            ...mealResults.map(m => ({ type: "meal", ...m })),
+            ...mealResults,
             ...users.map(u => ({ type: "user", id: u.id, name: u.userName })),
         ];
-    }, []);
+    }, [allMealNames]);
 
     useMealsUrlSync({ setFilters, setPage, setActiveOption, setFilterSidebarOpen, setSortSidebarOpen });
 
@@ -142,6 +148,7 @@ function MealsPage() {
                     }
                 }}
                 placeholder="Search for a meal or user..."
+                placeholderCompact="Search meals..."
             />
 
             {filtersActive && (
