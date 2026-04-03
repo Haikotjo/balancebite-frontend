@@ -1,95 +1,71 @@
-import { useContext, useEffect, useMemo } from "react";
-import { useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
+import { motion, AnimatePresence } from "framer-motion";
 
-import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
-import MealDetailCard from "../mealCardLarge/MealDetailCard.jsx";
-import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import MealCard from "../mealCard/MealCard.jsx";
 
+const itemVariants = {
+    hidden: { opacity: 0, y: 24 },
+    visible: (i) => ({
+        opacity: 1,
+        y: 0,
+        transition: {
+            delay: Math.min(i * 0.05, 0.4),
+            duration: 0.35,
+            ease: [0.25, 0.46, 0.45, 0.94],
+        },
+    }),
+    exit: {
+        opacity: 0,
+        scale: 0.97,
+        transition: { duration: 0.2, ease: "easeIn" },
+    },
+};
+
 /**
- * MealList — presentational-ish list that still syncs filters/sort with context,
- * but avoids unnecessary context writes and heavy re-computations.
- *
- * Props:
- * - filters: current filter object (e.g., { name })
- * - sortBy: { sortKey?, sortOrder? } (passed-through to context)
- * - selectedMeal: optional single meal override
- * - pinnedMeals: array of meals to appear at the top (de-duplicated)
+ * MealList — pure presentational component.
+ * Receives a pre-computed, pre-filtered, pre-sorted list of meals and renders them.
+ * All data logic lives in MealsPage.
  */
-function MealList({ filters, sortBy, selectedMeal, pinnedMeals = [] }) {
-    const { meals, setFilters } = useContext(UserMealsContext);
-    const location = useLocation();
-
-    // Shallow compare helper to prevent redundant context updates
-    const shallowEqual = (a, b) => {
-        if (a === b) return true;
-        if (!a || !b) return false;
-        const ka = Object.keys(a);
-        const kb = Object.keys(b);
-        if (ka.length !== kb.length) return false;
-        for (const k of ka) {
-            if (a[k] !== b[k]) return false;
-        }
-        return true;
-    };
-
-    // Sync filters with context only when they actually change.
-    // sortBy is intentionally excluded — MealsPage now owns sortBy directly in context.
-    useEffect(() => {
-        const stateFilters = location.state?.filtersFromRedirect;
-        const nextFilters = stateFilters ?? filters;
-        setFilters(prev => (shallowEqual(prev || {}, nextFilters || {}) ? prev : nextFilters));
-    }, [filters, setFilters, location.state]);
-
-    // Compute filtered list only when inputs change
-    const filteredMeals = useMemo(() => {
-        if (selectedMeal) return [selectedMeal];
-        if (!filters?.name) return meals;
-        const q = String(filters.name).toLowerCase();
-        return meals.filter(m => m?.name?.toLowerCase().includes(q));
-    }, [meals, filters?.name, selectedMeal]);
-
-    // Combine pinned + filtered, de-duplicated by id
-    const combinedMeals = useMemo(() => {
-        const pinnedIds = new Set(pinnedMeals.map(m => String(m.id)));
-        const rest = filteredMeals.filter(m => !pinnedIds.has(String(m.id)));
-        return [...pinnedMeals, ...rest];
-    }, [pinnedMeals, filteredMeals]);
+function MealList({ meals = [], pinnedMeals = [] }) {
+    const pinnedIds = new Set(pinnedMeals.map(m => String(m.id)));
 
     return (
-        <CustomBox
-            as="div"
-            className="
+        <ul className="
+            w-full
             grid
             grid-cols-1
-            md:grid-cols-[repeat(auto-fill,minmax(325px,1fr))]
-            gap-4
+            md:grid-cols-2
+            xl:grid-cols-3
+            gap-6
             py-4
-            mx-auto
-        "
-        >
-            {combinedMeals.map(meal => (
-                <CustomBox key={meal.id} className="mb-4 break-inside-avoid">
-                    <MealCard
-                        meal={meal}
-                        viewMode="list"
-                        isPinned={pinnedMeals.some(pm => String(pm.id) === String(meal.id))}
-                    />
-                </CustomBox>
-            ))}
-        </CustomBox>
+            list-none
+            m-0 p-0
+        ">
+            <AnimatePresence mode="popLayout">
+                {meals.map((meal, i) => (
+                    <motion.li
+                        key={meal.id}
+                        custom={i}
+                        variants={itemVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        className="min-w-0"
+                    >
+                        <MealCard
+                            meal={meal}
+                            viewMode="list"
+                            isPinned={pinnedIds.has(String(meal.id))}
+                        />
+                    </motion.li>
+                ))}
+            </AnimatePresence>
+        </ul>
     );
-
 }
 
 MealList.propTypes = {
-    filters: PropTypes.object.isRequired,
-    sortBy: PropTypes.shape({
-        sortKey: PropTypes.string,
-        sortOrder: PropTypes.string,
-    }),
-    selectedMeal: PropTypes.object,
+    meals: PropTypes.array,
     pinnedMeals: PropTypes.array,
 };
 

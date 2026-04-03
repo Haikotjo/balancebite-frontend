@@ -1,4 +1,5 @@
-import { useContext, useEffect, useState, useCallback, useMemo } from "react";
+import { useContext, useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { useLocation } from "react-router-dom";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import SearchBar from "../../../../components/searchBar/SearchBar.jsx";
 import { getAllMealNames, searchUsersApi } from "../../../../services/apiService.js";
@@ -36,13 +37,65 @@ function MealsPage() {
     } = useContext(UserMealsContext);
 
     const [sortBy, setSortBy] = useState(null);
+    const sortByRef = useRef(null);
 
     const [filterSidebarOpen, setFilterSidebarOpen] = useState(false);
     const [sortSidebarOpen, setSortSidebarOpen] = useState(false);
     const [nutrientSidebarOpen, setNutrientSidebarOpen] = useState(false);
     const [storeSidebarOpen, setStoreSidebarOpen] = useState(false);
 
+    const location = useLocation();
+
+    // Handle redirect filters from location state (e.g. navigating from another page with pre-set filters)
+    useEffect(() => {
+        const stateFilters = location.state?.filtersFromRedirect;
+        if (!stateFilters) return;
+        setFilters(prev => {
+            const a = prev || {};
+            const b = stateFilters;
+            const ka = Object.keys(a);
+            const kb = Object.keys(b);
+            if (ka.length !== kb.length) return b;
+            for (const k of ka) { if (a[k] !== b[k]) return b; }
+            return prev;
+        });
+    }, [location.state, setFilters]);
+
     const pinnedMeals = usePinnedMeals(activeOption, filters, sortBy);
+
+    const filteredMeals = useMemo(() => {
+        let result = meals;
+        if (filters?.name) {
+            const q = String(filters.name).toLowerCase();
+            result = meals.filter(m => m?.name?.toLowerCase().includes(q));
+        }
+        // Client-side sort when all results fit on one page — no API call needed
+        if (totalPages === 1 && sortBy?.sortKey) {
+            const { sortKey, sortOrder } = sortBy;
+            const fieldMap = {
+                calories:         "totalCalories",
+                protein:          "totalProtein",
+                carbs:            "totalCarbs",
+                fat:              "totalFat",
+                saveCount:        "saveCount",
+                weeklySaveCount:  "weeklySaveCount",
+                monthlySaveCount: "monthlySaveCount",
+            };
+            const field = fieldMap[sortKey] ?? sortKey;
+            result = [...result].sort((a, b) => {
+                const aVal = a[field] ?? 0;
+                const bVal = b[field] ?? 0;
+                return sortOrder === "desc" ? bVal - aVal : aVal - bVal;
+            });
+        }
+        return result;
+    }, [meals, filters?.name, sortBy, totalPages]);
+
+    const combinedMeals = useMemo(() => {
+        const pinnedIds = new Set(pinnedMeals.map(m => String(m.id)));
+        const rest = filteredMeals.filter(m => !pinnedIds.has(String(m.id)));
+        return [...pinnedMeals, ...rest];
+    }, [pinnedMeals, filteredMeals]);
 
     const filtersActive = useMemo(() => Object.keys(filters).length > 0 || !!sortBy, [filters, sortBy]);
     const sidebarFilterCount = useMemo(
@@ -51,11 +104,17 @@ function MealsPage() {
     );
     const nutrientFilterCount = useMemo(() => countNutrientFilters(filters), [filters]);
 
+    // Keep ref in sync so filter-change effect can read current sort without depending on it
+    useEffect(() => { sortByRef.current = sortBy; }, [sortBy]);
+
     const handleSort = useCallback((sortKey, sortOrder) => {
         const newSort = sortKey ? { sortKey, sortOrder } : null;
         setSortBy(newSort);
-        setContextSortBy(newSort);
-    }, [setContextSortBy]);
+        // Only go to backend when multiple pages exist — otherwise sort client-side
+        if (totalPages > 1) {
+            setContextSortBy(newSort);
+        }
+    }, [setContextSortBy, totalPages]);
 
     const [allMealNames, setAllMealNames] = useState([]);
     useEffect(() => {
@@ -76,10 +135,16 @@ function MealsPage() {
 
     useMealsUrlSync({ setFilters, setPage, setActiveOption, setFilterSidebarOpen, setSortSidebarOpen });
 
-    // Reset to page 1 when filters or sort change so infinite scroll starts fresh
+    // Filter change: reset page and sync any active client-side sort to context
     useEffect(() => {
         setPage(1);
-    }, [filters, sortBy, setPage]);
+        if (sortByRef.current) setContextSortBy(sortByRef.current);
+    }, [filters, setPage, setContextSortBy]);
+
+    // Sort change: only reset page when backend needs to re-fetch (multi-page result set)
+    useEffect(() => {
+        if (totalPages > 1) setPage(1);
+    }, [sortBy, setPage, totalPages]);
 
     const sentinelRef = useInfiniteScroll({
         loading,
@@ -184,10 +249,7 @@ function MealsPage() {
                 <>
                     <p className="text-xs italic text-content-muted ml-2">* Macros are shown per serving</p>
                     <MealList
-                        sortBy={sortBy}
-                        filters={filters}
-                        selectedMeal={null}
-                        onFiltersChange={setFilters}
+                        meals={combinedMeals}
                         pinnedMeals={pinnedMeals}
                     />
                 </>
