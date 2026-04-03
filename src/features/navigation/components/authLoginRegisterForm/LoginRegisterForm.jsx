@@ -1,26 +1,35 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
-
-import CustomModal from "../../../../components/layout/CustomModal.jsx";
-import RegisterForm from "../authRegisterForm/RegisterForm.jsx";
+import useModalHistoryBack from "../../../../hooks/useModalHistoryBack.js";
 import LoginForm from "../authLoginForm/LoginForm.jsx";
+import RegisterForm from "../authRegisterForm/RegisterForm.jsx";
 
-/**
- * Displays a modal with either the login or register form.
- * Allows switching between the two and handles closing.
- *
- * @component
- * @param {Object} props
- * @param {Function} props.onLogin - Called after successful login
- * @param {Function} props.onRegister - Called after successful registration
- * @param {Function} props.onClose - Function to close the modal
- */
-const LoginRegisterForm = ({ onLogin, onRegister, onClose, startInRegisterMode }) => {
+const LoginRegisterForm = ({ onLogin, onRegister, onClose, startInRegisterMode = false }) => {
     const [isRegistering, setIsRegistering] = useState(startInRegisterMode);
 
+    const { requestClose } = useModalHistoryBack({
+        isOpen: true,
+        onRequestClose: onClose,
+        stateKey: "bb_auth_modal",
+    });
 
-    return (
-        <CustomModal isOpen={true} onClose={onClose} zIndex="z-[150]">
+    useEffect(() => {
+        document.body.style.overflow = "hidden";
+        return () => { document.body.style.overflow = ""; };
+    }, []);
+
+    useEffect(() => {
+        const onKeyDown = (e) => { if (e.key === "Escape") requestClose("escape"); };
+        document.addEventListener("keydown", onKeyDown);
+        return () => document.removeEventListener("keydown", onKeyDown);
+    }, [requestClose]);
+
+    return ReactDOM.createPortal(
+        <div
+            className="fixed inset-0 bg-black/60 flex items-center justify-center z-[150] px-4"
+            onClick={(e) => { if (e.target === e.currentTarget) requestClose("backdrop"); }}
+        >
             {isRegistering ? (
                 <RegisterForm
                     onClose={onClose}
@@ -34,7 +43,8 @@ const LoginRegisterForm = ({ onLogin, onRegister, onClose, startInRegisterMode }
                     onSwitchToRegister={() => setIsRegistering(true)}
                 />
             )}
-        </CustomModal>
+        </div>,
+        document.body
     );
 };
 
@@ -43,10 +53,6 @@ LoginRegisterForm.propTypes = {
     onRegister: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
     startInRegisterMode: PropTypes.bool,
-};
-
-LoginRegisterForm.defaultProps = {
-    startInRegisterMode: false,
 };
 
 export default LoginRegisterForm;

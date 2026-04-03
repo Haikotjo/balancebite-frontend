@@ -1,180 +1,80 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
-import CustomBox from "../../../../components/layout/CustomBox.jsx";
-import CustomDropdownWeb from "../../../../components/layout/CustomDropdownWeb.jsx";
-import {
-    UserCog,
-    LogIn,
-    LogOut,
-    UserPlus,
-    UserCircle,
-    ShieldUser,
-    Gauge,
-} from "lucide-react";
-import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
-import ChevronToggle from "../../../../components/chevronToggle/ChevronToggle.jsx";
+import { useState, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import {
+    UserCog, UserCircle, Gauge, ShieldUser,
+    LogIn, LogOut, UserPlus, ChevronDown,
+} from "lucide-react";
 import clsx from "clsx";
+import PropTypes from "prop-types";
 import { getActiveSection } from "../../utils/helpers/navSectionHelpers.js";
-import SidebarSectionTrigger from "../../../../components/layout/SidebarSectionTrigger.jsx";
-import {buildSidebarItems} from "../../../../utils/helpers/buildSidebarItems.js";
-import SidebarActionButton from "../../../../components/layout/SidebarActionButton.jsx";
 
-const ProfileMenu = ({
-                         user,
-                         onLogout,
-                         onLoginClick,
-                         onRegisterClick,
-                         compact = false,
-                         showLabel = true,
-                     }) => {
+const ProfileMenu = ({ user, onLogout, onLoginClick, onRegisterClick, showLabel = true }) => {
     const [open, setOpen] = useState(false);
-    const isAdmin = !!user && user.roles?.includes("ADMIN");
-    const location = useLocation();
+    const ref = useRef(null);
     const navigate = useNavigate();
+    const location = useLocation();
 
-    const section = getActiveSection(location.pathname);
-    const isProfileSectionActive =
-        section === "profile" || section === "dashboard";
+    const isActive = ["profile", "dashboard"].includes(getActiveSection(location.pathname));
+    const isAdmin = user?.roles?.includes("ADMIN");
 
-    const handleProfile = () => navigate("/profile");
-    const handleDashboard = () => navigate("/dashboard");
-    const handleAdmin = () => navigate("/admin");
+    useEffect(() => {
+        if (!open) return;
+        const handler = (e) => {
+            if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+        };
+        document.addEventListener("mousedown", handler);
+        return () => document.removeEventListener("mousedown", handler);
+    }, [open]);
 
-    // ---------- NORMAL TRIGGER (sm + md) ----------
-    const trigger = (
-        <SidebarSectionTrigger
-            label="Profile"
-            Icon={UserCog}
-            open={open}
-            onToggle={() => setOpen(!open)}
-            compact={false}
-            active={isProfileSectionActive}
-            showLabel={showLabel}
-        />
-    );
+    useEffect(() => { setOpen(false); }, [location.pathname]);
 
-// ---------- COMPACT TRIGGER (lg+) ----------
-    const compactTrigger = (
-        <SidebarSectionTrigger
-            label="Profile"
-            Icon={UserCog}
-            open={open}
-            onToggle={() => setOpen(!open)}
-            compact
-            active={isProfileSectionActive}
-            showLabel={false}
-        />
-    );
+    const items = [
+        user  && { label: "Profile",   icon: UserCircle, onClick: () => navigate("/profile") },
+        user  && { label: "Dashboard", icon: Gauge,       onClick: () => navigate("/dashboard") },
+        isAdmin && { label: "Admin",   icon: ShieldUser,  onClick: () => navigate("/admin") },
+        !user && { label: "Login",     icon: LogIn,       onClick: onLoginClick },
+        !user && { label: "Register",  icon: UserPlus,    onClick: onRegisterClick },
+        user  && { label: "Logout",    icon: LogOut,      onClick: onLogout },
+    ].filter(Boolean);
 
-
-    // bovenin je ProfileMenu-component
-    const dropdownItems = buildSidebarItems({
-        user,
-        close: () => setOpen(false),
-        items: [
-            user && {
-                label: "Profile",
-                icon: UserCircle,
-                onClick: handleProfile,
-                requiresAuth: true,
-            },
-            user && {
-                label: "Dashboard",
-                icon: Gauge,
-                onClick: handleDashboard,
-                requiresAuth: true,
-            },
-            isAdmin && {
-                label: "Admin",
-                icon: ShieldUser,
-                onClick: handleAdmin,
-                requiresAuth: true,
-            },
-            !user && {
-                label: "Login",
-                icon: LogIn,
-                onClick: () => onLoginClick(false),
-            },
-            !user && {
-                label: "Register",
-                icon: UserPlus,
-                onClick: () => onRegisterClick(true),
-            },
-            user && {
-                label: "Logout",
-                icon: LogOut,
-                onClick: () => onLogout(() => {}),
-                requiresAuth: true,
-            },
-        ].filter(Boolean),
-    });
-
-
-    // ---------- COMPACT MODE ----------
-    if (compact) {
-        return (
-            <>
-                {/* sm + md dropdown */}
-                <CustomBox className="block lg:hidden w-full">
-                    <CustomDropdownWeb
-                        open={open}
-                        onOpenChange={setOpen}
-                        className="
-                                    absolute z-50
-                                    bottom-full left-0 mb-2
-                                    md:bottom-auto md:top-0
-                                    md:left-full md:ml-5
-                        "
-                        trigger={compactTrigger}
-                        items={dropdownItems}
-                    />
-                </CustomBox>
-
-                <CustomBox className="hidden lg:block w-full text-white mb-2">
-                    <CustomBox
-                        className={clsx(
-                            "flex items-center gap-2 px-3 py-2 rounded-md",
-                            isProfileSectionActive && "bg-white/25"
-                        )}
-                    >
-                        <UserCog className="w-5 h-5" />
-                        <CustomTypography
-                            bold
-                            font="sans"
-                            className="text-sm"
-                            color="white"
-                        >
-                            Profile
-                        </CustomTypography>
-                    </CustomBox>
-
-                    <CustomBox className="mt-1 ml-7 flex flex-col gap-1">
-                        {dropdownItems.map(item => (
-                            <SidebarActionButton
-                                key={item.label}
-                                icon={item.icon}
-                                label={item.label}
-                                onClick={item.onClick}
-                                disabled={item.disabled}
-                            />
-                        ))}
-                    </CustomBox>
-
-                </CustomBox>
-            </>
-        );
-    }
-
-    // ---------- NORMAL MODE ----------
     return (
-        <CustomDropdownWeb
-            open={open}
-            onOpenChange={setOpen}
-            trigger={trigger}
-            className="absolute bottom-full mb-4 min-w-[10rem] max-w-[90vw]"
-            items={dropdownItems}
-        />
+        <div ref={ref} className="relative">
+            <button
+                onClick={() => setOpen((p) => !p)}
+                className={clsx(
+                    "flex items-center gap-1 rounded-md p-2 text-white",
+                    "transition-colors hover:bg-white/10",
+                    isActive && "bg-white/25"
+                )}
+            >
+                <UserCog className="w-6 h-6 shrink-0" />
+                {showLabel && (
+                    <span className="hidden lg:inline text-sm font-medium">Profile</span>
+                )}
+                <ChevronDown className={clsx("w-3 h-3 transition-transform duration-200", open && "rotate-180")} />
+            </button>
+
+            {open && (
+                <div className={clsx(
+                    "absolute z-50 min-w-[160px] py-1",
+                    "rounded-xl bg-white dark:bg-gray-800 shadow-lg",
+                    "border border-gray-200 dark:border-gray-600",
+                    "bottom-full mb-2 right-0",
+                    "md:bottom-auto md:top-0 md:right-auto md:left-full md:ml-2 md:mb-0"
+                )}>
+                    {items.map(({ label, icon: Icon, onClick }) => (
+                        <button
+                            key={label}
+                            onClick={() => { onClick(); setOpen(false); }}
+                            className="w-full flex items-center gap-3 px-4 py-3 text-sm text-left text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 first:rounded-t-xl last:rounded-b-xl"
+                        >
+                            <Icon className="w-4 h-4 shrink-0" />
+                            {label}
+                        </button>
+                    ))}
+                </div>
+            )}
+        </div>
     );
 };
 
@@ -183,7 +83,6 @@ ProfileMenu.propTypes = {
     onLogout: PropTypes.func.isRequired,
     onLoginClick: PropTypes.func.isRequired,
     onRegisterClick: PropTypes.func.isRequired,
-    compact: PropTypes.bool,
     showLabel: PropTypes.bool,
 };
 

@@ -81,12 +81,10 @@ const DesktopMenu = ({ user, onLogout, onLoginClick, onRegisterClick }) => {
                         <MealsMenu compact />
                         <DietsMenu compact />
                         <ProfileMenu
-                            compact
                             user={user}
                             onLogout={onLogout}
                             onLoginClick={onLoginClick}
                             onRegisterClick={onRegisterClick}
-                            text="Profile"
                         />
                     </CustomBox>
 

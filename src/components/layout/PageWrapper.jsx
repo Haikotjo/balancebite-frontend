@@ -26,15 +26,15 @@ export default function PageWrapper({ children, className = "", narrow = false, 
         <CustomBox
             className={clsx(
                 "relative isolate min-h-screen",
-                // Base page paddings (top + horizontal)
-                !isHome && "pt-6 sm:pt-10 px-4",
+                // Mobile: ruimte voor vaste topbalk (56px) + horizontale padding
+                // Desktop (md+): geen topbalk, kleine padding bovenaan
+                !isHome && "pt-6 px-4",
 
-                // Mobile: reserve space for bottom bar (72px) + safe area.
-                // Desktop (md+): remove bottom padding because sidebar is left, not bottom.
-                !isHome && "pb-[calc(72px+env(safe-area-inset-bottom))] md:pb-20",
+                // Geen bottom bar meer op mobile
+                !isHome && "pb-6 md:pb-20",
 
-                // Desktop: leave space for fixed left sidebar (72px)
-                "md:ml-20 lg:ml-44",
+                // Desktop: ruimte voor dunne vaste sidebar (48px = w-12)
+                "md:ml-12",
 
                 // Additional classes passed in
                 className
