@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { useContext } from "react";
 import { AuthContext } from "../../../../context/AuthContext.jsx";
 import { RecommendedNutritionContext } from "../../../../context/RecommendedNutritionContext.jsx";
+import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 
 import EatButton from "../buttonEat/EatButton.jsx";
 import ButtonFavorite from "../buttonFavoriteMeal/FavoriteButtonMeal.jsx";
@@ -17,12 +18,14 @@ const ICON_SIZE = 32;
 export default function SlickMealCardActions({ meal, isPinned = false, onClose }) {
     const { user } = useContext(AuthContext);
     const { refetchRecommendedNutrition } = useContext(RecommendedNutritionContext);
+    const { userMeals } = useContext(UserMealsContext);
 
-    const isOwner = String(meal?.createdBy?.id) === String(user?.id);
+    const isCreator = String(meal?.createdBy?.id) === String(user?.id);
+    const isUserMeal = isCreator || userMeals.some(m => String(m.id) === String(meal.id));
 
     return (
         <div className="inline-flex items-center gap-3 rounded-2xl border border-white/15 bg-black/30 px-3 py-1.5 backdrop-blur-md">
-            {(!meal.isRestricted || isOwner) && (
+            {(!meal.isRestricted || isUserMeal) && (
                 <div className="flex items-center justify-center" style={{ width: ICON_SIZE, height: ICON_SIZE }}>
                     <ButtonFavorite meal={meal} onClose={onClose} />
                 </div>
@@ -32,7 +35,7 @@ export default function SlickMealCardActions({ meal, isPinned = false, onClose }
                 <EatButton meal={meal} refetchRecommendedNutrition={refetchRecommendedNutrition} />
             </div>
 
-            {isOwner && (
+            {isUserMeal && (
                 <div className="flex items-center justify-center" style={{ width: ICON_SIZE, height: ICON_SIZE }}>
                     <ButtonUpdateMeal mealId={meal.id} />
                 </div>

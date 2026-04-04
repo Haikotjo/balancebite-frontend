@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
 
-import MealCard from "../mealCard/MealCard.jsx";
 import SlickMealCard from "../slickMealCard/SlickMealCard.jsx";
 
 const itemVariants = {
@@ -22,11 +21,6 @@ const itemVariants = {
     },
 };
 
-/**
- * MealList — pure presentational component.
- * Receives a pre-computed, pre-filtered, pre-sorted list of meals and renders them.
- * All data logic lives in MealsPage.
- */
 function MealList({ meals = [], pinnedMeals = [] }) {
     const pinnedIds = new Set(pinnedMeals.map(m => String(m.id)));
 
@@ -53,18 +47,10 @@ function MealList({ meals = [], pinnedMeals = [] }) {
                         exit="exit"
                         className="min-w-0"
                     >
-                        {i % 2 === 0 ? (
-                            <MealCard
-                                meal={meal}
-                                viewMode="list"
-                                isPinned={pinnedIds.has(String(meal.id))}
-                            />
-                        ) : (
-                            <SlickMealCard
-                                meal={meal}
-                                isPinned={pinnedIds.has(String(meal.id))}
-                            />
-                        )}
+                        <SlickMealCard
+                            meal={meal}
+                            isPinned={pinnedIds.has(String(meal.id))}
+                        />
                     </motion.li>
                 ))}
             </AnimatePresence>

@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { Maximize, Minimize } from "lucide-react";
+import { motion } from "framer-motion";
 import { useModal } from "../../../../context/useModal.js";
-import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 import MealModal from "../mealModal/MealModal.jsx";
 
 const ButtonOpenMeal = ({ meal, isPinned = false }) => {
@@ -17,14 +17,20 @@ const ButtonOpenMeal = ({ meal, isPinned = false }) => {
     };
 
     return (
-        <CustomIconButton
+        <motion.button
+            type="button"
             onClick={handleClick}
-            icon={isOpen ? <Minimize size={20} color="white" /> : <Maximize size={20} color="white" />}
-            size={35}
-        />
+            whileHover={{ scale: 1.15 }}
+            whileTap={{ scale: 0.9 }}
+            className="flex h-full w-full items-center justify-center rounded-xl bg-black/50 transition-colors hover:bg-black/70"
+        >
+            {isOpen
+                ? <Minimize size={18} color="white" />
+                : <Maximize size={18} color="white" />
+            }
+        </motion.button>
     );
 };
-
 
 ButtonOpenMeal.propTypes = {
     meal: PropTypes.object.isRequired,

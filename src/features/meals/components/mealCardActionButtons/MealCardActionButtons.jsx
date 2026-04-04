@@ -8,7 +8,8 @@ import ButtonFavorite from "../buttonFavoriteMeal/FavoriteButtonMeal.jsx";
 import ButtonUpdateMeal from "../buttonUpdateMeal/ButtonUpdateMeal.jsx";
 import ViewMealButton from "../viewmealbutton/ViewMealButton.jsx";
 import PrivacyToggles from "../../../../components/privacytoggles/PrivacyToggles.jsx";
-import {AuthContext} from "../../../../context/AuthContext.jsx";
+import { AuthContext } from "../../../../context/AuthContext.jsx";
+import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import ButtonCloseDietModal from "../../../../components/buttonCloseModal/ButtonCloseDietModal.jsx";
 import useIsSmallScreen from "../../../../hooks/useIsSmallScreen.js";
 import SocialShareMenu from "../../../../components/socialShareMenu/SocialShareMenu.jsx";
@@ -19,9 +20,11 @@ import SocialShareMenu from "../../../../components/socialShareMenu/SocialShareM
 const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page", onClose, isPinned = false }) => {
     const { refetchRecommendedNutrition } = useContext(RecommendedNutritionContext);
     const { user } = useContext(AuthContext);
+    const { userMeals } = useContext(UserMealsContext);
     const isSmallScreen = useIsSmallScreen();
 
-    const isOwner = String(meal.createdBy?.id) === String(user?.id);
+    const isCreator = String(meal.createdBy?.id) === String(user?.id);
+    const isUserMeal = isCreator || userMeals.some(m => String(m.id) === String(meal.id));
 
     const sharedClasses = `
         flex items-center justify-center text-white
@@ -32,7 +35,7 @@ const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page", onClose
         <CustomBox className="flex flex-col w-fit">
             <CustomBox className="flex flex-row items-center p-1.5 rounded-2xl bg-black/5 backdrop-blur-xl border border-border">
                 <CustomBox className="flex flex-row items-center gap-4 mx-2">
-                    {(!meal.isRestricted || isOwner) && (
+                    {(!meal.isRestricted || isUserMeal) && (
                         <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
                             <ButtonFavorite meal={meal} onClose={onClose} />
                         </CustomBox>
@@ -48,7 +51,7 @@ const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page", onClose
                         </CustomBox>
                     )}
 
-                    {isOwner && (
+                    {isUserMeal && (
                         <CustomBox className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
                             <ButtonUpdateMeal mealId={meal.id} />
                         </CustomBox>
@@ -65,18 +68,18 @@ const MealCardActionButtons = ({ meal, iconSize = 35, viewMode = "page", onClose
                             <ButtonCloseDietModal iconSize={20} size={35} />
                         </CustomBox>
                     )}
-                    <SocialShareMenu
-                        url={`${window.location.origin}/meal/${meal.id}`}
-                        title={`Bekijk dit lekkere recept: ${meal.name}`}
-                        sharedClasses={sharedClasses}
-                        iconSize={iconSize}
-                    />
+                    <div className={sharedClasses} style={{ width: iconSize, height: iconSize }}>
+                        <SocialShareMenu
+                            url={`${window.location.origin}/meal/${meal.id}`}
+                            title={`Bekijk dit lekkere recept: ${meal.name}`}
+                        />
+                    </div>
                 </CustomBox>
 
 
             </CustomBox>
 
-            {viewMode === "page" && isOwner && (
+            {viewMode === "page" && isUserMeal && (
                 <CustomBox className="mt-2">
                     <PrivacyToggles
                         mealId={meal.id}

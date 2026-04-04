@@ -24,7 +24,11 @@ export const ModalProvider = ({ children }) => {
     return (
         <ModalContext.Provider value={{ openModal, closeModal, modalType, modalData }}>
             {children}
-            <CustomModal isOpen={!!modalContent} onClose={closeModal}>
+            <CustomModal
+                isOpen={!!modalContent}
+                onClose={closeModal}
+                contentClassName={modalData?.contentClassName ?? ""}
+            >
                 {modalContent}
             </CustomModal>
         </ModalContext.Provider>

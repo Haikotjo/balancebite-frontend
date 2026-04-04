@@ -1,4 +1,4 @@
-import { useState, useContext, useCallback } from "react";
+import { useContext, useCallback } from "react";
 import { consumeMealApi } from "../services/apiService.js";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { useNotification } from "../context/NotificationContext.jsx";
@@ -6,7 +6,6 @@ import { useNotification } from "../context/NotificationContext.jsx";
 export const useConsumeMeal = ({ meal, onSuccess, onError, refetchRecommendedNutrition }) => {
     const { user } = useContext(AuthContext);
     const { showDialog } = useNotification();
-    const [isModalOpen, setModalOpen] = useState(false);
 
     const handleConsumeMeal = useCallback(async () => {
         if (!user) {
@@ -18,7 +17,6 @@ export const useConsumeMeal = ({ meal, onSuccess, onError, refetchRecommendedNut
         try {
             const remainingIntakes = await consumeMealApi(meal.id);
             await refetchRecommendedNutrition();
-            setModalOpen(true);
             onSuccess?.(remainingIntakes);
         } catch (error) {
             const isRdiMissing =
@@ -38,8 +36,6 @@ export const useConsumeMeal = ({ meal, onSuccess, onError, refetchRecommendedNut
 
     return {
         handleConsumeMeal,
-        isModalOpen,
-        setModalOpen,
         isAuthenticated: !!user,
     };
 };

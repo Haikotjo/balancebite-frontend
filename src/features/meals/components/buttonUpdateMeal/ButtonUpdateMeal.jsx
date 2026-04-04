@@ -1,35 +1,28 @@
 import PropTypes from "prop-types";
 import { Pencil } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
-import {useModal} from "../../../../context/useModal.js";
+import { motion } from "framer-motion";
+import { useModal } from "../../../../context/useModal.js";
 
-/**
- * A small, animated icon button that navigates to the meal update page.
- *
- * Uses a custom animated button component for styling and interaction.
- * Designed to be portable and React Native friendly.
- *
- * @component
- * @param {Object} props
- * @param {string|number} props.mealId - ID of the meal to update.
- * @returns {JSX.Element}
- */
 const ButtonUpdateMeal = ({ mealId }) => {
     const navigate = useNavigate();
-    const { closeModal } = useModal();       // haal closeModal uit de hook
+    const { closeModal } = useModal();
 
     const handleClick = () => {
-        closeModal();                          // sluit de modal (no-op als je niet in een modal bent)
-        navigate(`/update-meal/${mealId}`);    // navigeer daarna pas
+        closeModal();
+        navigate(`/update-meal/${mealId}`);
     };
 
     return (
-        <CustomIconButton
+        <motion.button
+            type="button"
             onClick={handleClick}
-            icon={<Pencil size={20} color="white" />}
-            size={35}
-        />
+            whileHover={{ scale: 1.15 }}
+            whileTap={{ scale: 0.9 }}
+            className="flex h-full w-full items-center justify-center rounded-xl bg-black/50 transition-colors hover:bg-black/70"
+        >
+            <Pencil size={18} color="white" />
+        </motion.button>
     );
 };
 

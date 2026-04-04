@@ -4,20 +4,22 @@ import { motion } from "framer-motion";
 
 import { useConsumeMeal } from "../../../../hooks/useConsumeMeal.js";
 import { useRequireAuthDialog } from "../../../../hooks/useRequireAuthDialog.js";
+import { useModal } from "../../../../context/useModal.js";
 
-import CustomModal from "../../../../components/layout/CustomModal.jsx";
 import RequireAuthUI from "../../../../components/layout/RequireAuthUI.jsx";
 import NutritionPieOverview from "../../../../components/nutritionPieOverview/NutritionPieOverview.jsx";
 
 const EatButton = ({ meal, refetchRecommendedNutrition }) => {
-    const {
-        handleConsumeMeal,
-        isModalOpen,
-        setModalOpen,
-        isAuthenticated,
-    } = useConsumeMeal({
+    const { openModal, closeModal } = useModal();
+
+    const { handleConsumeMeal, isAuthenticated } = useConsumeMeal({
         meal,
         refetchRecommendedNutrition,
+        onSuccess: () => openModal(
+            <NutritionPieOverview onClose={closeModal} />,
+            null,
+            { contentClassName: "max-w-sm md:max-w-2xl lg:max-w-3xl" }
+        ),
     });
 
     const {
@@ -59,14 +61,6 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
                 onLoginSuccess={() => setShowLoginForm(false)}
                 onLoginRedirect={handleLoginRedirect}
             />
-
-            <CustomModal
-                isOpen={isModalOpen}
-                onClose={() => setModalOpen(false)}
-                contentClassName="max-w-sm md:max-w-2xl lg:max-w-3xl"
-            >
-                <NutritionPieOverview onClose={() => setModalOpen(false)} />
-            </CustomModal>
         </>
     );
 };

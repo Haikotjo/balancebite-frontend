@@ -1,32 +1,27 @@
 import PropTypes from "prop-types";
 import { SquareArrowOutUpRight } from "lucide-react";
-import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
+import { motion } from "framer-motion";
 
-/**
- * ViewMealButton — opens the meal in a new browser tab/window.
- *
- * @param {Object} props
- * @param {string|number} props.mealId - ID of the meal to view.
- * @param {number} [props.iconSize=35] - Button dimensions.
- */
-const ViewMealButton = ({ mealId, iconSize = 35 }) => {
-
+const ViewMealButton = ({ mealId }) => {
     const handleClick = () => {
         window.open(`/meal/${mealId}`, "_blank", "noopener,noreferrer");
     };
 
     return (
-        <CustomIconButton
+        <motion.button
+            type="button"
             onClick={handleClick}
-            icon={<SquareArrowOutUpRight size={20} color="white" />}
-            size={iconSize}
-        />
+            whileHover={{ scale: 1.15 }}
+            whileTap={{ scale: 0.9 }}
+            className="flex h-full w-full items-center justify-center rounded-xl bg-black/50 transition-colors hover:bg-black/70"
+        >
+            <SquareArrowOutUpRight size={18} color="white" />
+        </motion.button>
     );
 };
 
 ViewMealButton.propTypes = {
     mealId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    iconSize: PropTypes.number,
 };
 
 export default ViewMealButton;
