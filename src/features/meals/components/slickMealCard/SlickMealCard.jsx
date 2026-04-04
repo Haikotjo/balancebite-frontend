@@ -191,10 +191,10 @@ export default function SlickMealCard({ meal, isPinned = false }) {
 
                 {/* 4-col macro grid */}
                 <div className="mb-3 grid grid-cols-4 gap-1 md:gap-2 lg:gap-4">
-                    <MacroTile icon={Flame}                 value={macros.Calories.total} color="text-rose-400"    />
-                    <MacroTile icon={Dumbbell}              value={macros.Protein.total}  color="text-cyan-500"    />
-                    <MacroTile icon={ChartColumnIncreasing} value={macros.Carbs.total}    color="text-emerald-500" />
-                    <MacroTile icon={Droplet}               value={macros.Fats.total}     color="text-fuchsia-500" />
+                    <MacroTile icon={Flame}                 value={macros.Calories.total} per100g={macros.Calories.per100g} color="text-rose-400"    />
+                    <MacroTile icon={Dumbbell}              value={macros.Protein.total}  per100g={macros.Protein.per100g}  color="text-cyan-500"    />
+                    <MacroTile icon={ChartColumnIncreasing} value={macros.Carbs.total}    per100g={macros.Carbs.per100g}    color="text-emerald-500" />
+                    <MacroTile icon={Droplet}               value={macros.Fats.total}     per100g={macros.Fats.per100g}     color="text-fuchsia-500" />
                 </div>
 
                 {/* More info toggle */}
@@ -364,13 +364,18 @@ export default function SlickMealCard({ meal, isPinned = false }) {
 }
 
 // ── Compact macro tile ──────────────────────────────────────────────────────
-function MacroTile({ icon: Icon, value, color }) {
+function MacroTile({ icon: Icon, value, per100g, color }) {
     return (
-        <div className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-surface-sunken py-2.5 px-1">
+        <div className="flex flex-col items-center gap-1 rounded-2xl border border-border bg-surface-sunken py-2.5 px-1">
             <Icon className={`h-6 w-6 ${color}`} />
             <span className="text-sm font-bold text-content">
                 {value !== undefined && value !== null ? Math.round(value) : "–"}
             </span>
+            {per100g != null && (
+                <span className="text-[10px] leading-none text-content/40">
+                    {per100g}/100g
+                </span>
+            )}
         </div>
     );
 }
@@ -383,5 +388,6 @@ SlickMealCard.propTypes = {
 MacroTile.propTypes = {
     icon: PropTypes.elementType.isRequired,
     value: PropTypes.number,
+    per100g: PropTypes.number,
     color: PropTypes.string.isRequired,
 };
