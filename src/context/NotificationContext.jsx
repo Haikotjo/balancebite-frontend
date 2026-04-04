@@ -1,11 +1,11 @@
 import { createContext, useContext, useState, useCallback } from "react";
 import PropTypes from "prop-types";
-import ErrorDialog from "../components/layout/ErrorDialog.jsx"; // gebruik je bestaande dialoog
+import ErrorDialog from "../components/layout/ErrorDialog.jsx";
 
-const DialogContext = createContext();
-export const useDialog = () => useContext(DialogContext);
+const NotificationContext = createContext();
+export const useNotification = () => useContext(NotificationContext);
 
-export const DialogProvider = ({ children }) => {
+export const NotificationProvider = ({ children }) => {
     const [open, setOpen] = useState(false);
     const [dialogData, setDialogData] = useState({
         message: "",
@@ -23,10 +23,10 @@ export const DialogProvider = ({ children }) => {
         []
     );
 
-    const closeDialog = () => setOpen(false);
+    const closeDialog = useCallback(() => setOpen(false), []);
 
     return (
-        <DialogContext.Provider value={{ showDialog }}>
+        <NotificationContext.Provider value={{ showDialog }}>
             {children}
             <ErrorDialog
                 open={open}
@@ -38,10 +38,10 @@ export const DialogProvider = ({ children }) => {
             >
                 {dialogData.children}
             </ErrorDialog>
-        </DialogContext.Provider>
+        </NotificationContext.Provider>
     );
 };
 
-DialogProvider.propTypes = {
+NotificationProvider.propTypes = {
     children: PropTypes.node.isRequired,
 };

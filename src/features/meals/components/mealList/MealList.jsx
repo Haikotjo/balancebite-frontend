@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
 
 import MealCard from "../mealCard/MealCard.jsx";
+import SlickMealCard from "../slickMealCard/SlickMealCard.jsx";
 
 const itemVariants = {
     hidden: { opacity: 0, y: 24 },
@@ -52,11 +53,18 @@ function MealList({ meals = [], pinnedMeals = [] }) {
                         exit="exit"
                         className="min-w-0"
                     >
-                        <MealCard
-                            meal={meal}
-                            viewMode="list"
-                            isPinned={pinnedIds.has(String(meal.id))}
-                        />
+                        {i % 2 === 0 ? (
+                            <MealCard
+                                meal={meal}
+                                viewMode="list"
+                                isPinned={pinnedIds.has(String(meal.id))}
+                            />
+                        ) : (
+                            <SlickMealCard
+                                meal={meal}
+                                isPinned={pinnedIds.has(String(meal.id))}
+                            />
+                        )}
                     </motion.li>
                 ))}
             </AnimatePresence>

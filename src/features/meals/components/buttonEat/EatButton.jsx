@@ -1,16 +1,12 @@
 import PropTypes from "prop-types";
 import { Utensils } from "lucide-react";
+import { motion } from "framer-motion";
 
-// Hooks
 import { useConsumeMeal } from "../../../../hooks/useConsumeMeal.js";
 import { useRequireAuthDialog } from "../../../../hooks/useRequireAuthDialog.js";
 
-// Layout Components
-import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 import CustomModal from "../../../../components/layout/CustomModal.jsx";
 import RequireAuthUI from "../../../../components/layout/RequireAuthUI.jsx";
-
-// Feature Components
 import NutritionPieOverview from "../../../../components/nutritionPieOverview/NutritionPieOverview.jsx";
 
 const EatButton = ({ meal, refetchRecommendedNutrition }) => {
@@ -18,7 +14,6 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
         handleConsumeMeal,
         isModalOpen,
         setModalOpen,
-        errorMessage,
         isAuthenticated,
     } = useConsumeMeal({
         meal,
@@ -27,6 +22,7 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
 
     const {
         dialogOpen,
+        errorMessage,
         showLoginForm,
         triggerAuthDialog,
         handleLoginRedirect,
@@ -44,14 +40,16 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
 
     return (
         <>
-            {/* Main action button */}
-            <CustomIconButton
+            <motion.button
+                type="button"
                 onClick={handleClick}
-                bgColor="bg-primary"
-                icon={<Utensils size={20} color="white" />}
-            />
+                whileHover={{ scale: 1.15 }}
+                whileTap={{ scale: 0.9 }}
+                className="flex h-full w-full items-center justify-center rounded-xl bg-primary/80 transition-colors hover:bg-primary"
+            >
+                <Utensils size={18} color="white" />
+            </motion.button>
 
-            {/* Reused auth UI */}
             <RequireAuthUI
                 dialogOpen={dialogOpen}
                 onClose={reset}
@@ -62,7 +60,6 @@ const EatButton = ({ meal, refetchRecommendedNutrition }) => {
                 onLoginRedirect={handleLoginRedirect}
             />
 
-            {/* Success modal */}
             <CustomModal
                 isOpen={isModalOpen}
                 onClose={() => setModalOpen(false)}

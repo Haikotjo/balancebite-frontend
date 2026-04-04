@@ -1,8 +1,7 @@
 import PropTypes from "prop-types";
 import { Pencil } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { ModalContext } from "../../../../context/ModalContext.jsx";
+import { useModal } from "../../../../context/useModal.js";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
 
 /**
@@ -11,7 +10,7 @@ import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx
  */
 const ButtonUpdateDiet = ({ dietId }) => {
     const navigate = useNavigate();
-    const { closeModal } = useContext(ModalContext);
+    const { closeModal } = useModal();
 
     const handleClick = () => {
         closeModal();

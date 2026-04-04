@@ -5,7 +5,7 @@ import CustomTypography from "../../../../components/layout/CustomTypography.jsx
 import {useLocation, useNavigate} from "react-router-dom";
 import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
 import {useContext} from "react";
-import {ModalContext} from "../../../../context/ModalContext.jsx";
+import { useModal } from "../../../../context/useModal.js";
 
 /**
  * Displays metadata below the meal image, including creator and user count.
@@ -20,7 +20,7 @@ const MealInfoOverlay = ({ meal, onNameClick }) => {
     const location = useLocation();
     const navigate = useNavigate();
     const { setFilters, setPage } = useContext(UserMealsContext);
-    const { closeModal } = useContext(ModalContext);
+    const { closeModal } = useModal();
 
     const handleClick = () => {
         if (!meal?.createdBy?.id) return;

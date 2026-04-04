@@ -1,31 +1,29 @@
 import PropTypes from "prop-types";
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { Heart, AlertTriangle } from "lucide-react";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+
 import { useToggleMealFavorite } from "../../utils/hooks/useToggleMealFavorite.js";
 import { useRequireAuthDialog } from "../../../../hooks/useRequireAuthDialog.js";
-import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
+import { forceUnlinkMealFromUserApi } from "../../../../services/apiService.js";
+import { useNotification } from "../../../../context/NotificationContext.jsx";
+
+import { AuthContext } from "../../../../context/AuthContext.jsx";
+import { useModal } from "../../../../context/useModal.js";
+import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
+import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
+
 import RequireAuthUI from "../../../../components/layout/RequireAuthUI.jsx";
 import ErrorDialog from "../../../../components/layout/ErrorDialog.jsx";
-import { useNavigate } from "react-router-dom";
-import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
-import { forceUnlinkMealFromUserApi } from "../../../../services/apiService.js";
-import { AuthContext } from "../../../../context/AuthContext.jsx";
-import { ModalContext } from "../../../../context/ModalContext.jsx";
-import CustomBox from "../../../../components/layout/CustomBox.jsx";
-import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
-import CustomButton from "../../../../components/layout/CustomButton.jsx";
-import { useDialog } from "../../../../context/NotificationContext.jsx";
-import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
 
 const ButtonFavorite = ({ meal, onClose }) => {
     const navigate = useNavigate();
-    const { showDialog } = useDialog();
-
-    // NOTE: also grab userMeals for debug checks
-    const { removeMealFromUserMeals, userMeals } = useContext(UserMealsContext);
+    const { showDialog } = useNotification();
 
     const { token } = useContext(AuthContext);
-    const { closeModal } = useContext(ModalContext);
+    const { closeModal } = useModal();
+    const { removeMealFromUserMeals } = useContext(UserMealsContext);
     const { replaceDietInDiets, getDietById } = useContext(UserDietsContext);
 
     const {
@@ -42,72 +40,25 @@ const ButtonFavorite = ({ meal, onClose }) => {
     const [errorMessage, setErrorMessage] = useState("");
     const [errorDiets, setErrorDiets] = useState([]);
 
-    // --- DEBUG HELPERS ---
-    const normalizeId = (v) => (v == null ? null : String(v));
-
-    // Debug: does this meal exist in userMeals by id OR by originalMealId linkage?
-    const debugMatch = useMemo(() => {
-        const mealId = normalizeId(meal?.id);
-        const mealOrig = normalizeId(meal?.originalMealId);
-
-        const byId = (userMeals ?? []).find((m) => normalizeId(m.id) === mealId) || null;
-
-        // User has a saved copy where copy.originalMealId === meal.id
-        const copyOfMeal =
-            (userMeals ?? []).find((m) => normalizeId(m.originalMealId) === mealId) || null;
-
-        // If current meal is a copy, maybe the original is in userMeals by id
-        const originalOfCopy =
-            mealOrig != null
-                ? (userMeals ?? []).find((m) => normalizeId(m.id) === mealOrig) || null
-                : null;
-
-        return {
-            mealId,
-            mealOriginalMealId: mealOrig,
-            mealIsTemplate: meal?.isTemplate ?? null,
-            userMealsCount: userMeals?.length ?? 0,
-            matchById: byId ? { id: byId.id, originalMealId: byId.originalMealId ?? null, name: byId.name ?? null } : null,
-            matchCopyOfMeal: copyOfMeal
-                ? { id: copyOfMeal.id, originalMealId: copyOfMeal.originalMealId ?? null, name: copyOfMeal.name ?? null }
-                : null,
-            matchOriginalOfCopy: originalOfCopy
-                ? { id: originalOfCopy.id, originalMealId: originalOfCopy.originalMealId ?? null, name: originalOfCopy.name ?? null }
-                : null,
-            userMealIdsSample: (userMeals ?? []).slice(0, 25).map((m) => ({
-                id: m.id,
-                originalMealId: m.originalMealId ?? null,
-                isTemplate: m.isTemplate ?? null,
-                name: m.name ?? null,
-            })),
-        };
-    }, [meal, userMeals]);
-
     const handleForceUnlink = async () => {
         try {
             await forceUnlinkMealFromUserApi(meal.id, token);
             removeMealFromUserMeals(meal.id);
             setErrorDialogOpen(false);
 
-            // Update related diets
             for (const diet of errorDiets) {
                 try {
                     const updatedDiet = await getDietById(diet.id);
-                    if (updatedDiet) {
-                        replaceDietInDiets(diet.id, updatedDiet);
-                    }
-                } catch (e) {
-                    console.warn(`⚠️ Could not update diet ${diet.id}`, e);
+                    if (updatedDiet) replaceDietInDiets(diet.id, updatedDiet);
+                } catch {
+                    // diet update failure is non-critical
                 }
             }
 
-            if (onClose) {
-                onClose();
-            } else {
-                closeModal();
-            }
-        } catch (e) {
-            console.error("Force unlink failed", e);
+            if (onClose) onClose();
+            else closeModal();
+        } catch {
+            // force unlink failure handled by error state
         }
     };
 
@@ -120,45 +71,32 @@ const ButtonFavorite = ({ meal, onClose }) => {
             setErrorDialogOpen(true);
         },
         () => {
-            const message = alreadyFavorited
-                ? `${meal.name} removed from your meals`
-                : `${meal.name} added to your meals`;
-            showDialog({ message, type: "success" });
-            if (onClose) {
-                onClose();
-            } else {
-                closeModal();
-            }
+            showDialog({
+                message: alreadyFavorited
+                    ? `${meal.name} removed from your meals`
+                    : `${meal.name} added to your meals`,
+                type: "success",
+            });
+            if (onClose) onClose();
+            else closeModal();
         }
     );
 
-    // // DEBUG: log every time inputs/state change
-    // useEffect(() => {
-    //     console.log("❤️ [ButtonFavoriteDebug] RENDER", {
-    //         ...debugMatch,
-    //         alreadyFavorited,
-    //     });
-    // }, [debugMatch, alreadyFavorited]);
-
     return (
         <>
-            <CustomIconButton
-                onClick={() => {
-                    console.log("❤️ [ButtonFavoriteDebug] CLICK", {
-                        ...debugMatch,
-                        alreadyFavoritedBeforeClick: alreadyFavorited,
-                    });
-                    toggleFavorite();
-                }}
-                bgColor="bg-error/80"
-                icon={
-                    <Heart
-                        size={20}
-                        color="white"
-                        fill={alreadyFavorited ? "white" : "none"}
-                    />
-                }
-            />
+            <motion.button
+                type="button"
+                onClick={toggleFavorite}
+                whileHover={{ scale: 1.15 }}
+                whileTap={{ scale: 0.9 }}
+                className="flex h-full w-full items-center justify-center rounded-xl bg-rose-500/80 transition-colors hover:bg-rose-500"
+            >
+                <Heart
+                    size={18}
+                    color="white"
+                    fill={alreadyFavorited ? "white" : "none"}
+                />
+            </motion.button>
 
             <RequireAuthUI
                 dialogOpen={dialogOpen}
@@ -178,32 +116,35 @@ const ButtonFavorite = ({ meal, onClose }) => {
                 message={errorMessage || "Something went wrong."}
             >
                 {errorDiets.length > 0 && (
-                    <CustomBox className="mt-4 space-y-2 border border-error rounded-lg p-4 ">
-                        <CustomBox className="flex items-center gap-2 text-error font-medium">
-                            <AlertTriangle size={18} />
-                            <CustomTypography variant="h5">
+                    <div className="mt-4 space-y-3 rounded-xl border border-error/40 bg-error/5 p-4">
+                        <div className="flex items-center gap-2 text-error">
+                            <AlertTriangle size={16} className="shrink-0" />
+                            <p className="text-sm font-semibold">
                                 This meal is used in one or more diets
-                            </CustomTypography>
-                        </CustomBox>
+                            </p>
+                        </div>
 
-                        {errorDiets.map((diet) => (
-                            <CustomButton
-                                key={diet.id}
-                                as="button"
-                                onClick={() => navigate(`/diet/${diet.id}`)}
-                                className="text-primary underline hover:text-blue-700 block text-left"
-                            >
-                                View: {diet.name}
-                            </CustomButton>
-                        ))}
+                        <div className="flex flex-col gap-1">
+                            {errorDiets.map((diet) => (
+                                <button
+                                    key={diet.id}
+                                    type="button"
+                                    onClick={() => navigate(`/diet/${diet.id}`)}
+                                    className="text-left text-sm text-primary underline underline-offset-2 hover:text-primary-emphasis"
+                                >
+                                    View: {diet.name}
+                                </button>
+                            ))}
+                        </div>
 
-                        <CustomButton
+                        <button
+                            type="button"
                             onClick={handleForceUnlink}
-                            className="text-red-600 underline hover:text-red-800 block text-left font-semibold"
+                            className="text-left text-sm font-semibold text-error underline underline-offset-2 hover:text-error/80"
                         >
-                            Remove from all diets and my meals.
-                        </CustomButton>
-                    </CustomBox>
+                            Remove from all diets and my meals
+                        </button>
+                    </div>
                 )}
             </ErrorDialog>
         </>

@@ -6,7 +6,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { UserMealsProvider } from "./context/UserMealsContext";
 import { RecommendedNutritionProvider } from "./context/RecommendedNutritionContext";
 import { UserDietsProvider } from "./context/UserDietContext.jsx";
-import { DialogProvider } from "./context/NotificationContext.jsx";
+import { NotificationProvider } from "./context/NotificationContext.jsx";
 import { ModalProvider } from "./context/ModalContext.jsx";
 import { BrowserRouter } from "react-router-dom";
 
@@ -17,13 +17,13 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 <UserDietsProvider>
                     <RecommendedNutritionProvider>
                         <ThemeModeProvider>
-                            <DialogProvider>
+                            <NotificationProvider>
                                 <ModalProvider>
                                     <div className="min-h-screen bg-page text-content">
                                         <App />
                                     </div>
                                 </ModalProvider>
-                            </DialogProvider>
+                            </NotificationProvider>
                         </ThemeModeProvider>
                     </RecommendedNutritionProvider>
                 </UserDietsProvider>

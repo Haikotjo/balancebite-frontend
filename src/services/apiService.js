@@ -43,37 +43,22 @@ export const removeMealFromFavoritesApi = async (mealId, token) => {
         logResponse(response);
         return response.data;
     } catch (error) {
-        const errData = error?.response?.data;
-        console.error("❌ Backend responded with error:", errData);
-
-        throw {
-            ...error,
-            response: {
-                ...error.response,
-                data: errData,
-            },
-        };
+        logError(error);
+        throw error;
     }
 };
 
 export const forceUnlinkMealFromUserApi = async (mealId, token) => {
     const endpoint = `${import.meta.env.VITE_FORCE_UNLINK_MEAL_ENDPOINT}/${mealId}/force`;
-
     try {
         const response = await Interceptor.delete(endpoint, {
             headers: { Authorization: `Bearer ${token}` },
         });
+        logResponse(response);
         return response.data;
     } catch (error) {
-        const errData = error?.response?.data;
-        console.error("❌ Backend responded with error (force unlink):", errData);
-        throw {
-            ...error,
-            response: {
-                ...error.response,
-                data: errData,
-            },
-        };
+        logError(error);
+        throw error;
     }
 };
 

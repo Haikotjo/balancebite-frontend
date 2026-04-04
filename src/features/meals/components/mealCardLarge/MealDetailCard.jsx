@@ -19,7 +19,7 @@ import CustomLink from "../../../../components/layout/CustomLink.jsx";
 import { ExternalLink } from "lucide-react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
-import {ModalContext} from "../../../../context/ModalContext.jsx";
+import { useModal } from "../../../../context/useModal.js";
 import MealModal from "../mealModal/MealModal.jsx";
 
 const useAuth = () => useContext(AuthContext);
@@ -38,7 +38,7 @@ const MealDetailCard = ({ meal, viewMode = "page", isPinned = false }) => {
     const isAdmin = Array.isArray(user?.roles) && user.roles.includes("ADMIN");
     const canShare = isCreator && (isDietitian || isAdmin);
     const [showMoreInfo, setShowMoreInfo] = useState(false);
-    const { openModal } = useContext(ModalContext);
+    const { openModal } = useModal();
 
     const isListItem = viewMode === "list";
 

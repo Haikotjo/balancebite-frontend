@@ -6,7 +6,7 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import clsx from "clsx";
 import CustomCardChip from "../../../../components/layout/customCardChip.jsx";
 import {formatEnum} from "../../../../utils/helpers/formatEnum.js";
-import {ModalContext} from "../../../../context/ModalContext.jsx";
+import { useModal } from "../../../../context/useModal.js";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 
 const MealCardMealTags = ({
@@ -16,7 +16,7 @@ const MealCardMealTags = ({
                               size = "default",
                               onFilter,
                           }) => {
-    const { closeModal } = useContext(ModalContext);
+    const { closeModal } = useModal();
 
     const handleFilterClick = (category, value) => {
         if (onFilter && value) {

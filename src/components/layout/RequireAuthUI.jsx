@@ -5,12 +5,12 @@ import LoginRegisterForm from "../../features/navigation/components/authLoginReg
 const RequireAuthUI = ({
                            dialogOpen,
                            onClose,
-                           message,
+                           message = "",
                            showLoginForm,
                            onLoginClose,
                            onLoginSuccess,
                            onLoginRedirect,
-
+                           startInRegisterMode = false,
                        }) => (
     <>
         <ErrorDialog
@@ -25,8 +25,8 @@ const RequireAuthUI = ({
             <LoginRegisterForm
                 onClose={onLoginClose}
                 onLogin={onLoginSuccess}
-                onRegister={() => {}}
-                errorMessage={message}
+                onRegister={onLoginSuccess}
+                startInRegisterMode={startInRegisterMode}
             />
         )}
     </>
@@ -36,11 +36,12 @@ const RequireAuthUI = ({
 RequireAuthUI.propTypes = {
     dialogOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    message: PropTypes.string.isRequired,
+    message: PropTypes.string,
     showLoginForm: PropTypes.bool.isRequired,
     onLoginClose: PropTypes.func.isRequired,
     onLoginSuccess: PropTypes.func.isRequired,
     onLoginRedirect: PropTypes.func.isRequired,
+    startInRegisterMode: PropTypes.bool,
 };
 
 export default RequireAuthUI;

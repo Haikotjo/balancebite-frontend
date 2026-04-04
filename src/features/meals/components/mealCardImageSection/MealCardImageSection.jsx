@@ -8,7 +8,7 @@ import PreparationTimeIcon from "../mealCardPreparationTimeIcon/PreparationTimeI
 import { getImageSrc } from "../../utils/helpers/getImageSrc.js";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import CustomImage from "../../../../components/layout/CustomImage.jsx";
-import { ModalContext } from "../../../../context/ModalContext.jsx";
+import { useModal } from "../../../../context/useModal.js";
 import MealModal from "../mealModal/MealModal.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import MealCardMacrosCompact from "../mealCardMacrosCompact/MealCardMacrosCompact.jsx";
@@ -24,7 +24,7 @@ const MealCardImageSection = ({
                                   macros,
                               }) => {
     const imageSrc = getImageSrc(meal);
-    const { openModal } = useContext(ModalContext);
+    const { openModal } = useModal();
 
     // Get the embed URL. We don't need jsapi=true anymore, making it much faster.
     const embedUrl = toYoutubeEmbedUrl(meal?.videoUrl, { autoplay: true });

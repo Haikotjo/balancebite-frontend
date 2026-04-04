@@ -1,9 +1,8 @@
 import PropTypes from "prop-types";
 import { ShoppingBasket } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
 import CustomIconButton from "../../../../components/layout/CustomIconButton.jsx";
-import { ModalContext } from "../../../../context/ModalContext.jsx";
+import { useModal } from "../../../../context/useModal.js";
 
 /**
  * Icon button to navigate to a diet's shopping cart.
@@ -12,7 +11,7 @@ import { ModalContext } from "../../../../context/ModalContext.jsx";
  */
 const ButtonOpenShoppingCart = ({ dietId, onClick }) => {
     const navigate = useNavigate();
-    const { closeModal } = useContext(ModalContext);
+    const { closeModal } = useModal();
 
     const handleClick = () => {
         closeModal();

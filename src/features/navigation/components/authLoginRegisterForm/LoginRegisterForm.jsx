@@ -1,18 +1,11 @@
 import { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
-import useModalHistoryBack from "../../../../hooks/useModalHistoryBack.js";
 import LoginForm from "../authLoginForm/LoginForm.jsx";
 import RegisterForm from "../authRegisterForm/RegisterForm.jsx";
 
 const LoginRegisterForm = ({ onLogin, onRegister, onClose, startInRegisterMode = false }) => {
     const [isRegistering, setIsRegistering] = useState(startInRegisterMode);
-
-    const { requestClose } = useModalHistoryBack({
-        isOpen: true,
-        onRequestClose: onClose,
-        stateKey: "bb_auth_modal",
-    });
 
     useEffect(() => {
         document.body.style.overflow = "hidden";
@@ -20,15 +13,15 @@ const LoginRegisterForm = ({ onLogin, onRegister, onClose, startInRegisterMode =
     }, []);
 
     useEffect(() => {
-        const onKeyDown = (e) => { if (e.key === "Escape") requestClose("escape"); };
+        const onKeyDown = (e) => { if (e.key === "Escape") onClose(); };
         document.addEventListener("keydown", onKeyDown);
         return () => document.removeEventListener("keydown", onKeyDown);
-    }, [requestClose]);
+    }, [onClose]);
 
     return ReactDOM.createPortal(
         <div
             className="fixed inset-0 bg-black/60 flex items-center justify-center z-[150] px-4"
-            onClick={(e) => { if (e.target === e.currentTarget) requestClose("backdrop"); }}
+            onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
         >
             {isRegistering ? (
                 <RegisterForm
