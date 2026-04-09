@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import ReactDOM from "react-dom";
 import { Share2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { buildShareItems } from "../../features/meals/utils/helpers/buildShareItems.js";
@@ -7,17 +8,26 @@ import PropTypes from "prop-types";
 const SocialShareMenu = ({ url = window.location.href, title = "Check dit uit!" }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [copied, setCopied] = useState(false);
-    const menuRef = useRef(null);
+    const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
+    const buttonRef = useRef(null);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (menuRef.current && !menuRef.current.contains(event.target)) {
+            if (buttonRef.current && !buttonRef.current.contains(event.target)) {
                 setIsOpen(false);
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
+
+    const handleToggle = () => {
+        if (!isOpen && buttonRef.current) {
+            const rect = buttonRef.current.getBoundingClientRect();
+            setMenuPos({ top: rect.bottom + 8, left: rect.right - 192 }); // 192 = w-48
+        }
+        setIsOpen(v => !v);
+    };
 
     const handleCopy = () => {
         setCopied(true);
@@ -27,19 +37,22 @@ const SocialShareMenu = ({ url = window.location.href, title = "Check dit uit!" 
     const shareItems = buildShareItems(url, title, copied);
 
     return (
-        <motion.button
-            ref={menuRef}
-            type="button"
-            onClick={() => setIsOpen(!isOpen)}
-            whileHover={{ scale: 1.15 }}
-            whileTap={{ scale: 0.9 }}
-            className="relative flex h-full w-full items-center justify-center rounded-xl bg-black/50 transition-colors hover:bg-black/70"
-        >
-            <Share2 size={18} color="white" />
+        <>
+            <motion.button
+                ref={buttonRef}
+                type="button"
+                onClick={handleToggle}
+                whileHover={{ scale: 1.15 }}
+                whileTap={{ scale: 0.9 }}
+                className="relative flex h-full w-full items-center justify-center rounded-xl bg-black/50 transition-colors hover:bg-black/70"
+            >
+                <Share2 size={18} color="white" />
+            </motion.button>
 
-            {isOpen && (
+            {isOpen && ReactDOM.createPortal(
                 <div
-                    className="absolute top-full mt-3 right-0 w-48 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden animate-in fade-in zoom-in duration-200 origin-top-right z-[99999]"
+                    className="fixed w-48 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden animate-in fade-in zoom-in duration-200 origin-top-right z-[2147483647]"
+                    style={{ top: menuPos.top, left: Math.max(menuPos.left, 8) }}
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div className="p-2 flex flex-col gap-1">
@@ -64,9 +77,10 @@ const SocialShareMenu = ({ url = window.location.href, title = "Check dit uit!" 
                             </button>
                         ))}
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
-        </motion.button>
+        </>
     );
 };
 

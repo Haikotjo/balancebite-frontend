@@ -4,6 +4,7 @@ import {useMemo, useRef, useCallback} from "react";
 import { useModal } from "../../../../context/useModal.js";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import MealCard from "../mealCard/MealCard.jsx";
+import SlickMealCard from "../slickMealCard/SlickMealCard.jsx";
 import CustomButton from "../../../../components/layout/CustomButton.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import ModalScrollToTopButton from "../../../../components/modalScrollToTopButton/ModalScrollToTopButton.jsx";
@@ -124,8 +125,7 @@ const MealModal = ({ meal, isPinned = false, mode = "view", onCancel, onConfirm 
                         </CustomBox>
                     )}
 
-                    <MealCard meal={meal} viewMode="modal" isPinned={isPinned} disableActions={isPreview} cardRef={cardRef}
-                              actionsAnchorRef={actionsAnchorRef} />
+                    <SlickMealCard meal={meal} isPinned={isPinned} viewMode="modal" scrollContainerRef={contentRef} />
                 </CustomBox>
 
                 <ModalScrollToTopButton targetRef={contentRef} />

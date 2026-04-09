@@ -14,7 +14,7 @@ const ErrorDialog = React.forwardRef(
         };
 
         return (
-            <Dialog open={open} onClose={handleClose} ref={ref} className="relative z-[1000]">
+            <Dialog open={open} onClose={handleClose} ref={ref} className="relative z-[2147483647]">
 
                 {/* Backdrop */}
                 <AnimatePresence>

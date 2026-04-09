@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { useContext, useEffect, useLayoutEffect, useRef, useState, useCallback, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 import SearchBar from "../../../../components/searchBar/SearchBar.jsx";
@@ -146,11 +146,28 @@ function MealsPage() {
         if (totalPages > 1) setPage(1);
     }, [sortBy, setPage, totalPages]);
 
+    const loadMoreScrollY = useRef(null);
+    const prevMealsCount = useRef(0);
+
+    const handleLoadMore = useCallback(() => {
+        loadMoreScrollY.current = window.scrollY;
+        setPage(p => p + 1);
+    }, [setPage]);
+
+    // Restore scroll position synchronously when new meals are appended
+    useLayoutEffect(() => {
+        if (loadMoreScrollY.current !== null && meals.length > prevMealsCount.current) {
+            window.scrollTo(0, loadMoreScrollY.current);
+            loadMoreScrollY.current = null;
+        }
+        prevMealsCount.current = meals.length;
+    }, [meals.length]);
+
     const sentinelRef = useInfiniteScroll({
         loading,
         page,
         totalPages,
-        onLoadMore: () => setPage(p => p + 1),
+        onLoadMore: handleLoadMore,
     });
 
     return (
@@ -255,7 +272,7 @@ function MealsPage() {
                 </>
             )}
 
-            <div ref={sentinelRef} className="h-10" />
+            <div ref={sentinelRef} className="h-10" style={{ overflowAnchor: "none" }} />
             {loading && page > 1 && <Spinner className="mx-auto my-6" />}
             <ScrollToTopButton />
         </PageWrapper>

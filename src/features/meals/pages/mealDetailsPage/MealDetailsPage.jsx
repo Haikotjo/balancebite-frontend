@@ -1,13 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import MealCard from "../../components/mealCard/MealCard.jsx";
+import SlickMealCard from "../../components/slickMealCard/SlickMealCard.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import Spinner from "../../../../components/layout/Spinner.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import MealsSubMenu from "../../components/subMenu/MealsSubMenu.jsx";
 import {UserMealsContext} from "../../../../context/UserMealsContext.jsx";
 import PageWrapper from "../../../../components/layout/PageWrapper.jsx";
-import MealCardNew from "../../components/mealCardNew/mealCardNew.jsx";
 
 const MealDetailsPage = () => {
     const { mealId } = useParams();
@@ -71,8 +70,8 @@ const MealDetailsPage = () => {
             <CustomBox className="max-w-screen-xl mx-auto">
                 <MealsSubMenu isDetailPage />
 
-                <CustomBox className="flex justify-center mt-6">
-                    <MealCard meal={meal} viewMode="page" />
+                <CustomBox className="mt-6 max-w-3xl mx-auto w-full">
+                    <SlickMealCard meal={meal} viewMode="page" />
                 </CustomBox>
             </CustomBox>
         </PageWrapper>

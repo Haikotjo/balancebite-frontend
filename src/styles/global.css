@@ -4,6 +4,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  input,
+  textarea,
+  select {
+    outline: none;
+  }
+}
+
 /* ============================================================
    DESIGN TOKENS — CSS Custom Properties
    ============================================================

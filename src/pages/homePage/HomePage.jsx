@@ -8,8 +8,6 @@ import {
     Flame,
     Target,
     Users,
-    SlidersHorizontal,
-    ArrowDownUp,
 } from "lucide-react";
 import { UserDietsContext } from "../../context/UserDietContext.jsx";
 import { UserMealsContext } from "../../context/UserMealsContext.jsx";
@@ -68,27 +66,7 @@ const displayedStickyItems = useMemo(() => stickyItems, [stickyItems]);
 
     return (
         <div className="min-h-screen bg-page text-content">
-            {/* Quick access to meals filter/sort sidebars */}
-            <div className="fixed right-0 top-1/3 z-50 flex flex-col divide-y divide-border overflow-hidden rounded-l-xl border border-r-0 border-border bg-surface/80 shadow-lg backdrop-blur-sm">
-                <button
-                    type="button"
-                    onClick={() => navigate("/meals?openFilter=true")}
-                    className="flex flex-col items-center gap-1 px-2.5 py-3 text-content transition-colors hover:bg-surface hover:text-primary"
-                    aria-label="Filter meals"
-                >
-                    <SlidersHorizontal className="h-5 w-5" />
-                </button>
-                <button
-                    type="button"
-                    onClick={() => navigate("/meals?openSort=true")}
-                    className="flex flex-col items-center gap-1 px-2.5 py-3 text-content transition-colors hover:bg-surface hover:text-primary"
-                    aria-label="Sort meals"
-                >
-                    <ArrowDownUp className="h-5 w-5" />
-                </button>
-            </div>
-
-            <PageWrapper isHome>
+<PageWrapper isHome>
                     <main className="flex w-full flex-col gap-16 pb-20 pt-6 px-4 md:px-6 lg:px-8 lg:pt-10">
                         <motion.section
                             variants={sectionFade}

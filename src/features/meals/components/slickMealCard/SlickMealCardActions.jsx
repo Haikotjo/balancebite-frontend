@@ -3,6 +3,8 @@
 
 import PropTypes from "prop-types";
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import { AuthContext } from "../../../../context/AuthContext.jsx";
 import { RecommendedNutritionContext } from "../../../../context/RecommendedNutritionContext.jsx";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
@@ -15,10 +17,11 @@ import SocialShareMenu from "../../../../components/socialShareMenu/SocialShareM
 
 const ICON_SIZE = 32;
 
-export default function SlickMealCardActions({ meal, isPinned = false, onClose }) {
+export default function SlickMealCardActions({ meal, isPinned = false, viewMode = "list", onClose }) {
     const { user } = useContext(AuthContext);
     const { refetchRecommendedNutrition } = useContext(RecommendedNutritionContext);
     const { userMeals } = useContext(UserMealsContext);
+    const navigate = useNavigate();
 
     const isCreator = String(meal?.createdBy?.id) === String(user?.id);
     const isUserMeal = isCreator || userMeals.some(m => String(m.id) === String(meal.id));
@@ -41,9 +44,23 @@ export default function SlickMealCardActions({ meal, isPinned = false, onClose }
                 </div>
             )}
 
-            <div className="flex items-center justify-center" style={{ width: ICON_SIZE, height: ICON_SIZE }}>
-                <ButtonOpenMeal meal={meal} isPinned={isPinned} />
-            </div>
+            {viewMode === "page" ? (
+                <div className="flex items-center justify-center" style={{ width: ICON_SIZE, height: ICON_SIZE }}>
+                    <button
+                        type="button"
+                        onClick={() => navigate(-1)}
+                        className="flex items-center justify-center rounded-full text-white/80 hover:text-white transition-colors"
+                        style={{ width: ICON_SIZE, height: ICON_SIZE }}
+                        aria-label="Go back"
+                    >
+                        <ArrowLeft className="h-5 w-5" />
+                    </button>
+                </div>
+            ) : (
+                <div className="flex items-center justify-center" style={{ width: ICON_SIZE, height: ICON_SIZE }}>
+                    <ButtonOpenMeal meal={meal} isPinned={isPinned} />
+                </div>
+            )}
 
             <div className="flex items-center justify-center" style={{ width: ICON_SIZE, height: ICON_SIZE }}>
                 <SocialShareMenu
@@ -65,5 +82,6 @@ SlickMealCardActions.propTypes = {
         }),
     }).isRequired,
     isPinned: PropTypes.bool,
+    viewMode: PropTypes.oneOf(["list", "modal", "page"]),
     onClose: PropTypes.func,
 };

@@ -53,7 +53,10 @@ export const getImageSrc = (meal, opts = {}) => {
     }
 
     if (placeholders.length > 0) {
-        return placeholders[Math.floor(Math.random() * placeholders.length)];
+        const idx = meal?.id != null
+            ? Math.abs(Number(meal.id)) % placeholders.length
+            : Math.floor(Math.random() * placeholders.length);
+        return placeholders[idx];
     }
 
     return "/fallback.jpg";
