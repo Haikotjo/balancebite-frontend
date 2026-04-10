@@ -75,15 +75,17 @@ export default function SlickMealCard({ meal, isPinned = false, initialExpanded 
         if (!anchorEl) return;
 
         const updatePos = () => {
+            const isMobile = window.innerWidth < 768;
+            const minLeft = isMobile ? 64 : 8;
             if (scrollEl) {
                 const root = scrollEl.getBoundingClientRect();
-                setFloatingPos({ top: root.top + 8, left: root.left + 8 });
+                setFloatingPos({ top: root.top + 8, left: Math.max(root.left + 8, minLeft) });
             } else {
                 // page mode: position relative to the card itself
                 const card = cardRef.current;
                 if (!card) return;
                 const rect = card.getBoundingClientRect();
-                setFloatingPos({ top: Math.max(rect.top + 8, 8), left: rect.left + 8 });
+                setFloatingPos({ top: Math.max(rect.top + 8, 8), left: Math.max(rect.left + 8, minLeft) });
             }
         };
 
@@ -197,7 +199,7 @@ export default function SlickMealCard({ meal, isPinned = false, initialExpanded 
             {/* Floating actions — stays within the modal's visible area */}
             {isFullView && showFloatingActions && (
                 <div
-                    className="fixed z-[2147483002] rounded-2xl border border-border bg-surface/90 backdrop-blur-sm shadow-xl p-2"
+                    className="fixed z-[2147483002] rounded-2xl border border-border bg-none dark:bg-surface/90 backdrop-blur-sm shadow-xl p-1"
                     style={{ top: floatingPos.top, left: floatingPos.left }}
                 >
                     <SlickMealCardActions meal={meal} isPinned={isPinned} viewMode={viewMode} />
@@ -354,26 +356,16 @@ export default function SlickMealCard({ meal, isPinned = false, initialExpanded 
             </div>
 
             {/* ── Macros — below image ── */}
-            <div className={`relative px-3 ${isFullView ? "pt-2 pb-3" : "pt-1.5 pb-3"}`}>
+            <div className={`relative px-3 ${isFullView ? "pt-2 pb-3" : "pt-1.5 pb-2"}`}>
                 <div className={`flex items-center ${isFullView ? "mb-3" : ""}`}>
-                    <MacroTile icon={Flame}                 value={macros.Calories.total} per100g={macros.Calories.per100g} color="text-rose-400"    compact={!isFullView} />
-                    <div className="w-px self-stretch bg-border mx-1 shrink-0" />
-                    <MacroTile icon={Dumbbell}              value={macros.Protein.total}  per100g={macros.Protein.per100g}  color="text-cyan-500"    compact={!isFullView} />
-                    <div className="w-px self-stretch bg-border mx-1 shrink-0" />
-                    <MacroTile icon={ChartColumnIncreasing} value={macros.Carbs.total}    per100g={macros.Carbs.per100g}    color="text-emerald-500" compact={!isFullView} />
-                    <div className="w-px self-stretch bg-border mx-1 shrink-0" />
-                    <MacroTile icon={Droplet}               value={macros.Fats.total}     per100g={macros.Fats.per100g}     color="text-fuchsia-500" compact={!isFullView} />
+                    <MacroTile icon={Flame}                 value={macros.Calories.total} per100g={macros.Calories.per100g} color="text-rose-400"    compact />
+                    <div className="w-px self-stretch bg-border mx-0.5 shrink-0" />
+                    <MacroTile icon={Dumbbell}              value={macros.Protein.total}  per100g={macros.Protein.per100g}  color="text-cyan-500"    compact />
+                    <div className="w-px self-stretch bg-border mx-0.5 shrink-0" />
+                    <MacroTile icon={ChartColumnIncreasing} value={macros.Carbs.total}    per100g={macros.Carbs.per100g}    color="text-emerald-500" compact />
+                    <div className="w-px self-stretch bg-border mx-0.5 shrink-0" />
+                    <MacroTile icon={Droplet}               value={macros.Fats.total}     per100g={macros.Fats.per100g}     color="text-fuchsia-500" compact />
                 </div>
-                {!isFullView && (
-                    <button
-                        type="button"
-                        onClick={() => setExpanded((v) => !v)}
-                        className="absolute -bottom-3 left-1/2 -translate-x-1/2 z-10 flex h-7 w-7 items-center justify-center rounded-full border border-border bg-surface text-content transition-colors hover:border-primary/40 hover:text-primary"
-                        aria-label={expanded ? "Collapse" : "Expand"}
-                    >
-                        <ChevronDown className={`h-5 w-5 transition-transform duration-300 ${expanded ? "rotate-180" : ""}`} />
-                    </button>
-                )}
             </div>
 
             {/* ── Expandable info panel (list mode) ── */}
@@ -551,9 +543,23 @@ export default function SlickMealCard({ meal, isPinned = false, initialExpanded 
                 </div>
             </div>}
 
+            {/* ── Expand/collapse toggle (list mode) ── */}
+            {!isFullView && (
+                <div className="relative h-3">
+                    <button
+                        type="button"
+                        onClick={() => setExpanded((v) => !v)}
+                        className="absolute -bottom-3.5 left-1/2 -translate-x-1/2 z-10 flex h-7 w-7 items-center justify-center rounded-full border border-border bg-surface text-content transition-colors hover:border-primary/40 hover:text-primary"
+                        aria-label={expanded ? "Collapse" : "Expand"}
+                    >
+                        <ChevronDown className={`h-5 w-5 transition-transform duration-300 ${expanded ? "rotate-180" : ""}`} />
+                    </button>
+                </div>
+            )}
+
             {/* ── Full view content (modal / page) ── */}
             {isFullView && (
-                <div className="relative border-t border-border px-4 pb-4 pt-4 overflow-hidden">
+                <div className="relative px-4 pb-4 pt-4 overflow-hidden">
                     {/* Background food icons */}
                     <div className="absolute inset-0 pointer-events-none select-none">
                         {BG_FOOD_ICONS.map(({ Icon, className }, i) => (
@@ -689,16 +695,31 @@ export default function SlickMealCard({ meal, isPinned = false, initialExpanded 
 
 // ── Compact macro tile ──────────────────────────────────────────────────────
 function MacroTile({ icon: Icon, value, per100g, color, compact = false }) {
-    return (
-        <div className={`flex flex-1 items-center ${compact ? "gap-1.5 px-2 py-1" : "gap-2 px-2 py-2"}`}>
-            <Icon className={`shrink-0 ${compact ? "h-4 w-4" : "h-6 w-6"} ${color}`} />
-            <div className="flex flex-col">
-                <span className={`font-bold leading-tight text-content ${compact ? "text-sm" : "text-sm"}`}>
+    if (compact) {
+        return (
+            <div className="flex flex-1 flex-col items-center gap-0.5 px-1 py-1">
+                <Icon className={`h-5 w-5 shrink-0 ${color}`} />
+                <span className="font-bold leading-tight text-content text-sm">
                     {value !== undefined && value !== null ? Math.round(value) : "–"}
                 </span>
                 {per100g != null && (
                     <span className="text-[10px] leading-none text-content/40">
-                        {per100g}/100g
+                        {Math.round(per100g)}/100g
+                    </span>
+                )}
+            </div>
+        );
+    }
+    return (
+        <div className="flex flex-1 min-w-0 items-center gap-2 px-2 py-2">
+            <Icon className={`shrink-0 h-6 w-6 ${color}`} />
+            <div className="flex min-w-0 flex-col overflow-hidden">
+                <span className="truncate font-bold leading-tight text-content text-sm">
+                    {value !== undefined && value !== null ? Math.round(value) : "–"}
+                </span>
+                {per100g != null && (
+                    <span className="truncate text-[10px] leading-none text-content/40">
+                        {Math.round(per100g)}/100g
                     </span>
                 )}
             </div>

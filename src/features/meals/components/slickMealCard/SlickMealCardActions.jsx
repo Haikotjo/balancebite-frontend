@@ -49,7 +49,7 @@ export default function SlickMealCardActions({ meal, isPinned = false, viewMode 
                     <button
                         type="button"
                         onClick={() => navigate(-1)}
-                        className="flex items-center justify-center rounded-full text-white/80 hover:text-white transition-colors"
+                        className="flex items-center justify-center rounded-xl bg-black/50 text-white hover:bg-black/70 transition-colors"
                         style={{ width: ICON_SIZE, height: ICON_SIZE }}
                         aria-label="Go back"
                     >
