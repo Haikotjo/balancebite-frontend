@@ -91,7 +91,7 @@ const displayedStickyItems = useMemo(() => stickyItems, [stickyItems]);
                                 text="Quick access to the core features: discover meals, create plans and track your intake."
                             />
 
-                            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
                                 {quickActions.map((action) => (
                                     <ActionCard key={action.title} {...action} />
                                 ))}
@@ -287,7 +287,7 @@ const displayedStickyItems = useMemo(() => stickyItems, [stickyItems]);
                                     <div>
                   <span
                       className="mb-4 inline-flex rounded-full border border-content/15 bg-content/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-content/85">
-                    Final CTA
+                    Get started
                   </span>
                                         <h2 className="text-3xl font-semibold tracking-tight text-content md:text-5xl">
                                             Build your next meal plan with less friction.

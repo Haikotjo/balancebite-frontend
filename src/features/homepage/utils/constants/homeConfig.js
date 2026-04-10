@@ -7,6 +7,7 @@ import {
     TrendingUp,
     Target,
     Flame,
+    UtensilsCrossed,
 } from "lucide-react";
 
 /**
@@ -56,6 +57,14 @@ export function getQuickActions(navigate) {
             onClick: () => navigate("/meals"),
             accentClass: "border-emerald-400/20 bg-emerald-400/10 text-emerald-600 dark:text-emerald-300",
             gradient: "from-emerald-400/15 via-content/[0.06] to-cyan-400/15"
+        },
+        {
+            title: "Create a meal",
+            text: "Pick from thousands of ingredients — macros and price calculated instantly",
+            icon: UtensilsCrossed,
+            onClick: () => navigate("/create-meal"),
+            accentClass: "border-lime-400/20 bg-lime-400/10 text-lime-600 dark:text-lime-300",
+            gradient: "from-lime-400/15 via-content/[0.06] to-emerald-400/15"
         },
         {
             title: "Create a diet",
