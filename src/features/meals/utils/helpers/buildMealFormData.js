@@ -7,10 +7,12 @@ export const buildMealFormData = async (data) => {
         name: data.name,
         mealDescription: data.mealDescription,
         servings: data.servings ?? null,
-        mealIngredients: data.mealIngredients.map((ingredient) => ({
-            foodItemId: parseInt(ingredient.foodItemId, 10),
-            quantity: parseFloat(ingredient.quantity),
-        })),
+        mealIngredients: (data.mealIngredients || [])
+            .filter(ing => ing.foodItemId && String(ing.foodItemId).trim() !== "")
+            .map((ingredient) => ({
+                foodItemId: parseInt(ingredient.foodItemId, 10),
+                quantity: parseFloat(ingredient.quantity),
+            })),
 
         keepImageIds: data.keepImageIds ?? [],
         replaceOrderIndexes: data.replaceOrderIndexes ?? [],
@@ -22,14 +24,12 @@ export const buildMealFormData = async (data) => {
         diets: data.diets || null,
         preparationTime: data.preparationTime || null,
 
-        videoUrl: normalizeUrl(data.videoUrl),
-        sourceUrl: normalizeUrl(data.sourceUrl),
-        preparationVideoUrl: normalizeUrl(data.preparationVideoUrl),
+        videoUrl: normalizeUrl(data.videoUrl) ?? "",
+        sourceUrl: normalizeUrl(data.sourceUrl) ?? "",
+        preparationVideoUrl: normalizeUrl(data.preparationVideoUrl) ?? "",
         mealPreparation: data.mealPreparation || null,
     };
 
-
-    console.log("MealInputDTO before adding files:", mealInputDTO);
 
     formData.append("mealInputDTO", JSON.stringify(mealInputDTO));
 
@@ -52,11 +52,6 @@ export const buildMealFormData = async (data) => {
             if (id) formData.append("sharedUserIds", id);
         });
     }
-
-    // Debug: inspect final FormData
-    formData.forEach((value, key) => {
-        console.log(`${key}:`, value);
-    });
 
     return formData;
 };

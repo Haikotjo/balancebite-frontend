@@ -1,75 +1,60 @@
 import PropTypes from "prop-types";
-import CustomBox from "../../../../components/layout/CustomBox.jsx";
-import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
-import CustomDivider from "../../../../components/layout/CustomDivider.jsx";
-import MacroSummary from "../macroSummary/MacroSummary.jsx";
-import AccordionItem from "../accordionItem/AccordionItem.jsx";
+import { Flame, Dumbbell, Wheat, Droplet, Candy } from "lucide-react";
 
-const AverageNutrientSummary = ({ diet, dayCount, showDivider = true, isListCard = false, compact = false}) => {
-    // Don't render if any required value is missing
+const MACROS = [
+    { key: "avgCalories", icon: Flame,                 label: "Kcal",    color: "text-rose-400"    },
+    { key: "avgProtein",  icon: Dumbbell,              label: "Protein", color: "text-cyan-500"    },
+    { key: "avgCarbs",    icon: Wheat, label: "Carbs",   color: "text-emerald-500" },
+    { key: "avgFat",      icon: Droplet,               label: "Fat",     color: "text-fuchsia-500" },
+];
 
-    if (
-        !diet ||
-        diet.avgCalories == null ||
-        diet.avgProtein == null ||
-        diet.avgFat == null ||
-        diet.avgCarbs == null ||
-        diet.avgSaturatedFat == null ||
-        diet.avgUnsaturatedFat == null ||
-        diet.avgSugars == null
-    ) return null;
+const EXTRA_MACROS = [
+    { key: "avgSugars", icon: Candy, label: "Sugars", color: "text-pink-400" },
+];
 
-    const totalNutrients = {
-        "Energy kcal": { value: Math.round(diet.avgCalories) },
-        "Protein g": { value: Math.round(diet.avgProtein) },
-        "Total lipid (fat) g": { value: Math.round(diet.avgFat) },
-        "Carbohydrates g": { value: Math.round(diet.avgCarbs) },
-    };
+const AverageNutrientSummary = ({ diet, dayCount, showDivider = true, isListCard = false }) => {
+    if (!diet || diet.avgCalories == null || diet.avgProtein == null ||
+        diet.avgFat == null || diet.avgCarbs == null) return null;
 
-    if (!isListCard) {
-        totalNutrients["Saturated fat g"] = { value: Math.round(diet.avgSaturatedFat) };
-        totalNutrients["Unsaturated fat g"] = { value: Math.round(diet.avgUnsaturatedFat) };
-        totalNutrients["Sugars g"] = { value: Math.round(diet.avgSugars) };
-    }
-
+    const extraMacros = isListCard ? [] : EXTRA_MACROS.filter(({ key }) => diet[key] != null);
 
     return (
-        <CustomBox>
-            <CustomTypography variant="small" className="mb-1 italic" bold>
-                ({dayCount}-day diet)
-            </CustomTypography>
+        <div>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-content/40 mb-2">
+                Daily averages — {dayCount}-day diet
+            </p>
 
-            {compact ? (
-                <AccordionItem
-                    title={(isOpen) => isOpen ? "Hide daily averages" : "View daily averages"}
-                    defaultOpen={false}
-                >
-                    <MacroSummary
-                        showLabel={false}
-                        showDayBreakdown={false}
-                        className="mb-2"
-                        diet={diet}
-                        totalNutrients={totalNutrients}
-                    />
-                </AccordionItem>
-            ) : (
-                <>
-                    <CustomTypography variant="small" className="mb-2 italic" font="body" bold>
-                        Daily averages:
-                    </CustomTypography>
-                    <MacroSummary
-                        showLabel={false}
-                        showDayBreakdown={false}
-                        className="mb-2"
-                        diet={diet}
-                        totalNutrients={totalNutrients}
-                    />
-                </>
+            {/* Main macros */}
+            <div className="flex items-stretch rounded-xl border border-content/8 bg-surface-sunken overflow-hidden mb-2">
+                {MACROS.map(({ key, icon: Icon, label, color }, i) => (
+                    <div key={key} className="flex flex-1 flex-col items-center py-2">
+                        {i > 0 && <div className="absolute self-stretch" />}
+                        <Icon className={`h-4 w-4 ${color} mb-0.5`} />
+                        <span className="text-sm font-bold text-content">{Math.round(diet[key])}</span>
+                        <span className="text-[10px] text-content/50">{label}</span>
+                    </div>
+                ))}
+            </div>
+
+            {/* Extra macros (sat fat / unsat fat / sugars) — not in list cards */}
+            {extraMacros.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                    {extraMacros.map(({ key, icon: Icon, label, color }) => (
+                        <div
+                            key={key}
+                            className="flex items-center gap-1.5 rounded-full border border-content/8 bg-surface-sunken px-2.5 py-1"
+                        >
+                            <Icon className={`h-3 w-3 ${color}`} />
+                            <span className="text-[11px] text-content/70">
+                                {label}: <span className="font-semibold text-content">{Math.round(diet[key])}</span>g
+                            </span>
+                        </div>
+                    ))}
+                </div>
             )}
 
-
-            {showDivider && <CustomDivider className="my-4" />}
-        </CustomBox>
+            {showDivider && <hr className="my-4 border-border/40" />}
+        </div>
     );
 };
 
@@ -79,14 +64,11 @@ AverageNutrientSummary.propTypes = {
         avgProtein: PropTypes.number,
         avgFat: PropTypes.number,
         avgCarbs: PropTypes.number,
-        avgSaturatedFat: PropTypes.number,
-        avgUnsaturatedFat: PropTypes.number,
         avgSugars: PropTypes.number,
     }).isRequired,
     dayCount: PropTypes.number.isRequired,
     showDivider: PropTypes.bool,
     isListCard: PropTypes.bool,
-    compact: PropTypes.bool,
 };
 
 export default AverageNutrientSummary;

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -n \"VITE_USER_PROFILE_ENDPOINT\\\\|VITE_DAILY_RDI_ENDPOINT\" /c/Users/Haiko/WebstormProjects/balancebite/.env*)",
+      "Bash(grep *)"
+    ]
+  }
+}

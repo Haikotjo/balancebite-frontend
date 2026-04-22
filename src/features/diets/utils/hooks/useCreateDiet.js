@@ -84,9 +84,6 @@ export function useCreateDiet(onSuccess, append, remove) {
                         : [],
         };
 
-        // 👇 DIT BLIJFT STAAN om te checken wat er gebeurt
-        console.log("[onSubmit] Payload dat naar backend gaat:", JSON.stringify(payload, null, 2));
-
         const isValid = payload.dietDays.every(day => day.mealIds.length >= 2);
         if (!isValid) {
             setError("Each day must have at least 2 meals.");
@@ -95,20 +92,18 @@ export function useCreateDiet(onSuccess, append, remove) {
         }
 
         try {
-            const newDiet = await createDietPlanApi({ ...payload, diets: [] });
-            setSuccess(`Diet created: ${newDiet.name || "Unknown diet"}`);
-            await fetchUserDietsData();
-            await fetchDietsData();
-
-            newDiet.dietDays?.forEach(day => {
-                day.meals?.forEach(meal => {
-                    if (meal && meal.id) {
-                        addMealToUserMeals(meal);
-                    }
-                });
-            });
+            const newDiet = await createDietPlanApi({ ...payload, diets: formData.diets || [] });
             onSuccess?.(newDiet);
             navigate(`/diet/${newDiet.id}`);
+
+            // background refresh — don't block navigation
+            fetchUserDietsData();
+            fetchDietsData();
+            newDiet.dietDays?.forEach(day => {
+                day.meals?.forEach(meal => {
+                    if (meal?.id) addMealToUserMeals(meal);
+                });
+            });
         } catch (err) {
             console.error("❌ Backend error bij createDietPlanApi:", err);
             setError(getReadableApiError(err));

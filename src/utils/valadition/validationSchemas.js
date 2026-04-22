@@ -147,6 +147,20 @@ export const foodItemSchema = yup.object().shape({
         .min(0, "Unsaturated Fat cannot be negative")
         .nullable(),
 
+    fiber: yup
+        .number()
+        .transform(transformToNumber)
+        .typeError("Fiber must be a number")
+        .min(0, "Fiber cannot be negative")
+        .nullable(),
+
+    sodium: yup
+        .number()
+        .transform(transformToNumber)
+        .typeError("Sodium must be a number")
+        .min(0, "Sodium cannot be negative")
+        .nullable(),
+
     image: yup.mixed(),
     imageUrl: yup
         .string()

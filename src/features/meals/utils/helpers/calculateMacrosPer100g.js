@@ -8,6 +8,8 @@ export const calculateMacrosPer100g = (meal) => {
             sugarsPer100g: 0,
             saturatedFatPer100g: 0,
             unsaturatedFatPer100g: 0,
+            fiberPer100g: 0,
+            sodiumPer100g: 0,
             totalWeight: 0
         };
     }
@@ -23,6 +25,8 @@ export const calculateMacrosPer100g = (meal) => {
             sugarsPer100g: 0,
             saturatedFatPer100g: 0,
             unsaturatedFatPer100g: 0,
+            fiberPer100g: 0,
+            sodiumPer100g: 0,
             totalWeight: 0
         };
     }
@@ -37,6 +41,8 @@ export const calculateMacrosPer100g = (meal) => {
         sugarsPer100g: calc(meal.totalSugars),
         saturatedFatPer100g: calc(meal.totalSaturatedFat),
         unsaturatedFatPer100g: calc(meal.totalUnsaturatedFat),
+        fiberPer100g: calc(meal.totalFiber),
+        sodiumPer100g: calc(meal.totalSodium),
         totalWeight
     };
 };

@@ -7,7 +7,6 @@ const Logo = ({ size = 100, className = "", to }) => {
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 1460 937"
             height={size}
-            width="auto"
             className={`fill-current ${className}`}
         >
             <path

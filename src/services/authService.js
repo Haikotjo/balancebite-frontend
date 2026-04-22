@@ -7,7 +7,6 @@ export const loginApi = async (email, password) => {
     const endpoint = import.meta.env.VITE_AUTH_LOGIN_ENDPOINT || "/auth/login";
     try {
         const response = await Interceptor.post(endpoint, { email, password });
-        console.log("[DEBUG] Login succesvol:", response.data);
         return response.data;
     } catch (error) {
         logError(error);
@@ -39,7 +38,6 @@ export const logoutApi = async (token) => {
                 withCredentials: true,
             }
         );
-        console.log("[DEBUG] Logout succesvol:", response.data);
         return response.data;
     } catch (error) {
         logError(error);

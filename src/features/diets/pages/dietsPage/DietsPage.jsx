@@ -36,6 +36,8 @@ const DietsPage = () => {
         activeOption,
     } = useContext(UserDietsContext);
 
+    useEffect(() => { console.log("[DietsPage] diets:", diets); }, [diets]);
+
     const [showErrorDialog, setShowErrorDialog] = useState(false);
     const [creatorName, setCreatorName] = useState(null);
     const location = useLocation();

@@ -63,22 +63,10 @@ export const UserDietsProvider = ({ children }) => {
                 setDiets(data.content || []);
             } else if (activeOption === "My Diets") {
                 data = await getAllUserDietPlans(token, { ...params, mode: "saved" });
-                console.log("[My Diets] Loaded diets:", (data.content || []).map(d => ({
-                    id: d.id,
-                    name: d.name,
-                    isTemplate: d.isTemplate,
-                    originalDietId: d.originalDietId,
-                })));
                 setDiets(data.content || []);
             } else {
                 data = await getAllPublicDietPlans(params);
                 const content = data.content || [];
-                console.log("[Diets] Loaded diets:", content.map(d => ({
-                    id: d.id,
-                    name: d.name,
-                    isTemplate: d.isTemplate,
-                    originalDietId: d.originalDietId,
-                })));
                 setDiets(content);
             }
 

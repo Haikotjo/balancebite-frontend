@@ -50,6 +50,8 @@ const CreateFoodItemForm = () => {
             protein: "",
             carbohydrates: "",
             sugars: "",
+            fiber: "",
+            sodium: "",
             fat: "",
             saturatedFat: "",
             unsaturatedFat: "",
@@ -250,7 +252,27 @@ const CreateFoodItemForm = () => {
                     helperText={errors.sugars?.message}
                     type="text"
                     step="any"
-                    placeholder="Sugars (g per 100g) e.g. 15"
+                    placeholder="e.g. 15 — leave empty if data is unavailable"
+                />
+                <CustomTextField
+                    label="Fiber (g per 100g)"
+                    name="fiber"
+                    {...register("fiber")}
+                    error={!!errors.fiber}
+                    helperText={errors.fiber?.message}
+                    type="text"
+                    step="any"
+                    placeholder="e.g. 3 — leave empty if data is unavailable"
+                />
+                <CustomTextField
+                    label="Sodium (mg per 100g)"
+                    name="sodium"
+                    {...register("sodium")}
+                    error={!!errors.sodium}
+                    helperText={errors.sodium?.message}
+                    type="text"
+                    step="any"
+                    placeholder="e.g. 120 — leave empty if data is unavailable"
                 />
                 <CustomTextField
                     label="Fat (g per 100g)"
@@ -270,7 +292,7 @@ const CreateFoodItemForm = () => {
                     helperText={errors.saturatedFat?.message}
                     type="text"
                     step="any"
-                    placeholder="Saturated Fat (g per 100g) e.g. 3"
+                    placeholder="e.g. 3 — leave empty if data is unavailable"
                 />
                 <CustomTextField
                     label="Unsaturated Fat (g per 100g)"
@@ -280,7 +302,7 @@ const CreateFoodItemForm = () => {
                     helperText={errors.unsaturatedFat?.message}
                     type="text"
                     step="any"
-                    placeholder="Unsaturated Fat (g per 100g) e.g. 4"
+                    placeholder="e.g. 4 — leave empty if data is unavailable"
                 />
 
                 <CustomButton

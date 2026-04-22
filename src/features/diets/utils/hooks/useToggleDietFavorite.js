@@ -57,7 +57,6 @@ export const useToggleDietFavorite = (diet, onAuthRequired, onError, onSuccess) 
 
         } catch (e) {
             console.error("❌ Favorite toggle failed:", e);
-            console.log("⚠️ Full error object:", e.response?.data);
 
             const backendMessage = e?.response?.data?.error || "Could not toggle favorite. Try again later.";
             const diets = e?.response?.data?.diets || [];

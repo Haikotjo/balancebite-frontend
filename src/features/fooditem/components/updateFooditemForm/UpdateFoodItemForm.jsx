@@ -31,10 +31,12 @@ const buildNutrientsFromFields = (values) => {
         { nutrientName: "Energy", value: values.calories, unitName: "kcal" },
         { nutrientName: "Protein", value: values.protein, unitName: "g" },
         { nutrientName: "Carbohydrates", value: values.carbohydrates, unitName: "g" },
-        { nutrientName: "Total Sugars", value: values.sugars, unitName: "g" },
-        { nutrientName: "Total lipid (fat)", value: values.fat, unitName: "g" },
-        { nutrientName: "Saturated Fat", value: values.saturatedFat, unitName: "g" },
-        { nutrientName: "Unsaturated Fat", value: values.unsaturatedFat, unitName: "g" },
+        { nutrientName: "Total Sugars",         value: values.sugars,         unitName: "g" },
+        { nutrientName: "Fiber, total dietary", value: values.fiber,          unitName: "g" },
+        { nutrientName: "Sodium",               value: values.sodium,         unitName: "mg" },
+        { nutrientName: "Total lipid (fat)",    value: values.fat,            unitName: "g" },
+        { nutrientName: "Saturated Fat",        value: values.saturatedFat,   unitName: "g" },
+        { nutrientName: "Unsaturated Fat",      value: values.unsaturatedFat, unitName: "g" },
     ];
     return entries
         .filter((e) => e.value !== "" && e.value !== null && e.value !== undefined)
@@ -84,6 +86,8 @@ const UpdateFoodItemForm = ({ foodItemId, title, onClose, onUpdated }) => {
             protein: "",
             carbohydrates: "",
             sugars: "",
+            fiber: "",
+            sodium: "",
             fat: "",
             saturatedFat: "",
             unsaturatedFat: "",
@@ -136,6 +140,8 @@ const UpdateFoodItemForm = ({ foodItemId, title, onClose, onUpdated }) => {
                     protein: pickNutrient(item?.nutrients, "Protein"),
                     carbohydrates: pickNutrient(item?.nutrients, "Carbohydrates"),
                     sugars: pickNutrient(item?.nutrients, "Total Sugars"),
+                    fiber: pickNutrient(item?.nutrients, "Fiber, total dietary"),
+                    sodium: pickNutrient(item?.nutrients, "Sodium"),
                     fat: pickNutrient(item?.nutrients, "Total lipid (fat)"),
                     saturatedFat: pickNutrient(item?.nutrients, "Saturated Fat"),
                     unsaturatedFat: pickNutrient(item?.nutrients, "Unsaturated Fat"),
@@ -288,7 +294,9 @@ const UpdateFoodItemForm = ({ foodItemId, title, onClose, onUpdated }) => {
                 <CustomTextField label="Calories (kcal per 100g)" {...register("calories")} error={!!errors.calories} helperText={errors.calories?.message} type="text" step="any" placeholder="Calories (kcal per 100g) e.g. 250" />
                 <CustomTextField label="Protein (g per 100g)" {...register("protein")} error={!!errors.protein} helperText={errors.protein?.message} type="text" step="any" placeholder="Protein (g per 100g) e.g. 20" />
                 <CustomTextField label="Carbohydrates (g per 100g)" {...register("carbohydrates")} error={!!errors.carbohydrates} helperText={errors.carbohydrates?.message} type="text" step="any" placeholder="Carbohydrates (g per 100g) e.g. 20" />
-                <CustomTextField label="Sugars (g per 100g)" {...register("sugars")} error={!!errors.sugars} helperText={errors.sugars?.message} type="text" step="any" placeholder="Sugars (g per 100g) e.g. 15" />
+                <CustomTextField label="Sugars (g per 100g)" {...register("sugars")} error={!!errors.sugars} helperText={errors.sugars?.message} type="text" step="any" placeholder="e.g. 15 — leave empty if data is unavailable" />
+                <CustomTextField label="Fiber (g per 100g)" {...register("fiber")} error={!!errors.fiber} helperText={errors.fiber?.message} type="text" step="any" placeholder="e.g. 3 — leave empty if data is unavailable" />
+                <CustomTextField label="Sodium (mg per 100g)" {...register("sodium")} error={!!errors.sodium} helperText={errors.sodium?.message} type="text" step="any" placeholder="e.g. 120 — leave empty if data is unavailable" />
                 <CustomTextField label="Fat (g per 100g)" {...register("fat")} error={!!errors.fat} helperText={errors.fat?.message} type="text" step="any" placeholder="Fat (g per 100g) e.g. 10" />
                 <CustomTextField label="Saturated Fat (g per 100g)" {...register("saturatedFat")} error={!!errors.saturatedFat} helperText={errors.saturatedFat?.message} type="text" step="any" placeholder="Saturated Fat (g per 100g) e.g. 3" />
                 <CustomTextField label="Unsaturated Fat (g per 100g)" {...register("unsaturatedFat")} error={!!errors.unsaturatedFat} helperText={errors.unsaturatedFat?.message} type="text" step="any" placeholder="Unsaturated Fat (g per 100g) e.g. 4" />

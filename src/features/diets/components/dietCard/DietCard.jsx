@@ -28,10 +28,6 @@ const DietCard = ({ diet, viewMode = "card", isPinned = false, cardRef, actionsA
     const canShare = isCreator && isDietitian;
 
 
-    useEffect(() => {
-        console.log("Received diet:", diet);
-    }, [diet]);
-
     return (
         <CustomBox
             ref={cardRef}

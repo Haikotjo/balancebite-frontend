@@ -39,6 +39,8 @@ function MealsPage() {
     const [sortBy, setSortBy] = useState(null);
     const sortByRef = useRef(null);
 
+    useEffect(() => { console.log("[MealsPage] meals:", meals); }, [meals]);
+
     const [filterSidebarOpen, setFilterSidebarOpen] = useState(false);
     const [sortSidebarOpen, setSortSidebarOpen] = useState(false);
     const [nutrientSidebarOpen, setNutrientSidebarOpen] = useState(false);

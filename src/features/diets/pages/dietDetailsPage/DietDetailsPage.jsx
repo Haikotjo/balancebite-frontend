@@ -1,12 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import DietCard from "../../components/dietCard/DietCard.jsx";
 import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import Spinner from "../../../../components/layout/Spinner.jsx";
 import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
 import DietSubMenu from "../../components/subMenu/DietsSubMenu.jsx";
 import PageWrapper from "../../../../components/layout/PageWrapper.jsx";
+import SlickDietCard from "../../components/slickDietCard/SlickDietCard.jsx";
 
 const DietDetailsPage = () => {
     const { dietId } = useParams();
@@ -20,8 +20,6 @@ const DietDetailsPage = () => {
         setLoading(true);
         getDietById(dietId)
             .then(result => {
-                console.log("📦 Received diet from getDietById:", result);
-
                 if (!result) {
                     setError(true);
                 } else {
@@ -67,7 +65,7 @@ const DietDetailsPage = () => {
             <CustomBox className="max-w-screen-xl mx-auto">
                 <DietSubMenu isDetailPage />
                 <CustomBox className="flex justify-center mt-6">
-                    <DietCard diet={diet} viewMode="page" />
+                    <SlickDietCard diet={diet} viewMode="page" />
                 </CustomBox>
             </CustomBox>
         </PageWrapper>

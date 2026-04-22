@@ -1,10 +1,11 @@
 // src/utils/iconMap.js
-import { Flame, Dumbbell, ChartColumnIncreasing, Droplet } from "lucide-react";
+import { Flame, Dumbbell, Wheat, Droplet } from "lucide-react";
 
 export const macroIcons = {
     Calories: Flame,
     Protein: Dumbbell,
-    Carbs: ChartColumnIncreasing,
+    Carbs:
+    Wheat,
     Fats: Droplet,
 };
 

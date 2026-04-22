@@ -1,7 +1,7 @@
 // src/features/meals/utils/helpers/nutrientSortConfig.js
 import {
     Flame,
-    ChartColumnIncreasing,
+    Wheat,
     Dumbbell,
     Droplet,
     TrendingUp,
@@ -25,7 +25,7 @@ export const getNutrients = (iconBase) => [
     {
         name: "Carbs",
         label: "Carbs",
-        icon: <ChartColumnIncreasing className={`${iconBase} text-success`} />,
+        icon: <Wheat className={`${iconBase} text-success`} />,
         sortKey: "carbs",
     },
     {

@@ -3,22 +3,23 @@ import { fetchMealById } from "../services/apiService";
 
 export const useMealFormData = (mealId, reset) => {
     const [loading, setLoading] = useState(true);
-
-    // Legacy state (can stay, but no longer leading for multi-images)
+    const [meal, setMeal]       = useState(null);
     const [imageUrl, setImageUrl] = useState("");
 
     useEffect(() => {
         const loadMeal = async () => {
             try {
                 const data = await fetchMealById(mealId);
-                console.log("Fetched meal data:", data);
 
                 // Ingredients mapping for your form fields
                 const mappedIngredients =
                     data.mealIngredients?.map((ing) => ({
-                        foodItemId: String(ing.foodItemId),
-                        quantity: ing.quantity,
-                    })) ?? [{ foodItemId: "", quantity: 0 }];
+                        foodItemId:   String(ing.foodItemId),
+                        quantity:     ing.quantity,
+                        foodItemName: ing.foodItemName || ing.foodItem?.name || "",
+                        foodItemData: ing.foodItem ?? null,
+                        _key:         crypto.randomUUID(),
+                    })) ?? [{ foodItemId: "", quantity: 0, _key: crypto.randomUUID() }];
 
                 // ✅ Multi-image mapping (THIS is what your uploader needs)
                 const images = (data.images ?? [])
@@ -53,8 +54,8 @@ export const useMealFormData = (mealId, reset) => {
                 });
 
 
-                // Legacy: set to first image url if you still show it somewhere
                 setImageUrl(images[0]?.imageUrl ?? "");
+                setMeal(data);
             } catch (e) {
                 console.error("Failed to load meal for form:", e);
             } finally {
@@ -65,5 +66,5 @@ export const useMealFormData = (mealId, reset) => {
         loadMeal();
     }, [mealId, reset]);
 
-    return { loading, imageUrl, setImageUrl };
+    return { loading, imageUrl, setImageUrl, meal };
 };

@@ -27,20 +27,18 @@ export const useCreateFoodItem = (reset) => {
             imageUrl: fileToSend ? null : urlToSend,
             image: null,
             nutrients: [
-                { nutrientName: "Energy", value: data.calories, unitName: "kcal" },
-                { nutrientName: "Protein", value: data.protein, unitName: "g" },
-                { nutrientName: "Carbohydrates", value: data.carbohydrates, unitName: "g" },
-                { nutrientName: "Total Sugars", value: data.sugars, unitName: "g" },
-                { nutrientName: "Total lipid (fat)", value: data.fat, unitName: "g" },
-                { nutrientName: "Saturated Fat", value: data.saturatedFat, unitName: "g" },
-                { nutrientName: "Unsaturated Fat", value: data.unsaturatedFat, unitName: "g" },
-            ]
-                .filter((n) => n.value !== "" && n.value !== null && n.value !== undefined)
-                .map((n) => ({
-                    nutrientName: n.nutrientName,
-                    unitName: n.unitName,
-                    value: Number(n.value),
-                })),
+                // Required — always have a value
+                { nutrientName: "Energy",            value: Number(data.calories),      unitName: "kcal" },
+                { nutrientName: "Protein",           value: Number(data.protein),       unitName: "g" },
+                { nutrientName: "Carbohydrates",     value: Number(data.carbohydrates), unitName: "g" },
+                { nutrientName: "Total lipid (fat)", value: Number(data.fat),           unitName: "g" },
+                // Optional — sent as null when left empty
+                { nutrientName: "Total Sugars",         value: data.sugars        !== "" && data.sugars        != null ? Number(data.sugars)        : null, unitName: "g" },
+                { nutrientName: "Fiber, total dietary", value: data.fiber         !== "" && data.fiber         != null ? Number(data.fiber)         : null, unitName: "g" },
+                { nutrientName: "Sodium",               value: data.sodium        !== "" && data.sodium        != null ? Number(data.sodium)        : null, unitName: "mg" },
+                { nutrientName: "Saturated Fat",        value: data.saturatedFat  !== "" && data.saturatedFat  != null ? Number(data.saturatedFat)  : null, unitName: "g" },
+                { nutrientName: "Unsaturated Fat",      value: data.unsaturatedFat !== "" && data.unsaturatedFat != null ? Number(data.unsaturatedFat) : null, unitName: "g" },
+            ],
         };
 
         const fd = new FormData();

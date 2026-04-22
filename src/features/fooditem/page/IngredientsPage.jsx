@@ -36,7 +36,6 @@ const IngredientsPage = () => {
         const fetchData = async () => {
             try {
                 const items = await getAllFoodItems();
-                console.log("All food items:", items);
                 const grouped = items.reduce((acc, item) => {
                     const category = item.foodCategory || "OTHER";
                     if (!acc[category]) acc[category] = [];

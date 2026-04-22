@@ -19,10 +19,6 @@ let failedQueue = [];
  * Retry queued requests with refreshed token
  */
 const processQueue = (error, token = null) => {
-    if (import.meta.env.DEV) {
-        console.log("[DEBUG] Processing queue with token:", token, "and error:", error);
-    }
-
     failedQueue.forEach((prom) => {
         if (error) {
             prom.reject(error);
@@ -40,20 +36,10 @@ const processQueue = (error, token = null) => {
 Interceptor.interceptors.response.use(
     (response) => response,
     async (error) => {
-        if (import.meta.env.DEV) {
-            console.log("[DEBUG] Response error:", error);
-            console.log("[DEBUG] URL:", error.config?.url);
-            console.log("[DEBUG] Error data:", error.response?.data);
-        }
-
         const originalRequest = error.config;
 
         if (error.response?.status === 401 && !originalRequest._retry) {
             if (isRefreshing) {
-                if (import.meta.env.DEV) {
-                    console.log("[DEBUG] Refresh already in progress. Queueing request.");
-                }
-
                 return new Promise((resolve, reject) => {
                     failedQueue.push({ resolve, reject });
                 })
@@ -71,10 +57,6 @@ Interceptor.interceptors.response.use(
                 const refreshToken = localStorage.getItem("refreshToken");
                 if (!refreshToken) {
                     throw new Error("No refresh token available.");
-                }
-
-                if (import.meta.env.DEV) {
-                    console.log("[DEBUG] Attempting refresh with token:", refreshToken);
                 }
 
                 const { data } = await axios.post(
@@ -117,37 +99,15 @@ Interceptor.interceptors.request.use(
 
         if (token) {
             config.headers["Authorization"] = `Bearer ${token}`;
-            if (import.meta.env.DEV) {
-                console.log("[DEBUG] Authorization header set");
-            }
-        }
-
-        if (import.meta.env.DEV) {
-            console.log("[DEBUG] Requesting:", config.baseURL + config.url);
         }
 
         if (config.data instanceof FormData) {
             delete config.headers["Content-Type"];
-            if (import.meta.env.DEV) {
-                console.log("[DEBUG] FormData detected. Content-Type removed.");
-            }
-        }
-
-        if (import.meta.env.DEV) {
-            console.log("[API REQUEST PARAMS]", {
-                url: config.baseURL + config.url,
-                params: config.params,
-                data: config.data,
-                headers: config.headers,
-            });
         }
 
         return config;
     },
     (error) => {
-        if (import.meta.env.DEV) {
-            console.error("[DEBUG] Request error:", error);
-        }
         return Promise.reject(error);
     }
 );

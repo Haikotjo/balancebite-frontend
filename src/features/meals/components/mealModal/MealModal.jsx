@@ -1,16 +1,12 @@
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
-import {useMemo, useRef, useCallback} from "react";
+import { useMemo, useRef, useCallback } from "react";
 import { useModal } from "../../../../context/useModal.js";
-import CustomBox from "../../../../components/layout/CustomBox.jsx";
-import MealCard from "../mealCard/MealCard.jsx";
 import SlickMealCard from "../slickMealCard/SlickMealCard.jsx";
-import CustomButton from "../../../../components/layout/CustomButton.jsx";
-import CustomTypography from "../../../../components/layout/CustomTypography.jsx";
 import ModalScrollToTopButton from "../../../../components/modalScrollToTopButton/ModalScrollToTopButton.jsx";
 import usePreviewAutoCancel from "../../../../hooks/usePreviewAutoCancel.js";
 import MealCardActionButtons from "../mealCardActionButtons/MealCardActionButtons.jsx";
-import  {useMealFloatingActions} from "../../../../hooks/useFloatingActionBar.js";
+import { useMealFloatingActions } from "../../../../hooks/useFloatingActionBar.js";
 
 const MealModal = ({ meal, isPinned = false, mode = "view", onCancel, onConfirm }) => {
     const { closeModal } = useModal();
@@ -27,7 +23,6 @@ const MealModal = ({ meal, isPinned = false, mode = "view", onCancel, onConfirm 
 
     const handleCancel = useCallback(async () => {
         markCancelled();
-
         try {
             if (onCancel) await onCancel(meal);
         } catch (err) {
@@ -40,7 +35,6 @@ const MealModal = ({ meal, isPinned = false, mode = "view", onCancel, onConfirm 
     const handleConfirm = useCallback(async () => {
         markConfirmed();
         closeModal();
-
         try {
             if (onConfirm) await onConfirm(meal);
         } catch (err) {
@@ -56,81 +50,83 @@ const MealModal = ({ meal, isPinned = false, mode = "view", onCancel, onConfirm 
         actionsAnchorRef,
     });
 
-
     if (!meal) return null;
 
     return ReactDOM.createPortal(
-        <CustomBox className="fixed inset-0 z-[2147483000] flex items-center justify-center" data-mode={mode} role="presentation">
-            <CustomBox
-                as="div"
-                className="absolute inset-0 bg-black bg-opacity-40"
+        <div
+            className="fixed inset-0 z-[2147483000] flex items-center justify-center"
+            data-mode={mode}
+            role="presentation"
+        >
+            {/* Backdrop */}
+            <div
+                className="absolute inset-0 bg-black/40"
                 onClick={isPreview ? handleCancel : closeModal}
-                aria-hidden={isPreview ? "true" : "false"}
+                aria-hidden="true"
             />
 
-            <CustomBox
-                as="div"
-                className="
-                          relative z-[2147483001]
-                          w-full h-full rounded-none
-                          lg:w-[90%] lg:h-auto lg:max-w-4xl lg:rounded-xl
-                          shadow-lg bg-page
-                          "
+            {/* Dialog */}
+            <div
+                className="relative z-[2147483001] w-full h-full rounded-none lg:w-[90%] lg:h-auto lg:max-w-4xl lg:rounded-2xl shadow-2xl bg-surface overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
                 role="dialog"
                 aria-modal="true"
                 aria-label={isPreview ? "Meal preview (actions limited)" : "Meal view"}
             >
+                {/* Preview banner */}
+                {isPreview && (
+                    <div className="sticky top-0 z-[2147483002] px-4 py-3 bg-surface/95 backdrop-blur-md border-b border-border/40">
+                        <p className="text-center text-sm font-bold text-content/80 mb-2">Meal Preview</p>
+                        <div className="flex gap-2">
+                            <button
+                                type="button"
+                                onClick={handleConfirm}
+                                aria-label="Create meal"
+                                className="flex-1 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-primary-emphasis"
+                            >
+                                Confirm
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleCancel}
+                                aria-label="Cancel and delete meal"
+                                className="flex-1 rounded-xl border border-error/50 bg-error/10 px-4 py-2 text-sm font-bold text-error transition-colors hover:bg-error/20"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                )}
 
-                <CustomBox
+                {/* Floating action bar */}
+                {showFloatingActions && (
+                    <div
+                        className="fixed z-[2147483002] pointer-events-none"
+                        style={{ left: floatingStyle.left, width: floatingStyle.width, top: floatingStyle.top }}
+                    >
+                        <div className="p-2 pointer-events-auto">
+                            <MealCardActionButtons isFloating meal={meal} viewMode="modal" />
+                        </div>
+                    </div>
+                )}
+
+                {/* Scroll container */}
+                <div
                     ref={contentRef}
                     data-scroll-container
                     className="h-full max-h-full lg:max-h-[85vh] overflow-y-auto relative"
                 >
-                    {isPreview && (
-                        <>
-                            <CustomBox className="sticky top-0 z-[2147483002] p-3 sm:p-4 bg-page/90 backdrop-blur">
-                                <CustomTypography as="div" variant="h1" font="sans" weight="bold" className="opacity-80 text-center w-full">
-                                    Meal Preview
-                                </CustomTypography>
-
-                                <CustomBox className="mt-2 flex flex-col sm:flex-row gap-2">
-                                    <CustomButton onClick={handleConfirm} variant="solid" color="primary" className="px-4 py-2 flex-1" aria-label="Create meal">
-                                        <CustomTypography as="span" variant="h5" font="sans" weight="bold" color="text-white">
-                                            Confirm
-                                        </CustomTypography>
-                                    </CustomButton>
-
-                                    <CustomButton onClick={handleCancel} variant="outline" color="error" className="px-4 py-2 flex-1" aria-label="Cancel and delete meal">
-                                        <CustomTypography as="span" variant="h5" font="sans" weight="bold" color="text-error">
-                                            Cancel
-                                        </CustomTypography>
-                                    </CustomButton>
-                                </CustomBox>
-                            </CustomBox>
-
-                            <CustomBox className="h-2" aria-hidden="true" />
-                        </>
-                    )}
-                    {showFloatingActions && (
-                        <CustomBox
-                            className="fixed z-[2147483002] pointer-events-none"
-                            style={{ left: floatingStyle.left, width: floatingStyle.width, top: floatingStyle.top }}
-                        >
-
-                                <CustomBox className="p-2 pointer-events-auto">
-                                    <MealCardActionButtons isFloating meal={meal} viewMode="modal" />
-                                </CustomBox>
-
-                        </CustomBox>
-                    )}
-
-                    <SlickMealCard meal={meal} isPinned={isPinned} viewMode="modal" scrollContainerRef={contentRef} />
-                </CustomBox>
+                    <SlickMealCard
+                        meal={meal}
+                        isPinned={isPinned}
+                        viewMode="modal"
+                        scrollContainerRef={contentRef}
+                    />
+                </div>
 
                 <ModalScrollToTopButton targetRef={contentRef} />
-            </CustomBox>
-        </CustomBox>,
+            </div>
+        </div>,
         document.body
     );
 };

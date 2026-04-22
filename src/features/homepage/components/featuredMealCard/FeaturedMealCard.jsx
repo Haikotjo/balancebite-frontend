@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Sparkles, Flame, Dumbbell, ChartColumnIncreasing, Droplet } from "lucide-react";
+import { Sparkles, Flame, Dumbbell, Wheat, Droplet } from "lucide-react";
 import HomeChip from "../homeChip/HomeChip.jsx";
 import {getMealImage} from "../../utils/helpers/imageHelpers.js";
 
@@ -49,7 +49,7 @@ export default function FeaturedMealCard({ meal, onClick }) {
                     />
 
                     <MacroItem
-                        icon={ChartColumnIncreasing}
+                        icon={Wheat}
                         label="carbs"
                         value={meal?.totalCarbs}
                         color="text-emerald-400"

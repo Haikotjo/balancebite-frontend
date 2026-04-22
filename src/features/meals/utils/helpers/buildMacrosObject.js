@@ -37,5 +37,15 @@ export const buildMacrosObject = (meal, calculatedMacros) => {
             per100g: Math.round(calculatedMacros.unsaturatedFatPer100g),
             unit: "g",
         },
+        Fiber: {
+            total: meal.totalFiber != null ? Math.round(meal.totalFiber / servings) : null,
+            per100g: calculatedMacros.fiberPer100g > 0 ? Math.round(calculatedMacros.fiberPer100g) : null,
+            unit: "g",
+        },
+        Sodium: {
+            total: meal.totalSodium != null ? Math.round(meal.totalSodium / servings) : null,
+            per100g: calculatedMacros.sodiumPer100g > 0 ? Math.round(calculatedMacros.sodiumPer100g) : null,
+            unit: "mg",
+        },
     };
 };

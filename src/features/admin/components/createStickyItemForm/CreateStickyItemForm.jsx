@@ -54,11 +54,12 @@ const CreateStickyItemForm = () => {
                     data = list.filter(d => d.template);
                 }
 
-                console.log("🔍 Retrieved options:", data);
                 setOptions(
                     data.map(item => ({
                         value: item.id,
-                        label: `${item.name} (ID: ${item.id}) – ${item.creatorName || item.createdBy?.userName || "Unknown"}`
+                        label: type === "DIET_PLAN"
+                            ? `[ID: ${item.id ?? "?"}] ${item.name} (Created by: ${item.creatorName || item.createdBy?.userName || "Unknown"})`
+                            : `[ID: ${item.id ?? "?"}] ${item.name}`
                     }))
                 );
             } catch (err) {

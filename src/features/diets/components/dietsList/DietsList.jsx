@@ -3,6 +3,7 @@ import CustomBox from "../../../../components/layout/CustomBox.jsx";
 import DietListCard from "../dietListCard/DietListCard.jsx";
 import { useContext } from "react";
 import { UserDietsContext } from "../../../../context/UserDietContext.jsx";
+import SlickDietCard from "../slickDietCard/SlickDietCard.jsx";
 
 const DietsList = ({ diets, pinnedDiets = [] }) => {
     const { userDiets } = useContext(UserDietsContext);
@@ -24,7 +25,7 @@ const DietsList = ({ diets, pinnedDiets = [] }) => {
 
                 return (
                     <CustomBox key={`${source}-${dietToRender.id}`} className="break-inside-avoid">
-                        <DietListCard
+                        <SlickDietCard
                             diet={dietToRender}
                             isPinned={pinnedDietIds.has(String(diet.id))}
                             compact ={false}

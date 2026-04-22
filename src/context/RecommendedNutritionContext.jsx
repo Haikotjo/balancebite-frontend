@@ -7,6 +7,7 @@ import {
     fetchWeeklyRdiApi,
     fetchMonthlyRdiApi,
     fetchDailyRdiByDateApi,
+    fetchUserProfile,
 } from "../services/apiService.js";
 
 export const RecommendedNutritionContext = createContext();
@@ -16,6 +17,7 @@ export const RecommendedNutritionProvider = ({ children }) => {
     const [baseNutrition, setBaseNutrition] = useState(null);
     const [weeklyRdi, setWeeklyRdi] = useState(null);
     const [monthlyRdi, setMonthlyRdi] = useState(null);
+    const [userProfile, setUserProfile] = useState(null);
     const [loading, setLoading] = useState(true);
 
     const { token, user } = useContext(AuthContext);
@@ -94,6 +96,16 @@ export const RecommendedNutritionProvider = ({ children }) => {
         }
     }, [user?.id]);
 
+    const fetchProfile = useCallback(async () => {
+        try {
+            const currentToken = localStorage.getItem("accessToken");
+            const data = await fetchUserProfile(currentToken);
+            if (data) setUserProfile(data);
+        } catch (error) {
+            console.error("Error fetching user profile:", error);
+        }
+    }, []);
+
     // Initial data load on login
     useEffect(() => {
         if (user?.id) {
@@ -101,16 +113,18 @@ export const RecommendedNutritionProvider = ({ children }) => {
             void fetchBaseNutrition();
             void fetchWeeklyRdi();
             void fetchMonthlyRdi();
+            void fetchProfile();
         } else {
             setLoading(false);
         }
-    }, [user?.id, fetchRecommendedNutrition, fetchBaseNutrition, fetchWeeklyRdi, fetchMonthlyRdi]);
+    }, [user?.id, fetchRecommendedNutrition, fetchBaseNutrition, fetchWeeklyRdi, fetchMonthlyRdi, fetchProfile]);
 
     const value = {
         recommendedNutrition,
         baseNutrition,
         weeklyRdi,
         monthlyRdi,
+        userProfile,
         loading,
         setRecommendedNutrition,
         fetchRecommendedNutrition,

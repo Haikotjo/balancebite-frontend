@@ -77,8 +77,6 @@ export function useCreateDietAsDietitian(onSuccess, append, remove) {
         };
 
 
-        console.log("🔍 Payload dat verstuurd wordt naar backend:", payload);
-
         const isValid = payload.dietDays.every(day => day.mealIds.length >= 2);
         if (!isValid) {
             setError("Each day must have at least 2 meals.");

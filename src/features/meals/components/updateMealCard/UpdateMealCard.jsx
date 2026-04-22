@@ -1,22 +1,24 @@
-// CreateMealCard — create-meal form styled as a SlickMealCard
+// UpdateMealCard — edit-meal form styled as a SlickMealCard, pre-loaded with existing data
 import { useState, useEffect, useRef, useContext, useCallback, useMemo } from "react";
 import ReactDOM from "react-dom";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
     Flame, Dumbbell, Wheat, Droplet,
     Clock, Users, BookOpen, Carrot, ChefHat, PlayCircle,
     ExternalLink, Apple, Cherry, Beef, Banana,
-    Plus, X, Check, ImagePlus, Camera, ArrowBigUp, Link2,
+    Plus, X, Check, ImagePlus, Camera, ArrowBigUp, Link2, Save,
 } from "lucide-react";
 
 import { mealSchema } from "../../../../utils/valadition/validationSchemas.js";
-import { useCreateMeal } from "../../../../hooks/useCreateMeal.js";
+import { useMealFormData } from "../../../../hooks/useMealFormData.js";
 import { useModal } from "../../../../context/useModal.js";
 import { AuthContext } from "../../../../context/AuthContext.jsx";
-import { cancelMealApi, getMappedFoodSources, searchFoodItemsByName, getFoodItemById, fetchFoodItemsByCategory, fetchFoodItemsBySource, getAllFoodItemNames } from "../../../../services/apiService.js";
-import MealModal from "../mealModal/MealModal.jsx";
+import { getMappedFoodSources, searchFoodItemsByName, updateMealApi, getFoodItemById, fetchFoodItemsByCategory, fetchFoodItemsBySource, getAllFoodItemNames } from "../../../../services/apiService.js";
+import { buildMealFormData } from "../../utils/helpers/buildMealFormData.js";
+import { useFormMessages } from "../../../../hooks/useFormMessages.jsx";
+import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
 
 import {
     mealTypesOptions,
@@ -24,6 +26,28 @@ import {
     dietsOptions,
 } from "../../utils/helpers/dropdownOptionsMealsTypes.js";
 import { preparationTimeOptions } from "../../utils/helpers/dropdownOptionsMealsTime.js";
+
+// ── Live macro calculation ────────────────────────────────────────────────────
+function getNutrientPerGram(nutrients, name) {
+    const hit = nutrients?.find(n => n.nutrientName === name);
+    return hit ? hit.value / 100 : 0; // nutrients stored per 100g
+}
+
+function calcLiveMacros(ingredients) {
+    let calories = 0, protein = 0, carbs = 0, fat = 0, covered = 0;
+    for (const ing of ingredients) {
+        if (!ing.foodItemData?.nutrients || !ing.quantity) continue;
+        const { nutrients } = ing.foodItemData;
+        const qty = Number(ing.quantity);
+        calories += getNutrientPerGram(nutrients, "Energy")            * qty;
+        protein  += getNutrientPerGram(nutrients, "Protein")           * qty;
+        carbs    += getNutrientPerGram(nutrients, "Carbohydrates")      * qty;
+        fat      += getNutrientPerGram(nutrients, "Total lipid (fat)") * qty;
+        covered++;
+    }
+    const hasData = covered > 0;
+    return hasData ? { calories, protein, carbs, fat } : null;
+}
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -46,69 +70,27 @@ const TAG_GROUPS = [
     { group: "diets",     label: "Diet",      options: dietsOptions     },
 ];
 
-// ── Category config ───────────────────────────────────────────────────────────
-
-const FOOD_CATEGORIES = [
-    { value: "VEGETABLE",          label: "Vegetable",   emoji: "🥦" },
-    { value: "FRUIT",              label: "Fruit",       emoji: "🍎" },
-    { value: "MEAT",               label: "Meat",        emoji: "🥩" },
-    { value: "FISH",               label: "Fish",        emoji: "🐟" },
-    { value: "DAIRY",              label: "Dairy",       emoji: "🥛" },
-    { value: "GRAIN",              label: "Grain",       emoji: "🌾" },
-    { value: "LEGUME",             label: "Legume",      emoji: "🫘" },
-    { value: "NUT",                label: "Nut",         emoji: "🥜" },
-    { value: "EGG",                label: "Egg",         emoji: "🥚" },
-    { value: "SWEET",              label: "Sweet",       emoji: "🍬" },
-    { value: "DRINK",              label: "Drink",       emoji: "🥤" },
-    { value: "SAUCE",              label: "Sauce",       emoji: "🫙" },
-    { value: "OIL",                label: "Oil",         emoji: "🫒" },
-    { value: "SPICE",              label: "Spice",       emoji: "🌶️" },
-    { value: "READY_MEAL",         label: "Ready meal",  emoji: "🍱" },
-    { value: "SNACK",              label: "Snack",       emoji: "🍿" },
-    { value: "SUPPLEMENT",         label: "Supplement",  emoji: "💊" },
-    { value: "PROTEIN_SUPPLEMENT", label: "Protein",     emoji: "💪" },
-    { value: "OTHER",              label: "Other",       emoji: "📦" },
-];
-
-// ── Live macro helpers ────────────────────────────────────────────────────────
-
-function getNutrientPerGram(nutrients, name) {
-    const hit = nutrients?.find(n => n.nutrientName === name);
-    return hit ? hit.value / 100 : 0;
-}
-
-function calcLiveMacros(ingredients) {
-    let calories = 0, protein = 0, carbs = 0, fat = 0, covered = 0;
-    for (const ing of ingredients) {
-        if (!ing.foodItemData?.nutrients || !ing.quantity) continue;
-        const { nutrients } = ing.foodItemData;
-        const qty = Number(ing.quantity);
-        calories += getNutrientPerGram(nutrients, "Energy") * qty;
-        protein  += getNutrientPerGram(nutrients, "Protein") * qty;
-        carbs    += getNutrientPerGram(nutrients, "Carbohydrates") * qty;
-        fat      += getNutrientPerGram(nutrients, "Total lipid (fat)") * qty;
-        covered++;
-    }
-    return covered > 0 ? { calories, protein, carbs, fat } : null;
-}
-
 // ── Main component ────────────────────────────────────────────────────────────
 
-export default function CreateMealCard() {
-    const { user } = useContext(AuthContext);
+export default function UpdateMealCard({ mealId: mealIdProp }) {
+    const { mealId: mealIdParam } = useParams();
+    const mealId = mealIdProp ?? mealIdParam;
 
-    const navigate      = useNavigate();
-    const { openModal } = useModal();
-    const { onSubmit, handleImagesChange, renderDialogs } = useCreateMeal({ preview: true });
+    const { user }               = useContext(AuthContext);
+    const { replaceMealInMeals } = useContext(UserMealsContext);
+    const navigate               = useNavigate();
+    const { openModal }          = useModal();
+    const { setError, renderDialogs } = useFormMessages();
 
-    const [photos,             setPhotos]             = useState([]); // [{url, file|null}]
-    const [activeIdx,          setActiveIdx]          = useState(0);
-    const [replaceIdx,         setReplaceIdx]         = useState(null); // null=append, number=replace
-    const [showPhotoMenu,      setShowPhotoMenu]      = useState(false);
-    const [showImageUrl,       setShowImageUrl]       = useState(false);
-    const [imageUrlValue,      setImageUrlValue]      = useState("");
-    const [showTagPicker,      setShowTagPicker]      = useState(false);
-    const [showPrepTime,       setShowPrepTime]       = useState(false);
+    const [photos,           setPhotos]           = useState([]); // [{url, file|null, id|null}]
+    const [activeIdx,        setActiveIdx]        = useState(0);
+    const [replaceIdx,       setReplaceIdx]       = useState(null);
+    const [showPhotoMenu,    setShowPhotoMenu]    = useState(false);
+    const [showImageUrl,     setShowImageUrl]     = useState(false);
+    const [imageUrlValue,    setImageUrlValue]    = useState("");
+    const [showTagPicker,    setShowTagPicker]    = useState(false);
+    const [showPrepTime,     setShowPrepTime]     = useState(false);
+    const [foodSourceOptions, setFoodSourceOptions] = useState([]);
 
     const fileInputRef   = useRef(null);
     const cameraInputRef = useRef(null);
@@ -116,7 +98,8 @@ export default function CreateMealCard() {
     const tagBtnRef      = useRef(null);
     const prepTimeRef    = useRef(null);
 
-    // Close prep time on outside click (tag picker handles its own close via portal)
+    useEffect(() => { getMappedFoodSources().then(setFoodSourceOptions); }, []);
+
     useEffect(() => {
         const handler = (e) => {
             if (prepTimeRef.current && !prepTimeRef.current.contains(e.target)) setShowPrepTime(false);
@@ -126,7 +109,7 @@ export default function CreateMealCard() {
     }, []);
 
     const {
-        register, control, handleSubmit, setValue, watch,
+        register, control, handleSubmit, setValue, watch, reset,
         formState: { errors, isValid },
     } = useForm({
         mode: "onChange",
@@ -141,7 +124,7 @@ export default function CreateMealCard() {
         },
         defaultValues: {
             name: "", mealDescription: "",
-            mealIngredients: [{ foodItemId: "", quantity: 0, _key: crypto.randomUUID() }],
+            mealIngredients: [{ foodItemId: "", quantity: 0 }],
             mealTypes: [], cuisines: [], diets: [],
             preparationTime: "",
             imageFiles: [], primaryIndex: null,
@@ -149,6 +132,8 @@ export default function CreateMealCard() {
             mealPreparation: "", servings: 1,
         },
     });
+
+    const { loading, meal } = useMealFormData(mealId, reset);
 
     const registerUrl = (name) => {
         const reg = register(name);
@@ -163,20 +148,30 @@ export default function CreateMealCard() {
         };
     };
 
-    const mealTypes        = watch("mealTypes")       || [];
-    const cuisines         = watch("cuisines")        || [];
-    const diets            = watch("diets")           || [];
-    const preparationTime  = watch("preparationTime");
-    const servings         = watch("servings");
-    const mealIngredients  = watch("mealIngredients") || [];
+    // When meal loads, initialise photos from existing images
+    useEffect(() => {
+        if (!loading && meal?.images?.length > 0) {
+            const sorted = [...meal.images].sort((a, b) => a.orderIndex - b.orderIndex);
+            const primaryIdx = sorted.findIndex(img => img.primary);
+            setPhotos(sorted.map(img => ({ url: img.imageUrl, file: null, id: img.id })));
+            setActiveIdx(primaryIdx >= 0 ? primaryIdx : 0);
+        }
+    }, [loading, meal]);
 
-    const liveMacros = useMemo(() => calcLiveMacros(mealIngredients), [mealIngredients]);
+    const mealTypes       = watch("mealTypes")       || [];
+    const cuisines        = watch("cuisines")        || [];
+    const diets           = watch("diets")           || [];
+    const preparationTime = watch("preparationTime");
+    const servings        = watch("servings");
+    const mealIngredients = watch("mealIngredients") || [];
+    const foodSource      = watch("foodSource");
 
     const hasIngredient = mealIngredients.some(
         (ing) => ing.foodItemId && ing.foodItemId.toString().trim() !== ""
     );
 
-    // Chips display
+    const liveMacros = useMemo(() => calcLiveMacros(mealIngredients), [mealIngredients]);
+
     const allChips = [
         ...mealTypes.map(v => ({ label: v.label || v, group: "mealTypes", value: v.value || v })),
         ...cuisines .map(v => ({ label: v.label || v, group: "cuisines",  value: v.value || v })),
@@ -209,19 +204,11 @@ export default function CreateMealCard() {
     const applyPhoto = (url, file) => {
         const capturedReplaceIdx = replaceIdx;
         if (capturedReplaceIdx !== null) {
-            setPhotos(prev => {
-                const next = prev.map((p, i) => i === capturedReplaceIdx ? { url, file } : p);
-                const files = next.filter(p => p.file).map(p => p.file);
-                if (files.length) handleImagesChange(files, 0, setValue);
-                return next;
-            });
+            setPhotos(prev => prev.map((p, i) => i === capturedReplaceIdx ? { url, file, id: null } : p));
         } else {
             setPhotos(prev => {
                 if (prev.length >= 4) return prev;
-                const next = [...prev, { url, file }];
-                const files = next.filter(p => p.file).map(p => p.file);
-                if (files.length) handleImagesChange(files, 0, setValue);
-                return next;
+                return [...prev, { url, file, id: null }];
             });
             setActiveIdx(photos.length < 4 ? photos.length : photos.length - 1);
         }
@@ -229,25 +216,17 @@ export default function CreateMealCard() {
     };
 
     const removePhoto = (i) => {
-        setPhotos(prev => {
-            const next = prev.filter((_, idx) => idx !== i);
-            const files = next.filter(p => p.file).map(p => p.file);
-            handleImagesChange(files.length ? files : [], 0, setValue);
-            return next;
-        });
+        setPhotos(prev => prev.filter((_, idx) => idx !== i));
         setActiveIdx(prev => Math.min(prev, Math.max(photos.length - 2, 0)));
     };
 
-    // Image upload
     const handleFileChange = (e) => {
         const file = e.target.files?.[0];
         if (!file) return;
         applyPhoto(URL.createObjectURL(file), file);
-        // reset input so same file can be re-selected
         e.target.value = "";
     };
 
-    // Image from URL
     const handleImageUrl = async () => {
         const urlStr = imageUrlValue.trim();
         if (!urlStr) return;
@@ -263,25 +242,99 @@ export default function CreateMealCard() {
         setImageUrlValue("");
     };
 
-    // Submit → preview modal
-    const submitAndPreview = async (values) => {
-        const createdMeal = await onSubmit(values);
-        if (!createdMeal?.id) return;
-        const tok = localStorage.getItem("accessToken");
-        openModal(
-            <MealModal
-                meal={createdMeal}
-                mode="preview"
-                onCancel={async (meal) => { await cancelMealApi(meal.id, tok); }}
-                onConfirm={(meal)  => { navigate(`/meal/${meal.id}`); }}
-            />
-        );
+    const onSubmit = async (values) => {
+        try {
+            const newFiles           = photos.filter(p => p.file).map(p => p.file);
+            const keepImageIds       = photos.filter(p => p.id).map(p => p.id);
+            const replaceOrderIndexes = photos
+                .map((p, idx) => p.file ? idx : null)
+                .filter(i => i !== null);
+            const primaryPhoto       = photos[activeIdx];
+
+            const data = {
+                ...values,
+                mealTypes: (values.mealTypes || []).map(t => t.value || t),
+                cuisines:  (values.cuisines  || []).map(c => c.value || c),
+                diets:     (values.diets     || []).map(d => d.value || d),
+                imageFiles: newFiles,
+                keepImageIds,
+                replaceOrderIndexes,
+                primaryIndex:   activeIdx,
+                primaryImageId: primaryPhoto?.id ?? null,
+                videoUrl:             values.videoUrl             ?? "",
+                sourceUrl:            values.sourceUrl            ?? "",
+                preparationVideoUrl:  values.preparationVideoUrl  ?? "",
+                mealPreparation:      values.mealPreparation       ?? "",
+            };
+
+            const formData = await buildMealFormData(data);
+            const updated  = await updateMealApi(mealId, formData);
+            replaceMealInMeals(mealId, updated);
+            navigate(`/meal/${updated.id}`);
+        } catch (err) {
+            setError(err?.message || "Failed to update meal.");
+        }
     };
 
     const prepTimeLabel = preparationTimeOptions.find(o => o.value === preparationTime)?.label;
 
+    if (loading) {
+        return (
+            <div className="w-full max-w-3xl mx-auto rounded-[28px] border border-content/10 shadow-2xl bg-surface animate-pulse">
+                {/* Image skeleton */}
+                <div className="relative overflow-hidden rounded-t-[28px] h-[320px] bg-surface-sunken">
+                    <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-surface to-transparent" />
+                    {/* Chips */}
+                    <div className="absolute top-3 left-3 flex gap-2">
+                        <div className="h-5 w-20 rounded-full bg-content/10" />
+                        <div className="h-5 w-16 rounded-full bg-content/10" />
+                    </div>
+                    {/* Prep time / servings */}
+                    <div className="absolute top-3 right-3 flex flex-col items-end gap-2">
+                        <div className="h-5 w-20 rounded-full bg-content/10" />
+                        <div className="h-5 w-24 rounded-full bg-content/10" />
+                    </div>
+                    {/* Title */}
+                    <div className="absolute bottom-6 left-3 space-y-2">
+                        <div className="h-8 w-56 rounded-xl bg-content/10" />
+                        <div className="h-3 w-24 rounded-full bg-content/10" />
+                    </div>
+                </div>
+
+                {/* Macro tiles skeleton */}
+                <div className="px-3 pt-1.5 pb-2">
+                    <div className="flex items-center gap-1">
+                        {[...Array(4)].map((_, i) => (
+                            <div key={i} className="flex flex-1 items-center gap-1.5 px-2 py-1.5">
+                                <div className="h-4 w-4 rounded-full bg-content/10 shrink-0" />
+                                <div className="flex flex-col gap-1">
+                                    <div className="h-3 w-8 rounded bg-content/10" />
+                                    <div className="h-2 w-10 rounded bg-content/10" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="mt-1 mx-auto h-2 w-40 rounded bg-content/10" />
+                </div>
+
+                {/* Form sections skeleton */}
+                <div className="border-t border-border px-4 pb-6 pt-6 space-y-5">
+                    {[...Array(3)].map((_, i) => (
+                        <div key={i} className="relative rounded-2xl border border-content/8 px-4 pb-4 pt-5">
+                            <div className="absolute -top-3 left-4 h-5 w-28 rounded-full bg-surface border border-content/8" />
+                            <div className="space-y-2 mt-1">
+                                <div className="h-10 rounded-xl bg-content/[0.06]" />
+                                {i === 0 && <div className="h-10 rounded-xl bg-content/[0.06]" />}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <form onSubmit={handleSubmit(submitAndPreview)} className="w-full max-w-3xl mx-auto pb-16">
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-3xl mx-auto pb-16">
             {renderDialogs()}
 
             <div className="rounded-[28px] border border-content/10 shadow-2xl bg-surface">
@@ -289,7 +342,6 @@ export default function CreateMealCard() {
                 {/* ── Image / header section ────────────────────────────── */}
                 <div className="relative overflow-hidden rounded-t-[28px] min-h-[320px]">
 
-                    {/* Hidden file inputs */}
                     <input ref={fileInputRef}   type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
                     <input ref={cameraInputRef} type="file" className="hidden" accept="image/*" capture="environment" onChange={handleFileChange} />
 
@@ -313,9 +365,9 @@ export default function CreateMealCard() {
                     <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-black/60 to-transparent pointer-events-none" />
                     <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/80 to-transparent pointer-events-none" />
 
-                    {/* Content layer */}
                     <div className="relative flex h-full min-h-[320px] flex-col px-3 pt-3 pb-2">
-                        {/* Add photo button — only icon + text area is clickable */}
+
+                        {/* Add photo button */}
                         {photos.length === 0 && !showPhotoMenu && !showImageUrl && (
                             <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
                                 <button
@@ -335,32 +387,20 @@ export default function CreateMealCard() {
                             <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/50 backdrop-blur-sm rounded-t-[28px]">
                                 <div className="flex flex-col gap-2 rounded-2xl border border-white/20 bg-black/70 p-5 backdrop-blur-md min-w-[200px]">
                                     <p className="text-[11px] text-white/45 text-center mb-1 uppercase tracking-widest">Add photo from</p>
-                                    <button
-                                        type="button"
-                                        onClick={() => { setShowPhotoMenu(false); fileInputRef.current?.click(); }}
-                                        className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-white hover:bg-white/10 transition-colors"
-                                    >
+                                    <button type="button" onClick={() => { setShowPhotoMenu(false); fileInputRef.current?.click(); }}
+                                        className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-white hover:bg-white/10 transition-colors">
                                         <ImagePlus className="h-4 w-4 text-white/60" /> Gallery / file
                                     </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => { setShowPhotoMenu(false); cameraInputRef.current?.click(); }}
-                                        className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-white hover:bg-white/10 transition-colors"
-                                    >
+                                    <button type="button" onClick={() => { setShowPhotoMenu(false); cameraInputRef.current?.click(); }}
+                                        className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-white hover:bg-white/10 transition-colors">
                                         <Camera className="h-4 w-4 text-white/60" /> Camera
                                     </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => { setShowPhotoMenu(false); setShowImageUrl(true); }}
-                                        className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-white hover:bg-white/10 transition-colors"
-                                    >
+                                    <button type="button" onClick={() => { setShowPhotoMenu(false); setShowImageUrl(true); }}
+                                        className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-white hover:bg-white/10 transition-colors">
                                         <Link2 className="h-4 w-4 text-white/60" /> URL
                                     </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowPhotoMenu(false)}
-                                        className="mt-1 text-xs text-white/30 hover:text-white/60 transition-colors text-center"
-                                    >
+                                    <button type="button" onClick={() => setShowPhotoMenu(false)}
+                                        className="mt-1 text-xs text-white/30 hover:text-white/60 transition-colors text-center">
                                         Cancel
                                     </button>
                                 </div>
@@ -382,18 +422,12 @@ export default function CreateMealCard() {
                                         className="w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-white/40"
                                     />
                                     <div className="flex gap-2">
-                                        <button
-                                            type="button"
-                                            onClick={handleImageUrl}
-                                            className="flex-1 rounded-xl bg-white/15 py-2 text-sm font-medium text-white hover:bg-white/25 transition-colors"
-                                        >
+                                        <button type="button" onClick={handleImageUrl}
+                                            className="flex-1 rounded-xl bg-white/15 py-2 text-sm font-medium text-white hover:bg-white/25 transition-colors">
                                             Use this URL
                                         </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => { setShowImageUrl(false); setImageUrlValue(""); }}
-                                            className="rounded-xl px-3 py-2 text-sm text-white/40 hover:text-white/70 transition-colors"
-                                        >
+                                        <button type="button" onClick={() => { setShowImageUrl(false); setImageUrlValue(""); }}
+                                            className="rounded-xl px-3 py-2 text-sm text-white/40 hover:text-white/70 transition-colors">
                                             <X className="h-4 w-4" />
                                         </button>
                                     </div>
@@ -401,7 +435,7 @@ export default function CreateMealCard() {
                             </div>
                         )}
 
-                        {/* Change photo button (only when image is set) */}
+                        {/* Change photo button */}
                         {photos.length > 0 && (
                             <button
                                 type="button"
@@ -417,30 +451,19 @@ export default function CreateMealCard() {
                             <div className="absolute bottom-24 left-3 z-10 flex items-center gap-1.5">
                                 {photos.map((photo, i) => (
                                     <div key={i} className="relative">
-                                        <button
-                                            type="button"
-                                            onClick={() => setActiveIdx(i)}
-                                            className={`h-9 w-9 rounded-lg overflow-hidden border-2 transition-all ${
-                                                i === activeIdx ? "border-white" : "border-white/30 opacity-60 hover:opacity-90"
-                                            }`}
-                                        >
+                                        <button type="button" onClick={() => setActiveIdx(i)}
+                                            className={`h-9 w-9 rounded-lg overflow-hidden border-2 transition-all ${i === activeIdx ? "border-white" : "border-white/30 opacity-60 hover:opacity-90"}`}>
                                             <img src={photo.url} alt="" className="h-full w-full object-cover" />
                                         </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => removePhoto(i)}
-                                            className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-black/70 text-white/80 hover:text-white transition-colors"
-                                        >
+                                        <button type="button" onClick={() => removePhoto(i)}
+                                            className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-black/70 text-white/80 hover:text-white transition-colors">
                                             <X className="h-2.5 w-2.5" />
                                         </button>
                                     </div>
                                 ))}
                                 {photos.length < 4 && (
-                                    <button
-                                        type="button"
-                                        onClick={() => { setReplaceIdx(null); setShowPhotoMenu(true); }}
-                                        className="flex h-9 w-9 items-center justify-center rounded-lg border border-dashed border-white/30 bg-white/10 hover:bg-white/20 transition-colors"
-                                    >
+                                    <button type="button" onClick={() => { setReplaceIdx(null); setShowPhotoMenu(true); }}
+                                        className="flex h-9 w-9 items-center justify-center rounded-lg border border-dashed border-white/30 bg-white/10 hover:bg-white/20 transition-colors">
                                         <Plus className="h-4 w-4 text-white/50" />
                                     </button>
                                 )}
@@ -449,105 +472,77 @@ export default function CreateMealCard() {
 
                         {/* Right badges */}
                         <div className="absolute top-3 right-3 flex flex-col items-end gap-1.5">
-
                             {/* Prep time */}
                             <div className="flex flex-col items-end gap-0.5">
-                            <div ref={prepTimeRef} className="relative">
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPrepTime(v => !v)}
-                                    className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold backdrop-blur-sm transition-colors ${
-                                        preparationTime
-                                            ? "border-white/20 bg-black/50 text-white"
-                                            : "border-white/20 bg-black/40 text-white hover:text-white/55"
-                                    }`}
-                                >
-                                    <Clock className="h-3 w-3" />
-                                    {preparationTime ? prepTimeLabel : "Prep time"}
-                                </button>
-                                {showPrepTime && (
-                                    <div className="absolute right-0 top-full mt-1 z-30 w-36 rounded-2xl border border-border bg-surface shadow-xl overflow-hidden">
-                                        {preparationTime && (
-                                            <button
-                                                type="button"
-                                                onClick={() => { setValue("preparationTime", ""); setShowPrepTime(false); }}
-                                                className="flex w-full items-center gap-2 px-3 py-2 text-xs text-error hover:bg-error/10"
-                                            >
-                                                <X className="h-3 w-3" /> Clear
-                                            </button>
-                                        )}
-                                        {preparationTimeOptions.map(opt => (
-                                            <button
-                                                key={opt.value}
-                                                type="button"
-                                                onClick={() => { setValue("preparationTime", opt.value); setShowPrepTime(false); }}
-                                                className={`flex w-full items-center justify-between px-3 py-2 text-xs hover:bg-content/10 ${preparationTime === opt.value ? "text-primary font-semibold" : "text-content/70"}`}
-                                            >
-                                                {opt.label}
-                                                {preparationTime === opt.value && <Check className="h-3 w-3" />}
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                            <div className="flex items-center gap-0.5">
-                                <span className="text-[10px] text-white italic">(optional) set prep time</span>
-                                <ArrowBigUp className="h-3 w-3 shrink-0 -rotate-45 text-white" />
-                            </div>
+                                <div ref={prepTimeRef} className="relative">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPrepTime(v => !v)}
+                                        className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold backdrop-blur-sm transition-colors ${
+                                            preparationTime
+                                                ? "border-white/20 bg-black/50 text-white"
+                                                : "border-white/20 bg-black/40 text-white hover:text-white/55"
+                                        }`}
+                                    >
+                                        <Clock className="h-3 w-3" />
+                                        {preparationTime ? prepTimeLabel : "Prep time"}
+                                    </button>
+                                    {showPrepTime && (
+                                        <div className="absolute right-0 top-full mt-1 z-30 w-36 rounded-2xl border border-border bg-surface shadow-xl overflow-hidden">
+                                            {preparationTime && (
+                                                <button type="button" onClick={() => { setValue("preparationTime", ""); setShowPrepTime(false); }}
+                                                    className="flex w-full items-center gap-2 px-3 py-2 text-xs text-error hover:bg-error/10">
+                                                    <X className="h-3 w-3" /> Clear
+                                                </button>
+                                            )}
+                                            {preparationTimeOptions.map(opt => (
+                                                <button key={opt.value} type="button"
+                                                    onClick={() => { setValue("preparationTime", opt.value); setShowPrepTime(false); }}
+                                                    className={`flex w-full items-center justify-between px-3 py-2 text-xs hover:bg-content/10 ${preparationTime === opt.value ? "text-primary font-semibold" : "text-content/70"}`}>
+                                                    {opt.label}
+                                                    {preparationTime === opt.value && <Check className="h-3 w-3" />}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
                             {/* Servings */}
-                            <div className="flex flex-col items-end gap-0.5">
-                                <div className="inline-flex items-center gap-1.5 rounded-full border border-sky-400/50 bg-sky-400/20 px-3 py-0 backdrop-blur-sm">
-                                    <Users className="h-3.5 w-3.5 shrink-0 text-sky-300" />
-                                    <Controller
-                                        name="servings"
-                                        control={control}
-                                        defaultValue={1}
-                                        render={({ field }) => <ServingsInput field={field} />}
-                                    />
-                                    <span className="text-xs font-semibold text-sky-200">
-                                        {servings > 1 ? "servings" : "serving"}
-                                    </span>
-                                </div>
-                                <div className="flex items-center gap-0.5">
-                                    <span className="text-[10px] text-white italic">(optional) set servings</span>
-                                    <ArrowBigUp className="h-3 w-3 shrink-0 -rotate-45 text-white" />
-                                </div>
-                                {errors.servings && (
-                                    <p className="text-[9px] text-rose-400">{errors.servings.message}</p>
-                                )}
+                            <div className="inline-flex items-center gap-1.5 rounded-full border border-sky-400/50 bg-sky-400/20 px-3 py-0 backdrop-blur-sm">
+                                <Users className="h-3.5 w-3.5 shrink-0 text-sky-300" />
+                                <Controller
+                                    name="servings"
+                                    control={control}
+                                    defaultValue={1}
+                                    render={({ field }) => <ServingsInput field={field} />}
+                                />
+                                <span className="text-xs font-semibold text-sky-200">
+                                    {servings > 1 ? "servings" : "serving"}
+                                </span>
                             </div>
+                            {errors.servings && (
+                                <p className="text-[9px] text-rose-400">{errors.servings.message}</p>
+                            )}
                         </div>
 
-                        {/* Chips + empty placeholder */}
+                        {/* Chips */}
                         <div className={`flex flex-wrap items-start gap-2 pr-28 ${photos.length > 0 ? "mt-8" : "mt-10 sm:mt-0"}`}>
                             {allChips.map(({ label, group, value }) => (
-                                <span
-                                    key={`${group}-${value}`}
-                                    className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold backdrop-blur-sm ${CHIP_COLORS[group]}`}
-                                >
+                                <span key={`${group}-${value}`}
+                                    className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold backdrop-blur-sm ${CHIP_COLORS[group]}`}>
                                     {label}
-                                    <button
-                                        type="button"
-                                        onClick={() => removeChip(group, value)}
-                                        className="ml-0.5 opacity-70 hover:opacity-100"
-                                    >
+                                    <button type="button" onClick={() => removeChip(group, value)} className="ml-0.5 opacity-70 hover:opacity-100">
                                         <X className="h-2.5 w-2.5" />
                                     </button>
                                 </span>
                             ))}
-                            <button
-                                ref={tagBtnRef}
-                                type="button"
-                                onClick={() => setShowTagPicker(v => !v)}
-                                className="inline-flex items-center gap-1 rounded-full border border-white/25 bg-white/10 px-2.5 py-0.5 text-[11px] font-semibold text-white/55 backdrop-blur-sm hover:bg-white/20 hover:text-white transition-colors"
-                            >
+                            <button ref={tagBtnRef} type="button" onClick={() => setShowTagPicker(v => !v)}
+                                className="inline-flex items-center gap-1 rounded-full border border-white/25 bg-white/10 px-2.5 py-0.5 text-[11px] font-semibold text-white/55 backdrop-blur-sm hover:bg-white/20 hover:text-white transition-colors">
                                 <Plus className="h-3 w-3" /> Tags
                             </button>
                         </div>
 
-                        {/* Arrow hint below chips */}
                         <div className="mt-1.5 flex items-start gap-1.5 pl-0.5">
                             <ArrowBigUp className="h-4 w-4 shrink-0 rotate-45 text-white mt-0.5" />
                             <div className="text-[11px] italic text-white flex flex-col sm:flex-row sm:gap-1">
@@ -560,12 +555,6 @@ export default function CreateMealCard() {
 
                         {/* Meal name */}
                         <div>
-                            <div className="flex items-center gap-1 mb-0.5">
-                                <span className="text-[10px] italic text-white">
-                                    meal name <span className="font-bold not-italic uppercase">(required)</span>
-                                </span>
-                                <ArrowBigUp className="h-3 w-3 shrink-0 rotate-[225deg] text-white" />
-                            </div>
                             <input
                                 type="text"
                                 maxLength={100}
@@ -596,19 +585,19 @@ export default function CreateMealCard() {
                     chipColors={CHIP_COLORS}
                 />
 
-                {/* ── Macros ───────────────────────────────────────────── */}
+                {/* ── Macros — live when ingredient data available ──────── */}
                 <div className="px-3 pt-1.5 pb-2">
                     <div className="flex items-center">
-                        <MacroTile icon={Flame}   color="text-rose-400"    label="kcal"    value={liveMacros?.calories} live={!!liveMacros} />
+                        <MacroTile icon={Flame}    color="text-rose-400"    value={liveMacros?.calories ?? meal?.totalCalories} label="kcal"    live={!!liveMacros} />
                         <div className="w-px self-stretch bg-border mx-1 shrink-0" />
-                        <MacroTile icon={Dumbbell} color="text-cyan-500"   label="Protein" value={liveMacros?.protein}  live={!!liveMacros} />
+                        <MacroTile icon={Dumbbell} color="text-cyan-500"    value={liveMacros?.protein  ?? meal?.totalProtein}  label="Protein" live={!!liveMacros} />
                         <div className="w-px self-stretch bg-border mx-1 shrink-0" />
-                        <MacroTile icon={Wheat}   color="text-emerald-500" label="Carbs"   value={liveMacros?.carbs}    live={!!liveMacros} />
+                        <MacroTile icon={Wheat}    color="text-emerald-500" value={liveMacros?.carbs    ?? meal?.totalCarbs}    label="Carbs"   live={!!liveMacros} />
                         <div className="w-px self-stretch bg-border mx-1 shrink-0" />
-                        <MacroTile icon={Droplet} color="text-fuchsia-500" label="Fats"    value={liveMacros?.fat}      live={!!liveMacros} />
+                        <MacroTile icon={Droplet}  color="text-fuchsia-500" value={liveMacros?.fat      ?? meal?.totalFat}      label="Fats"    live={!!liveMacros} />
                     </div>
-                    <p className="mt-1 text-center text-[10px] text-content/40 italic">
-                        {liveMacros ? "Live estimate — final values saved after submit" : "Add ingredients to see macros"}
+                    <p className="mt-1 text-center text-[10px] text-content/40">
+                        {liveMacros ? "Live preview" : "Current values — updates as you edit ingredients"}
                     </p>
                 </div>
 
@@ -620,7 +609,7 @@ export default function CreateMealCard() {
                         ))}
                     </div>
 
-                    {/* Ingredients — required */}
+                    {/* Ingredients */}
                     <Section label="Ingredients" required icon={Carrot}>
                         <Controller
                             name="mealIngredients"
@@ -635,7 +624,7 @@ export default function CreateMealCard() {
                         />
                     </Section>
 
-                    {/* Description — optional */}
+                    {/* Description */}
                     <Section label="Description" hint="Short introduction to the meal (max 1000 chars)" icon={BookOpen}>
                         <textarea
                             rows={3}
@@ -649,7 +638,7 @@ export default function CreateMealCard() {
                         )}
                     </Section>
 
-                    {/* Preparation — optional */}
+                    {/* Preparation */}
                     <Section label="Preparation" hint="Step-by-step instructions (max 20 000 chars)" icon={ChefHat}>
                         <textarea
                             rows={5}
@@ -663,43 +652,28 @@ export default function CreateMealCard() {
                         )}
                     </Section>
 
-                    {/* Meal video — optional */}
+                    {/* Meal video */}
                     <Section label="Meal video" hint="YouTube or Vimeo link to a video of the finished meal" icon={PlayCircle}>
-                        <input
-                            type="url"
-                            placeholder="https://www.youtube.com/watch?v=…"
+                        <input type="url" placeholder="https://www.youtube.com/watch?v=…"
                             {...registerUrl("videoUrl")}
-                            className="w-full rounded-xl border border-border bg-surface-sunken px-3 py-2 text-sm text-content/80 placeholder-content/30 outline-none focus:border-primary/40 transition-colors"
-                        />
-                        {errors.videoUrl && (
-                            <p className="text-xs text-error">{errors.videoUrl.message}</p>
-                        )}
+                            className="w-full rounded-xl border border-border bg-surface-sunken px-3 py-2 text-sm text-content/80 placeholder-content/30 outline-none focus:border-primary/40 transition-colors" />
+                        {errors.videoUrl && <p className="text-xs text-error">{errors.videoUrl.message}</p>}
                     </Section>
 
-                    {/* Preparation video — optional */}
+                    {/* Preparation video */}
                     <Section label="Preparation video" hint="YouTube or Vimeo link to a preparation video" icon={PlayCircle}>
-                        <input
-                            type="url"
-                            placeholder="https://www.youtube.com/watch?v=…"
+                        <input type="url" placeholder="https://www.youtube.com/watch?v=…"
                             {...registerUrl("preparationVideoUrl")}
-                            className="w-full rounded-xl border border-border bg-surface-sunken px-3 py-2 text-sm text-content/80 placeholder-content/30 outline-none focus:border-primary/40 transition-colors"
-                        />
-                        {errors.preparationVideoUrl && (
-                            <p className="text-xs text-error">{errors.preparationVideoUrl.message}</p>
-                        )}
+                            className="w-full rounded-xl border border-border bg-surface-sunken px-3 py-2 text-sm text-content/80 placeholder-content/30 outline-none focus:border-primary/40 transition-colors" />
+                        {errors.preparationVideoUrl && <p className="text-xs text-error">{errors.preparationVideoUrl.message}</p>}
                     </Section>
 
-                    {/* Source URL — optional */}
+                    {/* Source URL */}
                     <Section label="Source" hint="Link to the original recipe" icon={ExternalLink}>
-                        <input
-                            type="url"
-                            placeholder="https://…"
+                        <input type="url" placeholder="https://…"
                             {...registerUrl("sourceUrl")}
-                            className="w-full rounded-xl border border-border bg-surface-sunken px-3 py-2 text-sm text-content/80 placeholder-content/30 outline-none focus:border-primary/40 transition-colors"
-                        />
-                        {errors.sourceUrl && (
-                            <p className="text-xs text-error">{errors.sourceUrl.message}</p>
-                        )}
+                            className="w-full rounded-xl border border-border bg-surface-sunken px-3 py-2 text-sm text-content/80 placeholder-content/30 outline-none focus:border-primary/40 transition-colors" />
+                        {errors.sourceUrl && <p className="text-xs text-error">{errors.sourceUrl.message}</p>}
                     </Section>
 
                     {/* Submit */}
@@ -709,7 +683,8 @@ export default function CreateMealCard() {
                             disabled={!(isValid && hasIngredient)}
                             className="flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-primary-emphasis hover:shadow-lg hover:shadow-primary/25 disabled:opacity-40 disabled:cursor-not-allowed"
                         >
-                            Preview &amp; Save
+                            <Save className="h-4 w-4" />
+                            Save changes
                         </button>
                     </div>
                 </div>
@@ -722,6 +697,7 @@ export default function CreateMealCard() {
 
 function ServingsInput({ field }) {
     const [raw, setRaw] = useState(String(field.value ?? 1));
+    useEffect(() => { setRaw(String(field.value ?? 1)); }, [field.value]);
     return (
         <input
             type="number"
@@ -748,18 +724,16 @@ function TagPickerPortal({ isOpen, anchorRef, containerRef, onClose, tagGroups, 
 
     useEffect(() => {
         if (!isOpen || !anchorRef.current) return;
-        const rect    = anchorRef.current.getBoundingClientRect();
-        const W       = window.innerWidth;
-        const H       = window.innerHeight;
-        const dropW   = 288; // w-72
-        const dropH   = 380; // approximate max height
-        const margin  = 8;
-
+        const rect  = anchorRef.current.getBoundingClientRect();
+        const W     = window.innerWidth;
+        const H     = window.innerHeight;
+        const dropW = 288;
+        const dropH = 380;
+        const margin = 8;
         const left = Math.min(rect.left, W - dropW - margin);
         const top  = rect.bottom + dropH + margin > H
-            ? Math.max(rect.top - dropH - 6, margin)   // flip upward
+            ? Math.max(rect.top - dropH - 6, margin)
             : rect.bottom + 6;
-
         setPos({ top, left: Math.max(left, margin) });
     }, [isOpen, anchorRef]);
 
@@ -768,7 +742,7 @@ function TagPickerPortal({ isOpen, anchorRef, containerRef, onClose, tagGroups, 
         const handler = (e) => {
             if (
                 containerRef.current && !containerRef.current.contains(e.target) &&
-                anchorRef.current && !anchorRef.current.contains(e.target)
+                anchorRef.current   && !anchorRef.current.contains(e.target)
             ) onClose();
         };
         document.addEventListener("mousedown", handler);
@@ -778,17 +752,12 @@ function TagPickerPortal({ isOpen, anchorRef, containerRef, onClose, tagGroups, 
     if (!isOpen) return null;
 
     return ReactDOM.createPortal(
-        <div
-            ref={containerRef}
+        <div ref={containerRef}
             className="fixed z-[2147483640] w-72 rounded-2xl border border-border bg-surface shadow-xl p-4 space-y-3"
-            style={{ top: pos.top, left: pos.left }}
-        >
+            style={{ top: pos.top, left: pos.left }}>
             <div className="flex justify-end -mt-1 -mr-1">
-                <button
-                    type="button"
-                    onClick={onClose}
-                    className="flex h-6 w-6 items-center justify-center rounded-full text-content/40 hover:bg-content/10 hover:text-content transition-colors"
-                >
+                <button type="button" onClick={onClose}
+                    className="flex h-6 w-6 items-center justify-center rounded-full text-content/40 hover:bg-content/10 hover:text-content transition-colors">
                     <X className="h-3.5 w-3.5" />
                 </button>
             </div>
@@ -799,14 +768,11 @@ function TagPickerPortal({ isOpen, anchorRef, containerRef, onClose, tagGroups, 
                         {options.map(opt => {
                             const selected = isTagSelected(group, opt.value);
                             return (
-                                <button
-                                    key={opt.value}
-                                    type="button"
+                                <button key={opt.value} type="button"
                                     onClick={() => toggleTag(group, opt.value, opt.label)}
                                     className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold transition-colors ${
                                         selected ? chipColors[group] : "border-border text-content/50 hover:border-content/30 hover:text-content/70"
-                                    }`}
-                                >
+                                    }`}>
                                     {selected && <Check className="h-2.5 w-2.5" />}
                                     {opt.label}
                                 </button>
@@ -819,6 +785,30 @@ function TagPickerPortal({ isOpen, anchorRef, containerRef, onClose, tagGroups, 
         document.body
     );
 }
+
+// ── Category config ───────────────────────────────────────────────────────────
+
+const FOOD_CATEGORIES = [
+    { value: "VEGETABLE",          label: "Vegetable",   emoji: "🥦" },
+    { value: "FRUIT",              label: "Fruit",       emoji: "🍎" },
+    { value: "MEAT",               label: "Meat",        emoji: "🥩" },
+    { value: "FISH",               label: "Fish",        emoji: "🐟" },
+    { value: "DAIRY",              label: "Dairy",       emoji: "🥛" },
+    { value: "GRAIN",              label: "Grain",       emoji: "🌾" },
+    { value: "LEGUME",             label: "Legume",      emoji: "🫘" },
+    { value: "NUT",                label: "Nut",         emoji: "🥜" },
+    { value: "EGG",                label: "Egg",         emoji: "🥚" },
+    { value: "SWEET",              label: "Sweet",       emoji: "🍬" },
+    { value: "DRINK",              label: "Drink",       emoji: "🥤" },
+    { value: "SAUCE",              label: "Sauce",       emoji: "🫙" },
+    { value: "OIL",                label: "Oil",         emoji: "🫒" },
+    { value: "SPICE",              label: "Spice",       emoji: "🌶️" },
+    { value: "READY_MEAL",         label: "Ready meal",  emoji: "🍱" },
+    { value: "SNACK",              label: "Snack",       emoji: "🍿" },
+    { value: "SUPPLEMENT",         label: "Supplement",  emoji: "💊" },
+    { value: "PROTEIN_SUPPLEMENT", label: "Protein",     emoji: "💪" },
+    { value: "OTHER",              label: "Other",       emoji: "📦" },
+];
 
 // ── IngredientsEditor ─────────────────────────────────────────────────────────
 
@@ -893,6 +883,7 @@ function IngredientsEditor({ value, onChange, error }) {
         <div className="space-y-3">
             {/* ── Filter bar ── */}
             <div className="space-y-2">
+                {/* Store dropdown */}
                 {foodSourceOptions.length > 0 && (
                     <select
                         value={activeStore ?? ""}
@@ -905,6 +896,8 @@ function IngredientsEditor({ value, onChange, error }) {
                         ))}
                     </select>
                 )}
+
+                {/* Category chips */}
                 <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
                     {FOOD_CATEGORIES.map(cat => (
                         <button
@@ -949,11 +942,8 @@ function IngredientsEditor({ value, onChange, error }) {
                             />
                         );
                     })}
-                    <button
-                        type="button"
-                        onClick={addRow}
-                        className="flex items-center gap-1.5 rounded-xl border border-dashed border-border px-3 py-1.5 text-xs text-content/40 transition-colors hover:border-primary/40 hover:text-primary"
-                    >
+                    <button type="button" onClick={addRow}
+                        className="flex items-center gap-1.5 rounded-xl border border-dashed border-border px-3 py-1.5 text-xs text-content/40 transition-colors hover:border-primary/40 hover:text-primary">
                         <Plus className="h-3.5 w-3.5" /> Add ingredient
                     </button>
                 </>
@@ -971,6 +961,10 @@ function IngredientRow({ row, onChange, onRemove, canRemove, options, onSearch }
     const containerRef = useRef(null);
 
     useEffect(() => {
+        if (row.foodItemName && !query) setQuery(row.foodItemName);
+    }, [row.foodItemName]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    useEffect(() => {
         const handler = (e) => {
             if (containerRef.current && !containerRef.current.contains(e.target)) setIsOpen(false);
         };
@@ -981,7 +975,7 @@ function IngredientRow({ row, onChange, onRemove, canRemove, options, onSearch }
     const handleQueryChange = (e) => {
         const q = e.target.value;
         setQuery(q);
-        if (row.foodItemId) onChange({ ...row, foodItemId: "", foodItemName: "" });
+        if (row.foodItemId) onChange({ ...row, foodItemId: "", foodItemName: "", foodItemData: null });
         onSearch(q);
         setIsOpen(true);
     };
@@ -1000,7 +994,6 @@ function IngredientRow({ row, onChange, onRemove, canRemove, options, onSearch }
 
     return (
         <div ref={containerRef} className="flex items-center gap-2">
-            {/* Food item search */}
             <div className="relative flex-1">
                 <input
                     type="text"
@@ -1015,20 +1008,14 @@ function IngredientRow({ row, onChange, onRemove, canRemove, options, onSearch }
                 {isOpen && options.length > 0 && (
                     <div className="absolute top-full left-0 right-0 mt-1 z-30 max-h-48 overflow-y-auto rounded-xl border border-border bg-surface shadow-xl">
                         {options.map(item => (
-                            <button
-                                key={item.id}
-                                type="button"
-                                onMouseDown={() => selectItem(item)}
-                                className="flex w-full items-start px-3 py-2 text-sm text-content/80 hover:bg-content/10 text-left"
-                            >
+                            <button key={item.id} type="button" onMouseDown={() => selectItem(item)}
+                                className="flex w-full items-start px-3 py-2 text-sm text-content/80 hover:bg-content/10 text-left">
                                 {item.name}
                             </button>
                         ))}
                     </div>
                 )}
             </div>
-
-            {/* Quantity */}
             <div className="flex h-10 items-center gap-1 rounded-xl border border-border bg-surface-sunken px-2">
                 <input
                     type="number"
@@ -1041,14 +1028,9 @@ function IngredientRow({ row, onChange, onRemove, canRemove, options, onSearch }
                 />
                 <span className="text-xs text-content/40">g</span>
             </div>
-
-            {/* Remove */}
             {canRemove && (
-                <button
-                    type="button"
-                    onClick={onRemove}
-                    className="flex h-8 w-8 items-center justify-center rounded-full text-content/35 transition-colors hover:bg-error/10 hover:text-error"
-                >
+                <button type="button" onClick={onRemove}
+                    className="flex h-8 w-8 items-center justify-center rounded-full text-content/35 transition-colors hover:bg-error/10 hover:text-error">
                     <X className="h-4 w-4" />
                 </button>
             )}
@@ -1075,16 +1057,17 @@ function Section({ label, required, hint, icon: Icon, children }) {
     );
 }
 
-// ── MacroTile (placeholder) ───────────────────────────────────────────────────
+// ── MacroTile ─────────────────────────────────────────────────────────────────
 
-function MacroTile({ icon: Icon, color, label, value, live }) {
-    const display = value != null ? Math.round(value) : "–";
+function MacroTile({ icon: Icon, color, value, label, live }) {
     return (
         <div className="flex flex-1 items-center gap-1.5 px-2 py-1.5">
             <Icon className={`shrink-0 h-4 w-4 ${color}`} />
             <div className="flex flex-col">
-                <span className={`text-xs font-bold leading-tight ${live ? "text-primary" : "text-content/30"}`}>{display}</span>
-                <span className="text-[10px] leading-none text-content/25">{label}</span>
+                <span className={`text-xs font-bold leading-tight transition-colors ${live ? "text-primary" : "text-content"}`}>
+                    {value != null ? Math.round(value) : "–"}
+                </span>
+                <span className="text-[10px] leading-none text-content/40">{label}</span>
             </div>
         </div>
     );

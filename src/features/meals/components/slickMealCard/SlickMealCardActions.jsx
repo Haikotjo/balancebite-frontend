@@ -65,7 +65,7 @@ export default function SlickMealCardActions({ meal, isPinned = false, viewMode 
             <div className="flex items-center justify-center" style={{ width: ICON_SIZE, height: ICON_SIZE }}>
                 <SocialShareMenu
                     url={`${window.location.origin}/meal/${meal.id}`}
-                    title={`Bekijk dit lekkere recept: ${meal.name}`}
+                    title={`Check out this recipe: ${meal.name}`}
                 />
             </div>
         </div>

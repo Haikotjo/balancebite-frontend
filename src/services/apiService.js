@@ -2,11 +2,6 @@ import { Interceptor } from "./authInterceptor";
 import { roundNutrientValues } from "../utils/helpers/roundNutrientValues";
 import qs from "qs";
 
-// Logging helpers
-const logResponse = (response) => {
-    console.log(`[API] ${response.config.method.toUpperCase()} ${response.config.url}`, response.data);
-};
-
 const logError = (error) => {
     if (error.response) {
         console.error(`[API Error] ${error.response.status}: ${error.response.data?.error || error.message}`);
@@ -26,7 +21,6 @@ export const addMealToFavoritesApi = async (mealId, token) => {
         const response = await Interceptor.patch(endpoint, null, {
             headers: { Authorization: `Bearer ${token}` },
         });
-        logResponse(response);
         return response.data;
     } catch (error) {
         logError(error);
@@ -40,7 +34,6 @@ export const removeMealFromFavoritesApi = async (mealId, token) => {
         const response = await Interceptor.delete(endpoint, {
             headers: { Authorization: `Bearer ${token}` },
         });
-        logResponse(response);
         return response.data;
     } catch (error) {
         logError(error);
@@ -54,7 +47,6 @@ export const forceUnlinkMealFromUserApi = async (mealId, token) => {
         const response = await Interceptor.delete(endpoint, {
             headers: { Authorization: `Bearer ${token}` },
         });
-        logResponse(response);
         return response.data;
     } catch (error) {
         logError(error);
@@ -83,15 +75,9 @@ export const fetchMeals = async (path) => {
 export const fetchUserMeals = async (token) => {
     const endpoint = import.meta.env.VITE_USER_MEALS_ENDPOINT;
 
-    console.log("[fetchUserMeals] endpoint:", endpoint);
-    console.log("[fetchUserMeals] token exists:", !!token);
-
     const response = await Interceptor.get(endpoint, {
         headers: { Authorization: `Bearer ${token}` },
     });
-
-    console.log("[fetchUserMeals] status:", response.status);
-    console.log("[fetchUserMeals] data:", response.data);
 
     return response.data;
 };
@@ -138,7 +124,6 @@ export const cancelMealApi = async (mealId, token) => {
         const response = await Interceptor.delete(endpoint, {
             headers: { Authorization: `Bearer ${token}` },
         });
-        console.log(`[API] DELETE ${endpoint} → meal cancelled`);
         return response.data;
     } catch (error) {
         // Normalize and rethrow for UI handling
@@ -244,7 +229,6 @@ export const fetchRecommendedNutritionApi = async (token) => {
                 Authorization: `Bearer ${token}`,
             },
         });
-        // logResponse(response);
 
         if (response && response.data) {
             return roundNutrientValues(response.data);
@@ -363,7 +347,6 @@ export const fetchSortedMeals = async (sortField, sortOrder = "desc") => {
 
     try {
         const response = await Interceptor.get(endpoint);
-        logResponse(response);
         return response.data;
     } catch (error) {
         logError(error);
@@ -688,7 +671,6 @@ export const removeDietFromUserApi = async (dietPlanId, token) => {
         const response = await Interceptor.delete(endpoint, {
             headers: { Authorization: `Bearer ${token}` },
         });
-        logResponse(response);
         return response.data;
     } catch (error) {
         const errData = error?.response?.data;

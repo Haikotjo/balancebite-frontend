@@ -1,8 +1,4 @@
 // src/utils/helpers/loggingHelpers.js
-export const logResponse = (response) => {
-    console.log(`[API] ${response.config.method.toUpperCase()} ${response.config.url}`, response.data);
-};
-
 export const logError = (error) => {
     if (error.response) {
         console.error(`[API Error] ${error.response.status}: ${error.response.data?.error || error.message}`);

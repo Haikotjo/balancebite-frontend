@@ -7,7 +7,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import {
     Flame,
     Dumbbell,
-    ChartColumnIncreasing,
+    Wheat,
     Droplet,
     Wallet,
     Clock,
@@ -29,6 +29,9 @@ import {
     Cherry,
     Beef,
     Banana,
+    Leaf,
+    Candy,
+    Heart,
 } from "lucide-react";
 
 import { getImageSrc } from "../../utils/helpers/getImageSrc.js";
@@ -40,6 +43,13 @@ import { buildMacrosObject } from "../../utils/helpers/buildMacrosObject.js";
 import { useModal } from "../../../../context/useModal.js";
 import MealModal from "../mealModal/MealModal.jsx";
 import { UserMealsContext } from "../../../../context/UserMealsContext.jsx";
+import InsightPanel from "../../../../components/insightPanel/InsightPanel.jsx";
+import {
+    getGenericMealInsight,
+    getPersonalizedMealInsight,
+    getGenericMealPer100gInsight,
+    getPersonalizedMealPer100gInsight,
+} from "../../../../utils/helpers/nutritionInsightHelpers.js";
 
 const BG_FOOD_ICONS = [
     { Icon: Apple,  className: "top-3   left-6   rotate-12"  },
@@ -127,7 +137,7 @@ export default function SlickMealCard({ meal, isPinned = false, initialExpanded 
     const nextImage = (e) => { e.stopPropagation(); setActiveImageIndex((i) => (i + 1) % carouselItems.length); };
     const navigate = useNavigate();
     const location = useLocation();
-    const { openModal } = useModal();
+    const { openModal, closeModal } = useModal();
     const { setFilters, setPage } = useContext(UserMealsContext);
 
     const handleCreatorClick = (e) => {
@@ -156,6 +166,12 @@ export default function SlickMealCard({ meal, isPinned = false, initialExpanded 
     const extraChipCount = allChips.length - defaultChips.length;
 
     const macros = buildMacrosObject(meal, calculateMacrosPer100g(meal));
+
+    const totalIngredientCount = meal?.mealIngredients?.length ?? 0;
+    const missingSatFat = meal?.mealIngredients?.filter(i => !i.foodItem?.hasSaturatedFatData).map(i => i.foodItemName) ?? [];
+    const missingSugar  = meal?.mealIngredients?.filter(i => !i.foodItem?.hasSugarData).map(i => i.foodItemName) ?? [];
+    const missingFiber  = meal?.mealIngredients?.filter(i => !i.foodItem?.hasFiberData).map(i => i.foodItemName) ?? [];
+    const missingSodium = meal?.mealIngredients?.filter(i => !i.foodItem?.hasSodiumData).map(i => i.foodItemName) ?? [];
 
     const allIngredients = meal?.mealIngredients || [];
     const topIngredients = showAllIngredients ? allIngredients : allIngredients.slice(0, 5);
@@ -207,7 +223,7 @@ export default function SlickMealCard({ meal, isPinned = false, initialExpanded 
             )}
 
             {/* ── Image section ── */}
-            <div className={`relative overflow-hidden rounded-t-[28px] ${isFullView ? "min-h-[420px]" : "min-h-[300px]"}`}>
+            <div className={`relative overflow-hidden rounded-t-[28px] ${isFullView ? "h-[420px]" : "h-[300px]"}`}>
                 {/* Background: image + gradients */}
                 <img
                     src={activeImageSrc}
@@ -335,7 +351,7 @@ export default function SlickMealCard({ meal, isPinned = false, initialExpanded 
 
                     {/* Creator + save count */}
                     {meal?.createdBy?.userName && (
-                        <div className="mt-1 flex items-center justify-between">
+                        <div className="mt-1 flex items-center justify-between mb-1">
                             <button
                                 type="button"
                                 onClick={handleCreatorClick}
@@ -362,10 +378,102 @@ export default function SlickMealCard({ meal, isPinned = false, initialExpanded 
                     <div className="w-px self-stretch bg-border mx-0.5 shrink-0" />
                     <MacroTile icon={Dumbbell}              value={macros.Protein.total}  per100g={macros.Protein.per100g}  color="text-cyan-500"    compact />
                     <div className="w-px self-stretch bg-border mx-0.5 shrink-0" />
-                    <MacroTile icon={ChartColumnIncreasing} value={macros.Carbs.total}    per100g={macros.Carbs.per100g}    color="text-emerald-500" compact />
+                    <MacroTile icon={Wheat} value={macros.Carbs.total}    per100g={macros.Carbs.per100g}    color="text-emerald-500" compact />
                     <div className="w-px self-stretch bg-border mx-0.5 shrink-0" />
                     <MacroTile icon={Droplet}               value={macros.Fats.total}     per100g={macros.Fats.per100g}     color="text-fuchsia-500" compact />
                 </div>
+
+                {/* ── Per-100g insight — always visible ── */}
+                <InsightPanel
+                    item={{
+                        calories:       macros.Calories.per100g,
+                        protein:        macros.Protein.per100g,
+                        carbs:          macros.Carbs.per100g,
+                        fat:            macros.Fats.per100g,
+                        saturatedFat:   macros.SaturatedFat?.per100g   ?? null,
+                        unsaturatedFat: macros.UnsaturatedFat?.per100g ?? null,
+                        sugars:         macros.Sugars?.per100g         ?? null,
+                        fiber:          macros.Fiber?.per100g          ?? null,
+                        sodium:         macros.Sodium?.per100g         ?? null,
+                        missingSatFat, missingSugar, missingFiber, missingSodium, totalIngredientCount,
+                        flagHighFiber:        meal?.flagHighFiber        ?? null,
+                        flagLowSugar:         meal?.flagLowSugar         ?? null,
+                        flagLowUnhealthyFats: meal?.flagLowUnhealthyFats ?? null,
+                    }}
+                    getGenericInsight={getGenericMealPer100gInsight}
+                    getPersonalizedInsight={getPersonalizedMealPer100gInsight}
+                    labels={{ automated: "Per 100g insight", personalized: "Per 100g · personalised" }}
+                />
+                {(meal?.flagHighFiber === true || meal?.flagLowSugar === true || meal?.flagLowUnhealthyFats === true) && (
+                    <div className="flex flex-wrap gap-1.5 mt-1 mb-2">
+                        {meal.flagHighFiber === true && (
+                            <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/50 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
+                                <Leaf className="h-2.5 w-2.5" /> High fiber · /100g
+                            </span>
+                        )}
+                        {meal.flagLowSugar === true && (
+                            <span className="inline-flex items-center gap-1 rounded-full border border-sky-400/50 bg-sky-400/10 px-2 py-0.5 text-[10px] font-semibold text-sky-400">
+                                <Candy className="h-2.5 w-2.5" /> Low sugar · /100g
+                            </span>
+                        )}
+                        {meal.flagLowUnhealthyFats === true && (
+                            <span className="inline-flex items-center gap-1 rounded-full border border-rose-400/40 bg-rose-400/10 px-2 py-0.5 text-[10px] font-semibold text-rose-300">
+                                <Heart className="h-2.5 w-2.5" /> Low sat fat · /100g
+                            </span>
+                        )}
+                    </div>
+                )}
+
+                {/* ── Whole-meal insight — always visible ── */}
+                <InsightPanel
+                    item={{
+                        totalCalories:  macros.Calories.total,
+                        totalProtein:   macros.Protein.total,
+                        totalCarbs:     macros.Carbs.total,
+                        totalFat:       macros.Fats.total,
+                        mealTypes:      meal?.mealTypes,
+                        saturatedFat:   macros.SaturatedFat?.total   ?? null,
+                        unsaturatedFat: macros.UnsaturatedFat?.total ?? null,
+                        sugars:         macros.Sugars?.total         ?? null,
+                        fiber:          macros.Fiber?.total          ?? null,
+                        sodium:         macros.Sodium?.total         ?? null,
+                        missingSatFat, missingSugar, missingFiber, missingSodium, totalIngredientCount,
+                        flagHighFiber:        meal?.flagHighFiber        ?? null,
+                        flagLowSugar:         meal?.flagLowSugar         ?? null,
+                        flagLowUnhealthyFats: meal?.flagLowUnhealthyFats ?? null,
+                    }}
+                    getGenericInsight={getGenericMealInsight}
+                    getPersonalizedInsight={getPersonalizedMealInsight}
+                    labels={{ automated: "Meal insight", personalized: "Meal · personalised" }}
+                />
+                {(() => {
+                    const fiberTotal  = macros.Fiber?.total        ?? null;
+                    const sugarTotal  = macros.Sugars?.total       ?? null;
+                    const satFatTotal = macros.SaturatedFat?.total ?? null;
+                    const totalHighFiber = missingFiber.length  === 0 && fiberTotal  !== null ? fiberTotal  >= 8  : null;
+                    const totalLowSugar  = missingSugar.length   === 0 && sugarTotal  !== null ? sugarTotal  <= 10 : null;
+                    const totalLowSatFat = missingSatFat.length  === 0 && satFatTotal !== null ? satFatTotal <= 5  : null;
+                    if (totalHighFiber !== true && totalLowSugar !== true && totalLowSatFat !== true) return null;
+                    return (
+                        <div className="flex flex-wrap gap-1.5 mt-1 mb-2">
+                            {totalHighFiber === true && (
+                                <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/50 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
+                                    <Leaf className="h-2.5 w-2.5" /> High fiber · meal
+                                </span>
+                            )}
+                            {totalLowSugar === true && (
+                                <span className="inline-flex items-center gap-1 rounded-full border border-sky-400/50 bg-sky-400/10 px-2 py-0.5 text-[10px] font-semibold text-sky-400">
+                                    <Candy className="h-2.5 w-2.5" /> Low sugar · meal
+                                </span>
+                            )}
+                            {totalLowSatFat === true && (
+                                <span className="inline-flex items-center gap-1 rounded-full border border-rose-400/40 bg-rose-400/10 px-2 py-0.5 text-[10px] font-semibold text-rose-300">
+                                    <Heart className="h-2.5 w-2.5" /> Low sat fat · meal
+                                </span>
+                            )}
+                        </div>
+                    );
+                })()}
             </div>
 
             {/* ── Expandable info panel (list mode) ── */}
@@ -663,6 +771,7 @@ export default function SlickMealCard({ meal, isPinned = false, initialExpanded 
                         </div>
                     )}
 
+
                     {/* Source */}
                     <div className="flex items-center pt-4 mt-2">
                         {meal?.sourceUrl && (
@@ -687,6 +796,20 @@ export default function SlickMealCard({ meal, isPinned = false, initialExpanded 
                             <FoodItemCard key={fi.id} item={fi} className="h-full" />
                         ))}
                     </div>
+                </div>
+            )}
+
+            {/* ── View meal button (modal only) ── */}
+            {isFullView && viewMode === "modal" && (
+                <div className="flex justify-end px-4 pb-4">
+                    <button
+                        type="button"
+                        onClick={() => { closeModal(); navigate(`/meal/${meal.id}`); }}
+                        className="flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-primary-emphasis hover:shadow-lg hover:shadow-primary/25"
+                    >
+                        View meal
+                        <ArrowUpRight className="h-4 w-4" />
+                    </button>
                 </div>
             )}
         </div>

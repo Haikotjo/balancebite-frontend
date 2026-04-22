@@ -19,10 +19,11 @@ const DeleteDietPlanForm = () => {
         const fetchDietPlans = async () => {
             try {
                 const token = getAccessToken();
-                const response = await getAllAdminDietPlansApi(token);
+                const raw = await getAllAdminDietPlansApi(token);
+                const response = Array.isArray(raw) ? raw : raw.content || [];
                 const options = response.map(diet => ({
-                    value: diet.id.toString(),
-                    label: `${diet.name} (Created by: ${diet.creatorName}, Adjusted by: ${diet.adjustedByName})`,
+                    value: String(diet.id ?? diet.dietPlanId ?? ""),
+                    label: `[ID: ${diet.id ?? diet.dietPlanId ?? "?"}] ${diet.name} (Created by: ${diet.creatorName}, Adjusted by: ${diet.adjustedByName ?? "—"})`,
                 }));
                 setDietPlans(options);
             } catch (error) {

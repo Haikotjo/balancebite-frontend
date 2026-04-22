@@ -1,9 +1,6 @@
-// src/features/meals/components/modal/ModalScrollToTopButton.jsx
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { ChevronsUp } from "lucide-react";
-import CustomBox from "../layout/CustomBox.jsx";
-import CustomIconButton from "../layout/CustomIconButton.jsx";
+import { ArrowUpToLine } from "lucide-react";
 
 const ModalScrollToTopButton = ({ targetRef }) => {
     const [visible, setVisible] = useState(false);
@@ -11,32 +8,27 @@ const ModalScrollToTopButton = ({ targetRef }) => {
     useEffect(() => {
         const el = targetRef?.current;
         if (!el) return;
-
-        const onScroll = () => {
-            setVisible(el.scrollTop > 200);
-        };
-
+        const onScroll = () => setVisible(el.scrollTop > 200);
         el.addEventListener("scroll", onScroll);
         return () => el.removeEventListener("scroll", onScroll);
     }, [targetRef]);
 
     const scrollToTop = () => {
-        const el = targetRef?.current;
-        if (!el) return;
-        el.scrollTo({ top: 0, behavior: "smooth" });
+        targetRef?.current?.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     if (!visible) return null;
 
     return (
-        <CustomBox className="absolute bottom-4 right-4 z-[2147483003]">
-            <CustomIconButton
-                onClick={scrollToTop}
-                icon={<ChevronsUp size={20} className="text-white" />}
-                bgColor="bg-primary"
-                size={30}
-            />
-        </CustomBox>
+        <button
+            type="button"
+            onClick={scrollToTop}
+            aria-label="Scroll to top"
+            className="absolute bottom-4 left-4 z-[2147483003] flex items-center gap-1.5 rounded-full bg-primary/90 backdrop-blur-sm px-3 py-2 text-xs font-semibold text-white shadow-lg shadow-primary/25 transition-all duration-200 hover:bg-primary-emphasis hover:shadow-primary/40 hover:-translate-y-0.5"
+        >
+            <ArrowUpToLine className="h-4 w-4" />
+            Top
+        </button>
     );
 };
 
